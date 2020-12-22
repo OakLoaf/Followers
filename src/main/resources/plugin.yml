@@ -1,0 +1,9 @@
+name: ESFollowers
+version: ${project.version}
+main: org.enchantedskies.esfollowers.ESFollowers
+api-version: 1.16
+authors: [Dav_e_]
+commands:
+  follower:
+    description: Spawns user's pet
+    usage: /follower
