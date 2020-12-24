@@ -30,26 +30,31 @@ public class Follower implements CommandExecutor {
         }
         Player player = (Player) sender;
         World world = player.getWorld();
-        Bee bee = world.spawn(player.getLocation(), Bee.class);
-        bee.setBaby();
-        bee.setSilent(true);
-        bee.setInvulnerable(true);
-        bee.setInvisible(true);
-        armorStandConnector(player, bee);
+        petMovement(player, 0.1);
+//        Bee bee = world.spawn(player.getLocation(), Bee.class);
+//        bee.setBaby();
+//        bee.setSilent(true);
+//        bee.setInvulnerable(true);
+//        bee.setInvisible(true);
+//        armorStandConnector(player, bee);
         player.sendMessage(ChatColor.GREEN + "Pet Spawned.");
-        movementRunnable(player, bee, false);
+//        movementRunnable(player, bee, false);
         return true;
     }
 
-    public void armorStandConnector(Player player, Bee bee) {
-        CharacterArmorStand characterArmorStand = new CharacterArmorStand(bee.getLocation(), getPlayerSkull(player), getItemStack(Material.LEATHER_CHESTPLATE), getItemStack(Material.LEATHER_LEGGINGS), getItemStack(Material.LEATHER_BOOTS));
+    public void petMovement(Player player, double speed) {
+        CharacterArmorStand characterArmorStand = new CharacterArmorStand(player.getLocation(), getPlayerSkull(player), getItemStack(Material.LEATHER_CHESTPLATE), getItemStack(Material.LEATHER_LEGGINGS), getItemStack(Material.LEATHER_BOOTS));
         ArmorStand armorStand = characterArmorStand.getArmorStand();
         new BukkitRunnable() {
             public void run() {
-                Location petLoc = bee.getLocation();
-                petLoc.setDirection(getDifference(player, armorStand));
+                Location petLoc = armorStand.getLocation();
+                Vector difference = getDifference(player, armorStand);
+                if (difference.lengthSquared() >= 2.25) {
+                    Vector normalizedDifference = difference.normalize();
+                    petLoc.add(normalizedDifference.multiply(speed));
+                }
+                petLoc.setDirection(difference);
                 armorStand.teleport(petLoc);
-
                 armorStand.setHeadPose(new EulerAngle(getPitch(player, armorStand), 0, 0));
             }
         }.runTaskTimer(plugin, 0L, 1L);
