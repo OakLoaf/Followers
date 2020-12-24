@@ -31,6 +31,10 @@ public class Follower implements CommandExecutor {
         Player player = (Player) sender;
         World world = player.getWorld();
         Bee bee = world.spawn(player.getLocation(), Bee.class);
+        bee.setBaby();
+        bee.setSilent(true);
+        bee.setInvulnerable(true);
+        bee.setInvisible(true);
         armorStandConnector(player, bee);
         player.sendMessage(ChatColor.GREEN + "Pet Spawned.");
         movementRunnable(player, bee, false);
@@ -66,6 +70,7 @@ public class Follower implements CommandExecutor {
                 else if (location.distanceSquared(eyeLocation) > 5) {
                     Vector direction = eyeLocation.toVector().subtract(location.toVector()).normalize().multiply(-2);
                     Location newLocation = eyeLocation.add(direction);
+                    pathfinder.stopPathfinding();
                     pathfinder.moveTo(newLocation);
                 }
                 else {

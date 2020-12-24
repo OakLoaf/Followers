@@ -13,11 +13,10 @@ public class CharacterArmorStand {
         armorStand = location.getWorld().spawn(location, ArmorStand.class);
         armorStand.setBasePlate(false);
         armorStand.setArms(true);
-        armorStand.setInvulnerable(false);
+//        armorStand.setInvulnerable(true);
         armorStand.setCanPickupItems(false);
         armorStand.setGravity(false);
         armorStand.setSmall(true);
-//        armorStand.setMarker(true);
         EntityEquipment armorEquipment = armorStand.getEquipment();
         if (armorEquipment != null) {
             if (headSlot != null) armorEquipment.setHelmet(headSlot);
