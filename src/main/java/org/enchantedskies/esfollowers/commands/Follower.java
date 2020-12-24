@@ -1,10 +1,7 @@
 package org.enchantedskies.esfollowers.commands;
 
 import com.destroystokyo.paper.entity.Pathfinder;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,8 +13,14 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
+import org.bukkit.util.noise.SimplexOctaveGenerator;
 import org.enchantedskies.esfollowers.CharacterArmorStand;
 import org.enchantedskies.esfollowers.ESFollowers;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.UUID;
+import java.util.concurrent.Executors;
 
 public class Follower implements CommandExecutor {
     ESFollowers plugin = ESFollowers.getPlugin(ESFollowers.class);
@@ -54,35 +57,15 @@ public class Follower implements CommandExecutor {
                     petLoc.add(normalizedDifference.multiply(speed));
                 }
                 petLoc.setDirection(difference);
-                armorStand.teleport(petLoc);
+                armorStand.teleport(petLoc.add(0, getArmorStandYOffset(armorStand), 0));
                 armorStand.setHeadPose(new EulerAngle(getPitch(player, armorStand), 0, 0));
             }
         }.runTaskTimer(plugin, 0L, 1L);
     }
 
-    public void movementRunnable(Player player, Bee bee, boolean canFly) {
-        Pathfinder pathfinder = bee.getPathfinder();
-        pathfinder.setCanFloat(canFly);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                Location location = bee.getLocation();
-                Location eyeLocation = player.getEyeLocation();
-                if (location.distanceSquared(eyeLocation) > 225) {
-                    bee.teleport(player);
-                    pathfinder.stopPathfinding();
-                }
-                else if (location.distanceSquared(eyeLocation) > 5) {
-                    Vector direction = eyeLocation.toVector().subtract(location.toVector()).normalize().multiply(-2);
-                    Location newLocation = eyeLocation.add(direction);
-                    pathfinder.stopPathfinding();
-                    pathfinder.moveTo(newLocation);
-                }
-                else {
-                    pathfinder.stopPathfinding();
-                }
-            }
-        }.runTaskTimer(plugin, 0L, 4L);
+    public double getArmorStandYOffset(ArmorStand armorStand) {
+        double y = (Math.PI / 240) * Math.sin(((double) 1/60) * Math.PI * (Bukkit.getCurrentTick() + armorStand.getEntityId()));
+        return y;
     }
 
     public Vector getDifference(Player player, ArmorStand armorStand) {

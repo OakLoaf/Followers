@@ -28,20 +28,4 @@ public class PetUserEvents implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPathfind(EntityPathfindEvent e) {
-        if (e.getEntity() instanceof Bee) {
-
-            Bee bee = (Bee) e.getEntity();
-            Pathfinder pathfinder = bee.getPathfinder();
-            pathfinder.setCanFloat(true);
-            Player player = Bukkit.getPlayer("Xemor_");
-            if (player == null) return;
-            if (player.equals(e.getTargetEntity())) return;
-            if (player.getLocation().distanceSquared(bee.getLocation()) < 100) {
-                pathfinder.moveTo(player);
-            }
-        }
-    }
-
 }
