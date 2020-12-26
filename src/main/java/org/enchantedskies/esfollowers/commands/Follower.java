@@ -1,5 +1,7 @@
 package org.enchantedskies.esfollowers.commands;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -33,7 +35,7 @@ public class Follower implements CommandExecutor {
     }
 
     public void petMovement(Player player, double speed) {
-        CharacterArmorStand characterArmorStand = new CharacterArmorStand(player.getLocation(), getPlayerSkull(UUID.fromString("04557d52-6c3f-4053-b86c-5067d2720931")), getColouredArmour(Material.LEATHER_CHESTPLATE, "#9D9D97"), getColouredArmour(Material.LEATHER_LEGGINGS, "#897362"), getColouredArmour(Material.LEATHER_BOOTS, "#B02E26"));
+        CharacterArmorStand characterArmorStand = new CharacterArmorStand(player.getLocation(), getPlayerSkull(player.getUniqueId()), getColouredArmour(Material.LEATHER_CHESTPLATE, "#7BC28E"), getColouredArmour(Material.LEATHER_LEGGINGS, "#7BC28E"), getColouredArmour(Material.LEATHER_BOOTS, "#7BC28E"));
         ArmorStand armorStand = characterArmorStand.getArmorStand();
         new BukkitRunnable() {
             public void run() {
@@ -85,15 +87,6 @@ public class Follower implements CommandExecutor {
         }
     }
 
-    public ItemStack getPlayerSkull(Player player) {
-        ItemStack skullItem = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta skullMeta = (SkullMeta) skullItem.getItemMeta();
-        if (skullMeta == null) return skullItem;
-        skullMeta.setOwningPlayer(player);
-        skullItem.setItemMeta(skullMeta);
-        return skullItem;
-    }
-
     public ItemStack getPlayerSkull(UUID uuid) {
         ItemStack skullItem = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) skullItem.getItemMeta();
@@ -101,6 +94,18 @@ public class Follower implements CommandExecutor {
         skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
         skullItem.setItemMeta(skullMeta);
         return skullItem;
+    }
+
+    public ItemStack getCustomSkull(String texture) {
+        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+        skullMeta.setPlayerProfile(Bukkit.createProfile(UUID.randomUUID(), null));
+        PlayerProfile playerProfile = skullMeta.getPlayerProfile();
+        if (playerProfile == null) return skull;
+        playerProfile.getProperties().add(new ProfileProperty("textures", texture));
+        skullMeta.setPlayerProfile(playerProfile);
+        skull.setItemMeta(skullMeta);
+        return skull;
     }
 
     public ItemStack getColouredArmour(Material material, String hexColour) {
