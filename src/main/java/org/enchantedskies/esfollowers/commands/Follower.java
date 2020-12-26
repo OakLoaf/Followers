@@ -14,13 +14,15 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
-import org.enchantedskies.esfollowers.CharacterArmorStand;
+import org.enchantedskies.esfollowers.PetArmorStand;
 import org.enchantedskies.esfollowers.ESFollowers;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 public class Follower implements CommandExecutor {
     ESFollowers plugin = ESFollowers.getPlugin(ESFollowers.class);
+    public static HashMap<Player, PetArmorStand> playerPetSet = new HashMap<>();
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) {
@@ -29,14 +31,19 @@ public class Follower implements CommandExecutor {
             return true;
         }
         Player player = (Player) sender;
-        petMovement(player, 0.4);
+        if (playerPetSet.containsKey(player)) {
+            player.sendMessage(ChatColor.RED + "You already have a pet spawned.");
+            return true;
+        }
+        PetArmorStand petArmorStand = new PetArmorStand(player.getLocation(), getPlayerSkull(player.getUniqueId()), getColouredArmour(Material.LEATHER_CHESTPLATE, "#7BC28E"), getColouredArmour(Material.LEATHER_LEGGINGS, "#7BC28E"), getColouredArmour(Material.LEATHER_BOOTS, "#7BC28E"));
+        petMovement(petArmorStand, player, 0.4);
+        playerPetSet.put(player, petArmorStand);
         player.sendMessage(ChatColor.GREEN + "Pet Spawned.");
         return true;
     }
 
-    public void petMovement(Player player, double speed) {
-        CharacterArmorStand characterArmorStand = new CharacterArmorStand(player.getLocation(), getPlayerSkull(player.getUniqueId()), getColouredArmour(Material.LEATHER_CHESTPLATE, "#7BC28E"), getColouredArmour(Material.LEATHER_LEGGINGS, "#7BC28E"), getColouredArmour(Material.LEATHER_BOOTS, "#7BC28E"));
-        ArmorStand armorStand = characterArmorStand.getArmorStand();
+    public void petMovement(PetArmorStand petArmorStand, Player player, double speed) {
+        ArmorStand armorStand = petArmorStand.getArmorStand();
         new BukkitRunnable() {
             public void run() {
                 Location petLoc = armorStand.getLocation();

@@ -1,22 +1,27 @@
 package org.enchantedskies.esfollowers;
 
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;;
 
-public class CharacterArmorStand {
+public class PetArmorStand {
     private final ArmorStand armorStand;
 
-    public CharacterArmorStand(Location location, ItemStack headSlot, ItemStack chestSlot, ItemStack legsSlot, ItemStack feetSlot) {
+    public PetArmorStand(Location location, ItemStack headSlot, ItemStack chestSlot, ItemStack legsSlot, ItemStack feetSlot) {
         armorStand = location.getWorld().spawn(location, ArmorStand.class);
         armorStand.setBasePlate(false);
         armorStand.setArms(true);
-//        armorStand.setInvulnerable(true);
+        armorStand.setInvulnerable(true);
         armorStand.setCanPickupItems(false);
         armorStand.setGravity(false);
         armorStand.setSmall(true);
+
+        armorStand.getPersistentDataContainer().set(ESFollowers.petKey, PersistentDataType.STRING, "i_am_pet");
+
         EntityEquipment armorEquipment = armorStand.getEquipment();
         if (armorEquipment != null) {
             if (headSlot != null) armorEquipment.setHelmet(headSlot);

@@ -1,15 +1,14 @@
 package org.enchantedskies.esfollowers.events;
 
-import com.destroystokyo.paper.entity.Pathfinder;
-import com.destroystokyo.paper.event.entity.EntityPathfindEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.Particle;
-import org.bukkit.entity.Bee;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.enchantedskies.esfollowers.ESFollowers;
+import org.enchantedskies.esfollowers.commands.Follower;
 
 public class PetUserEvents implements Listener {
     ESFollowers plugin;
@@ -18,14 +17,17 @@ public class PetUserEvents implements Listener {
 
     @EventHandler
     public void onClick(PlayerInteractEntityEvent event) {
-        if (event.getRightClicked().getCustomName() == null)
-            return;
-        if (event.getRightClicked().getCustomName().contains(event.getPlayer().getName() + "'s Pet")) {
-            event.getRightClicked().remove();
-            event.getPlayer().getWorld().spawnParticle(Particle.EXPLOSION_HUGE,
-                event.getPlayer().getLocation().getX(), event.getPlayer().getLocation().getY(),
-                event.getPlayer().getLocation().getZ(), 0);
-        }
+        Entity entity = event.getRightClicked();
+        Player player = event.getPlayer();
+        if (entity.getType() == EntityType.ARMOR_STAND) return;
+        if (entity != Follower.playerPetSet.get(player).getArmorStand()) return;
+        player.sendMessage("Interacted with your pet.");
     }
 
+    @EventHandler
+    public void onPlayerDisconnect(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        Follower.playerPetSet.get(player).getArmorStand().setHealth(0);
+        Follower.playerPetSet.remove(player);
+    }
 }
