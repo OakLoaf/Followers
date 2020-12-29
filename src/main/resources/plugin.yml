@@ -5,5 +5,5 @@ api-version: 1.16
 authors: [Dav_e_]
 commands:
   follower:
-    description: Spawns user's pet
+    description: Spawns user's follower
     usage: /follower

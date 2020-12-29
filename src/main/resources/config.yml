@@ -1,0 +1,29 @@
+#####################
+#     Followers     #
+#####################
+
+# Follower Name
+notch:
+  # Head: Data for head slot
+  Head:
+    # Material: Material for head slot
+    Material: player_head
+    # SkullType: Default/Custom, Default is a minecraft user's head, Custom allows for Skull Textures
+    SkullType: Default
+    # UUID: Only applicable for  Default SkullType, player uuid of skull.
+    UUID: Notch
+    # Texture: Only applicable for Custom SkullType, texture id of skull.
+    # Texture: textureGoesHere
+  # Chest: Data for chest slot
+  Chest:
+    Material: leather_chestplate
+    # Color: Only applicable for leather armour, hex value not including the '#'
+    Color: 9D9D97
+  # Legs: Data for legs slot
+  Legs:
+    Material: leather_leggings
+    Color: 897362
+  # Feet: Data for feet slot
+  Feet:
+    Material: leather_boots
+    Color: B02E26
