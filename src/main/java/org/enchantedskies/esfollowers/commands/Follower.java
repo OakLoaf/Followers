@@ -36,7 +36,7 @@ public class Follower implements CommandExecutor {
             followerArmorStand = new FollowerArmorStand(plugin, args[0], player);
         } else {
             // open follower gui
-            return true;
+            followerArmorStand = new FollowerArmorStand(plugin, "notch", player);
         }
 
 //        followerArmorStand.setHeadSlot(getPlayerSkull(player.getUniqueId()));

@@ -11,13 +11,13 @@ notch:
     # SkullType: Default/Custom, Default is a minecraft user's head, Custom allows for Skull Textures
     SkullType: Default
     # UUID: Only applicable for  Default SkullType, player uuid of skull.
-    UUID: Notch
+    UUID: 069a79f4-44e9-4726-a5be-fca90e38aaf5
     # Texture: Only applicable for Custom SkullType, texture id of skull.
     # Texture: textureGoesHere
   # Chest: Data for chest slot
   Chest:
     Material: leather_chestplate
-    # Color: Only applicable for leather armour, hex value not including the '#'
+    # Color: Only applicable for leather armour, hex value NOT including the '#'
     Color: 9D9D97
   # Legs: Data for legs slot
   Legs:
@@ -27,3 +27,6 @@ notch:
   Feet:
     Material: leather_boots
     Color: B02E26
+  # Hand: Data for hand slot
+  Hand:
+    Material: golden_apple

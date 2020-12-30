@@ -2,10 +2,9 @@ package org.enchantedskies.esfollowers;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
@@ -24,9 +23,11 @@ import java.util.UUID;
 public class FollowerArmorStand {
     private final ESFollowers plugin;
     private final ArmorStand armorStand;
+    private final FileConfiguration config;
 
     public FollowerArmorStand(ESFollowers instance, String followerName, Player owner) {
         plugin = instance;
+        config = plugin.getConfig();
         armorStand = owner.getLocation().getWorld().spawn(owner.getLocation(), ArmorStand.class);
         armorStand.setBasePlate(false);
         armorStand.setArms(true);
@@ -35,13 +36,9 @@ public class FollowerArmorStand {
         armorStand.setSmall(true);
         armorStand.getPersistentDataContainer().set(ESFollowers.followerKey, PersistentDataType.STRING, owner.getUniqueId().toString());
 
-//        EntityEquipment armorEquipment = armorStand.getEquipment();
-//        if (armorEquipment != null) {
-//            if (headSlot != null) armorEquipment.setHelmet(headSlot);
-//            if (chestSlot != null) armorEquipment.setChestplate(chestSlot);
-//            if (legsSlot != null) armorEquipment.setLeggings(legsSlot);
-//            if (feetSlot != null) armorEquipment.setBoots(feetSlot);
-//        }
+        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
+            setFollowerArmorSlot(equipmentSlot, followerName);
+        }
 
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
             for (ArmorStand.LockType lockType : ArmorStand.LockType.values()) {
@@ -111,11 +108,8 @@ public class FollowerArmorStand {
                 double headPoseX = eulerToDegree(armorStand.getHeadPose().getX());
                 EulerAngle newHeadPoseX = new EulerAngle(getPitch(player, armorStand), 0, 0);
                 if (headPoseX > 60 && headPoseX < 290) {
-                    if (headPoseX <= 175) {
-                        newHeadPoseX.setX(60D);
-                    } else {
-                        newHeadPoseX.setX(290D);
-                    }
+                    if (headPoseX <= 175) newHeadPoseX.setX(60D);
+                    else newHeadPoseX.setX(290D);
                 }
                 armorStand.setHeadPose(newHeadPoseX);
             }
@@ -125,6 +119,41 @@ public class FollowerArmorStand {
 
     // Private functions
 
+    private void setFollowerArmorSlot(EquipmentSlot equipmentSlot, String followerName) {
+        ConfigurationSection configSection = config.getConfigurationSection(followerName + "." + makeFriendly(equipmentSlot.name()));
+        if (configSection == null) return;
+        EntityEquipment armorEquipment = armorStand.getEquipment();
+        if (armorEquipment == null) return;
+        String materialStr = configSection.getString("Material", "");
+        Material material = Material.getMaterial(materialStr.toUpperCase());
+        if (material == null) return;
+        if (equipmentSlot == EquipmentSlot.HEAD && material == Material.PLAYER_HEAD) {
+            ItemStack skullItem = getItemStack(material);
+            String skullType = configSection.getString("SkullType", "");
+            if (skullType.toLowerCase().equals("custom")) {
+                String skullTexture = configSection.getString("Texture", "");
+                if (!skullTexture.equals("")) skullItem = getCustomSkull(skullTexture);
+            } else {
+                String skullUUID = configSection.getString("UUID", "");
+                if (!skullUUID.equals("")) skullItem = getPlayerSkull(UUID.fromString(skullUUID));
+            }
+            armorEquipment.setItem(equipmentSlot, skullItem);
+            return;
+        }
+        if (getItemStack(material).getItemMeta() instanceof LeatherArmorMeta) {
+            ItemStack armorItem = getItemStack(material);
+            String color = configSection.getString("Color", "");
+            if (!color.equals("")) armorItem = getColouredArmour(material, color);
+            armorEquipment.setItem(equipmentSlot, armorItem);
+            return;
+        }
+        armorEquipment.setItem(equipmentSlot, getItemStack(material));
+    }
+
+    private String makeFriendly(String string) {
+        return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
+    }
+
     private ItemStack getItemStack(Material material) {
         return new ItemStack(material);
     }
@@ -133,7 +162,9 @@ public class FollowerArmorStand {
         ItemStack skullItem = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) skullItem.getItemMeta();
         if (skullMeta == null) return skullItem;
-        skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
+        PlayerProfile playerProfile = Bukkit.createProfile(uuid);
+        playerProfile.complete();
+        skullMeta.setPlayerProfile(playerProfile);
         skullItem.setItemMeta(skullMeta);
         return skullItem;
     }
@@ -155,9 +186,9 @@ public class FollowerArmorStand {
         ItemMeta itemMeta = item.getItemMeta();
         if (!(itemMeta instanceof LeatherArmorMeta)) return item;
         LeatherArmorMeta armorMeta = (LeatherArmorMeta) item.getItemMeta();
-        int red = Integer.valueOf(hexColour.substring(1, 3), 16);
-        int green = Integer.valueOf(hexColour.substring(3, 5), 16);
-        int blue = Integer.valueOf(hexColour.substring(5, 7), 16);
+        int red = Integer.valueOf(hexColour.substring(0, 2), 16);
+        int green = Integer.valueOf(hexColour.substring(2, 4), 16);
+        int blue = Integer.valueOf(hexColour.substring(4, 6), 16);
         armorMeta.setColor(Color.fromRGB(red, green, blue));
         item.setItemMeta(armorMeta);
         return item;
