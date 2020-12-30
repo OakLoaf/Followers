@@ -130,14 +130,14 @@ public class FollowerArmorStand {
         if (material == null) return;
         if (equipmentSlot == EquipmentSlot.HEAD && material == Material.PLAYER_HEAD) {
             String skullType = configSection.getString("SkullType", "");
-            if (skullType.toLowerCase().equals("custom")) {
-                ItemStack skullItem = null;
+            if (skullType.equalsIgnoreCase("custom")) {
+                ItemStack skullItem = new ItemStack(material);
                 String skullTexture = configSection.getString("Texture", "");
                 if (!skullTexture.equals("")) skullItem = getCustomSkull(skullTexture);
                 armorEquipment.setItem(equipmentSlot, skullItem);
             } else {
                 String skullUUID = configSection.getString("UUID", "");
-                getPlayerSkull(UUID.fromString(skullUUID)).whenComplete((itemStack, exception) -> armorEquipment.setItem(equipmentSlot, itemStack));
+                getPlayerSkull(UUID.fromString(skullUUID)).thenAccept(itemStack -> Bukkit.getScheduler().runTask(plugin, runnable -> armorEquipment.setItem(equipmentSlot, itemStack)));
                 return;
             }
         }
