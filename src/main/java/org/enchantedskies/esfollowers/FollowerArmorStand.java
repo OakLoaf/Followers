@@ -19,6 +19,7 @@ import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class FollowerArmorStand {
     private final ESFollowers plugin;
@@ -128,45 +129,48 @@ public class FollowerArmorStand {
         Material material = Material.getMaterial(materialStr.toUpperCase());
         if (material == null) return;
         if (equipmentSlot == EquipmentSlot.HEAD && material == Material.PLAYER_HEAD) {
-            ItemStack skullItem = getItemStack(material);
             String skullType = configSection.getString("SkullType", "");
             if (skullType.toLowerCase().equals("custom")) {
+                ItemStack skullItem = null;
                 String skullTexture = configSection.getString("Texture", "");
                 if (!skullTexture.equals("")) skullItem = getCustomSkull(skullTexture);
+                armorEquipment.setItem(equipmentSlot, skullItem);
             } else {
                 String skullUUID = configSection.getString("UUID", "");
-                if (!skullUUID.equals("")) skullItem = getPlayerSkull(UUID.fromString(skullUUID));
+                getPlayerSkull(UUID.fromString(skullUUID)).whenComplete((itemStack, exception) -> armorEquipment.setItem(equipmentSlot, itemStack));
+                return;
             }
-            armorEquipment.setItem(equipmentSlot, skullItem);
-            return;
         }
-        if (getItemStack(material).getItemMeta() instanceof LeatherArmorMeta) {
-            ItemStack armorItem = getItemStack(material);
+        ItemStack item = new ItemStack(material);
+        if (item.getItemMeta() instanceof LeatherArmorMeta) {
             String color = configSection.getString("Color", "");
-            if (!color.equals("")) armorItem = getColouredArmour(material, color);
-            armorEquipment.setItem(equipmentSlot, armorItem);
+            item = getColouredArmour(material, color);
+            armorEquipment.setItem(equipmentSlot, item);
             return;
         }
-        armorEquipment.setItem(equipmentSlot, getItemStack(material));
+        armorEquipment.setItem(equipmentSlot, item);
     }
 
     private String makeFriendly(String string) {
         return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
     }
 
-    private ItemStack getItemStack(Material material) {
-        return new ItemStack(material);
-    }
 
-    private ItemStack getPlayerSkull(UUID uuid) {
-        ItemStack skullItem = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta skullMeta = (SkullMeta) skullItem.getItemMeta();
-        if (skullMeta == null) return skullItem;
-        PlayerProfile playerProfile = Bukkit.createProfile(uuid);
-        playerProfile.complete();
-        skullMeta.setPlayerProfile(playerProfile);
-        skullItem.setItemMeta(skullMeta);
-        return skullItem;
+    private CompletableFuture<ItemStack> getPlayerSkull(UUID uuid) {
+        CompletableFuture<ItemStack> futureItemStack = new CompletableFuture<>();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                ItemStack skullItem = new ItemStack(Material.PLAYER_HEAD);
+                SkullMeta skullMeta = (SkullMeta) skullItem.getItemMeta();
+                PlayerProfile playerProfile = Bukkit.createProfile(uuid);
+                playerProfile.complete();
+                skullMeta.setPlayerProfile(playerProfile);
+                skullItem.setItemMeta(skullMeta);
+                futureItemStack.complete(skullItem);
+            }
+        }.runTaskAsynchronously(plugin);
+        return futureItemStack;
     }
 
     private ItemStack getCustomSkull(String texture) {
