@@ -18,6 +18,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -50,30 +51,6 @@ public class FollowerArmorStand {
 
     public ArmorStand getArmorStand() {
         return armorStand;
-    }
-
-    public void setHeadSlot( ItemStack item) {
-        EntityEquipment followerEquipment = armorStand.getEquipment();
-        if (followerEquipment == null ) return;
-        followerEquipment.setHelmet(item);
-    }
-
-    public void setChestSlot( ItemStack item) {
-        EntityEquipment followerEquipment = armorStand.getEquipment();
-        if (followerEquipment == null ) return;
-        followerEquipment.setChestplate(item);
-    }
-
-    public void setLegsSlot( ItemStack item) {
-        EntityEquipment followerEquipment = armorStand.getEquipment();
-        if (followerEquipment == null ) return;
-        followerEquipment.setLeggings(item);
-    }
-
-    public void setFeetSlot( ItemStack item) {
-        EntityEquipment followerEquipment = armorStand.getEquipment();
-        if (followerEquipment == null ) return;
-        followerEquipment.setBoots(item);
     }
 
     public void startMovement(double speed) {
@@ -129,21 +106,21 @@ public class FollowerArmorStand {
         Material material = Material.getMaterial(materialStr.toUpperCase());
         if (material == null) return;
         if (equipmentSlot == EquipmentSlot.HEAD && material == Material.PLAYER_HEAD) {
-            String skullType = configSection.getString("SkullType", "");
+            String skullType = configSection.getString("SkullType");
             if (skullType.equalsIgnoreCase("custom")) {
                 ItemStack skullItem = new ItemStack(material);
-                String skullTexture = configSection.getString("Texture", "");
-                if (!skullTexture.equals("")) skullItem = getCustomSkull(skullTexture);
+                String skullTexture = configSection.getString("Texture");
+                if (skullTexture != null) skullItem = getCustomSkull(skullTexture);
                 armorEquipment.setItem(equipmentSlot, skullItem);
             } else {
-                String skullUUID = configSection.getString("UUID", "");
+                String skullUUID = configSection.getString("UUID");
                 getPlayerSkull(UUID.fromString(skullUUID)).thenAccept(itemStack -> Bukkit.getScheduler().runTask(plugin, runnable -> armorEquipment.setItem(equipmentSlot, itemStack)));
                 return;
             }
         }
         ItemStack item = new ItemStack(material);
         if (item.getItemMeta() instanceof LeatherArmorMeta) {
-            String color = configSection.getString("Color", "");
+            String color = configSection.getString("Color");
             item = getColouredArmour(material, color);
             armorEquipment.setItem(equipmentSlot, item);
             return;
@@ -176,10 +153,10 @@ public class FollowerArmorStand {
     private ItemStack getCustomSkull(String texture) {
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-        skullMeta.setPlayerProfile(Bukkit.createProfile(UUID.randomUUID(), null));
-        PlayerProfile playerProfile = skullMeta.getPlayerProfile();
-        if (playerProfile == null) return skull;
-        playerProfile.getProperties().add(new ProfileProperty("textures", texture));
+        PlayerProfile playerProfile = Bukkit.createProfile(UUID.randomUUID(), null);
+        Set<ProfileProperty> profileProperties = playerProfile.getProperties();
+        profileProperties.add(new ProfileProperty("textures", texture));
+        playerProfile.setProperties(profileProperties);
         skullMeta.setPlayerProfile(playerProfile);
         skull.setItemMeta(skullMeta);
         return skull;
