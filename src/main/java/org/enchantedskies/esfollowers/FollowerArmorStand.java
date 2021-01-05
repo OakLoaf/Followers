@@ -26,10 +26,13 @@ public class FollowerArmorStand {
     private final ESFollowers plugin;
     private final ArmorStand armorStand;
     private final FileConfiguration config;
+    private String followerName;
 
     public FollowerArmorStand(ESFollowers instance, String followerName, Player owner) {
         plugin = instance;
         config = plugin.getConfig();
+        this.followerName = followerName;
+
         armorStand = owner.getLocation().getWorld().spawn(owner.getLocation(), ArmorStand.class);
         armorStand.setBasePlate(false);
         armorStand.setArms(true);
@@ -37,6 +40,7 @@ public class FollowerArmorStand {
         armorStand.setCanPickupItems(false);
         armorStand.setSmall(true);
         armorStand.getPersistentDataContainer().set(ESFollowers.followerKey, PersistentDataType.STRING, owner.getUniqueId().toString());
+
 
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
             setFollowerArmorSlot(equipmentSlot, followerName);
@@ -51,6 +55,19 @@ public class FollowerArmorStand {
 
     public ArmorStand getArmorStand() {
         return armorStand;
+    }
+
+    public void changeFollower(String newFollowerName) {
+        this.followerName = newFollowerName;
+        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
+            setFollowerArmorSlot(equipmentSlot, newFollowerName);
+        }
+    }
+
+    public void reloadInventory() {
+        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
+            setFollowerArmorSlot(equipmentSlot, followerName);
+        }
     }
 
     public void startMovement(double speed) {
@@ -98,6 +115,15 @@ public class FollowerArmorStand {
     // Private functions
 
     private void setFollowerArmorSlot(EquipmentSlot equipmentSlot, String followerName) {
+        boolean foundName = false;
+        for (String currName : config.getKeys(false)) {
+            if (followerName.equalsIgnoreCase(currName)) {
+                followerName = currName;
+                foundName = true;
+                break;
+            }
+        }
+        if (!foundName) return;
         ConfigurationSection configSection = config.getConfigurationSection(followerName + "." + makeFriendly(equipmentSlot.name()));
         if (configSection == null) return;
         EntityEquipment armorEquipment = armorStand.getEquipment();
@@ -115,8 +141,8 @@ public class FollowerArmorStand {
             } else {
                 String skullUUID = configSection.getString("UUID");
                 getPlayerSkull(UUID.fromString(skullUUID)).thenAccept(itemStack -> Bukkit.getScheduler().runTask(plugin, runnable -> armorEquipment.setItem(equipmentSlot, itemStack)));
-                return;
             }
+            return;
         }
         ItemStack item = new ItemStack(material);
         if (item.getItemMeta() instanceof LeatherArmorMeta) {
@@ -131,7 +157,6 @@ public class FollowerArmorStand {
     private String makeFriendly(String string) {
         return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
     }
-
 
     private CompletableFuture<ItemStack> getPlayerSkull(UUID uuid) {
         CompletableFuture<ItemStack> futureItemStack = new CompletableFuture<>();
@@ -153,7 +178,7 @@ public class FollowerArmorStand {
     private ItemStack getCustomSkull(String texture) {
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-        PlayerProfile playerProfile = Bukkit.createProfile(UUID.randomUUID(), null);
+        PlayerProfile playerProfile = Bukkit.createProfile(UUID.randomUUID());
         Set<ProfileProperty> profileProperties = playerProfile.getProperties();
         profileProperties.add(new ProfileProperty("textures", texture));
         playerProfile.setProperties(profileProperties);

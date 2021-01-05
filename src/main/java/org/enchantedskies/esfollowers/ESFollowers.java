@@ -15,19 +15,22 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.enchantedskies.esfollowers.commands.Follower;
 import org.enchantedskies.esfollowers.datamanager.DataManager;
+import org.enchantedskies.esfollowers.events.FollowerGUIEvents;
 import org.enchantedskies.esfollowers.events.FollowerUserEvents;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.UUID;
 
 public final class ESFollowers extends JavaPlugin implements Listener {
     public static NamespacedKey followerKey;
-    public static DataManager dataManager;
+    public static DataManager dataManager   ;
     private final HashMap<UUID, UUID> playerFollowerMap = new HashMap<>();
     private final HashMap<String, PlayerProfile> followerSkullMap = new HashMap<>();
-    Listener[] listeners = new Listener[] {this, new FollowerUserEvents(playerFollowerMap)};
+    private final HashSet<UUID> guiPlayerSet = new HashSet<>();
+    Listener[] listeners = new Listener[] {this, new FollowerUserEvents(playerFollowerMap), new FollowerGUIEvents(guiPlayerSet)};
 
     @Override
     public void onEnable() {
@@ -39,7 +42,7 @@ public final class ESFollowers extends JavaPlugin implements Listener {
         FileConfiguration config = getConfig();
 
         registerEvents(listeners);
-        getCommand("follower").setExecutor(new Follower(this, playerFollowerMap));
+        getCommand("follower").setExecutor(new Follower(this, playerFollowerMap, guiPlayerSet));
 
         for (World world : Bukkit.getWorlds()) {
             for (Chunk chunk : world.getLoadedChunks()) {
