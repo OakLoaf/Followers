@@ -21,12 +21,11 @@ import java.util.concurrent.CompletableFuture;
 public class FollowerGUI {
     private final Inventory inventory;
     private final ESFollowers plugin;
-    private final FileConfiguration config;
     private final HashSet<UUID> playerSet;
 
     public FollowerGUI(ESFollowers instance, HashSet<UUID> playerSet) {
         plugin = instance;
-        config = plugin.getConfig();
+        FileConfiguration config = plugin.getConfig();
         this.playerSet = playerSet;
         inventory = Bukkit.createInventory(null, 54, "Followers");
         ItemStack empty = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
@@ -47,7 +46,7 @@ public class FollowerGUI {
             if (material == null) continue;
             ItemStack item = new ItemStack(material);
             if (material == Material.PLAYER_HEAD) {
-                String skullType = configSection.getString("SkullType");
+                String skullType = configSection.getString("SkullType", "");
                 if (skullType.equalsIgnoreCase("custom")) {
                     String skullTexture = configSection.getString("Texture");
                     if (skullTexture != null) item = getCustomSkull(skullTexture);

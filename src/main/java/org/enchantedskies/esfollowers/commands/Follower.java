@@ -9,6 +9,7 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -16,12 +17,10 @@ import org.enchantedskies.esfollowers.FollowerArmorStand;
 import org.enchantedskies.esfollowers.ESFollowers;
 import org.enchantedskies.esfollowers.FollowerGUI;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class Follower implements CommandExecutor {
+public class Follower implements CommandExecutor, TabCompleter {
     private final ESFollowers plugin;
     private final HashMap<UUID, UUID> playerFollowerMap;
     private final HashSet<UUID> playerSet;
@@ -39,6 +38,13 @@ public class Follower implements CommandExecutor {
             return true;
         }
         Player player = (Player) sender;
+        if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("reload")) {
+                plugin.reloadConfig();
+                player.sendMessage(ChatColor.GREEN + "ESFollowers has been reloaded.");
+                return true;
+            }
+        }
         FollowerGUI followerInv = new FollowerGUI(plugin, playerSet);
         followerInv.openInventory(player);
         return true;
@@ -92,5 +98,30 @@ public class Follower implements CommandExecutor {
 //        playerFollowerMap.put(player.getUniqueId(), followerArmorStand.getArmorStand().getUniqueId());
 //        player.sendMessage(ChatColor.GREEN + "Follower Spawned.");
 //        return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String label, String[] args) {
+
+        List<String> tabComplete = new ArrayList<>();
+        List<String> wordCompletion = new ArrayList<>();
+        boolean wordCompletionSuccess = false;
+
+        if (args.length == 1) {
+            tabComplete.add("help");
+            if (commandSender.hasPermission("followers.admin") || commandSender.isOp()) {
+                tabComplete.add("reload");
+            }
+        }
+
+        for (String currTab : tabComplete) {
+            int currArg = args.length - 1;
+            if (currTab.startsWith(args[currArg])) {
+                wordCompletion.add(currTab);
+                wordCompletionSuccess = true;
+            }
+        }
+        if (wordCompletionSuccess) return wordCompletion;
+        return tabComplete;
     }
 }
