@@ -3,6 +3,7 @@ version: ${project.version}
 main: org.enchantedskies.esfollowers.ESFollowers
 api-version: 1.16
 authors: [Dav_e_]
+softdepend: [Essentials]
 commands:
   follower:
     description: Opens follower GUI

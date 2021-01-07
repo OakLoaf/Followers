@@ -15,6 +15,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.enchantedskies.esfollowers.commands.Follower;
 import org.enchantedskies.esfollowers.datamanager.DataManager;
+import org.enchantedskies.esfollowers.events.FollowerEvents;
 import org.enchantedskies.esfollowers.events.FollowerGUIEvents;
 import org.enchantedskies.esfollowers.events.FollowerUserEvents;
 
@@ -30,7 +31,12 @@ public final class ESFollowers extends JavaPlugin implements Listener {
     private final HashMap<UUID, UUID> playerFollowerMap = new HashMap<>();
     private final HashMap<String, PlayerProfile> followerSkullMap = new HashMap<>();
     private final HashSet<UUID> guiPlayerSet = new HashSet<>();
-    Listener[] listeners = new Listener[] {this, new FollowerUserEvents(playerFollowerMap), new FollowerGUIEvents(guiPlayerSet)};
+    Listener[] listeners = new Listener[] {
+        this,
+        new FollowerUserEvents(playerFollowerMap),
+        new FollowerGUIEvents(guiPlayerSet),
+        new FollowerEvents(this, playerFollowerMap)
+    };
 
     @Override
     public void onEnable() {
