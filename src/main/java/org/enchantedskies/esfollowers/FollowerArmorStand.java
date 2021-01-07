@@ -40,8 +40,7 @@ public class FollowerArmorStand {
         armorStand.setCanPickupItems(false);
         armorStand.setSmall(true);
         armorStand.getPersistentDataContainer().set(ESFollowers.followerKey, PersistentDataType.STRING, owner.getUniqueId().toString());
-
-
+        
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
             setFollowerArmorSlot(equipmentSlot, followerName);
         }
@@ -51,6 +50,14 @@ public class FollowerArmorStand {
                 armorStand.addEquipmentLock(equipmentSlot, lockType);
             }
         }
+    }
+
+    public FollowerArmorStand(ESFollowers instance, String followerName, ArmorStand armorStand) {
+        plugin = instance;
+        config = plugin.getConfig();
+        this.followerName = followerName;
+        this.armorStand = armorStand;
+        changeFollower(followerName);
     }
 
     public ArmorStand getArmorStand() {

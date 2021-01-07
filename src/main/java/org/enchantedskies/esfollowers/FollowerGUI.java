@@ -3,6 +3,7 @@ package org.enchantedskies.esfollowers;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -21,12 +22,12 @@ import java.util.concurrent.CompletableFuture;
 public class FollowerGUI {
     private final Inventory inventory;
     private final ESFollowers plugin;
-    private final HashSet<UUID> playerSet;
+    private final HashSet<UUID> openInvPlayerSet;
 
-    public FollowerGUI(ESFollowers instance, HashSet<UUID> playerSet) {
+    public FollowerGUI(ESFollowers instance, Player player, HashSet<UUID> playerSet) {
         plugin = instance;
         FileConfiguration config = plugin.getConfig();
-        this.playerSet = playerSet;
+        this.openInvPlayerSet = playerSet;
         inventory = Bukkit.createInventory(null, 54, "Followers");
         ItemStack empty = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta emptyMeta = empty.getItemMeta();
@@ -38,6 +39,7 @@ public class FollowerGUI {
         }
         int i = 8;
         for (String followerName : config.getKeys(false)) {
+            if (!player.hasPermission("followers." + followerName.toLowerCase())) continue;
             i += 1;
             ConfigurationSection configSection = config.getConfigurationSection(followerName + ".Head");
             if (configSection == null) continue;
@@ -63,14 +65,14 @@ public class FollowerGUI {
                 }
             }
             ItemMeta itemMeta = item.getItemMeta();
-            itemMeta.setDisplayName("§e" + followerName);
+            itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&e" + followerName));
             item.setItemMeta(itemMeta);
             inventory.setItem(i, item);
         }
     }
 
     public void openInventory(Player player) {
-        playerSet.add(player.getUniqueId());
+        openInvPlayerSet.add(player.getUniqueId());
         player.openInventory(inventory);
     }
 

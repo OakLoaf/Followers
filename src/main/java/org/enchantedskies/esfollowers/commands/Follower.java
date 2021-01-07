@@ -40,18 +40,21 @@ public class Follower implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("reload")) {
+                if (!player.hasPermission("followers.admin")) {
+                    sender.sendMessage("§8§l[§d§lES§8§l] §7You have insufficient permissions.");
+                    return true;
+                }
                 plugin.reloadConfig();
                 player.sendMessage(ChatColor.GREEN + "ESFollowers has been reloaded.");
                 return true;
             }
         }
-        FollowerGUI followerInv = new FollowerGUI(plugin, playerSet);
+        FollowerGUI followerInv = new FollowerGUI(plugin, player, playerSet);
         followerInv.openInventory(player);
         return true;
 
-//        FollowerArmorStand followerArmorStand;
-//        if (args.length == 1) {
-//            if (args[0].equalsIgnoreCase("gettexture")) {
+//            Get Texture Code:
+//
 //                ItemStack item = player.getInventory().getItemInMainHand();
 //                if (item.getType() != Material.PLAYER_HEAD) {
 //                    sender.sendMessage("§cThat is not a player skull.");
@@ -75,24 +78,6 @@ public class Follower implements CommandExecutor, TabCompleter {
 //                message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§eClick to save to Clipboard!")));
 //                player.sendMessage(message);
 //                return true;
-//            } else if (args[0].equalsIgnoreCase("reload")) {
-//                plugin.reloadConfig();
-//                player.sendMessage(ChatColor.GREEN + "Plugin has been reloaded.");
-//                return true;
-//            }
-//            if (playerFollowerMap.containsKey(player.getUniqueId())) {
-//                player.sendMessage(ChatColor.RED + "You already have a follower spawned.");
-//                return true;
-//            }
-//            followerArmorStand = new FollowerArmorStand(plugin, args[0], player);
-//        } else {
-//            // open follower gui
-//            if (playerFollowerMap.containsKey(player.getUniqueId())) {
-//                player.sendMessage(ChatColor.RED + "You already have a follower spawned.");
-//                return true;
-//            }
-//            followerArmorStand = new FollowerArmorStand(plugin, "notch", player);
-//        }
 //
 //        followerArmorStand.startMovement(0.4);
 //        playerFollowerMap.put(player.getUniqueId(), followerArmorStand.getArmorStand().getUniqueId());

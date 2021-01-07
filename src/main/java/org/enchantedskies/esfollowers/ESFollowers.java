@@ -34,7 +34,7 @@ public final class ESFollowers extends JavaPlugin implements Listener {
     Listener[] listeners = new Listener[] {
         this,
         new FollowerUserEvents(playerFollowerMap),
-        new FollowerGUIEvents(guiPlayerSet, playerFollowerMap),
+        new FollowerGUIEvents(this, guiPlayerSet, playerFollowerMap),
         new FollowerEvents(this, playerFollowerMap)
     };
 
