@@ -1,10 +1,5 @@
 package org.enchantedskies.esfollowers.commands;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,23 +7,20 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.enchantedskies.esfollowers.FollowerArmorStand;
 import org.enchantedskies.esfollowers.ESFollowers;
 import org.enchantedskies.esfollowers.FollowerGUI;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Follower implements CommandExecutor, TabCompleter {
     private final ESFollowers plugin;
-    private final HashMap<UUID, UUID> playerFollowerMap;
-    private final HashSet<UUID> playerSet;
+    private final HashSet<UUID> openInvPlayerSet;
+    private final HashMap<String, ItemStack> followerSkullMap;
 
-    public Follower(ESFollowers instance, HashMap<UUID, UUID> pfMap, HashSet<UUID> guiPlayerSet) {
+    public Follower(ESFollowers instance, HashSet<UUID> openInvPlayerSet, HashMap<String, ItemStack> followerSkullMap) {
         plugin = instance;
-        playerFollowerMap = pfMap;
-        playerSet = guiPlayerSet;
+        this.openInvPlayerSet = openInvPlayerSet;
+        this.followerSkullMap = followerSkullMap;
     }
 
     @Override
@@ -49,7 +41,7 @@ public class Follower implements CommandExecutor, TabCompleter {
                 return true;
             }
         }
-        FollowerGUI followerInv = new FollowerGUI(plugin, player, playerSet);
+        FollowerGUI followerInv = new FollowerGUI(plugin, player, openInvPlayerSet, followerSkullMap);
         followerInv.openInventory(player);
         return true;
 
@@ -78,11 +70,6 @@ public class Follower implements CommandExecutor, TabCompleter {
 //                message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§eClick to save to Clipboard!")));
 //                player.sendMessage(message);
 //                return true;
-//
-//        followerArmorStand.startMovement(0.4);
-//        playerFollowerMap.put(player.getUniqueId(), followerArmorStand.getArmorStand().getUniqueId());
-//        player.sendMessage(ChatColor.GREEN + "Follower Spawned.");
-//        return true;
     }
 
     @Override
