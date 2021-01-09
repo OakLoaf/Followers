@@ -80,12 +80,13 @@ public class FollowerCreator implements Listener {
             if (currItem.getType() == Material.PLAYER_HEAD) {
                 SkullMeta skullMeta = (SkullMeta) currItem.getItemMeta();
                 OfflinePlayer skullOwner = skullMeta.getOwningPlayer();
-                configurationSection.set(makeFriendly(equipmentSlot.name()) + ".SkullType", "Default");
                 if (skullOwner == null) {
-                    player.sendMessage("§8§l[§d§lES§8§l] §7Could not find the owner of the skull in the §c" + makeFriendly(equipmentSlot.name()) + " §7slot, added default player head to config.yml file.");
-                    configurationSection.set(makeFriendly(equipmentSlot.name()) + ".UUID", "error");
+                    configurationSection.set(makeFriendly(equipmentSlot.name()) + ".SkullType", "Texture");
+                    player.sendMessage("§8§l[§d§lES§8§l] §7Could not find the owner of the skull in the §c" + makeFriendly(equipmentSlot.name()) + " §7slot, added Custom player head to config.yml file with no texture.");
+                    configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Texture", "error");
                     continue;
                 }
+                configurationSection.set(makeFriendly(equipmentSlot.name()) + ".SkullType", "Default");
                 UUID skullUUID = skullOwner.getUniqueId();
                 configurationSection.set(makeFriendly(equipmentSlot.name()) + ".UUID", skullUUID.toString());
                 player.sendMessage("§8§l[§d§lES§8§l] §7Skull has been created as Default SkullType. To get custom textures manually edit the config.");
@@ -95,6 +96,7 @@ public class FollowerCreator implements Listener {
                 configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Color", String.format("%02x%02x%02x", armorColor.getRed(), armorColor.getGreen(), armorColor.getBlue()));
             }
         }
+        player.sendMessage("§8§l[§d§lES§8§l] §7A Follower has been added with the name §a" + armorStandName);
         plugin.saveConfig();
         ConfigurationSection configSection = config.getConfigurationSection(armorStandName + ".Head");
         if (configSection == null) return;
@@ -106,11 +108,11 @@ public class FollowerCreator implements Listener {
             String skullType = configSection.getString("SkullType", "");
             if (skullType.equalsIgnoreCase("custom")) {
                 String skullTexture = configSection.getString("Texture");
-                if (skullTexture != null) item = getCustomSkull(skullTexture);
+                if (skullTexture != null || skullTexture.equalsIgnoreCase("error")) item = getCustomSkull(skullTexture);
                 followerSkullMap.put(armorStandName, item);
             } else {
                 String skullUUID = configSection.getString("UUID");
-                if (skullUUID == null || skullUUID.equalsIgnoreCase("error")) {
+                if (skullUUID == null) {
                     followerSkullMap.put(armorStandName, new ItemStack(Material.PLAYER_HEAD));
                     return;
                 }

@@ -23,24 +23,26 @@ public class FollowerArmorStand {
     private final ArmorStand armorStand;
     private final FileConfiguration config;
     private final HashMap<String, ItemStack> followerSkullMap;
+    private NamespacedKey followerKey;
     private HashMap<UUID, UUID> playerFollowerMap;
     private String followerName;
 
-    public FollowerArmorStand(ESFollowers instance, String followerName, Player owner, HashMap<String, ItemStack> followerSkullMap, HashMap<UUID, UUID> playerFollowerMap) {
+    public FollowerArmorStand(ESFollowers instance, String followerName, Player owner, HashMap<String, ItemStack> followerSkullMap, HashMap<UUID, UUID> playerFollowerMap, NamespacedKey followerKey) {
         plugin = instance;
         config = plugin.getConfig();
+        this.followerKey = followerKey;
         this.followerName = followerName;
         this.followerSkullMap = followerSkullMap;
         this.playerFollowerMap = playerFollowerMap;
 
-        armorStand = owner.getLocation().getWorld().spawn(owner.getLocation().add(1.5, 0, 1.5), ArmorStand.class);
+        armorStand = owner.getLocation().getWorld().spawn(owner.getLocation().add(-1.5, 0, 1.5), ArmorStand.class);
         armorStand.setBasePlate(false);
         armorStand.setArms(true);
         armorStand.setInvulnerable(true);
         armorStand.setCanPickupItems(false);
         armorStand.setSmall(true);
         armorStand.setMarker(true);
-        armorStand.getPersistentDataContainer().set(ESFollowers.followerKey, PersistentDataType.STRING, owner.getUniqueId().toString());
+        armorStand.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, owner.getUniqueId().toString());
 
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
             setFollowerArmorSlot(equipmentSlot, followerName);
@@ -77,7 +79,7 @@ public class FollowerArmorStand {
     }
 
     public void startMovement(double speed) {
-        String strUUID = armorStand.getPersistentDataContainer().get(ESFollowers.followerKey, PersistentDataType.STRING);
+        String strUUID = armorStand.getPersistentDataContainer().get(followerKey, PersistentDataType.STRING);
         if (strUUID == null) return;
         Player player = Bukkit.getPlayer(UUID.fromString(strUUID));
         if (player == null) return;
@@ -100,7 +102,9 @@ public class FollowerArmorStand {
                     followerLoc.add(differenceY.multiply(speed));
                 } else {
                     Vector normalizedDifference = difference.clone().normalize();
-                    followerLoc.add(normalizedDifference.multiply(speed));
+                    double distance = difference.length() - 5;
+                    if (distance < 1) distance = 1;
+                    followerLoc.add(normalizedDifference.multiply(speed * distance));
                 }
                 if (difference.lengthSquared() > 1024) {
                     armorStand.teleport(player);

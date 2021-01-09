@@ -11,13 +11,12 @@ import org.bukkit.event.Listener;
 
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.enchantedskies.esfollowers.commands.Follower;
+import org.enchantedskies.esfollowers.commands.GetHexArmor;
 import org.enchantedskies.esfollowers.datamanager.DataManager;
 import org.enchantedskies.esfollowers.events.FollowerEvents;
 import org.enchantedskies.esfollowers.events.FollowerGUIEvents;
@@ -32,30 +31,31 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public final class ESFollowers extends JavaPlugin implements Listener {
-    public static NamespacedKey followerKey;
-    public static DataManager dataManager   ;
+    public static DataManager dataManager;
     private final HashMap<UUID, UUID> playerFollowerMap = new HashMap<>();
     private final HashMap<String, ItemStack> followerSkullMap = new HashMap<>();
     private final HashSet<UUID> guiPlayerSet = new HashSet<>();
+    private final NamespacedKey followerKey = new NamespacedKey(this, "ESFollower");
+
     Listener[] listeners = new Listener[] {
         this,
-        new FollowerUserEvents(this, followerSkullMap, playerFollowerMap),
-        new FollowerGUIEvents(this, guiPlayerSet, playerFollowerMap, followerSkullMap),
+        new FollowerUserEvents(this, followerSkullMap, playerFollowerMap, followerKey),
+        new FollowerGUIEvents(this, guiPlayerSet, playerFollowerMap, followerSkullMap, followerKey),
         new FollowerEvents(this, playerFollowerMap),
-        new FollowerCreator(this, followerSkullMap)
+        new FollowerCreator(this, followerSkullMap),
     };
 
     @Override
     public void onEnable() {
         dataManager = new DataManager(this);
-        followerKey = new NamespacedKey(this, "ESFollower");
 
         writeFile();
         saveDefaultConfig();
         FileConfiguration config = getConfig();
 
         registerEvents(listeners);
-        getCommand("follower").setExecutor(new Follower(this, guiPlayerSet, followerSkullMap));
+        getCommand("followers").setExecutor(new Follower(this, guiPlayerSet, followerSkullMap));
+        getCommand("gethexarmor").setExecutor(new GetHexArmor());
 
         for (World world : Bukkit.getWorlds()) {
             for (Chunk chunk : world.getLoadedChunks()) {

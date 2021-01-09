@@ -3,6 +3,7 @@ package org.enchantedskies.esfollowers.events;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,12 +24,14 @@ import java.util.UUID;
 public class FollowerGUIEvents implements Listener {
     private final ESFollowers plugin;
     private final HashSet<UUID> openInvPlayerSet;
+    private final NamespacedKey followerKey;
     private final HashMap<UUID, UUID> playerFollowerMap;
     private final HashMap<String, ItemStack> followerSkullMap;
 
-    public FollowerGUIEvents(ESFollowers instance, HashSet<UUID> playerSet, HashMap<UUID, UUID> playerFollowerMap, HashMap<String, ItemStack> followerSkullMap) {
+    public FollowerGUIEvents(ESFollowers instance, HashSet<UUID> playerSet, HashMap<UUID, UUID> playerFollowerMap, HashMap<String, ItemStack> followerSkullMap, NamespacedKey followerKey) {
         plugin = instance;
         this.openInvPlayerSet = playerSet;
+        this.followerKey = followerKey;
         this.playerFollowerMap = playerFollowerMap;
         this.followerSkullMap = followerSkullMap;
     }
@@ -54,7 +57,7 @@ public class FollowerGUIEvents implements Listener {
             player.closeInventory();
             return;
         }
-        FollowerArmorStand followerArmorStand = new FollowerArmorStand(plugin, followerName, player, followerSkullMap, playerFollowerMap);
+        FollowerArmorStand followerArmorStand = new FollowerArmorStand(plugin, followerName, player, followerSkullMap, playerFollowerMap, followerKey);
         followerArmorStand.startMovement(0.4);
         FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());
         followerUser.setFollower(followerName);

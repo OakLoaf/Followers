@@ -47,6 +47,7 @@ public class Follower implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 plugin.reloadConfig();
+                followerSkullMap.clear();
                 for (String followerName : config.getKeys(false)) {
                     ConfigurationSection configSection = config.getConfigurationSection(followerName + ".Head");
                     if (configSection == null) continue;

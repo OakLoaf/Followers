@@ -5,6 +5,9 @@ api-version: 1.16
 authors: [Dav_e_]
 softdepend: [Essentials]
 commands:
-  follower:
-    description: Opens follower GUI
-    usage: /follower
+  followers:
+    description: Opens Follower GUI
+    usage: /followers
+  gethexarmor:
+    description: Gives the user a colored piece of leather armor based on a hex value
+    usage: /gethexarmor
