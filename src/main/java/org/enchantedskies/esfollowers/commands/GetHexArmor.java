@@ -19,6 +19,10 @@ public class GetHexArmor implements CommandExecutor {
             return true;
         }
         Player player = (Player) sender;
+        if (!player.hasPermission("followers.admin.getarmor")) {
+            sender.sendMessage("§8§l[§d§lES§8§l] §7You have insufficient permissions.");
+            return true;
+        }
         if (args.length != 2) {
             player.sendMessage("§8§l[§d§lES§8§l] §7Incorrect Usage, try §c/gethexarmor <material> <hexcolor>");
             return true;
