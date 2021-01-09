@@ -23,15 +23,17 @@ public class FollowerArmorStand {
     private final ArmorStand armorStand;
     private final FileConfiguration config;
     private final HashMap<String, ItemStack> followerSkullMap;
+    private HashMap<UUID, UUID> playerFollowerMap;
     private String followerName;
 
-    public FollowerArmorStand(ESFollowers instance, String followerName, Player owner, HashMap<String, ItemStack> followerSkullMap) {
+    public FollowerArmorStand(ESFollowers instance, String followerName, Player owner, HashMap<String, ItemStack> followerSkullMap, HashMap<UUID, UUID> playerFollowerMap) {
         plugin = instance;
         config = plugin.getConfig();
         this.followerName = followerName;
         this.followerSkullMap = followerSkullMap;
+        this.playerFollowerMap = playerFollowerMap;
 
-        armorStand = owner.getLocation().getWorld().spawn(owner.getLocation(), ArmorStand.class);
+        armorStand = owner.getLocation().getWorld().spawn(owner.getLocation().add(1.5, 0, 1.5), ArmorStand.class);
         armorStand.setBasePlate(false);
         armorStand.setArms(true);
         armorStand.setInvulnerable(true);
@@ -82,6 +84,7 @@ public class FollowerArmorStand {
         new BukkitRunnable() {
             public void run() {
                 if (!armorStand.isValid()) {
+                    playerFollowerMap.remove(player.getUniqueId());
                     cancel();
                     return;
                 }
@@ -105,6 +108,7 @@ public class FollowerArmorStand {
                 }
                 followerLoc.setDirection(difference);
                 armorStand.teleport(followerLoc.add(0, getArmorStandYOffset(armorStand), 0));
+                if (Bukkit.getCurrentTick() % 2 != 0) return;
                 double headPoseX = eulerToDegree(armorStand.getHeadPose().getX());
                 EulerAngle newHeadPoseX = new EulerAngle(getPitch(player, armorStand), 0, 0);
                 if (headPoseX > 60 && headPoseX < 290) {

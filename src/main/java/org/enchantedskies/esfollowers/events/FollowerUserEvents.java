@@ -7,17 +7,23 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 import org.enchantedskies.esfollowers.ESFollowers;
+import org.enchantedskies.esfollowers.FollowerArmorStand;
 import org.enchantedskies.esfollowers.datamanager.FollowerUser;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 public class FollowerUserEvents implements Listener {
+    private final ESFollowers plugin;
+    private final HashMap<String, ItemStack> followerSkullMap;
     private final HashMap<UUID, UUID> playerFollowerMap;
 
-    public FollowerUserEvents(HashMap<UUID, UUID> hashMap) {
-        playerFollowerMap = hashMap;
+    public FollowerUserEvents(ESFollowers instance, HashMap<String, ItemStack> followerSkullMap, HashMap<UUID, UUID> playerFollowerMap) {
+        plugin = instance;
+        this.followerSkullMap = followerSkullMap;
+        this.playerFollowerMap = playerFollowerMap;
     }
 
     @EventHandler
@@ -26,9 +32,11 @@ public class FollowerUserEvents implements Listener {
         ESFollowers.dataManager.loadFollowerUser(player.getUniqueId());
         FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());
         followerUser.setUsername(player.getName());
-        if (!followerUser.isFollowerEnabled()) {
-            String follower = followerUser.getFollower();
-            // spawnFollower
+        if (followerUser.isFollowerEnabled()) {
+            String followerName = followerUser.getFollower();
+            FollowerArmorStand followerArmorStand = new FollowerArmorStand(plugin, followerName, player, followerSkullMap, playerFollowerMap);
+            followerArmorStand.startMovement(0.4);
+            playerFollowerMap.put(player.getUniqueId(), followerArmorStand.getArmorStand().getUniqueId());
         }
     }
 

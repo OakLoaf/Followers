@@ -39,9 +39,10 @@ public final class ESFollowers extends JavaPlugin implements Listener {
     private final HashSet<UUID> guiPlayerSet = new HashSet<>();
     Listener[] listeners = new Listener[] {
         this,
-        new FollowerUserEvents(playerFollowerMap),
+        new FollowerUserEvents(this, followerSkullMap, playerFollowerMap),
         new FollowerGUIEvents(this, guiPlayerSet, playerFollowerMap, followerSkullMap),
-        new FollowerEvents(this, playerFollowerMap)
+        new FollowerEvents(this, playerFollowerMap),
+        new FollowerCreator(this, followerSkullMap)
     };
 
     @Override
@@ -79,19 +80,14 @@ public final class ESFollowers extends JavaPlugin implements Listener {
                     followerSkullMap.put(followerName, item);
                 } else {
                     String skullUUID = configSection.getString("UUID");
+                    if (skullUUID == null || skullUUID.equalsIgnoreCase("error")) {
+                        followerSkullMap.put(followerName, new ItemStack(Material.PLAYER_HEAD));
+                        continue;
+                    }
                     getPlayerSkull(UUID.fromString(skullUUID)).thenAccept(itemStack -> Bukkit.getScheduler().runTask(this, runnable -> { followerSkullMap.put(followerName, itemStack); }));
                 }
             }
         }
-
-//        for (Player player : Bukkit.getOnlinePlayers()) {
-//            FollowerUser followerUser = dataManager.getFollowerUser(player.getUniqueId());
-//            String follower = followerUser.getFollower();
-//            if (!followerUser.isFollowerEnabled()) continue;
-//            if (playerFollowerMap.containsKey(player.getUniqueId())) continue;
-//
-//
-//        }
     }
 
     @EventHandler

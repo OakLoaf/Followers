@@ -1,24 +1,34 @@
 package org.enchantedskies.esfollowers.commands;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.enchantedskies.esfollowers.FollowerCreator;
 import org.enchantedskies.esfollowers.ESFollowers;
 import org.enchantedskies.esfollowers.FollowerGUI;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class Follower implements CommandExecutor, TabCompleter {
     private final ESFollowers plugin;
+    private final FileConfiguration config;
     private final HashSet<UUID> openInvPlayerSet;
     private final HashMap<String, ItemStack> followerSkullMap;
 
     public Follower(ESFollowers instance, HashSet<UUID> openInvPlayerSet, HashMap<String, ItemStack> followerSkullMap) {
         plugin = instance;
+        config = plugin.getConfig();
         this.openInvPlayerSet = openInvPlayerSet;
         this.followerSkullMap = followerSkullMap;
     }
@@ -32,44 +42,50 @@ public class Follower implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("reload")) {
-                if (!player.hasPermission("followers.admin")) {
+                if (!player.hasPermission("followers.admin.reload")) {
                     sender.sendMessage("§8§l[§d§lES§8§l] §7You have insufficient permissions.");
                     return true;
                 }
                 plugin.reloadConfig();
+                for (String followerName : config.getKeys(false)) {
+                    ConfigurationSection configSection = config.getConfigurationSection(followerName + ".Head");
+                    if (configSection == null) continue;
+                    String materialStr = configSection.getString("Material", "");
+                    Material material = Material.getMaterial(materialStr.toUpperCase());
+                    if (material == null) continue;
+                    ItemStack item = new ItemStack(material);
+                    if (material == Material.PLAYER_HEAD) {
+                        String skullType = configSection.getString("SkullType", "");
+                        if (skullType.equalsIgnoreCase("custom")) {
+                            String skullTexture = configSection.getString("Texture");
+                            if (skullTexture != null) item = getCustomSkull(skullTexture);
+                            followerSkullMap.put(followerName, item);
+                        } else {
+                            String skullUUID = configSection.getString("UUID");
+                            if (skullUUID == null || skullUUID.equalsIgnoreCase("error")) {
+                                followerSkullMap.put(followerName, new ItemStack(Material.PLAYER_HEAD));
+                                continue;
+                            }
+                            getPlayerSkull(UUID.fromString(skullUUID)).thenAccept(itemStack -> Bukkit.getScheduler().runTask(plugin, runnable -> { followerSkullMap.put(followerName, itemStack); }));
+                        }
+                    }
+                }
                 player.sendMessage(ChatColor.GREEN + "ESFollowers has been reloaded.");
+                return true;
+            } else if (args[0].equalsIgnoreCase("create")) {
+                if (!player.hasPermission("followers.admin.create")) {
+                    sender.sendMessage("§8§l[§d§lES§8§l] §7You have insufficient permissions.");
+                    return true;
+                }
+                ItemStack creator = new FollowerCreator(plugin, followerSkullMap).getCreator();
+                player.getInventory().addItem(creator);
+                player.sendMessage("§8§l[§d§lES§8§l] §7You have been given a Follower Creator.");
                 return true;
             }
         }
         FollowerGUI followerInv = new FollowerGUI(plugin, player, openInvPlayerSet, followerSkullMap);
         followerInv.openInventory(player);
         return true;
-
-//            Get Texture Code:
-//
-//                ItemStack item = player.getInventory().getItemInMainHand();
-//                if (item.getType() != Material.PLAYER_HEAD) {
-//                    sender.sendMessage("§cThat is not a player skull.");
-//                    return true;
-//                }
-//                SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
-//                PlayerProfile skullPlayer = skullMeta.getPlayerProfile();
-//                if (skullPlayer == null) {
-//                    sender.sendMessage("§cThis skull does not have an owner.");
-//                    return true;
-//                }
-//                String textureID = skullPlayer
-//                    .getProperties()
-//                    .stream()
-//                    .filter(profileProperty ->profileProperty.getName().equals("textures")).collect(Collectors.toList())
-//                    .get(0)
-//                    .getSignature();
-//
-//                TextComponent message = new TextComponent("§7Skull Texture has been found. §eClick me!");
-//                message.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, textureID));
-//                message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§eClick to save to Clipboard!")));
-//                player.sendMessage(message);
-//                return true;
     }
 
     @Override
@@ -81,8 +97,11 @@ public class Follower implements CommandExecutor, TabCompleter {
 
         if (args.length == 1) {
             tabComplete.add("help");
-            if (commandSender.hasPermission("followers.admin") || commandSender.isOp()) {
+            if (commandSender.hasPermission("followers.admin.reload")) {
                 tabComplete.add("reload");
+            }
+            if (commandSender.hasPermission("follower.admin.create")) {
+                tabComplete.add("create");
             }
         }
 
@@ -95,5 +114,34 @@ public class Follower implements CommandExecutor, TabCompleter {
         }
         if (wordCompletionSuccess) return wordCompletion;
         return tabComplete;
+    }
+
+    private CompletableFuture<ItemStack> getPlayerSkull(UUID uuid) {
+        CompletableFuture<ItemStack> futureItemStack = new CompletableFuture<>();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                ItemStack skullItem = new ItemStack(Material.PLAYER_HEAD);
+                SkullMeta skullMeta = (SkullMeta) skullItem.getItemMeta();
+                PlayerProfile playerProfile = Bukkit.createProfile(uuid);
+                playerProfile.complete();
+                skullMeta.setPlayerProfile(playerProfile);
+                skullItem.setItemMeta(skullMeta);
+                futureItemStack.complete(skullItem);
+            }
+        }.runTaskAsynchronously(plugin);
+        return futureItemStack;
+    }
+
+    private ItemStack getCustomSkull(String texture) {
+        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+        PlayerProfile playerProfile = Bukkit.createProfile(UUID.randomUUID());
+        Set<ProfileProperty> profileProperties = playerProfile.getProperties();
+        profileProperties.add(new ProfileProperty("textures", texture));
+        playerProfile.setProperties(profileProperties);
+        skullMeta.setPlayerProfile(playerProfile);
+        skull.setItemMeta(skullMeta);
+        return skull;
     }
 }

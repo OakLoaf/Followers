@@ -14,6 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.enchantedskies.esfollowers.ESFollowers;
 import org.enchantedskies.esfollowers.FollowerArmorStand;
+import org.enchantedskies.esfollowers.datamanager.FollowerUser;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,11 +49,15 @@ public class FollowerGUIEvents implements Listener {
         if (playerFollowerMap.containsKey(player.getUniqueId())) {
             UUID armorstandUUID = playerFollowerMap.get(player.getUniqueId());
             new FollowerArmorStand(plugin, followerName, (ArmorStand) Bukkit.getEntity(armorstandUUID), followerSkullMap);
+            FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());
+            followerUser.setFollower(followerName);
             player.closeInventory();
             return;
         }
-        FollowerArmorStand followerArmorStand = new FollowerArmorStand(plugin, followerName, player, followerSkullMap);
+        FollowerArmorStand followerArmorStand = new FollowerArmorStand(plugin, followerName, player, followerSkullMap, playerFollowerMap);
         followerArmorStand.startMovement(0.4);
+        FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());
+        followerUser.setFollower(followerName);
         playerFollowerMap.put(player.getUniqueId(), followerArmorStand.getArmorStand().getUniqueId());
         player.closeInventory();
         player.sendMessage(ChatColor.GREEN + "Follower Spawned.");

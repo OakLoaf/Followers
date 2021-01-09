@@ -47,7 +47,7 @@ public class DataManager {
     public FollowerUser getFollowerUser(UUID uuid) {
         Player player = Bukkit.getPlayer(uuid);
         if (player == null) return null;
-        return uuidToFollowerUser.getOrDefault(uuid, new FollowerUser(uuid, player.getName(), "none", true));
+        return uuidToFollowerUser.getOrDefault(uuid, new FollowerUser(uuid, player.getName(), "none", false));
     }
 
     public void saveFollowerUser(FollowerUser followerUser) {
