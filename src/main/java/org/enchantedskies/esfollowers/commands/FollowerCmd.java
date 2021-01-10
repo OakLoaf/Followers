@@ -1,7 +1,5 @@
 package org.enchantedskies.esfollowers.commands;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
-import com.destroystokyo.paper.profile.ProfileProperty;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,22 +9,19 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.enchantedskies.esfollowers.FollowerCreator;
 import org.enchantedskies.esfollowers.ESFollowers;
 import org.enchantedskies.esfollowers.FollowerGUI;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
-public class Follower implements CommandExecutor, TabCompleter {
+public class FollowerCmd implements CommandExecutor, TabCompleter {
     private final ESFollowers plugin;
     private final FileConfiguration config;
     private final HashSet<UUID> openInvPlayerSet;
     private final HashMap<String, ItemStack> followerSkullMap;
 
-    public Follower(ESFollowers instance, HashSet<UUID> openInvPlayerSet, HashMap<String, ItemStack> followerSkullMap) {
+    public FollowerCmd(ESFollowers instance, HashSet<UUID> openInvPlayerSet, HashMap<String, ItemStack> followerSkullMap) {
         plugin = instance;
         config = plugin.getConfig();
         this.openInvPlayerSet = openInvPlayerSet;
@@ -59,15 +54,15 @@ public class Follower implements CommandExecutor, TabCompleter {
                         String skullType = configSection.getString("SkullType", "");
                         if (skullType.equalsIgnoreCase("custom")) {
                             String skullTexture = configSection.getString("Texture");
-                            if (skullTexture != null) item = getCustomSkull(skullTexture);
+                            if (skullTexture != null) item = ESFollowers.skullCreator.getCustomSkull(skullTexture);
                             followerSkullMap.put(followerName, item);
                         } else {
                             String skullUUID = configSection.getString("UUID");
                             if (skullUUID == null || skullUUID.equalsIgnoreCase("error")) {
-                                followerSkullMap.put(followerName, new ItemStack(Material.PLAYER_HEAD));
+                                followerSkullMap.put(followerName.toLowerCase(), new ItemStack(Material.PLAYER_HEAD));
                                 continue;
                             }
-                            getPlayerSkull(UUID.fromString(skullUUID)).thenAccept(itemStack -> Bukkit.getScheduler().runTask(plugin, runnable -> { followerSkullMap.put(followerName, itemStack); }));
+                            ESFollowers.skullCreator.getPlayerSkull(UUID.fromString(skullUUID), plugin).thenAccept(itemStack -> Bukkit.getScheduler().runTask(plugin, runnable -> { followerSkullMap.put(followerName, itemStack); }));
                         }
                     }
                 }
@@ -78,7 +73,7 @@ public class Follower implements CommandExecutor, TabCompleter {
                     sender.sendMessage("§8§l[§d§lES§8§l] §7You have insufficient permissions.");
                     return true;
                 }
-                ItemStack creator = new FollowerCreator(plugin, followerSkullMap).getCreator();
+                ItemStack creator = new FollowerCreator(plugin, followerSkullMap).getCreatorItem();
                 player.getInventory().addItem(creator);
                 player.sendMessage("§8§l[§d§lES§8§l] §7You have been given a Follower Creator.");
                 return true;
@@ -97,7 +92,6 @@ public class Follower implements CommandExecutor, TabCompleter {
         boolean wordCompletionSuccess = false;
 
         if (args.length == 1) {
-            tabComplete.add("help");
             if (commandSender.hasPermission("followers.admin.reload")) {
                 tabComplete.add("reload");
             }
@@ -117,32 +111,7 @@ public class Follower implements CommandExecutor, TabCompleter {
         return tabComplete;
     }
 
-    private CompletableFuture<ItemStack> getPlayerSkull(UUID uuid) {
-        CompletableFuture<ItemStack> futureItemStack = new CompletableFuture<>();
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                ItemStack skullItem = new ItemStack(Material.PLAYER_HEAD);
-                SkullMeta skullMeta = (SkullMeta) skullItem.getItemMeta();
-                PlayerProfile playerProfile = Bukkit.createProfile(uuid);
-                playerProfile.complete();
-                skullMeta.setPlayerProfile(playerProfile);
-                skullItem.setItemMeta(skullMeta);
-                futureItemStack.complete(skullItem);
-            }
-        }.runTaskAsynchronously(plugin);
-        return futureItemStack;
-    }
-
-    private ItemStack getCustomSkull(String texture) {
-        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-        PlayerProfile playerProfile = Bukkit.createProfile(UUID.randomUUID());
-        Set<ProfileProperty> profileProperties = playerProfile.getProperties();
-        profileProperties.add(new ProfileProperty("textures", texture));
-        playerProfile.setProperties(profileProperties);
-        skullMeta.setPlayerProfile(playerProfile);
-        skull.setItemMeta(skullMeta);
-        return skull;
+    public HashMap<String, ItemStack> getFollowerSkullMap() {
+        return followerSkullMap;
     }
 }

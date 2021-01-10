@@ -1,7 +1,5 @@
 package org.enchantedskies.esfollowers;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
-import com.destroystokyo.paper.profile.ProfileProperty;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -11,14 +9,13 @@ import org.bukkit.event.Listener;
 
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.enchantedskies.esfollowers.commands.Follower;
-import org.enchantedskies.esfollowers.commands.GetHexArmor;
+import org.enchantedskies.esfollowers.commands.FollowerCmd;
+import org.enchantedskies.esfollowers.commands.GetHexArmorCmd;
 import org.enchantedskies.esfollowers.datamanager.DataManager;
-import org.enchantedskies.esfollowers.events.FollowerEvents;
+import org.enchantedskies.esfollowers.events.EssentialsEvents;
 import org.enchantedskies.esfollowers.events.FollowerGUIEvents;
 import org.enchantedskies.esfollowers.events.FollowerUserEvents;
 
@@ -26,12 +23,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public final class ESFollowers extends JavaPlugin implements Listener {
     public static DataManager dataManager;
+    public static SkullCreator skullCreator = new SkullCreator();
     private final HashMap<UUID, UUID> playerFollowerMap = new HashMap<>();
     private final HashMap<String, ItemStack> followerSkullMap = new HashMap<>();
     private final HashSet<UUID> guiPlayerSet = new HashSet<>();
@@ -41,7 +37,6 @@ public final class ESFollowers extends JavaPlugin implements Listener {
         this,
         new FollowerUserEvents(this, followerSkullMap, playerFollowerMap, followerKey),
         new FollowerGUIEvents(this, guiPlayerSet, playerFollowerMap, followerSkullMap, followerKey),
-        new FollowerEvents(this, playerFollowerMap),
         new FollowerCreator(this, followerSkullMap),
     };
 
@@ -54,8 +49,14 @@ public final class ESFollowers extends JavaPlugin implements Listener {
         FileConfiguration config = getConfig();
 
         registerEvents(listeners);
-        getCommand("followers").setExecutor(new Follower(this, guiPlayerSet, followerSkullMap));
-        getCommand("gethexarmor").setExecutor(new GetHexArmor());
+        PluginManager pluginManager = getServer().getPluginManager();
+        if (pluginManager.getPlugin("Essentials") != null) {
+            pluginManager.registerEvents(new EssentialsEvents(this, playerFollowerMap), this);
+        } else {
+            getLogger().info("Essentials plugin not found. Continuing without Essentials.");
+        }
+        getCommand("followers").setExecutor(new FollowerCmd(this, guiPlayerSet, followerSkullMap));
+        getCommand("gethexarmor").setExecutor(new GetHexArmorCmd());
 
         for (World world : Bukkit.getWorlds()) {
             for (Chunk chunk : world.getLoadedChunks()) {
@@ -76,7 +77,7 @@ public final class ESFollowers extends JavaPlugin implements Listener {
                 String skullType = configSection.getString("SkullType", "");
                 if (skullType.equalsIgnoreCase("custom")) {
                     String skullTexture = configSection.getString("Texture");
-                    if (skullTexture != null) item = getCustomSkull(skullTexture);
+                    if (skullTexture != null) item = skullCreator.getCustomSkull(skullTexture);
                     followerSkullMap.put(followerName, item);
                 } else {
                     String skullUUID = configSection.getString("UUID");
@@ -84,7 +85,7 @@ public final class ESFollowers extends JavaPlugin implements Listener {
                         followerSkullMap.put(followerName, new ItemStack(Material.PLAYER_HEAD));
                         continue;
                     }
-                    getPlayerSkull(UUID.fromString(skullUUID)).thenAccept(itemStack -> Bukkit.getScheduler().runTask(this, runnable -> { followerSkullMap.put(followerName, itemStack); }));
+                    skullCreator.getPlayerSkull(UUID.fromString(skullUUID), this).thenAccept(itemStack -> Bukkit.getScheduler().runTask(this, runnable -> { followerSkullMap.put(followerName, itemStack); }));
                 }
             }
         }
@@ -95,35 +96,6 @@ public final class ESFollowers extends JavaPlugin implements Listener {
         for (Entity entity : event.getChunk().getEntities()) {
             if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
         }
-    }
-
-    private CompletableFuture<ItemStack> getPlayerSkull(UUID uuid) {
-        CompletableFuture<ItemStack> futureItemStack = new CompletableFuture<>();
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                ItemStack skullItem = new ItemStack(Material.PLAYER_HEAD);
-                SkullMeta skullMeta = (SkullMeta) skullItem.getItemMeta();
-                PlayerProfile playerProfile = Bukkit.createProfile(uuid);
-                playerProfile.complete();
-                skullMeta.setPlayerProfile(playerProfile);
-                skullItem.setItemMeta(skullMeta);
-                futureItemStack.complete(skullItem);
-            }
-        }.runTaskAsynchronously(this);
-        return futureItemStack;
-    }
-
-    private ItemStack getCustomSkull(String texture) {
-        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-        PlayerProfile playerProfile = Bukkit.createProfile(UUID.randomUUID());
-        Set<ProfileProperty> profileProperties = playerProfile.getProperties();
-        profileProperties.add(new ProfileProperty("textures", texture));
-        playerProfile.setProperties(profileProperties);
-        skullMeta.setPlayerProfile(playerProfile);
-        skull.setItemMeta(skullMeta);
-        return skull;
     }
 
     public void writeFile() {
@@ -137,7 +109,7 @@ public final class ESFollowers extends JavaPlugin implements Listener {
 
     public void registerEvents(Listener[] listeners) {
         for (Listener listener : listeners) {
-            Bukkit.getServer().getPluginManager().registerEvents(listener, this);
+            getServer().getPluginManager().registerEvents(listener, this);
         }
     }
 }

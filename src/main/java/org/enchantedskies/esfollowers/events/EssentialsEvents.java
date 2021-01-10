@@ -11,11 +11,11 @@ import org.enchantedskies.esfollowers.ESFollowers;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class FollowerEvents implements Listener {
+public class EssentialsEvents implements Listener {
     private final ESFollowers plugin;
     private final HashMap<UUID, UUID> playerFollowerMap;
 
-    public FollowerEvents(ESFollowers instance, HashMap<UUID, UUID> playerFollowerMap) {
+    public EssentialsEvents(ESFollowers instance, HashMap<UUID, UUID> playerFollowerMap) {
         plugin = instance;
         this.playerFollowerMap = playerFollowerMap;
     }
@@ -28,10 +28,9 @@ public class FollowerEvents implements Listener {
             public void run() {
                 if (iUser.isAfk()) {
                     playerFollowerMap.get(player.getUniqueId());
-                    player.sendMessage("noob dance szn");
+                    //player.sendMessage("noob dance szn");
                 }
             }
         }.runTaskLater(plugin, 1);
-
     }
 }

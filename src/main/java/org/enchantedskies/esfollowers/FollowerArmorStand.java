@@ -46,9 +46,6 @@ public class FollowerArmorStand {
 
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
             setFollowerArmorSlot(equipmentSlot, followerName);
-        }
-
-        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
             for (ArmorStand.LockType lockType : ArmorStand.LockType.values()) {
                 armorStand.addEquipmentLock(equipmentSlot, lockType);
             }
@@ -151,18 +148,13 @@ public class FollowerArmorStand {
         if (material == Material.PLAYER_HEAD) item = followerSkullMap.get(followerName);
         else if (item.getItemMeta() instanceof LeatherArmorMeta) {
             String color = configSection.getString("Color");
-            item = getColouredArmour(material, color);
-            armorEquipment.setItem(equipmentSlot, item);
+            armorEquipment.setItem(equipmentSlot, getColoredArmour(material, color));
             return;
         }
         armorEquipment.setItem(equipmentSlot, item);
     }
 
-    private String makeFriendly(String string) {
-        return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
-    }
-
-    private ItemStack getColouredArmour(Material material, String hexColour) {
+    private ItemStack getColoredArmour(Material material, String hexColour) {
         ItemStack item = new ItemStack(material);
         ItemMeta itemMeta = item.getItemMeta();
         if (!(itemMeta instanceof LeatherArmorMeta)) return item;
@@ -181,11 +173,8 @@ public class FollowerArmorStand {
 
     private double getPitch(Player player, ArmorStand armorStand) {
         Vector difference = (player.getEyeLocation().subtract(0,0.9, 0)).subtract(armorStand.getEyeLocation()).toVector();
-        if (difference.getX() == 0.0D && difference.getZ() == 0.0D) {
-            return (float)(difference.getY() > 0.0D ? -90 : 90);
-        } else {
-            return Math.atan(-difference.getY() / Math.sqrt((difference.getX()*difference.getX()) + (difference.getZ()*difference.getZ())));
-        }
+        if (difference.getX() == 0.0D && difference.getZ() == 0.0D) return (float)(difference.getY() > 0.0D ? -90 : 90);
+        else return Math.atan(-difference.getY() / Math.sqrt((difference.getX()*difference.getX()) + (difference.getZ()*difference.getZ())));
     }
 
     private Vector getDifference(Player player, ArmorStand armorStand) {
@@ -194,5 +183,9 @@ public class FollowerArmorStand {
 
     private double eulerToDegree(double euler) {
         return (euler / (2 * Math.PI)) * 360;
+    }
+
+    private String makeFriendly(String string) {
+        return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
     }
 }

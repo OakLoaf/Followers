@@ -5,12 +5,16 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
-public class GetHexArmor implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.List;
+
+public class GetHexArmorCmd implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
@@ -28,7 +32,7 @@ public class GetHexArmor implements CommandExecutor {
             return true;
         }
         Material material = Material.getMaterial(args[0].toUpperCase());
-        String color = args[1];
+        String color = args[1].replace("#", "");
         if (material == null || color.length() != 6) {
             player.sendMessage("§8§l[§d§lES§8§l] §7Incorrect Usage, try §c/gethexarmor <material> <hexcolor>");
             return true;
@@ -44,6 +48,34 @@ public class GetHexArmor implements CommandExecutor {
         item.setItemMeta(armorMeta);
         player.getInventory().addItem(item);
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String label, String[] args) {
+
+        List<String> tabComplete = new ArrayList<>();
+        List<String> wordCompletion = new ArrayList<>();
+        boolean wordCompletionSuccess = false;
+
+        if (args.length == 1) {
+            if (commandSender.hasPermission("followers.gethexarmor")) {
+                tabComplete.add("leather_helmet");
+                tabComplete.add("leather_chestplate");
+                tabComplete.add("leather_leggings");
+                tabComplete.add("leather_boot");
+                tabComplete.add("leather_horse_armor");
+            }
+        }
+
+        for (String currTab : tabComplete) {
+            int currArg = args.length - 1;
+            if (currTab.startsWith(args[currArg])) {
+                wordCompletion.add(currTab);
+                wordCompletionSuccess = true;
+            }
+        }
+        if (wordCompletionSuccess) return wordCompletion;
+        return tabComplete;
     }
 
     private Color getRGBFromHex(String hexColour) {

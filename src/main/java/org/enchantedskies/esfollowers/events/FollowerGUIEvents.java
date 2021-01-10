@@ -5,7 +5,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,6 +31,11 @@ public class FollowerGUIEvents implements Listener {
     private final NamespacedKey followerKey;
     private final HashMap<UUID, UUID> playerFollowerMap;
     private final HashMap<String, ItemStack> followerSkullMap;
+    private final ItemStack noFollowers = new ItemStack(Material.BARRIER);
+    private final ItemStack nextPage = new ItemStack(Material.ARROW);
+    private final ItemStack previousPage = new ItemStack(Material.ARROW);
+    private final ItemStack followerToggleEnabled = new ItemStack(Material.LIME_WOOL);
+    private final ItemStack followerToggleDisabled = new ItemStack(Material.RED_WOOL);
 
     public FollowerGUIEvents(ESFollowers instance, HashSet<UUID> playerSet, HashMap<UUID, UUID> playerFollowerMap, HashMap<String, ItemStack> followerSkullMap, NamespacedKey followerKey) {
         plugin = instance;
@@ -39,6 +43,27 @@ public class FollowerGUIEvents implements Listener {
         this.followerKey = followerKey;
         this.playerFollowerMap = playerFollowerMap;
         this.followerSkullMap = followerSkullMap;
+
+        ItemMeta barrierMeta = noFollowers.getItemMeta();
+        barrierMeta.setDisplayName("§cYou don't own any followers!");
+        noFollowers.setItemMeta(barrierMeta);
+
+        ItemMeta nextPageMeta = nextPage.getItemMeta();
+        nextPageMeta.setDisplayName("§eNext Page ->");
+        nextPage.setItemMeta(nextPageMeta);
+
+        ItemMeta previousPageMeta = previousPage.getItemMeta();
+        previousPageMeta.setDisplayName("§e<- Previous Page");
+        previousPage.setItemMeta(previousPageMeta);
+
+        ItemMeta followerToggleEnabledMeta = followerToggleEnabled.getItemMeta();
+        followerToggleEnabledMeta.setDisplayName("§eFollower: §aEnabled");
+        followerToggleEnabled.setItemMeta(followerToggleEnabledMeta);
+
+
+        ItemMeta followerToggleDisabledMeta = followerToggleDisabled.getItemMeta();
+        followerToggleDisabledMeta.setDisplayName("§eFollower: §cDisabled");
+        followerToggleDisabled.setItemMeta(followerToggleDisabledMeta);
     }
 
     @EventHandler
@@ -53,8 +78,9 @@ public class FollowerGUIEvents implements Listener {
         if (clickedInv.getType() != InventoryType.CHEST) return;
         ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null) return;
-        if (clickedItem.getType() == Material.GRAY_STAINED_GLASS_PANE) return;
-        else if (clickedItem.isSimilar(getEnabledButton()) || clickedItem.isSimilar(getDisabledButton())) {
+        NamespacedKey pageNumKey = new NamespacedKey(plugin, "page");
+        if (clickedItem.isSimilar(noFollowers) || clickedItem.getItemMeta().getPersistentDataContainer().has(pageNumKey, PersistentDataType.INTEGER)) return;
+        else if (clickedItem.isSimilar(followerToggleEnabled) || clickedItem.isSimilar(followerToggleDisabled)) {
             FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());
             followerUser.setFollowerEnabled(!followerUser.isFollowerEnabled());
             if (followerUser.isFollowerEnabled()) {
@@ -72,11 +98,11 @@ public class FollowerGUIEvents implements Listener {
             FollowerGUI followerInv = new FollowerGUI(plugin, player, page, openInvPlayerSet, followerSkullMap);
             followerInv.openInventory(player);
             return;
-        } else if (clickedItem.isSimilar(getNextPageButton())) {
+        } else if (clickedItem.isSimilar(nextPage)) {
             FollowerGUI followerInv = new FollowerGUI(plugin, player, page + 1, openInvPlayerSet, followerSkullMap);
             followerInv.openInventory(player);
             return;
-        } else if (clickedItem.isSimilar(getPreviousPageButton())) {
+        } else if (clickedItem.isSimilar(previousPage)) {
             FollowerGUI followerInv = new FollowerGUI(plugin, player, page - 1, openInvPlayerSet, followerSkullMap);
             followerInv.openInventory(player);
             return;
@@ -114,42 +140,10 @@ public class FollowerGUIEvents implements Listener {
         }.runTaskLater(plugin, 1);
     }
 
-    public int getPageNum(Inventory inventory) {
+    private int getPageNum(Inventory inventory) {
         NamespacedKey pageNumKey = new NamespacedKey(plugin, "page");
         ItemStack item = inventory.getItem(0);
         ItemMeta itemMeta = item.getItemMeta();
         return itemMeta.getPersistentDataContainer().get(pageNumKey, PersistentDataType.INTEGER);
-    }
-
-    public ItemStack getNextPageButton() {
-        ItemStack nextPage = new ItemStack(Material.ARROW);
-        ItemMeta nextPageMeta = nextPage.getItemMeta();
-        nextPageMeta.setDisplayName("§eNext Page ->");
-        nextPage.setItemMeta(nextPageMeta);
-        return nextPage;
-    }
-
-    public ItemStack getPreviousPageButton() {
-        ItemStack previousPage = new ItemStack(Material.ARROW);
-        ItemMeta previousPageMeta = previousPage.getItemMeta();
-        previousPageMeta.setDisplayName("§e<- Previous Page");
-        previousPage.setItemMeta(previousPageMeta);
-        return previousPage;
-    }
-
-    public ItemStack getEnabledButton() {
-        ItemStack followerToggle = new ItemStack(Material.LIME_WOOL);
-        ItemMeta followerToggleMeta = followerToggle.getItemMeta();
-        followerToggleMeta.setDisplayName("§eFollower: §aEnabled");
-        followerToggle.setItemMeta(followerToggleMeta);
-        return followerToggle;
-    }
-
-    public ItemStack getDisabledButton() {
-        ItemStack followerToggle = new ItemStack(Material.RED_WOOL);
-        ItemMeta followerToggleMeta = followerToggle.getItemMeta();
-        followerToggleMeta.setDisplayName("§eFollower: §cDisabled");
-        followerToggle.setItemMeta(followerToggleMeta);
-        return followerToggle;
     }
 }

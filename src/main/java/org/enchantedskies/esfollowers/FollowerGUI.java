@@ -49,26 +49,35 @@ public class FollowerGUI {
             if (material == null) continue;
             ItemStack item = new ItemStack(material);
             if (material == Material.PLAYER_HEAD) item = followerSkullMap.get(followerName);
-            if (item == null) continue;
+            if (item == null) item = new ItemStack(Material.PLAYER_HEAD);
             ItemMeta itemMeta = item.getItemMeta();
             itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&e" + followerName));
             item.setItemMeta(itemMeta);
             inventory.setItem(i + 9, item);
         }
         FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());
-        ItemStack followerToggle;
-        if (followerUser.isFollowerEnabled()) {
-            followerToggle = new ItemStack(Material.LIME_WOOL);
-            ItemMeta followerToggleMeta = followerToggle.getItemMeta();
-            followerToggleMeta.setDisplayName("§eFollower: §aEnabled");
-            followerToggle.setItemMeta(followerToggleMeta);
+        if (followerSet.size() != 0) {
+            ItemStack followerToggle;
+            if (followerUser.isFollowerEnabled()) {
+                followerToggle = new ItemStack(Material.LIME_WOOL);
+                ItemMeta followerToggleMeta = followerToggle.getItemMeta();
+                followerToggleMeta.setDisplayName("§eFollower: §aEnabled");
+                followerToggle.setItemMeta(followerToggleMeta);
+            } else {
+                followerToggle = new ItemStack(Material.RED_WOOL);
+                ItemMeta followerToggleMeta = followerToggle.getItemMeta();
+                followerToggleMeta.setDisplayName("§eFollower: §cDisabled");
+                followerToggle.setItemMeta(followerToggleMeta);
+            }
+            inventory.setItem(49, followerToggle);
         } else {
-            followerToggle = new ItemStack(Material.RED_WOOL);
-            ItemMeta followerToggleMeta = followerToggle.getItemMeta();
-            followerToggleMeta.setDisplayName("§eFollower: §cDisabled");
-            followerToggle.setItemMeta(followerToggleMeta);
+            ItemStack noFollowers = new ItemStack(Material.BARRIER);
+            ItemMeta followerToggleMeta = noFollowers.getItemMeta();
+            followerToggleMeta.setDisplayName("§cYou don't own any followers!");
+            noFollowers.setItemMeta(followerToggleMeta);
+            inventory.setItem(22, noFollowers);
         }
-        inventory.setItem(49, followerToggle);
+
         if (followerSet.size() > page * 36) {
             ItemStack nextPage = new ItemStack(Material.ARROW);
             ItemMeta nextPageMeta = nextPage.getItemMeta();

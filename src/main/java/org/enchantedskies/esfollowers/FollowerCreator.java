@@ -1,7 +1,5 @@
 package org.enchantedskies.esfollowers;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
-import com.destroystokyo.paper.profile.ProfileProperty;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -21,32 +19,27 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
-import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public class FollowerCreator implements Listener {
     private final ESFollowers plugin;
     private final FileConfiguration config;
     private final HashMap<String, ItemStack> followerSkullMap;
+    private final ItemStack creatorItem;
 
     public FollowerCreator(ESFollowers instance, HashMap<String, ItemStack> followerSkullMap) {
         plugin = instance;
         config = plugin.getConfig();
         this.followerSkullMap = followerSkullMap;
-    }
 
-    public ItemStack getCreator() {
-        ItemStack item = new ItemStack(Material.STICK);
-        ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.setDisplayName("Follower Creator");
-        itemMeta.addEnchant(Enchantment.DURABILITY, 1, false);
-        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        item.setItemMeta(itemMeta);
-        return item;
+        creatorItem = new ItemStack(Material.STICK);
+        ItemMeta creatorMeta = creatorItem.getItemMeta();
+        creatorMeta.setDisplayName("Follower Creator");
+        creatorMeta.addEnchant(Enchantment.DURABILITY, 1, false);
+        creatorMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        creatorItem.setItemMeta(creatorMeta);
     }
 
     @EventHandler
@@ -55,7 +48,7 @@ public class FollowerCreator implements Listener {
         ItemStack heldItem = player.getInventory().getItemInMainHand();
         if (!(event.getRightClicked() instanceof ArmorStand)) return;
         ArmorStand armorStand = (ArmorStand) event.getRightClicked();
-        if (!heldItem.isSimilar(getCreator())) return;
+        if (!heldItem.isSimilar(creatorItem)) return;
         event.setCancelled(true);
         if (!player.hasPermission("followers.admin.create")) {
             player.sendMessage("§8§l[§d§lES§8§l] §7You have insufficient permissions.");
@@ -108,7 +101,7 @@ public class FollowerCreator implements Listener {
             String skullType = configSection.getString("SkullType", "");
             if (skullType.equalsIgnoreCase("custom")) {
                 String skullTexture = configSection.getString("Texture");
-                if (skullTexture != null || skullTexture.equalsIgnoreCase("error")) item = getCustomSkull(skullTexture);
+                if (skullTexture != null || skullTexture.equalsIgnoreCase("error")) item = ESFollowers.skullCreator.getCustomSkull(skullTexture);
                 followerSkullMap.put(armorStandName, item);
             } else {
                 String skullUUID = configSection.getString("UUID");
@@ -116,7 +109,7 @@ public class FollowerCreator implements Listener {
                     followerSkullMap.put(armorStandName, new ItemStack(Material.PLAYER_HEAD));
                     return;
                 }
-                getPlayerSkull(UUID.fromString(skullUUID)).thenAccept(itemStack -> Bukkit.getScheduler().runTask(plugin, runnable -> { followerSkullMap.put(armorStandName, itemStack); }));
+                ESFollowers.skullCreator.getPlayerSkull(UUID.fromString(skullUUID), plugin).thenAccept(itemStack -> Bukkit.getScheduler().runTask(plugin, runnable -> { followerSkullMap.put(armorStandName, itemStack); }));
             }
         }
     }
@@ -124,37 +117,12 @@ public class FollowerCreator implements Listener {
     @EventHandler
     public void onPlayerManipulateArmorStand(PlayerArmorStandManipulateEvent event) {
         ItemStack item = event.getPlayerItem();
-        if (!item.isSimilar(getCreator())) return;
+        if (!item.isSimilar(creatorItem)) return;
         event.setCancelled(true);
     }
 
-    private CompletableFuture<ItemStack> getPlayerSkull(UUID uuid) {
-        CompletableFuture<ItemStack> futureItemStack = new CompletableFuture<>();
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                ItemStack skullItem = new ItemStack(Material.PLAYER_HEAD);
-                SkullMeta skullMeta = (SkullMeta) skullItem.getItemMeta();
-                PlayerProfile playerProfile = Bukkit.createProfile(uuid);
-                playerProfile.complete();
-                skullMeta.setPlayerProfile(playerProfile);
-                skullItem.setItemMeta(skullMeta);
-                futureItemStack.complete(skullItem);
-            }
-        }.runTaskAsynchronously(plugin);
-        return futureItemStack;
-    }
-
-    private ItemStack getCustomSkull(String texture) {
-        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-        PlayerProfile playerProfile = Bukkit.createProfile(UUID.randomUUID());
-        Set<ProfileProperty> profileProperties = playerProfile.getProperties();
-        profileProperties.add(new ProfileProperty("textures", texture));
-        playerProfile.setProperties(profileProperties);
-        skullMeta.setPlayerProfile(playerProfile);
-        skull.setItemMeta(skullMeta);
-        return skull;
+    public ItemStack getCreatorItem() {
+        return creatorItem;
     }
 
     private String makeFriendly(String string) {
