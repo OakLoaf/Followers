@@ -84,7 +84,7 @@ public class Follower implements CommandExecutor, TabCompleter {
                 return true;
             }
         }
-        FollowerGUI followerInv = new FollowerGUI(plugin, player, openInvPlayerSet, followerSkullMap);
+        FollowerGUI followerInv = new FollowerGUI(plugin, player, 1, openInvPlayerSet, followerSkullMap);
         followerInv.openInventory(player);
         return true;
     }
