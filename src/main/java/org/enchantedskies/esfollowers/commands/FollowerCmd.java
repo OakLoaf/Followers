@@ -38,7 +38,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("reload")) {
                 if (!player.hasPermission("followers.admin.reload")) {
-                    sender.sendMessage("§8§l[§d§lES§8§l] §7You have insufficient permissions.");
+                    sender.sendMessage(ESFollowers.prefix + "§7You have insufficient permissions.");
                     return true;
                 }
                 plugin.reloadConfig();
@@ -70,12 +70,12 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                 return true;
             } else if (args[0].equalsIgnoreCase("create")) {
                 if (!player.hasPermission("followers.admin.create")) {
-                    sender.sendMessage("§8§l[§d§lES§8§l] §7You have insufficient permissions.");
+                    sender.sendMessage(ESFollowers.prefix + "§7You have insufficient permissions.");
                     return true;
                 }
                 ItemStack creator = new FollowerCreator(plugin, followerSkullMap).getCreatorItem();
                 player.getInventory().addItem(creator);
-                player.sendMessage("§8§l[§d§lES§8§l] §7You have been given a Follower Creator.");
+                player.sendMessage(ESFollowers.prefix + "§7You have been given a Follower Creator.");
                 return true;
             }
         }
@@ -109,9 +109,5 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
         }
         if (wordCompletionSuccess) return wordCompletion;
         return tabComplete;
-    }
-
-    public HashMap<String, ItemStack> getFollowerSkullMap() {
-        return followerSkullMap;
     }
 }

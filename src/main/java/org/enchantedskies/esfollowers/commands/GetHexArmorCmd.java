@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.enchantedskies.esfollowers.ESFollowers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,24 +24,24 @@ public class GetHexArmorCmd implements CommandExecutor, TabCompleter {
             return true;
         }
         Player player = (Player) sender;
-        if (!player.hasPermission("followers.admin.getarmor")) {
-            sender.sendMessage("§8§l[§d§lES§8§l] §7You have insufficient permissions.");
+        if (!player.hasPermission("followers.admin.gethexarmor")) {
+            sender.sendMessage(ESFollowers.prefix + "§7You have insufficient permissions.");
             return true;
         }
         if (args.length != 2) {
-            player.sendMessage("§8§l[§d§lES§8§l] §7Incorrect Usage, try §c/gethexarmor <material> <hexcolor>");
+            player.sendMessage(ESFollowers.prefix + "§7Incorrect Usage, try §c/gethexarmor <material> <hexcolor>");
             return true;
         }
         Material material = Material.getMaterial(args[0].toUpperCase());
         String color = args[1].replace("#", "");
-        if (material == null || color.length() != 6) {
-            player.sendMessage("§8§l[§d§lES§8§l] §7Incorrect Usage, try §c/gethexarmor <material> <hexcolor>");
+        if (material == null || (color.length() != 6 && !(color.length() == 7 && color.startsWith("#")))) {
+            player.sendMessage(ESFollowers.prefix + "§7Incorrect Usage, try §c/gethexarmor <material> <hexcolor>");
             return true;
         }
         ItemStack item = new ItemStack(material);
         ItemMeta itemMeta = item.getItemMeta();
         if (!(itemMeta instanceof LeatherArmorMeta)) {
-            player.sendMessage("§8§l[§d§lES§8§l] §7Material has to be a form of Leather Armor.");
+            player.sendMessage(ESFollowers.prefix + "§7Material has to be a form of Leather Armor.");
             return true;
         }
         LeatherArmorMeta armorMeta = (LeatherArmorMeta) itemMeta;
@@ -58,11 +59,11 @@ public class GetHexArmorCmd implements CommandExecutor, TabCompleter {
         boolean wordCompletionSuccess = false;
 
         if (args.length == 1) {
-            if (commandSender.hasPermission("followers.gethexarmor")) {
+            if (commandSender.hasPermission("followers.admin.gethexarmor")) {
                 tabComplete.add("leather_helmet");
                 tabComplete.add("leather_chestplate");
                 tabComplete.add("leather_leggings");
-                tabComplete.add("leather_boot");
+                tabComplete.add("leather_boots");
                 tabComplete.add("leather_horse_armor");
             }
         }

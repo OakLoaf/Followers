@@ -51,17 +51,17 @@ public class FollowerCreator implements Listener {
         if (!heldItem.isSimilar(creatorItem)) return;
         event.setCancelled(true);
         if (!player.hasPermission("followers.admin.create")) {
-            player.sendMessage("§8§l[§d§lES§8§l] §7You have insufficient permissions.");
+            player.sendMessage(ESFollowers.prefix + "§7You have insufficient permissions.");
             return;
         }
         String armorStandName = armorStand.getCustomName();
         if (armorStandName == null) {
-            player.sendMessage("§8§l[§d§lES§8§l] §7This ArmorStand does not have a name, unable to register as a Follower.");
+            player.sendMessage(ESFollowers.prefix + "§7This ArmorStand does not have a name, unable to register as a Follower.");
             return;
         }
         ConfigurationSection configurationSection = config.getConfigurationSection(armorStandName);
         if (configurationSection != null) {
-            player.sendMessage("§8§l[§d§lES§8§l] §7A Follower already exists with this name.");
+            player.sendMessage(ESFollowers.prefix + "§7A Follower already exists with this name.");
             return;
         }
         configurationSection = config.createSection(armorStandName);
@@ -75,21 +75,21 @@ public class FollowerCreator implements Listener {
                 OfflinePlayer skullOwner = skullMeta.getOwningPlayer();
                 if (skullOwner == null) {
                     configurationSection.set(makeFriendly(equipmentSlot.name()) + ".SkullType", "Texture");
-                    player.sendMessage("§8§l[§d§lES§8§l] §7Could not find the owner of the skull in the §c" + makeFriendly(equipmentSlot.name()) + " §7slot, added Custom player head to config.yml file with no texture.");
+                    player.sendMessage(ESFollowers.prefix + "§7Could not find the owner of the skull in the §c" + makeFriendly(equipmentSlot.name()) + " §7slot, added Custom player head to config.yml file with no texture.");
                     configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Texture", "error");
                     continue;
                 }
                 configurationSection.set(makeFriendly(equipmentSlot.name()) + ".SkullType", "Default");
                 UUID skullUUID = skullOwner.getUniqueId();
                 configurationSection.set(makeFriendly(equipmentSlot.name()) + ".UUID", skullUUID.toString());
-                player.sendMessage("§8§l[§d§lES§8§l] §7Skull has been created as Default SkullType. To get custom textures manually edit the config.");
+                player.sendMessage(ESFollowers.prefix + "§7Skull has been created as Default SkullType. To get custom textures manually edit the config.");
             } else if (currItem.getItemMeta() instanceof LeatherArmorMeta) {
                 LeatherArmorMeta armorMeta = (LeatherArmorMeta) currItem.getItemMeta();
                 Color armorColor = armorMeta.getColor();
                 configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Color", String.format("%02x%02x%02x", armorColor.getRed(), armorColor.getGreen(), armorColor.getBlue()));
             }
         }
-        player.sendMessage("§8§l[§d§lES§8§l] §7A Follower has been added with the name §a" + armorStandName);
+        player.sendMessage(ESFollowers.prefix + "§7A Follower has been added with the name §a" + armorStandName);
         plugin.saveConfig();
         ConfigurationSection configSection = config.getConfigurationSection(armorStandName + ".Head");
         if (configSection == null) return;

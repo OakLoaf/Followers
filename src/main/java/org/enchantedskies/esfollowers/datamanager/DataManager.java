@@ -34,7 +34,7 @@ public class DataManager {
             configurationSection.set("follower", "none");
             configurationSection.set("followerEnabled", Boolean.TRUE);
             plugin.saveConfig();
-            uuidToFollowerUser.put(uuid, new FollowerUser(uuid, playerName, "none", true));
+            uuidToFollowerUser.put(uuid, new FollowerUser(uuid, playerName, "none", false));
             return;
         }
         String name = configurationSection.getString("name");

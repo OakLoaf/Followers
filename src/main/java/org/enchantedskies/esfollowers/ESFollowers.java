@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.UUID;
 
 public final class ESFollowers extends JavaPlugin implements Listener {
+    public static String prefix = "§8§l[§d§lES§8§l] §r";
     public static DataManager dataManager;
     public static SkullCreator skullCreator = new SkullCreator();
     private final HashMap<UUID, UUID> playerFollowerMap = new HashMap<>();
@@ -46,6 +47,7 @@ public final class ESFollowers extends JavaPlugin implements Listener {
 
         writeFile();
         saveDefaultConfig();
+        reloadConfig();
         FileConfiguration config = getConfig();
 
         registerEvents(listeners);
@@ -94,6 +96,7 @@ public final class ESFollowers extends JavaPlugin implements Listener {
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent event) {
         for (Entity entity : event.getChunk().getEntities()) {
+            if (playerFollowerMap.containsValue(entity.getUniqueId())) continue;
             if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
         }
     }

@@ -35,7 +35,7 @@ public class FollowerGUI {
         }
         List<String> followerSet = new ArrayList<>();
         for (String followerName : config.getKeys(false)) {
-            if (!player.hasPermission("followers." + followerName.toLowerCase())) continue;
+            if (!player.hasPermission("followers." + followerName.toLowerCase()) && !player.hasPermission("followers.all")) continue;
             followerSet.add(followerName);
         }
         int setStartPos = (page - 1) * 36;

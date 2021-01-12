@@ -26,10 +26,10 @@ public class EssentialsEvents implements Listener {
         Player player = iUser.getBase();
         new BukkitRunnable() {
             public void run() {
-                if (iUser.isAfk()) {
-                    playerFollowerMap.get(player.getUniqueId());
-                    //player.sendMessage("noob dance szn");
-                }
+//                if (iUser.isAfk()) {
+//                    playerFollowerMap.get(player.getUniqueId());
+//                    player.sendMessage("noob dance szn");
+//                }
             }
         }.runTaskLater(plugin, 1);
     }
