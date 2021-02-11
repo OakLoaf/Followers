@@ -31,7 +31,7 @@ public class FollowerCreator implements Listener {
 
     public FollowerCreator(ESFollowers instance, HashMap<String, ItemStack> followerSkullMap) {
         plugin = instance;
-        config = plugin.getConfig();
+        config = ESFollowers.configManager.getConfig();
         this.followerSkullMap = followerSkullMap;
 
         creatorItem = new ItemStack(Material.STICK);

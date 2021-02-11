@@ -14,6 +14,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.enchantedskies.esfollowers.commands.FollowerCmd;
 import org.enchantedskies.esfollowers.commands.GetHexArmorCmd;
+import org.enchantedskies.esfollowers.datamanager.ConfigManager;
 import org.enchantedskies.esfollowers.datamanager.DataManager;
 import org.enchantedskies.esfollowers.events.EssentialsEvents;
 import org.enchantedskies.esfollowers.events.FollowerGUIEvents;
@@ -28,29 +29,29 @@ import java.util.UUID;
 public final class ESFollowers extends JavaPlugin implements Listener {
     public static String prefix = "§8§l[§d§lES§8§l] §r";
     public static DataManager dataManager;
+    public static ConfigManager configManager;
     public static SkullCreator skullCreator = new SkullCreator();
     private final HashMap<UUID, UUID> playerFollowerMap = new HashMap<>();
     private final HashMap<String, ItemStack> followerSkullMap = new HashMap<>();
     private final HashSet<UUID> guiPlayerSet = new HashSet<>();
     private final NamespacedKey followerKey = new NamespacedKey(this, "ESFollower");
 
-    Listener[] listeners = new Listener[] {
-        this,
-        new FollowerUserEvents(this, followerSkullMap, playerFollowerMap, followerKey),
-        new FollowerGUIEvents(this, guiPlayerSet, playerFollowerMap, followerSkullMap, followerKey),
-        new FollowerCreator(this, followerSkullMap),
-    };
-
     @Override
     public void onEnable() {
-        dataManager = new DataManager(this);
-
         writeFile();
         saveDefaultConfig();
-        reloadConfig();
         FileConfiguration config = getConfig();
+        dataManager = new DataManager(this);
+        configManager = new ConfigManager(this);
 
+        Listener[] listeners = new Listener[] {
+            this,
+            new FollowerUserEvents(this, followerSkullMap, playerFollowerMap, followerKey),
+            new FollowerGUIEvents(this, guiPlayerSet, playerFollowerMap, followerSkullMap, followerKey),
+            new FollowerCreator(this, followerSkullMap),
+        };
         registerEvents(listeners);
+
         PluginManager pluginManager = getServer().getPluginManager();
         if (pluginManager.getPlugin("Essentials") != null) {
             pluginManager.registerEvents(new EssentialsEvents(this, playerFollowerMap), this);
@@ -104,7 +105,7 @@ public final class ESFollowers extends JavaPlugin implements Listener {
     public void writeFile() {
         File dataFile = new File(this.getDataFolder(),"data.yml");
         try {
-            if (dataFile.createNewFile()) System.out.println("File Created: data.yml");
+            if (dataFile.createNewFile()) getLogger().info("File Created: data.yml");
         } catch (IOException e) {
             e.printStackTrace();
         }

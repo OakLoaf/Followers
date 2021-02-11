@@ -29,7 +29,7 @@ public class FollowerArmorStand {
 
     public FollowerArmorStand(ESFollowers instance, String followerName, Player owner, HashMap<String, ItemStack> followerSkullMap, HashMap<UUID, UUID> playerFollowerMap, NamespacedKey followerKey) {
         plugin = instance;
-        config = plugin.getConfig();
+        config = ESFollowers.configManager.getConfig();
         this.followerKey = followerKey;
         this.followerName = followerName;
         this.followerSkullMap = followerSkullMap;
@@ -54,7 +54,7 @@ public class FollowerArmorStand {
 
     public FollowerArmorStand(ESFollowers instance, String followerName, ArmorStand armorStand, HashMap<String, ItemStack> followerSkullMap) {
         plugin = instance;
-        config = plugin.getConfig();
+        config = ESFollowers.configManager.getConfig();
         this.armorStand = armorStand;
         this.followerSkullMap = followerSkullMap;
         changeFollower(followerName);

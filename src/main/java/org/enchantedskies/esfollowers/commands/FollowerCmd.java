@@ -23,7 +23,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
 
     public FollowerCmd(ESFollowers instance, HashSet<UUID> openInvPlayerSet, HashMap<String, ItemStack> followerSkullMap) {
         plugin = instance;
-        config = plugin.getConfig();
+        config = ESFollowers.configManager.getConfig();
         this.openInvPlayerSet = openInvPlayerSet;
         this.followerSkullMap = followerSkullMap;
     }
@@ -41,7 +41,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     sender.sendMessage(ESFollowers.prefix + "§7You have insufficient permissions.");
                     return true;
                 }
-                plugin.reloadConfig();
+                ESFollowers.configManager.reloadConfig();
                 followerSkullMap.clear();
                 for (String followerName : config.getKeys(false)) {
                     ConfigurationSection configSection = config.getConfigurationSection(followerName + ".Head");

@@ -21,7 +21,7 @@ public class FollowerGUI {
 
     public FollowerGUI(ESFollowers instance, Player player, int page, HashSet<UUID> playerSet, HashMap<String, ItemStack> followerSkullMap) {
         NamespacedKey pageNumKey = new NamespacedKey(instance, "page");
-        FileConfiguration config = instance.getConfig();
+        FileConfiguration config = ESFollowers.configManager.getConfig();
         this.openInvPlayerSet = playerSet;
         inventory = Bukkit.createInventory(null, 54, "Followers");
         ItemStack empty = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
