@@ -25,13 +25,11 @@ import java.util.UUID;
 
 public class FollowerCreator implements Listener {
     private final ESFollowers plugin;
-    private final FileConfiguration config;
     private final HashMap<String, ItemStack> followerSkullMap;
     private final ItemStack creatorItem;
 
     public FollowerCreator(ESFollowers instance, HashMap<String, ItemStack> followerSkullMap) {
         plugin = instance;
-        config = ESFollowers.configManager.getConfig();
         this.followerSkullMap = followerSkullMap;
 
         creatorItem = new ItemStack(Material.STICK);
@@ -59,6 +57,7 @@ public class FollowerCreator implements Listener {
             player.sendMessage(ESFollowers.prefix + "§7This ArmorStand does not have a name, unable to register as a Follower.");
             return;
         }
+        FileConfiguration config = ESFollowers.configManager.getConfig();
         ConfigurationSection configurationSection = config.getConfigurationSection(armorStandName);
         if (configurationSection != null) {
             player.sendMessage(ESFollowers.prefix + "§7A Follower already exists with this name.");
@@ -90,7 +89,7 @@ public class FollowerCreator implements Listener {
             }
         }
         player.sendMessage(ESFollowers.prefix + "§7A Follower has been added with the name §a" + armorStandName);
-        plugin.saveConfig();
+        ESFollowers.configManager.saveConfig();
         ConfigurationSection configSection = config.getConfigurationSection(armorStandName + ".Head");
         if (configSection == null) return;
         String materialStr = configSection.getString("Material", "");
