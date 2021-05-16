@@ -73,7 +73,7 @@ public class FollowerCreator implements Listener {
                 SkullMeta skullMeta = (SkullMeta) currItem.getItemMeta();
                 OfflinePlayer skullOwner = skullMeta.getOwningPlayer();
                 if (skullOwner == null) {
-                    configurationSection.set(makeFriendly(equipmentSlot.name()) + ".SkullType", "Texture");
+                    configurationSection.set(makeFriendly(equipmentSlot.name()) + ".SkullType", "Custom");
                     player.sendMessage(ESFollowers.prefix + "§7Could not find the owner of the skull in the §c" + makeFriendly(equipmentSlot.name()) + " §7slot, added Custom player head to config.yml file with no texture.");
                     configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Texture", "error");
                     continue;
