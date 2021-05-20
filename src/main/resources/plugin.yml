@@ -11,3 +11,7 @@ commands:
   gethexarmor:
     description: Gives the user a colored piece of leather armor based on a hex value
     usage: /gethexarmor
+permissions:
+  followers.admin.create:
+    description: Allows you to create followers using the follower creator stick
+    default: op
