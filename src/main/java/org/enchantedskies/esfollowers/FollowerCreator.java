@@ -1,6 +1,5 @@
 package org.enchantedskies.esfollowers;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -19,14 +18,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.enchantedskies.esfollowers.datamanager.ConfigManager;
+import org.enchantedskies.esfollowers.signmenu.SignMenuFactory;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class FollowerCreator implements Listener {
-    private final ESFollowers plugin = ESFollowers.getInstance();;
+    private final ESFollowers plugin = ESFollowers.getInstance();
     private final ItemStack creatorItem;
+    private final SignMenuFactory signMenuFactory = new SignMenuFactory();
 
     public FollowerCreator() {
         creatorItem = new ItemStack(Material.STICK);
@@ -51,43 +51,22 @@ public class FollowerCreator implements Listener {
         }
         String armorStandName = armorStand.getCustomName();
         if (armorStandName == null) {
-            player.sendMessage(ESFollowers.prefix + "§7This ArmorStand does not have a name, unable to register as a Follower.");
-            return;
+            SignMenuFactory.Menu menu = signMenuFactory.newMenu(Arrays.asList("", "^^^^^^^^^^^", "Enter a name", "for the Follower"))
+                    .reopenIfFail(true)
+                    .response((thisPlayer, strings) -> {
+                        if (!strings[0].contains(".")) {
+                            thisPlayer.sendMessage(ESFollowers.prefix + "§cFollower name cannot contain the character '.'.");
+                            return false;
+                        }
+                        ESFollowers.configManager.createFollower(player, strings[0], armorStand);
+                        return true;
+                    });
+            menu.open(player);
+        } else if (armorStandName.contains(".")) {
+            player.sendMessage(ESFollowers.prefix + "§cFollower name cannot contain the character '.'.");
+        } else {
+            ESFollowers.configManager.createFollower(player, armorStandName, armorStand);
         }
-        FileConfiguration config = ESFollowers.configManager.getConfig();
-        ConfigurationSection configurationSection = config.getConfigurationSection(armorStandName);
-        if (configurationSection != null) {
-            player.sendMessage(ESFollowers.prefix + "§7A Follower already exists with this name.");
-            return;
-        }
-        configurationSection = config.createSection(armorStandName);
-        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-            ItemStack currItem = armorStand.getItem(equipmentSlot);
-            Material material = currItem.getType();
-            if (material == Material.AIR) continue;
-            configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Material", material.toString().toLowerCase());
-            if (currItem.getType() == Material.PLAYER_HEAD) {
-                SkullMeta skullMeta = (SkullMeta) currItem.getItemMeta();
-                OfflinePlayer skullOwner = skullMeta.getOwningPlayer();
-                if (skullOwner == null) {
-                    configurationSection.set(makeFriendly(equipmentSlot.name()) + ".SkullType", "Custom");
-                    player.sendMessage(ESFollowers.prefix + "§7Could not find the owner of the skull in the §c" + makeFriendly(equipmentSlot.name()) + " §7slot, added Custom player head to config.yml file with no texture.");
-                    configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Texture", "error");
-                    continue;
-                }
-                configurationSection.set(makeFriendly(equipmentSlot.name()) + ".SkullType", "Default");
-                UUID skullUUID = skullOwner.getUniqueId();
-                configurationSection.set(makeFriendly(equipmentSlot.name()) + ".UUID", skullUUID.toString());
-                player.sendMessage(ESFollowers.prefix + "§7Skull has been created as Default SkullType. To get custom textures manually edit the config.");
-            } else if (currItem.getItemMeta() instanceof LeatherArmorMeta) {
-                LeatherArmorMeta armorMeta = (LeatherArmorMeta) currItem.getItemMeta();
-                Color armorColor = armorMeta.getColor();
-                configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Color", String.format("%02x%02x%02x", armorColor.getRed(), armorColor.getGreen(), armorColor.getBlue()));
-            }
-        }
-        player.sendMessage(ESFollowers.prefix + "§7A Follower has been added with the name §a" + armorStandName);
-        ESFollowers.configManager.saveConfig();
-        ESFollowers.configManager.loadFollower(armorStandName);
     }
 
     @EventHandler
@@ -99,9 +78,5 @@ public class FollowerCreator implements Listener {
 
     public ItemStack getCreatorItem() {
         return creatorItem;
-    }
-
-    private String makeFriendly(String string) {
-        return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
     }
 }
