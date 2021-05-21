@@ -16,16 +16,13 @@ import org.enchantedskies.esfollowers.FollowerGUI;
 import java.util.*;
 
 public class FollowerCmd implements CommandExecutor, TabCompleter {
-    private final ESFollowers plugin;
+    private final ESFollowers plugin = ESFollowers.getInstance();
     private final FileConfiguration config;
     private final HashSet<UUID> openInvPlayerSet;
-    private final HashMap<String, ItemStack> followerSkullMap;
 
-    public FollowerCmd(ESFollowers instance, HashSet<UUID> openInvPlayerSet, HashMap<String, ItemStack> followerSkullMap) {
-        plugin = instance;
+    public FollowerCmd(HashSet<UUID> openInvPlayerSet) {
         config = ESFollowers.configManager.getConfig();
         this.openInvPlayerSet = openInvPlayerSet;
-        this.followerSkullMap = followerSkullMap;
     }
 
     @Override
@@ -42,30 +39,6 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 ESFollowers.configManager.reloadConfig();
-                followerSkullMap.clear();
-                for (String followerName : config.getKeys(false)) {
-                    ConfigurationSection configSection = config.getConfigurationSection(followerName + ".Head");
-                    if (configSection == null) continue;
-                    String materialStr = configSection.getString("Material", "");
-                    Material material = Material.getMaterial(materialStr.toUpperCase());
-                    if (material == null) continue;
-                    ItemStack item = new ItemStack(material);
-                    if (material == Material.PLAYER_HEAD) {
-                        String skullType = configSection.getString("SkullType", "");
-                        if (skullType.equalsIgnoreCase("custom")) {
-                            String skullTexture = configSection.getString("Texture");
-                            if (skullTexture != null) item = ESFollowers.skullCreator.getCustomSkull(skullTexture);
-                            followerSkullMap.put(followerName, item);
-                        } else {
-                            String skullUUID = configSection.getString("UUID");
-                            if (skullUUID == null || skullUUID.equalsIgnoreCase("error")) {
-                                followerSkullMap.put(followerName.toLowerCase(), new ItemStack(Material.PLAYER_HEAD));
-                                continue;
-                            }
-                            ESFollowers.skullCreator.getPlayerSkull(UUID.fromString(skullUUID), plugin).thenAccept(itemStack -> Bukkit.getScheduler().runTask(plugin, runnable -> { followerSkullMap.put(followerName, itemStack); }));
-                        }
-                    }
-                }
                 player.sendMessage(ChatColor.GREEN + "ESFollowers has been reloaded.");
                 return true;
             } else if (args[0].equalsIgnoreCase("create")) {
@@ -73,13 +46,13 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     sender.sendMessage(ESFollowers.prefix + "§7You have insufficient permissions.");
                     return true;
                 }
-                ItemStack creator = new FollowerCreator(plugin, followerSkullMap).getCreatorItem();
+                ItemStack creator = new FollowerCreator().getCreatorItem();
                 player.getInventory().addItem(creator);
                 player.sendMessage(ESFollowers.prefix + "§7You have been given a Follower Creator.");
                 return true;
             }
         }
-        FollowerGUI followerInv = new FollowerGUI(plugin, player, 1, openInvPlayerSet, followerSkullMap);
+        FollowerGUI followerInv = new FollowerGUI(player, 1, openInvPlayerSet);
         followerInv.openInventory(player);
         return true;
     }

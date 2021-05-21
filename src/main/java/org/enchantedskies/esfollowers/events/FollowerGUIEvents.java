@@ -26,23 +26,20 @@ import java.util.HashSet;
 import java.util.UUID;
 
 public class FollowerGUIEvents implements Listener {
-    private final ESFollowers plugin;
+    private final ESFollowers plugin = ESFollowers.getInstance();;
     private final HashSet<UUID> openInvPlayerSet;
     private final NamespacedKey followerKey;
     private final HashMap<UUID, UUID> playerFollowerMap;
-    private final HashMap<String, ItemStack> followerSkullMap;
     private final ItemStack noFollowers = new ItemStack(Material.BARRIER);
     private final ItemStack nextPage = new ItemStack(Material.ARROW);
     private final ItemStack previousPage = new ItemStack(Material.ARROW);
     private final ItemStack followerToggleEnabled = new ItemStack(Material.LIME_WOOL);
     private final ItemStack followerToggleDisabled = new ItemStack(Material.RED_WOOL);
 
-    public FollowerGUIEvents(ESFollowers instance, HashSet<UUID> playerSet, HashMap<UUID, UUID> playerFollowerMap, HashMap<String, ItemStack> followerSkullMap, NamespacedKey followerKey) {
-        plugin = instance;
+    public FollowerGUIEvents(HashSet<UUID> playerSet, HashMap<UUID, UUID> playerFollowerMap, NamespacedKey followerKey) {
         this.openInvPlayerSet = playerSet;
         this.followerKey = followerKey;
         this.playerFollowerMap = playerFollowerMap;
-        this.followerSkullMap = followerSkullMap;
 
         ItemMeta barrierMeta = noFollowers.getItemMeta();
         barrierMeta.setDisplayName("§cYou don't own any followers!");
@@ -86,7 +83,7 @@ public class FollowerGUIEvents implements Listener {
             if (followerUser.isFollowerEnabled()) {
                 String followerName = followerUser.getFollower();
                 if (!playerFollowerMap.containsKey(playerUUID)) {
-                    FollowerArmorStand followerArmorStand = new FollowerArmorStand(plugin, followerName, player, followerSkullMap, playerFollowerMap, followerKey);
+                    FollowerArmorStand followerArmorStand = new FollowerArmorStand(followerName, player, playerFollowerMap, followerKey);
                     followerArmorStand.startMovement(0.4);
                     playerFollowerMap.put(playerUUID, followerArmorStand.getArmorStand().getUniqueId());
                 }
@@ -95,15 +92,15 @@ public class FollowerGUIEvents implements Listener {
                 if (armorStandUUID == null) return;
                 Bukkit.getEntity(armorStandUUID).remove();
             }
-            FollowerGUI followerInv = new FollowerGUI(plugin, player, page, openInvPlayerSet, followerSkullMap);
+            FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
             followerInv.openInventory(player);
             return;
         } else if (clickedItem.isSimilar(nextPage)) {
-            FollowerGUI followerInv = new FollowerGUI(plugin, player, page + 1, openInvPlayerSet, followerSkullMap);
+            FollowerGUI followerInv = new FollowerGUI(player, page + 1, openInvPlayerSet);
             followerInv.openInventory(player);
             return;
         } else if (clickedItem.isSimilar(previousPage)) {
-            FollowerGUI followerInv = new FollowerGUI(plugin, player, page - 1, openInvPlayerSet, followerSkullMap);
+            FollowerGUI followerInv = new FollowerGUI(player, page - 1, openInvPlayerSet);
             followerInv.openInventory(player);
             return;
         }
@@ -112,15 +109,15 @@ public class FollowerGUIEvents implements Listener {
         if (!followerUser.isFollowerEnabled()) {
             followerUser.setFollowerEnabled(true);
         }
-        FollowerGUI followerInv = new FollowerGUI(plugin, player, page, openInvPlayerSet, followerSkullMap);
+        FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
         followerInv.openInventory(player);
         if (playerFollowerMap.containsKey(player.getUniqueId())) {
             UUID armorstandUUID = playerFollowerMap.get(player.getUniqueId());
-            new FollowerArmorStand(plugin, followerName, (ArmorStand) Bukkit.getEntity(armorstandUUID), followerSkullMap);
+            new FollowerArmorStand(followerName, (ArmorStand) Bukkit.getEntity(armorstandUUID));
             followerUser.setFollower(followerName);
             return;
         }
-        FollowerArmorStand followerArmorStand = new FollowerArmorStand(plugin, followerName, player, followerSkullMap, playerFollowerMap, followerKey);
+        FollowerArmorStand followerArmorStand = new FollowerArmorStand(followerName, player, playerFollowerMap, followerKey);
         followerArmorStand.startMovement(0.4);
         followerUser.setFollower(followerName);
         playerFollowerMap.put(player.getUniqueId(), followerArmorStand.getArmorStand().getUniqueId());

@@ -19,19 +19,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.enchantedskies.esfollowers.datamanager.ConfigManager;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 public class FollowerCreator implements Listener {
-    private final ESFollowers plugin;
-    private final HashMap<String, ItemStack> followerSkullMap;
+    private final ESFollowers plugin = ESFollowers.getInstance();;
     private final ItemStack creatorItem;
 
-    public FollowerCreator(ESFollowers instance, HashMap<String, ItemStack> followerSkullMap) {
-        plugin = instance;
-        this.followerSkullMap = followerSkullMap;
-
+    public FollowerCreator() {
         creatorItem = new ItemStack(Material.STICK);
         ItemMeta creatorMeta = creatorItem.getItemMeta();
         creatorMeta.setDisplayName("Follower Creator");
@@ -90,27 +87,7 @@ public class FollowerCreator implements Listener {
         }
         player.sendMessage(ESFollowers.prefix + "§7A Follower has been added with the name §a" + armorStandName);
         ESFollowers.configManager.saveConfig();
-        ConfigurationSection configSection = config.getConfigurationSection(armorStandName + ".Head");
-        if (configSection == null) return;
-        String materialStr = configSection.getString("Material", "");
-        Material material = Material.getMaterial(materialStr.toUpperCase());
-        if (material == null) return;
-        ItemStack item = new ItemStack(material);
-        if (material == Material.PLAYER_HEAD) {
-            String skullType = configSection.getString("SkullType", "");
-            if (skullType.equalsIgnoreCase("custom")) {
-                String skullTexture = configSection.getString("Texture");
-                if (skullTexture != null || skullTexture.equalsIgnoreCase("error")) item = ESFollowers.skullCreator.getCustomSkull(skullTexture);
-                followerSkullMap.put(armorStandName, item);
-            } else {
-                String skullUUID = configSection.getString("UUID");
-                if (skullUUID == null) {
-                    followerSkullMap.put(armorStandName, new ItemStack(Material.PLAYER_HEAD));
-                    return;
-                }
-                ESFollowers.skullCreator.getPlayerSkull(UUID.fromString(skullUUID), plugin).thenAccept(itemStack -> Bukkit.getScheduler().runTask(plugin, runnable -> { followerSkullMap.put(armorStandName, itemStack); }));
-            }
-        }
+        ESFollowers.configManager.loadFollower(armorStandName);
     }
 
     @EventHandler

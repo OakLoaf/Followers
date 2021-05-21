@@ -21,14 +21,11 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class FollowerUserEvents implements Listener {
-    private final ESFollowers plugin;
+    private final ESFollowers plugin = ESFollowers.getInstance();;
     private final NamespacedKey followerKey;
-    private final HashMap<String, ItemStack> followerSkullMap;
     private final HashMap<UUID, UUID> playerFollowerMap;
 
-    public FollowerUserEvents(ESFollowers instance, HashMap<String, ItemStack> followerSkullMap, HashMap<UUID, UUID> playerFollowerMap, NamespacedKey followerKey) {
-        plugin = instance;
-        this.followerSkullMap = followerSkullMap;
+    public FollowerUserEvents(HashMap<UUID, UUID> playerFollowerMap, NamespacedKey followerKey) {
         this.playerFollowerMap = playerFollowerMap;
         this.followerKey = followerKey;
     }
@@ -41,7 +38,7 @@ public class FollowerUserEvents implements Listener {
         followerUser.setUsername(player.getName());
         String followerName = followerUser.getFollower();
         if (followerUser.isFollowerEnabled() && player.hasPermission("followers." + followerName)) {
-            FollowerArmorStand followerArmorStand = new FollowerArmorStand(plugin, followerName, player, followerSkullMap, playerFollowerMap, followerKey);
+            FollowerArmorStand followerArmorStand = new FollowerArmorStand(followerName, player, playerFollowerMap, followerKey);
             followerArmorStand.startMovement(0.4);
             playerFollowerMap.put(player.getUniqueId(), followerArmorStand.getArmorStand().getUniqueId());
         }

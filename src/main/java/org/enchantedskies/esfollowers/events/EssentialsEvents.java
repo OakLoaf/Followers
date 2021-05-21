@@ -12,11 +12,10 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class EssentialsEvents implements Listener {
-    private final ESFollowers plugin;
+    private final ESFollowers plugin = ESFollowers.getInstance();;
     private final HashMap<UUID, UUID> playerFollowerMap;
 
-    public EssentialsEvents(ESFollowers instance, HashMap<UUID, UUID> playerFollowerMap) {
-        plugin = instance;
+    public EssentialsEvents(HashMap<UUID, UUID> playerFollowerMap) {
         this.playerFollowerMap = playerFollowerMap;
     }
 

@@ -16,11 +16,12 @@ import org.enchantedskies.esfollowers.datamanager.FollowerUser;
 import java.util.*;
 
 public class FollowerGUI {
+    private final ESFollowers plugin = ESFollowers.getInstance();
     private final Inventory inventory;
     private final HashSet<UUID> openInvPlayerSet;
 
-    public FollowerGUI(ESFollowers instance, Player player, int page, HashSet<UUID> playerSet, HashMap<String, ItemStack> followerSkullMap) {
-        NamespacedKey pageNumKey = new NamespacedKey(instance, "page");
+    public FollowerGUI(Player player, int page, HashSet<UUID> playerSet) {
+        NamespacedKey pageNumKey = new NamespacedKey(plugin, "page");
         FileConfiguration config = ESFollowers.configManager.getConfig();
         this.openInvPlayerSet = playerSet;
         inventory = Bukkit.createInventory(null, 54, "Followers");
@@ -48,7 +49,7 @@ public class FollowerGUI {
             Material material = Material.getMaterial(materialStr.toUpperCase());
             if (material == null) continue;
             ItemStack item = new ItemStack(material);
-            if (material == Material.PLAYER_HEAD) item = followerSkullMap.get(followerName);
+            if (material == Material.PLAYER_HEAD) item = ESFollowers.configManager.getFollower(followerName).getHead();
             if (item == null) item = new ItemStack(Material.PLAYER_HEAD);
             ItemMeta itemMeta = item.getItemMeta();
             itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&e" + followerName));

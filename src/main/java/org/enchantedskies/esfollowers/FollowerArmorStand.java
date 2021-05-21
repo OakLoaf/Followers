@@ -14,25 +14,22 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
+import org.enchantedskies.esfollowers.datamanager.FollowerHandler;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 public class FollowerArmorStand {
-    private final ESFollowers plugin;
+    private final ESFollowers plugin = ESFollowers.getInstance();
+    private final FileConfiguration config = ESFollowers.configManager.getConfig();;
     private final ArmorStand armorStand;
-    private final FileConfiguration config;
-    private final HashMap<String, ItemStack> followerSkullMap;
     private NamespacedKey followerKey;
     private HashMap<UUID, UUID> playerFollowerMap;
     private String followerName;
 
-    public FollowerArmorStand(ESFollowers instance, String followerName, Player owner, HashMap<String, ItemStack> followerSkullMap, HashMap<UUID, UUID> playerFollowerMap, NamespacedKey followerKey) {
-        plugin = instance;
-        config = ESFollowers.configManager.getConfig();
+    public FollowerArmorStand(String followerName, Player owner, HashMap<UUID, UUID> playerFollowerMap, NamespacedKey followerKey) {
         this.followerKey = followerKey;
         this.followerName = followerName;
-        this.followerSkullMap = followerSkullMap;
         this.playerFollowerMap = playerFollowerMap;
 
         armorStand = owner.getLocation().getWorld().spawn(owner.getLocation().add(-1.5, 0, 1.5), ArmorStand.class);
@@ -52,11 +49,8 @@ public class FollowerArmorStand {
         }
     }
 
-    public FollowerArmorStand(ESFollowers instance, String followerName, ArmorStand armorStand, HashMap<String, ItemStack> followerSkullMap) {
-        plugin = instance;
-        config = ESFollowers.configManager.getConfig();
+    public FollowerArmorStand(String followerName, ArmorStand armorStand) {
         this.armorStand = armorStand;
-        this.followerSkullMap = followerSkullMap;
         changeFollower(followerName);
     }
 
@@ -125,46 +119,20 @@ public class FollowerArmorStand {
     // Private functions
 
     private void setFollowerArmorSlot(EquipmentSlot equipmentSlot, String followerName) {
-        boolean foundName = false;
-        for (String currName : config.getKeys(false)) {
-            if (followerName.equalsIgnoreCase(currName)) {
-                followerName = currName;
-                foundName = true;
-                break;
-            }
-        }
-        if (!foundName) return;
+        if (!ESFollowers.configManager.getFollowers().containsKey(followerName)) return;
         EntityEquipment armorEquipment = armorStand.getEquipment();
         if (armorEquipment == null) return;
-        ConfigurationSection configSection = config.getConfigurationSection(followerName + "." + makeFriendly(equipmentSlot.name()));
-        if (configSection == null) {
-            armorEquipment.setItem(equipmentSlot, new ItemStack(Material.AIR));
-            return;
-        }
-        String materialStr = configSection.getString("Material", "");
-        Material material = Material.getMaterial(materialStr.toUpperCase());
-        if (material == null) return;
-        ItemStack item = new ItemStack(material);
-        if (material == Material.PLAYER_HEAD) item = followerSkullMap.get(followerName);
-        else if (item.getItemMeta() instanceof LeatherArmorMeta) {
-            String color = configSection.getString("Color");
-            armorEquipment.setItem(equipmentSlot, getColoredArmour(material, color));
-            return;
+        FollowerHandler follower = ESFollowers.configManager.getFollower(followerName);
+        ItemStack item = new ItemStack(Material.AIR);
+        switch (equipmentSlot) {
+            case HEAD: item = follower.getHead(); break;
+            case CHEST: item = follower.getChest(); break;
+            case LEGS: item = follower.getLegs(); break;
+            case FEET: item = follower.getFeet(); break;
+            case HAND: item = follower.getMainHand(); break;
+            case OFF_HAND: item = follower.getOffHand(); break;
         }
         armorEquipment.setItem(equipmentSlot, item);
-    }
-
-    private ItemStack getColoredArmour(Material material, String hexColour) {
-        ItemStack item = new ItemStack(material);
-        ItemMeta itemMeta = item.getItemMeta();
-        if (!(itemMeta instanceof LeatherArmorMeta)) return item;
-        LeatherArmorMeta armorMeta = (LeatherArmorMeta) item.getItemMeta();
-        int red = Integer.valueOf(hexColour.substring(0, 2), 16);
-        int green = Integer.valueOf(hexColour.substring(2, 4), 16);
-        int blue = Integer.valueOf(hexColour.substring(4, 6), 16);
-        armorMeta.setColor(Color.fromRGB(red, green, blue));
-        item.setItemMeta(armorMeta);
-        return item;
     }
 
     private double getArmorStandYOffset(ArmorStand armorStand) {

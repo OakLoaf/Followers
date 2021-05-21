@@ -31,64 +31,41 @@ public final class ESFollowers extends JavaPlugin implements Listener {
     public static DataManager dataManager;
     public static ConfigManager configManager;
     public static SkullCreator skullCreator = new SkullCreator();
+    private static ESFollowers plugin;
     private final HashMap<UUID, UUID> playerFollowerMap = new HashMap<>();
-    private final HashMap<String, ItemStack> followerSkullMap = new HashMap<>();
     private final HashSet<UUID> guiPlayerSet = new HashSet<>();
     private final NamespacedKey followerKey = new NamespacedKey(this, "ESFollower");
 
     @Override
     public void onEnable() {
+        plugin = this;
         writeFile();
         saveDefaultConfig();
         FileConfiguration config = getConfig();
-        dataManager = new DataManager(this);
-        configManager = new ConfigManager(this);
+        dataManager = new DataManager();
+        configManager = new ConfigManager();
 
         Listener[] listeners = new Listener[] {
             this,
-            new FollowerUserEvents(this, followerSkullMap, playerFollowerMap, followerKey),
-            new FollowerGUIEvents(this, guiPlayerSet, playerFollowerMap, followerSkullMap, followerKey),
-            new FollowerCreator(this, followerSkullMap),
+            new FollowerUserEvents(playerFollowerMap, followerKey),
+            new FollowerGUIEvents(guiPlayerSet, playerFollowerMap, followerKey),
+            new FollowerCreator(),
         };
         registerEvents(listeners);
 
         PluginManager pluginManager = getServer().getPluginManager();
         if (pluginManager.getPlugin("Essentials") != null) {
-            pluginManager.registerEvents(new EssentialsEvents(this, playerFollowerMap), this);
+            pluginManager.registerEvents(new EssentialsEvents(playerFollowerMap), this);
         } else {
             getLogger().info("Essentials plugin not found. Continuing without Essentials.");
         }
-        getCommand("followers").setExecutor(new FollowerCmd(this, guiPlayerSet, followerSkullMap));
+        getCommand("followers").setExecutor(new FollowerCmd(guiPlayerSet));
         getCommand("gethexarmor").setExecutor(new GetHexArmorCmd());
 
         for (World world : Bukkit.getWorlds()) {
             for (Chunk chunk : world.getLoadedChunks()) {
                 for (Entity entity : chunk.getEntities()) {
                     if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
-                }
-            }
-        }
-
-        for (String followerName : config.getKeys(false)) {
-            ConfigurationSection configSection = config.getConfigurationSection(followerName + ".Head");
-            if (configSection == null) continue;
-            String materialStr = configSection.getString("Material", "");
-            Material material = Material.getMaterial(materialStr.toUpperCase());
-            if (material == null) continue;
-            ItemStack item = new ItemStack(material);
-            if (material == Material.PLAYER_HEAD) {
-                String skullType = configSection.getString("SkullType", "");
-                if (skullType.equalsIgnoreCase("custom")) {
-                    String skullTexture = configSection.getString("Texture");
-                    if (skullTexture != null) item = skullCreator.getCustomSkull(skullTexture);
-                    followerSkullMap.put(followerName, item);
-                } else {
-                    String skullUUID = configSection.getString("UUID");
-                    if (skullUUID == null || skullUUID.equalsIgnoreCase("error")) {
-                        followerSkullMap.put(followerName, new ItemStack(Material.PLAYER_HEAD));
-                        continue;
-                    }
-                    skullCreator.getPlayerSkull(UUID.fromString(skullUUID), this).thenAccept(itemStack -> Bukkit.getScheduler().runTask(this, runnable -> { followerSkullMap.put(followerName, itemStack); }));
                 }
             }
         }
@@ -109,6 +86,10 @@ public final class ESFollowers extends JavaPlugin implements Listener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static ESFollowers getInstance() {
+        return plugin;
     }
 
     public void registerEvents(Listener[] listeners) {

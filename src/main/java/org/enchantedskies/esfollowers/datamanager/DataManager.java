@@ -12,13 +12,12 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class DataManager {
-    ESFollowers plugin;
+    ESFollowers plugin = ESFollowers.getInstance();;
     YamlConfiguration config;
     File dataFile;
     HashMap<UUID, FollowerUser> uuidToFollowerUser = new HashMap<>();
 
-    public DataManager(ESFollowers instance) {
-        plugin = instance;
+    public DataManager() {
         dataFile = new File(plugin.getDataFolder(), "data.yml");
         config = YamlConfiguration.loadConfiguration(dataFile);
     }
