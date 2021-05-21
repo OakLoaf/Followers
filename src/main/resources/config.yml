@@ -27,6 +27,9 @@ Notch:
   Feet:
     Material: leather_boots
     Color: B02E26
-  # Hand: Data for hand slot
-  Hand:
+  # MainHand: Data for hand slot
+  MainHand:
     Material: golden_apple
+  # OffHand: Data for off hand slot
+  OffHand:
+    Material: stick
