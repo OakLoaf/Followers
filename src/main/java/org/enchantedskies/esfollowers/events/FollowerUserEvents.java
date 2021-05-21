@@ -25,8 +25,8 @@ public class FollowerUserEvents implements Listener {
     private final NamespacedKey followerKey;
     private final HashMap<UUID, UUID> playerFollowerMap;
 
-    public FollowerUserEvents(HashMap<UUID, UUID> playerFollowerMap, NamespacedKey followerKey) {
-        this.playerFollowerMap = playerFollowerMap;
+    public FollowerUserEvents(NamespacedKey followerKey) {
+        this.playerFollowerMap = ESFollowers.dataManager.getPlayerFollowerMap();
         this.followerKey = followerKey;
     }
 
@@ -38,9 +38,9 @@ public class FollowerUserEvents implements Listener {
         followerUser.setUsername(player.getName());
         String followerName = followerUser.getFollower();
         if (followerUser.isFollowerEnabled() && player.hasPermission("followers." + followerName)) {
-            FollowerArmorStand followerArmorStand = new FollowerArmorStand(followerName, player, playerFollowerMap, followerKey);
+            FollowerArmorStand followerArmorStand = new FollowerArmorStand(followerName, player, followerKey);
             followerArmorStand.startMovement(0.4);
-            playerFollowerMap.put(player.getUniqueId(), followerArmorStand.getArmorStand().getUniqueId());
+            ESFollowers.dataManager.putInPlayerFollowerMap(player.getUniqueId(), followerArmorStand.getArmorStand().getUniqueId());
         }
     }
 
@@ -50,7 +50,7 @@ public class FollowerUserEvents implements Listener {
         UUID followerUUID = playerFollowerMap.get(player.getUniqueId());
         if (followerUUID == null) return;
         Entity entity = Bukkit.getEntity(followerUUID);
-        playerFollowerMap.remove(player.getUniqueId());
+        ESFollowers.dataManager.removeFromPlayerFollowerMap(player.getUniqueId());
         if (entity == null) return;
         entity.remove();
         FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());

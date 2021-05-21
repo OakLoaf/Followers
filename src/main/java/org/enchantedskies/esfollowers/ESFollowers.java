@@ -27,12 +27,11 @@ import java.util.HashSet;
 import java.util.UUID;
 
 public final class ESFollowers extends JavaPlugin implements Listener {
+    private static ESFollowers plugin;
     public static String prefix = "§8§l[§d§lES§8§l] §r";
     public static DataManager dataManager;
     public static ConfigManager configManager;
     public static SkullCreator skullCreator = new SkullCreator();
-    private static ESFollowers plugin;
-    private final HashMap<UUID, UUID> playerFollowerMap = new HashMap<>();
     private final HashSet<UUID> guiPlayerSet = new HashSet<>();
     private final NamespacedKey followerKey = new NamespacedKey(this, "ESFollower");
 
@@ -47,15 +46,15 @@ public final class ESFollowers extends JavaPlugin implements Listener {
 
         Listener[] listeners = new Listener[] {
             this,
-            new FollowerUserEvents(playerFollowerMap, followerKey),
-            new FollowerGUIEvents(guiPlayerSet, playerFollowerMap, followerKey),
+            new FollowerUserEvents(followerKey),
+            new FollowerGUIEvents(guiPlayerSet, followerKey),
             new FollowerCreator(),
         };
         registerEvents(listeners);
 
         PluginManager pluginManager = getServer().getPluginManager();
         if (pluginManager.getPlugin("Essentials") != null) {
-            pluginManager.registerEvents(new EssentialsEvents(playerFollowerMap), this);
+            pluginManager.registerEvents(new EssentialsEvents(), this);
         } else {
             getLogger().info("Essentials plugin not found. Continuing without Essentials.");
         }
@@ -74,7 +73,7 @@ public final class ESFollowers extends JavaPlugin implements Listener {
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent event) {
         for (Entity entity : event.getChunk().getEntities()) {
-            if (playerFollowerMap.containsValue(entity.getUniqueId())) continue;
+            if (dataManager.getPlayerFollowerMap().containsValue(entity.getUniqueId())) continue;
             if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
         }
     }

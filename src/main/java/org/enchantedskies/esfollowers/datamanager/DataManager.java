@@ -1,10 +1,13 @@
 package org.enchantedskies.esfollowers.datamanager;
 
+import com.google.common.collect.HashBiMap;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.enchantedskies.esfollowers.ESFollowers;
+import org.enchantedskies.esfollowers.FollowerArmorStand;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,10 +15,11 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class DataManager {
-    ESFollowers plugin = ESFollowers.getInstance();;
-    YamlConfiguration config;
-    File dataFile;
-    HashMap<UUID, FollowerUser> uuidToFollowerUser = new HashMap<>();
+    private final ESFollowers plugin = ESFollowers.getInstance();;
+    private YamlConfiguration config;
+    private File dataFile;
+    private HashMap<UUID, UUID> playerFollowerMap;
+    private HashMap<UUID, FollowerUser> uuidToFollowerUser = new HashMap<>();
 
     public DataManager() {
         dataFile = new File(plugin.getDataFolder(), "data.yml");
@@ -58,6 +62,25 @@ public class DataManager {
             config.save(dataFile);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public HashMap<UUID, UUID> getPlayerFollowerMap() {
+        return playerFollowerMap;
+    }
+
+    public void putInPlayerFollowerMap(UUID playerUUID, UUID followerUUID) {
+        playerFollowerMap.put(playerUUID, followerUUID);
+    }
+
+    public void removeFromPlayerFollowerMap(UUID playerUUID) {
+        playerFollowerMap.remove(playerUUID);
+    }
+
+    public void reloadFollowerInventories() {
+        for (UUID playerUUID : playerFollowerMap.keySet()) {
+            UUID followerUUID = playerFollowerMap.get(playerUUID);
+            new FollowerArmorStand(getFollowerUser(playerUUID).getFollower(), (ArmorStand) Bukkit.getEntity(followerUUID));
         }
     }
 }

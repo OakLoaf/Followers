@@ -39,6 +39,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 ESFollowers.configManager.reloadConfig();
+                ESFollowers.dataManager.reloadFollowerInventories();
                 player.sendMessage(ChatColor.GREEN + "ESFollowers has been reloaded.");
                 return true;
             } else if (args[0].equalsIgnoreCase("create")) {

@@ -36,10 +36,10 @@ public class FollowerGUIEvents implements Listener {
     private final ItemStack followerToggleEnabled = new ItemStack(Material.LIME_WOOL);
     private final ItemStack followerToggleDisabled = new ItemStack(Material.RED_WOOL);
 
-    public FollowerGUIEvents(HashSet<UUID> playerSet, HashMap<UUID, UUID> playerFollowerMap, NamespacedKey followerKey) {
+    public FollowerGUIEvents(HashSet<UUID> playerSet, NamespacedKey followerKey) {
         this.openInvPlayerSet = playerSet;
         this.followerKey = followerKey;
-        this.playerFollowerMap = playerFollowerMap;
+        this.playerFollowerMap = ESFollowers.dataManager.getPlayerFollowerMap();
 
         ItemMeta barrierMeta = noFollowers.getItemMeta();
         barrierMeta.setDisplayName("§cYou don't own any followers!");
@@ -83,9 +83,9 @@ public class FollowerGUIEvents implements Listener {
             if (followerUser.isFollowerEnabled()) {
                 String followerName = followerUser.getFollower();
                 if (!playerFollowerMap.containsKey(playerUUID)) {
-                    FollowerArmorStand followerArmorStand = new FollowerArmorStand(followerName, player, playerFollowerMap, followerKey);
+                    FollowerArmorStand followerArmorStand = new FollowerArmorStand(followerName, player, followerKey);
                     followerArmorStand.startMovement(0.4);
-                    playerFollowerMap.put(playerUUID, followerArmorStand.getArmorStand().getUniqueId());
+                    ESFollowers.dataManager.putInPlayerFollowerMap(playerUUID, followerArmorStand.getArmorStand().getUniqueId());
                 }
             } else {
                 UUID armorStandUUID = playerFollowerMap.get(playerUUID);
@@ -117,10 +117,10 @@ public class FollowerGUIEvents implements Listener {
             followerUser.setFollower(followerName);
             return;
         }
-        FollowerArmorStand followerArmorStand = new FollowerArmorStand(followerName, player, playerFollowerMap, followerKey);
+        FollowerArmorStand followerArmorStand = new FollowerArmorStand(followerName, player, followerKey);
         followerArmorStand.startMovement(0.4);
         followerUser.setFollower(followerName);
-        playerFollowerMap.put(player.getUniqueId(), followerArmorStand.getArmorStand().getUniqueId());
+        ESFollowers.dataManager.putInPlayerFollowerMap(player.getUniqueId(), followerArmorStand.getArmorStand().getUniqueId());
         player.sendMessage(ChatColor.GREEN + "Follower Spawned.");
     }
 

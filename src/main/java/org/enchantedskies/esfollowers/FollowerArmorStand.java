@@ -22,15 +22,15 @@ import java.util.UUID;
 public class FollowerArmorStand {
     private final ESFollowers plugin = ESFollowers.getInstance();
     private final FileConfiguration config = ESFollowers.configManager.getConfig();;
+    private String followerName;
     private final ArmorStand armorStand;
     private NamespacedKey followerKey;
     private HashMap<UUID, UUID> playerFollowerMap;
-    private String followerName;
 
-    public FollowerArmorStand(String followerName, Player owner, HashMap<UUID, UUID> playerFollowerMap, NamespacedKey followerKey) {
+    public FollowerArmorStand(String followerName, Player owner, NamespacedKey followerKey) {
+        this.playerFollowerMap = ESFollowers.dataManager.getPlayerFollowerMap();
         this.followerKey = followerKey;
         this.followerName = followerName;
-        this.playerFollowerMap = playerFollowerMap;
 
         armorStand = owner.getLocation().getWorld().spawn(owner.getLocation().add(-1.5, 0, 1.5), ArmorStand.class);
         armorStand.setBasePlate(false);
@@ -77,7 +77,7 @@ public class FollowerArmorStand {
         new BukkitRunnable() {
             public void run() {
                 if (!armorStand.isValid()) {
-                    playerFollowerMap.remove(player.getUniqueId());
+                    ESFollowers.dataManager.removeFromPlayerFollowerMap(player.getUniqueId());
                     cancel();
                     return;
                 }

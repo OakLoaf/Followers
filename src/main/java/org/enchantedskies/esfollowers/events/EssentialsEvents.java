@@ -15,8 +15,8 @@ public class EssentialsEvents implements Listener {
     private final ESFollowers plugin = ESFollowers.getInstance();;
     private final HashMap<UUID, UUID> playerFollowerMap;
 
-    public EssentialsEvents(HashMap<UUID, UUID> playerFollowerMap) {
-        this.playerFollowerMap = playerFollowerMap;
+    public EssentialsEvents() {
+        this.playerFollowerMap = ESFollowers.dataManager.getPlayerFollowerMap();
     }
 
     @EventHandler
