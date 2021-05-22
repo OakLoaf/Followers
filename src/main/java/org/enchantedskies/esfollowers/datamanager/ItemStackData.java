@@ -29,7 +29,7 @@ public class ItemStackData {
     public void init(ConfigurationSection configurationSection, String aMaterial) {
         Material material = Material.valueOf(configurationSection.getString("Material", aMaterial).toUpperCase());
         colour = configurationSection.getString("colour", "A06540");
-        isEnchanted = Boolean.valueOf(configurationSection.getString("enchanted", "false"));
+        isEnchanted = Boolean.parseBoolean(configurationSection.getString("enchanted", "false"));
         item = new ItemStack(material);
         if (material == Material.PLAYER_HEAD) {
             String skullType = configurationSection.getString("SkullType", "");

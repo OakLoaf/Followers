@@ -5,12 +5,12 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 public class FollowerHandler {
-    private ItemStack head;
-    private ItemStack chest;
-    private ItemStack legs;
-    private ItemStack feet;
-    private ItemStack mainHand;
-    private ItemStack offHand;
+    private final ItemStack head;
+    private final ItemStack chest;
+    private final ItemStack legs;
+    private final ItemStack feet;
+    private final ItemStack mainHand;
+    private final ItemStack offHand;
 
     public FollowerHandler(ConfigurationSection configurationSection) {
         ItemStackData headData = new ItemStackData(configurationSection.getConfigurationSection("Head"), "AIR");

@@ -12,7 +12,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.enchantedskies.esfollowers.ESFollowers;
 
 import java.lang.reflect.InvocationTargetException;

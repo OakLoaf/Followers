@@ -16,11 +16,11 @@ import org.enchantedskies.esfollowers.datamanager.FollowerUser;
 import java.util.*;
 
 public class FollowerGUI {
-    private final ESFollowers plugin = ESFollowers.getInstance();
     private final Inventory inventory;
     private final HashSet<UUID> openInvPlayerSet;
 
     public FollowerGUI(Player player, int page, HashSet<UUID> playerSet) {
+        ESFollowers plugin = ESFollowers.getInstance();
         NamespacedKey pageNumKey = new NamespacedKey(plugin, "page");
         FileConfiguration config = ESFollowers.configManager.getConfig();
         this.openInvPlayerSet = playerSet;

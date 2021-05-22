@@ -5,8 +5,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.enchantedskies.esfollowers.FollowerCreator;
@@ -16,12 +14,9 @@ import org.enchantedskies.esfollowers.FollowerGUI;
 import java.util.*;
 
 public class FollowerCmd implements CommandExecutor, TabCompleter {
-    private final ESFollowers plugin = ESFollowers.getInstance();
-    private final FileConfiguration config;
     private final HashSet<UUID> openInvPlayerSet;
 
     public FollowerCmd(HashSet<UUID> openInvPlayerSet) {
-        config = ESFollowers.configManager.getConfig();
         this.openInvPlayerSet = openInvPlayerSet;
     }
 

@@ -1,34 +1,26 @@
 package org.enchantedskies.esfollowers;
 
 import org.bukkit.*;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 import org.enchantedskies.esfollowers.datamanager.FollowerHandler;
 
-import java.util.HashMap;
 import java.util.UUID;
 
 public class FollowerArmorStand {
     private final ESFollowers plugin = ESFollowers.getInstance();
-    private final FileConfiguration config = ESFollowers.configManager.getConfig();;
     private String followerName;
     private final ArmorStand armorStand;
     private NamespacedKey followerKey;
-    private HashMap<UUID, UUID> playerFollowerMap;
 
     public FollowerArmorStand(String followerName, Player owner, NamespacedKey followerKey) {
-        this.playerFollowerMap = ESFollowers.dataManager.getPlayerFollowerMap();
         this.followerKey = followerKey;
         this.followerName = followerName;
 
@@ -151,9 +143,5 @@ public class FollowerArmorStand {
 
     private double eulerToDegree(double euler) {
         return (euler / (2 * Math.PI)) * 360;
-    }
-
-    private String makeFriendly(String string) {
-        return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
     }
 }

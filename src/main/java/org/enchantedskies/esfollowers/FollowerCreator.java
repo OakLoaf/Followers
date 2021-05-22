@@ -1,10 +1,6 @@
 package org.enchantedskies.esfollowers;
 
-import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -12,19 +8,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.enchantedskies.esfollowers.signmenu.SignMenuFactory;
 
 import java.util.Arrays;
-import java.util.UUID;
 
 public class FollowerCreator implements Listener {
-    private final ESFollowers plugin = ESFollowers.getInstance();
     private final ItemStack creatorItem;
     private final SignMenuFactory signMenuFactory = new SignMenuFactory();
 

@@ -12,12 +12,8 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class EssentialsEvents implements Listener {
-    private final ESFollowers plugin = ESFollowers.getInstance();;
-    private final HashMap<UUID, UUID> playerFollowerMap;
-
-    public EssentialsEvents() {
-        this.playerFollowerMap = ESFollowers.dataManager.getPlayerFollowerMap();
-    }
+    private final ESFollowers plugin = ESFollowers.getInstance();
+    private final HashMap<UUID, UUID> playerFollowerMap = ESFollowers.dataManager.getPlayerFollowerMap();
 
     @EventHandler
     public void onAFK(AfkStatusChangeEvent event) {

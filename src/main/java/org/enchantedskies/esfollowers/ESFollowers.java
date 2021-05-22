@@ -1,14 +1,11 @@
 package org.enchantedskies.esfollowers;
 
 import org.bukkit.*;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import org.bukkit.event.world.ChunkLoadEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,7 +19,6 @@ import org.enchantedskies.esfollowers.events.FollowerUserEvents;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -40,7 +36,6 @@ public final class ESFollowers extends JavaPlugin implements Listener {
         plugin = this;
         writeFile();
         saveDefaultConfig();
-        FileConfiguration config = getConfig();
         dataManager = new DataManager();
         configManager = new ConfigManager();
 

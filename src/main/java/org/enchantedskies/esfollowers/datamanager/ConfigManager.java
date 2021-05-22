@@ -19,7 +19,7 @@ import java.util.UUID;
 public class ConfigManager {
     private final ESFollowers plugin = ESFollowers.getInstance();
     private FileConfiguration config;
-    private HashMap<String, FollowerHandler> followerList;
+    private final HashMap<String, FollowerHandler> followerList = new HashMap<>();
 
     public ConfigManager() {
         config = plugin.getConfig();
@@ -94,7 +94,7 @@ public class ConfigManager {
         return followerList.get(followerName);
     }
 
-    public HashMap getFollowers() {
+    public HashMap<String, FollowerHandler> getFollowers() {
         return followerList;
     }
 

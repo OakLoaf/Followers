@@ -11,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.enchantedskies.esfollowers.ESFollowers;
 import org.enchantedskies.esfollowers.FollowerArmorStand;
@@ -21,7 +20,6 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class FollowerUserEvents implements Listener {
-    private final ESFollowers plugin = ESFollowers.getInstance();;
     private final NamespacedKey followerKey;
     private final HashMap<UUID, UUID> playerFollowerMap;
 

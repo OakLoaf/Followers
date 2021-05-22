@@ -1,6 +1,5 @@
 package org.enchantedskies.esfollowers.datamanager;
 
-import com.google.common.collect.HashBiMap;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -15,11 +14,11 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class DataManager {
-    private final ESFollowers plugin = ESFollowers.getInstance();;
-    private YamlConfiguration config;
-    private File dataFile;
-    private HashMap<UUID, UUID> playerFollowerMap;
-    private HashMap<UUID, FollowerUser> uuidToFollowerUser = new HashMap<>();
+    private final ESFollowers plugin = ESFollowers.getInstance();
+    private final YamlConfiguration config;
+    private final File dataFile;
+    private final HashMap<UUID, UUID> playerFollowerMap = new HashMap<>();
+    private final HashMap<UUID, FollowerUser> uuidToFollowerUser = new HashMap<>();
 
     public DataManager() {
         dataFile = new File(plugin.getDataFolder(), "data.yml");
