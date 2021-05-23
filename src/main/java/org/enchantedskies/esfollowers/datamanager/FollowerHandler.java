@@ -41,15 +41,6 @@ public class FollowerHandler {
         }.runTaskLater(plugin, 100L);
     }
 
-    public FollowerHandler() {
-        head = new ItemStack(Material.AIR);
-        chest = new ItemStack(Material.AIR);
-        legs = new ItemStack(Material.AIR);
-        feet = new ItemStack(Material.AIR);
-        mainHand = new ItemStack(Material.AIR);
-        offHand = new ItemStack(Material.AIR);
-    }
-
     public ItemStack getHead() {
         return head;
     }

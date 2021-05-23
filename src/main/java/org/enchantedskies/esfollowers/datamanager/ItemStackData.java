@@ -15,12 +15,6 @@ import java.util.UUID;
 public class ItemStackData {
     private final ESFollowers plugin = ESFollowers.getInstance();
     private ItemStack item;
-    private String colour;
-    private boolean isEnchanted;
-
-    public ItemStackData(ConfigurationSection configurationSection) {
-        init(configurationSection, "STONE");
-    }
 
     public ItemStackData(ConfigurationSection configurationSection, String material) {
         init(configurationSection, material);
@@ -32,8 +26,8 @@ public class ItemStackData {
             return;
         }
         Material material = Material.valueOf(configurationSection.getString("Material", aMaterial).toUpperCase());
-        colour = configurationSection.getString("Color", "A06540");
-        isEnchanted = Boolean.parseBoolean(configurationSection.getString("Enchanted", "false"));
+        String colour = configurationSection.getString("Color", "A06540");
+        boolean isEnchanted = Boolean.parseBoolean(configurationSection.getString("Enchanted", "false"));
         item = new ItemStack(material);
         if (material == Material.PLAYER_HEAD) {
             String skullType = configurationSection.getString("SkullType", "");

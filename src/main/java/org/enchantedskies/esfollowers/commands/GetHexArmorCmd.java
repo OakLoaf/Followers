@@ -69,7 +69,7 @@ public class GetHexArmorCmd implements CommandExecutor, TabCompleter {
         }
 
         for (String currTab : tabComplete) {
-            int currArg = args.length - 1;
+            int currArg = 0;
             if (currTab.startsWith(args[currArg])) {
                 wordCompletion.add(currTab);
                 wordCompletionSuccess = true;

@@ -30,7 +30,7 @@ import java.util.UUID;
 
 public class FollowerGUIEvents implements Listener {
     private final SignMenuFactory signMenuFactory = new SignMenuFactory();
-    private final ESFollowers plugin = ESFollowers.getInstance();;
+    private final ESFollowers plugin = ESFollowers.getInstance();
     private final HashSet<UUID> openInvPlayerSet;
     private final NamespacedKey followerKey;
     private final HashMap<UUID, UUID> playerFollowerMap;
@@ -39,7 +39,6 @@ public class FollowerGUIEvents implements Listener {
     private final ItemStack previousPage = new ItemStack(Material.ARROW);
     private final ItemStack followerToggleEnabled = new ItemStack(Material.LIME_WOOL);
     private final ItemStack followerToggleDisabled = new ItemStack(Material.RED_WOOL);
-    private final ItemStack followerName = new ItemStack(Material.NAME_TAG);
 
     public FollowerGUIEvents(HashSet<UUID> playerSet, NamespacedKey followerKey) {
         this.openInvPlayerSet = playerSet;
