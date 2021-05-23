@@ -3,6 +3,7 @@ version: ${project.version}
 main: org.enchantedskies.esfollowers.ESFollowers
 api-version: 1.16
 authors: [Dav_e_]
+depend: [ProtocolLib]
 softdepend: [Essentials]
 commands:
   followers:
@@ -12,6 +13,12 @@ commands:
     description: Gives the user a colored piece of leather armor based on a hex value
     usage: /gethexarmor
 permissions:
+  followers.admin.reload:
+    description: Allows you to relaod the Followers plugin
+    default: op
   followers.admin.create:
     description: Allows you to create followers using the follower creator stick
+    default: op
+  followers.admin.delete:
+    description: Allows you to delete followers
     default: op

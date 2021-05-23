@@ -44,9 +44,12 @@ public class FollowerGUI {
             if (setStartPos >= followerSet.size()) break;
             String followerName = followerSet.get(setStartPos);
             ConfigurationSection configSection = config.getConfigurationSection(followerName + ".Head");
-            if (configSection == null) continue;
-            String materialStr = configSection.getString("Material", "");
-            Material material = Material.getMaterial(materialStr.toUpperCase());
+            Material material;
+            if (configSection == null) material = Material.ARMOR_STAND;
+            else {
+                String materialStr = configSection.getString("Material", "ARMOR_STAND");
+                material = Material.getMaterial(materialStr.toUpperCase());
+            }
             if (material == null) continue;
             ItemStack item = new ItemStack(material);
             if (material == Material.PLAYER_HEAD) item = ESFollowers.configManager.getFollower(followerName).getHead();

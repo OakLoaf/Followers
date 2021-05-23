@@ -1,16 +1,21 @@
 package org.enchantedskies.esfollowers.datamanager;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.enchantedskies.esfollowers.ESFollowers;
 
 public class FollowerHandler {
-    private final ItemStack head;
-    private final ItemStack chest;
-    private final ItemStack legs;
-    private final ItemStack feet;
-    private final ItemStack mainHand;
-    private final ItemStack offHand;
+    private ItemStack head;
+    private ItemStack chest;
+    private ItemStack legs;
+    private ItemStack feet;
+    private ItemStack mainHand;
+    private ItemStack offHand;
 
     public FollowerHandler(ConfigurationSection configurationSection) {
         ItemStackData headData = new ItemStackData(configurationSection.getConfigurationSection("Head"), "AIR");
@@ -19,12 +24,24 @@ public class FollowerHandler {
         ItemStackData feetData = new ItemStackData(configurationSection.getConfigurationSection("Feet"), "AIR");
         ItemStackData mainHandData = new ItemStackData(configurationSection.getConfigurationSection("MainHand"), "AIR");
         ItemStackData offHandData = new ItemStackData(configurationSection.getConfigurationSection("OffHand"), "AIR");
+        ESFollowers plugin = ESFollowers.getInstance();
         head = headData.getItem();
         chest = chestData.getItem();
         legs = legsData.getItem();
         feet = feetData.getItem();
         mainHand = mainHandData.getItem();
         offHand = offHandData.getItem();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                head = headData.getItem();
+                chest = chestData.getItem();
+                legs = legsData.getItem();
+                feet = feetData.getItem();
+                mainHand = mainHandData.getItem();
+                offHand = offHandData.getItem();
+            }
+        }.runTaskLater(plugin, 100L);
     }
 
     public FollowerHandler() {

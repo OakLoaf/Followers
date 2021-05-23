@@ -5,6 +5,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.enchantedskies.esfollowers.FollowerCreator;
@@ -46,6 +48,36 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                 player.getInventory().addItem(creator);
                 player.sendMessage(ESFollowers.prefix + "§7You have been given a Follower Creator.");
                 return true;
+            }  else if (args[0].equalsIgnoreCase("delete")) {
+                if (!player.hasPermission("followers.admin.delete")) {
+                    sender.sendMessage(ESFollowers.prefix + "§7You have insufficient permissions.");
+                    return true;
+                }
+                player.sendMessage(ESFollowers.prefix + "§cIncorrect usage: Try /follower delete <follower_name>.");
+                return true;
+            }
+        }
+        if (args.length >= 2) {
+            if (args[0].equalsIgnoreCase("delete")) {
+                if (!player.hasPermission("followers.admin.delete")) {
+                    sender.sendMessage(ESFollowers.prefix + "§7You have insufficient permissions.");
+                    return true;
+                }
+                String[] temp = Arrays.copyOfRange(args, 1, args.length);
+                StringBuilder followerName = new StringBuilder();
+                for (String currString : temp) {
+                    followerName.append(currString).append(" ");
+                }
+                String followerNameFinal = followerName.substring(0, followerName.length() - 1);
+                FileConfiguration config = ESFollowers.configManager.getConfig();
+                ConfigurationSection configurationSection = config.getConfigurationSection(followerNameFinal);
+                if (configurationSection == null) {
+                    player.sendMessage(ESFollowers.prefix + "§cThe Follower " + followerNameFinal + " does not exist.");
+                    return true;
+                }
+                ESFollowers.configManager.removeFollower(followerNameFinal);
+                player.sendMessage(ESFollowers.prefix + "§aThe Follower " + followerNameFinal + " has been deleted.");
+                return true;
             }
         }
         FollowerGUI followerInv = new FollowerGUI(player, 1, openInvPlayerSet);
@@ -61,11 +93,14 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
         boolean wordCompletionSuccess = false;
 
         if (args.length == 1) {
-            if (commandSender.hasPermission("followers.admin.reload")) {
-                tabComplete.add("reload");
-            }
-            if (commandSender.hasPermission("follower.admin.create")) {
-                tabComplete.add("create");
+            if (commandSender.hasPermission("followers.admin.reload")) tabComplete.add("reload");
+            if (commandSender.hasPermission("follower.admin.create")) tabComplete.add("create");
+            if (commandSender.hasPermission("follower.admin.delete")) tabComplete.add("delete");
+        } else if (args.length == 2) {
+            if (commandSender.hasPermission("follower.admin.delete")) {
+                for (String followerName : ESFollowers.configManager.getFollowers().keySet()) {
+                    tabComplete.add(followerName);
+                }
             }
         }
 

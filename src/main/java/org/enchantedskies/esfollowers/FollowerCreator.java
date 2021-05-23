@@ -45,7 +45,7 @@ public class FollowerCreator implements Listener {
             SignMenuFactory.Menu menu = signMenuFactory.newMenu(Arrays.asList("", "^^^^^^^^^^^", "Enter a name", "for the Follower"))
                     .reopenIfFail(true)
                     .response((thisPlayer, strings) -> {
-                        if (!strings[0].contains(".")) {
+                        if (strings[0].contains(".")) {
                             thisPlayer.sendMessage(ESFollowers.prefix + "§cFollower name cannot contain the character '.'.");
                             return false;
                         }

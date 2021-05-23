@@ -59,7 +59,12 @@ public class ConfigManager {
             ItemStack currItem = armorStand.getItem(equipmentSlot);
             Material material = currItem.getType();
             if (material == Material.AIR) continue;
-            configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Material", material.toString().toLowerCase());
+            String equipmentSlotName = makeFriendly(equipmentSlot.name());
+            switch (equipmentSlotName) {
+                case "Hand": equipmentSlotName = "MainHand"; break;
+                case "Off_hand": equipmentSlotName = "OffHand"; break;
+            }
+            configurationSection.set(equipmentSlotName + ".Material", material.toString().toLowerCase());
             if (currItem.getType() == Material.PLAYER_HEAD) {
                 SkullMeta skullMeta = (SkullMeta) currItem.getItemMeta();
                 OfflinePlayer skullOwner = skullMeta.getOwningPlayer();
@@ -78,6 +83,9 @@ public class ConfigManager {
                 Color armorColor = armorMeta.getColor();
                 configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Color", String.format("%02x%02x%02x", armorColor.getRed(), armorColor.getGreen(), armorColor.getBlue()));
             }
+            if (currItem.getEnchantments().size() >= 1) {
+                configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Enchanted", "True");
+            }
         }
         owner.sendMessage(ESFollowers.prefix + "§7A Follower has been added with the name §a" + followerName);
         saveConfig();
@@ -88,6 +96,11 @@ public class ConfigManager {
         ConfigurationSection configurationSection = config.getConfigurationSection(followerName);
         if (followerList.containsKey(followerName)) return;
         followerList.put(followerName, new FollowerHandler(configurationSection));
+    }
+
+    public void removeFollower(String followerName) {
+        config.set(followerName, null);
+        followerList.remove(followerName);
     }
 
     public FollowerHandler getFollower(String followerName) {
