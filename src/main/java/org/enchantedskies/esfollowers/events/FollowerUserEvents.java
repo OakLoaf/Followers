@@ -8,6 +8,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -70,6 +71,14 @@ public class FollowerUserEvents implements Listener {
                 entity.teleport(event.getPlayer());
                 return;
             }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteractWithEntity(PlayerInteractEntityEvent event) {
+        Entity entity = event.getRightClicked();
+        if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) {
+            event.setCancelled(true);
         }
     }
 }

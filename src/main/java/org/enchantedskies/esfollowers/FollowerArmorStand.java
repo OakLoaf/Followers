@@ -80,7 +80,7 @@ public class FollowerArmorStand {
                 Vector difference = getDifference(player, armorStand);
                 if (difference.clone().setY(0).lengthSquared() < 6.25) {
                     Vector differenceY = difference.clone().setX(0).setZ(0);
-                    differenceY.setY(differenceY.getY() - 0.5);
+                    differenceY.setY(differenceY.getY() - 0.25);
                     followerLoc.add(differenceY.multiply(speed));
                 } else {
                     Vector normalizedDifference = difference.clone().normalize();
@@ -131,7 +131,7 @@ public class FollowerArmorStand {
     }
 
     private double getPitch(Player player, ArmorStand armorStand) {
-        Vector difference = (player.getEyeLocation().subtract(0,0.9, 0)).subtract(armorStand.getEyeLocation()).toVector();
+        Vector difference = (player.getEyeLocation().subtract(0,0.6, 0)).subtract(armorStand.getEyeLocation()).toVector();
         if (difference.getX() == 0.0D && difference.getZ() == 0.0D) return (float)(difference.getY() > 0.0D ? -90 : 90);
         else return Math.atan(-difference.getY() / Math.sqrt((difference.getX()*difference.getX()) + (difference.getZ()*difference.getZ())));
     }
