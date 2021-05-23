@@ -8,6 +8,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -20,12 +21,15 @@ import org.enchantedskies.esfollowers.ESFollowers;
 import org.enchantedskies.esfollowers.FollowerArmorStand;
 import org.enchantedskies.esfollowers.FollowerGUI;
 import org.enchantedskies.esfollowers.datamanager.FollowerUser;
+import org.enchantedskies.esfollowers.utils.SignMenuFactory;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
 public class FollowerGUIEvents implements Listener {
+    private final SignMenuFactory signMenuFactory = new SignMenuFactory();
     private final ESFollowers plugin = ESFollowers.getInstance();;
     private final HashSet<UUID> openInvPlayerSet;
     private final NamespacedKey followerKey;
@@ -35,6 +39,7 @@ public class FollowerGUIEvents implements Listener {
     private final ItemStack previousPage = new ItemStack(Material.ARROW);
     private final ItemStack followerToggleEnabled = new ItemStack(Material.LIME_WOOL);
     private final ItemStack followerToggleDisabled = new ItemStack(Material.RED_WOOL);
+    private final ItemStack followerName = new ItemStack(Material.NAME_TAG);
 
     public FollowerGUIEvents(HashSet<UUID> playerSet, NamespacedKey followerKey) {
         this.openInvPlayerSet = playerSet;
@@ -103,6 +108,31 @@ public class FollowerGUIEvents implements Listener {
             FollowerGUI followerInv = new FollowerGUI(player, page - 1, openInvPlayerSet);
             followerInv.openInventory(player);
             return;
+        } else if (clickedItem.getType() == Material.NAME_TAG && clickedItem.getItemMeta().getDisplayName().startsWith("§eFollower Name:")) {
+            UUID armorStandUUID = playerFollowerMap.get(playerUUID);
+            if (armorStandUUID == null) return;
+            ArmorStand armorStand = (ArmorStand) Bukkit.getEntity(armorStandUUID);
+            FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());
+            if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                followerUser.setDisplayNameEnabled(!armorStand.isCustomNameVisible());
+                armorStand.setCustomNameVisible(!armorStand.isCustomNameVisible());
+                FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
+                followerInv.openInventory(player);
+                return;
+            }
+            SignMenuFactory.Menu menu = signMenuFactory.newMenu(Arrays.asList("", "^^^^^^^^^^^", "Enter a name", "for the Follower"))
+                .reopenIfFail(true)
+                .response((thisPlayer, strings) -> {
+                    if (strings[0].equals("")) strings[0] = " ";
+                    armorStand.setCustomName(strings[0]);
+                    armorStand.setCustomNameVisible(true);
+                    followerUser.setDisplayName(strings[0]);
+                    followerUser.setDisplayNameEnabled(true);
+                    return true;
+                });
+            player.closeInventory();
+            menu.open(player);
+            return;
         }
         String followerName = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName());
         FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());
@@ -140,6 +170,7 @@ public class FollowerGUIEvents implements Listener {
     private int getPageNum(Inventory inventory) {
         NamespacedKey pageNumKey = new NamespacedKey(plugin, "page");
         ItemStack item = inventory.getItem(0);
+        if (item == null) return 0;
         ItemMeta itemMeta = item.getItemMeta();
         return itemMeta.getPersistentDataContainer().get(pageNumKey, PersistentDataType.INTEGER);
     }

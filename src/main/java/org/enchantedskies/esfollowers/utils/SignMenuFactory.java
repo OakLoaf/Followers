@@ -1,4 +1,4 @@
-package org.enchantedskies.esfollowers.signmenu;
+package org.enchantedskies.esfollowers.utils;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;

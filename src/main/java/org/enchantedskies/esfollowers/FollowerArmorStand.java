@@ -30,7 +30,6 @@ public class FollowerArmorStand {
         armorStand.setInvulnerable(true);
         armorStand.setCanPickupItems(false);
         armorStand.setSmall(true);
-        armorStand.setMarker(true);
         armorStand.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, owner.getUniqueId().toString());
 
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {

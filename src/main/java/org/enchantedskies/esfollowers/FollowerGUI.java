@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -24,6 +25,7 @@ public class FollowerGUI {
         NamespacedKey pageNumKey = new NamespacedKey(plugin, "page");
         FileConfiguration config = ESFollowers.configManager.getConfig();
         this.openInvPlayerSet = playerSet;
+        HashMap<UUID, UUID> playerFollowerMap = ESFollowers.dataManager.getPlayerFollowerMap();
         inventory = Bukkit.createInventory(null, 54, "Followers");
         ItemStack empty = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta emptyMeta = empty.getItemMeta();
@@ -95,6 +97,22 @@ public class FollowerGUI {
             previousPageMeta.setDisplayName("§e<- Previous Page");
             previousPage.setItemMeta(previousPageMeta);
             inventory.setItem(48, previousPage);
+        }
+        if (player.hasPermission("followers.name")) {
+            ItemStack followerName = new ItemStack(Material.NAME_TAG);
+            ItemMeta followerNameMeta = followerName.getItemMeta();
+            UUID armorStandUUID = playerFollowerMap.get(player.getUniqueId());
+            if (armorStandUUID == null) return;
+            ArmorStand armorStand = (ArmorStand) Bukkit.getEntity(armorStandUUID);
+            String followerStr = armorStand.getCustomName();
+            if (followerStr == null) followerStr = "Unnamed";
+            followerNameMeta.setDisplayName("§eFollower Name: §f" + followerStr);
+            List<String> lore = new ArrayList<>();
+            if (armorStand.isCustomNameVisible()) lore.add("§eShown §7§o(Shift-click to Hide)");
+            else lore.add("§eHidden §7§o(Shift-click to Show)");
+            followerNameMeta.setLore(lore);
+            followerName.setItemMeta(followerNameMeta);
+            inventory.setItem(45, followerName);
         }
     }
 

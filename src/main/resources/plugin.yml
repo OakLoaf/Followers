@@ -14,11 +14,14 @@ commands:
     usage: /gethexarmor
 permissions:
   followers.admin.reload:
-    description: Allows you to relaod the Followers plugin
+    description: Allows you to reload the Followers plugin
     default: op
   followers.admin.create:
     description: Allows you to create followers using the follower creator stick
     default: op
   followers.admin.delete:
     description: Allows you to delete followers
+    default: op
+  followers.name:
+    description: Allows you to name your Follower
     default: op

@@ -1,4 +1,4 @@
-package org.enchantedskies.esfollowers;
+package org.enchantedskies.esfollowers.utils;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.enchantedskies.esfollowers.ESFollowers;
 
 import java.util.Set;
 import java.util.UUID;

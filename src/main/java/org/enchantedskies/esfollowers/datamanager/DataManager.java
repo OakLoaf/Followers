@@ -34,28 +34,34 @@ public class DataManager {
             String playerName = player.getName();
             configurationSection.set("name", playerName);
             configurationSection.set("follower", "none");
+            configurationSection.set("followerDisplayName", "Unnamed");
+            configurationSection.set("followerNameEnabled", Boolean.FALSE);
             configurationSection.set("followerEnabled", Boolean.TRUE);
             plugin.saveConfig();
-            uuidToFollowerUser.put(uuid, new FollowerUser(uuid, playerName, "none", false));
+            uuidToFollowerUser.put(uuid, new FollowerUser(uuid, playerName, "none", "Unnamed", false, false));
             return;
         }
         String name = configurationSection.getString("name");
         String follower = configurationSection.getString("follower");
+        String followerDisplayName = configurationSection.getString("followerDisplayName");
+        boolean followerNameEnabled = configurationSection.getBoolean("followerNameEnabled");
         boolean followerEnabled = configurationSection.getBoolean("followerEnabled");
-        FollowerUser followerUser = new FollowerUser(uuid, name, follower, followerEnabled);
+        FollowerUser followerUser = new FollowerUser(uuid, name, follower, followerDisplayName, followerNameEnabled, followerEnabled);
         uuidToFollowerUser.put(uuid, followerUser);
     }
 
     public FollowerUser getFollowerUser(UUID uuid) {
         Player player = Bukkit.getPlayer(uuid);
         if (player == null) return null;
-        return uuidToFollowerUser.getOrDefault(uuid, new FollowerUser(uuid, player.getName(), "none", false));
+        return uuidToFollowerUser.getOrDefault(uuid, new FollowerUser(uuid, player.getName(), "none", "Unnamed", false, false));
     }
 
     public void saveFollowerUser(FollowerUser followerUser) {
         ConfigurationSection configurationSection = config.createSection(followerUser.getUUID().toString());
         configurationSection.set("name", followerUser.getUsername());
         configurationSection.set("follower", followerUser.getFollower());
+        configurationSection.set("followerDisplayName", followerUser.getDisplayName());
+        configurationSection.set("followerNameEnabled", followerUser.isDisplayNameEnabled());
         configurationSection.set("followerEnabled", followerUser.isFollowerEnabled());
         try {
             config.save(dataFile);

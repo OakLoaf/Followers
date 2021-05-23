@@ -1,11 +1,8 @@
 package org.enchantedskies.esfollowers.datamanager;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.enchantedskies.esfollowers.ESFollowers;
 

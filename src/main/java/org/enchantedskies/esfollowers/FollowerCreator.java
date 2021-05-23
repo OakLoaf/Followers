@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.enchantedskies.esfollowers.signmenu.SignMenuFactory;
+import org.enchantedskies.esfollowers.utils.SignMenuFactory;
 
 import java.util.Arrays;
 

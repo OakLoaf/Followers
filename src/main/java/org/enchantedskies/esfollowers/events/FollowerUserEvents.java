@@ -38,6 +38,8 @@ public class FollowerUserEvents implements Listener {
         if (followerUser.isFollowerEnabled() && player.hasPermission("followers." + followerName)) {
             FollowerArmorStand followerArmorStand = new FollowerArmorStand(followerName, player, followerKey);
             followerArmorStand.startMovement(0.4);
+            followerArmorStand.getArmorStand().setCustomName(followerUser.getDisplayName());
+            followerArmorStand.getArmorStand().setCustomNameVisible(followerUser.isDisplayNameEnabled());
             ESFollowers.dataManager.putInPlayerFollowerMap(player.getUniqueId(), followerArmorStand.getArmorStand().getUniqueId());
         }
     }

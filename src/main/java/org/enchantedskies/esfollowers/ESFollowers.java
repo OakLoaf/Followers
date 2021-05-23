@@ -16,6 +16,7 @@ import org.enchantedskies.esfollowers.datamanager.DataManager;
 import org.enchantedskies.esfollowers.events.EssentialsEvents;
 import org.enchantedskies.esfollowers.events.FollowerGUIEvents;
 import org.enchantedskies.esfollowers.events.FollowerUserEvents;
+import org.enchantedskies.esfollowers.utils.SkullCreator;
 
 import java.io.File;
 import java.io.IOException;

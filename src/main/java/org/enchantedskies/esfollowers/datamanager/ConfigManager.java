@@ -101,6 +101,7 @@ public class ConfigManager {
     public void removeFollower(String followerName) {
         config.set(followerName, null);
         followerList.remove(followerName);
+        saveConfig();
     }
 
     public FollowerHandler getFollower(String followerName) {
