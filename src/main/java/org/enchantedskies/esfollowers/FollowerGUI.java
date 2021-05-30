@@ -101,14 +101,9 @@ public class FollowerGUI {
         if (player.hasPermission("followers.name")) {
             ItemStack followerName = new ItemStack(Material.NAME_TAG);
             ItemMeta followerNameMeta = followerName.getItemMeta();
-            UUID armorStandUUID = playerFollowerMap.get(player.getUniqueId());
-            if (armorStandUUID == null) return;
-            ArmorStand armorStand = (ArmorStand) Bukkit.getEntity(armorStandUUID);
-            String followerStr = armorStand.getCustomName();
-            if (followerStr == null) followerStr = "Unnamed";
-            followerNameMeta.setDisplayName("§eFollower Name: §f" + followerStr);
+            followerNameMeta.setDisplayName("§eFollower Name: §f" + followerUser.getDisplayName());
             List<String> lore = new ArrayList<>();
-            if (armorStand.isCustomNameVisible()) lore.add("§eShown §7§o(Shift-click to Hide)");
+            if (followerUser.isDisplayNameEnabled()) lore.add("§eShown §7§o(Shift-click to Hide)");
             else lore.add("§eHidden §7§o(Shift-click to Show)");
             followerNameMeta.setLore(lore);
             followerName.setItemMeta(followerNameMeta);

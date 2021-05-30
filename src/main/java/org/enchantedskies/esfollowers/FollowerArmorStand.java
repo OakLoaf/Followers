@@ -11,6 +11,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 import org.enchantedskies.esfollowers.datamanager.FollowerHandler;
+import org.enchantedskies.esfollowers.datamanager.FollowerUser;
 
 import java.util.UUID;
 
@@ -23,6 +24,7 @@ public class FollowerArmorStand {
     public FollowerArmorStand(String followerName, Player owner, NamespacedKey followerKey) {
         this.followerKey = followerKey;
         this.followerName = followerName;
+        FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(owner.getUniqueId());
 
         armorStand = owner.getLocation().getWorld().spawn(owner.getLocation().add(-1.5, 0, 1.5), ArmorStand.class);
         armorStand.setBasePlate(false);
@@ -30,6 +32,8 @@ public class FollowerArmorStand {
         armorStand.setInvulnerable(true);
         armorStand.setCanPickupItems(false);
         armorStand.setSmall(true);
+        armorStand.setCustomName(followerUser.getDisplayName());
+        armorStand.setCustomNameVisible(followerUser.isDisplayNameEnabled());
         armorStand.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, owner.getUniqueId().toString());
 
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
