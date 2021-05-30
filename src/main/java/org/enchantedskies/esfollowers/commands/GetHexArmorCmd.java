@@ -24,7 +24,7 @@ public class GetHexArmorCmd implements CommandExecutor, TabCompleter {
             return true;
         }
         Player player = (Player) sender;
-        if (!player.hasPermission("followers.admin.gethexarmor")) {
+        if (!player.hasPermission("follower.admin.gethexarmor")) {
             sender.sendMessage(ESFollowers.prefix + "§7You have insufficient permissions.");
             return true;
         }
@@ -59,7 +59,7 @@ public class GetHexArmorCmd implements CommandExecutor, TabCompleter {
         boolean wordCompletionSuccess = false;
 
         if (args.length == 1) {
-            if (commandSender.hasPermission("followers.admin.gethexarmor")) {
+            if (commandSender.hasPermission("follower.admin.gethexarmor")) {
                 tabComplete.add("leather_helmet");
                 tabComplete.add("leather_chestplate");
                 tabComplete.add("leather_leggings");

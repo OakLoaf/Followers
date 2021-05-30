@@ -31,7 +31,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("reload")) {
-                if (!player.hasPermission("followers.admin.reload")) {
+                if (!player.hasPermission("follower.admin.reload")) {
                     sender.sendMessage(ESFollowers.prefix + "§7You have insufficient permissions.");
                     return true;
                 }
@@ -40,7 +40,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                 player.sendMessage(ChatColor.GREEN + "ESFollowers has been reloaded.");
                 return true;
             } else if (args[0].equalsIgnoreCase("create")) {
-                if (!player.hasPermission("followers.admin.create")) {
+                if (!player.hasPermission("follower.admin.create")) {
                     sender.sendMessage(ESFollowers.prefix + "§7You have insufficient permissions.");
                     return true;
                 }
@@ -49,7 +49,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                 player.sendMessage(ESFollowers.prefix + "§7You have been given a Follower Creator.");
                 return true;
             }  else if (args[0].equalsIgnoreCase("delete")) {
-                if (!player.hasPermission("followers.admin.delete")) {
+                if (!player.hasPermission("follower.admin.delete")) {
                     sender.sendMessage(ESFollowers.prefix + "§7You have insufficient permissions.");
                     return true;
                 }
@@ -59,7 +59,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
         }
         if (args.length >= 2) {
             if (args[0].equalsIgnoreCase("delete")) {
-                if (!player.hasPermission("followers.admin.delete")) {
+                if (!player.hasPermission("follower.admin.delete")) {
                     sender.sendMessage(ESFollowers.prefix + "§7You have insufficient permissions.");
                     return true;
                 }
@@ -93,7 +93,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
         boolean wordCompletionSuccess = false;
 
         if (args.length == 1) {
-            if (commandSender.hasPermission("followers.admin.reload")) tabComplete.add("reload");
+            if (commandSender.hasPermission("follower.admin.reload")) tabComplete.add("reload");
             if (commandSender.hasPermission("follower.admin.create")) tabComplete.add("create");
             if (commandSender.hasPermission("follower.admin.delete")) tabComplete.add("delete");
         } else if (args.length == 2) {

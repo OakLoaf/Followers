@@ -36,7 +36,7 @@ public class FollowerCreator implements Listener {
         ArmorStand armorStand = (ArmorStand) event.getRightClicked();
         if (!heldItem.isSimilar(creatorItem)) return;
         event.setCancelled(true);
-        if (!player.hasPermission("followers.admin.create")) {
+        if (!player.hasPermission("follower.admin.create")) {
             player.sendMessage(ESFollowers.prefix + "§7You have insufficient permissions.");
             return;
         }
