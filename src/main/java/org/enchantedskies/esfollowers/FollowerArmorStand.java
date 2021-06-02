@@ -2,6 +2,7 @@ package org.enchantedskies.esfollowers;
 
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
@@ -26,15 +27,17 @@ public class FollowerArmorStand {
         this.followerName = followerName;
         FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(owner.getUniqueId());
 
-        armorStand = owner.getLocation().getWorld().spawn(owner.getLocation().add(-1.5, 0, 1.5), ArmorStand.class);
-        armorStand.setBasePlate(false);
-        armorStand.setArms(true);
-        armorStand.setInvulnerable(true);
-        armorStand.setCanPickupItems(false);
-        armorStand.setSmall(true);
-        armorStand.setCustomName(followerUser.getDisplayName());
-        armorStand.setCustomNameVisible(followerUser.isDisplayNameEnabled());
-        armorStand.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, owner.getUniqueId().toString());
+        armorStand = owner.getLocation().getWorld().spawn(owner.getLocation().add(-1.5, 0, 1.5), ArmorStand.class, (armorStand -> {
+            armorStand.setBasePlate(false);
+            armorStand.setArms(true);
+            armorStand.setInvulnerable(true);
+            armorStand.setCanPickupItems(false);
+            armorStand.setSmall(true);
+            armorStand.setCustomName(followerUser.getDisplayName());
+            armorStand.setCustomNameVisible(followerUser.isDisplayNameEnabled());
+            armorStand.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, owner.getUniqueId().toString());
+        }));
+
 
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
             setFollowerArmorSlot(equipmentSlot, followerName);

@@ -6,7 +6,6 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -25,7 +24,6 @@ public class FollowerGUI {
         NamespacedKey pageNumKey = new NamespacedKey(plugin, "page");
         FileConfiguration config = ESFollowers.configManager.getConfig();
         this.openInvPlayerSet = playerSet;
-        HashMap<UUID, UUID> playerFollowerMap = ESFollowers.dataManager.getPlayerFollowerMap();
         inventory = Bukkit.createInventory(null, 54, "Followers");
         ItemStack empty = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta emptyMeta = empty.getItemMeta();
@@ -98,7 +96,7 @@ public class FollowerGUI {
             previousPage.setItemMeta(previousPageMeta);
             inventory.setItem(48, previousPage);
         }
-        if (player.hasPermission("followers.name")) {
+        if (player.hasPermission("followers.name") && !player.getName().startsWith(".")) {
             ItemStack followerName = new ItemStack(Material.NAME_TAG);
             ItemMeta followerNameMeta = followerName.getItemMeta();
             followerNameMeta.setDisplayName("§eFollower Name: §f" + followerUser.getDisplayName());
