@@ -1,30 +1,28 @@
 package org.enchantedskies.esfollowers.datamanager;
 
-import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
-import com.mysql.cj.jdbc.MysqlDataSource;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.enchantedskies.esfollowers.ESFollowers;
 import org.enchantedskies.esfollowers.FollowerArmorStand;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class DataManager implements Storage {
+public class YmlDataManager implements Storage {
     private final ESFollowers plugin = ESFollowers.getInstance();
-    private final MysqlDataSource dataSource = new MysqlConnectionPoolDataSource();
+    private final YamlConfiguration config;
+    private final File dataFile;
     private final HashMap<UUID, UUID> playerFollowerMap = new HashMap<>();
     private final HashMap<UUID, FollowerUser> uuidToFollowerUser = new HashMap<>();
 
-    public DataManager() {
-        Database database = plugin.getConfig().getDatabase();
-        dataSource.setPassword(database.getPassword());
-        dataSource.setPortNumber(database.getPort());
-        dataSource.setDatabaseName(database.getDatabase());
-        dataSource.setUser(database.getUser());
+    public YmlDataManager() {
+        dataFile = new File(plugin.getDataFolder(), "data.yml");
+        config = YamlConfiguration.loadConfiguration(dataFile);
     }
 
     @Override
