@@ -33,6 +33,10 @@ public class ConfigManager {
         return config;
     }
 
+    public String getDatabaseType() {
+        return config.getString("database.type");
+    }
+
     public void saveConfig() {
         plugin.saveConfig();
         reloadConfig();

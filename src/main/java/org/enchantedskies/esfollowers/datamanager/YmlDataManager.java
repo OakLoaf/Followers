@@ -16,13 +16,23 @@ import java.util.UUID;
 public class YmlDataManager implements Storage {
     private final ESFollowers plugin = ESFollowers.getInstance();
     private final YamlConfiguration config;
-    private final File dataFile;
+    private File dataFile;
     private final HashMap<UUID, UUID> playerFollowerMap = new HashMap<>();
     private final HashMap<UUID, FollowerUser> uuidToFollowerUser = new HashMap<>();
 
     public YmlDataManager() {
-        dataFile = new File(plugin.getDataFolder(), "data.yml");
+        dataFile = initYML();
         config = YamlConfiguration.loadConfiguration(dataFile);
+    }
+
+    private File initYML() {
+        File dataFile = new File(plugin.getDataFolder(),"data.yml");
+        try {
+            if (dataFile.createNewFile()) plugin.getLogger().info("File Created: data.yml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return dataFile;
     }
 
     @Override
