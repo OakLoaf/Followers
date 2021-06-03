@@ -34,8 +34,8 @@ public final class ESFollowers extends JavaPlugin implements Listener {
     public void onEnable() {
         plugin = this;
         saveDefaultConfig();
-        dataManager = new DataManager();
         configManager = new ConfigManager();
+        dataManager = new DataManager();
 
         Listener[] listeners = new Listener[] {
             this,

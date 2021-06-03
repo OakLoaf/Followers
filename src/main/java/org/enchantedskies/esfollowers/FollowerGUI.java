@@ -36,6 +36,7 @@ public class FollowerGUI {
         }
         List<String> followerSet = new ArrayList<>();
         for (String followerName : config.getKeys(false)) {
+            if (followerName.equals("Database")) continue;
             if (!player.hasPermission("followers." + followerName.toLowerCase()) && !player.hasPermission("followers.all")) continue;
             followerSet.add(followerName);
         }

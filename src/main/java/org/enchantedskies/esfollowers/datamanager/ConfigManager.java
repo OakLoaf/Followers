@@ -24,6 +24,7 @@ public class ConfigManager {
     public ConfigManager() {
         config = plugin.getConfig();
         for (String followerName : config.getKeys(false)) {
+            if (followerName.equals("Database")) continue;
             ConfigurationSection configSection = config.getConfigurationSection(followerName);
             followerList.put(followerName, new FollowerHandler(configSection));
         }
@@ -34,7 +35,7 @@ public class ConfigManager {
     }
 
     public String getDatabaseType() {
-        return config.getString("database.type");
+        return config.getString("Database.type");
     }
 
     public void saveConfig() {
@@ -47,6 +48,7 @@ public class ConfigManager {
         config = plugin.getConfig();
         clearFollowerCache();
         for (String followerName : config.getKeys(false)) {
+            if (followerName.equals("Database")) continue;
             loadFollower(followerName);
         }
     }

@@ -24,13 +24,14 @@ public class MysqlStorage implements Storage {
     private final MysqlDataSource dataSource;
 
     public MysqlStorage() {
-        initDb();
-        dataSource = initMySQLDataSource();
         ConfigurationSection databaseSection = plugin.getConfig().getConfigurationSection("Database");
-        dataSource.setPassword(databaseSection.getString("password", ""));
-        dataSource.setPortNumber(databaseSection.getInt("port"));
-        dataSource.setDatabaseName(databaseSection.getString("name"));
-        dataSource.setUser(databaseSection.getString("user"));
+        String dbName = databaseSection.getString("name");
+        String dbHost = databaseSection.getString("host");
+        int dbPort = databaseSection.getInt("port");
+        String dbUser = databaseSection.getString("user");
+        String dbPass = databaseSection.getString("password", "");
+        dataSource = initMySQLDataSource(dbName, dbHost, dbPort, dbUser, dbPass);
+        initDb();
     }
 
     public Connection conn() {
@@ -87,7 +88,7 @@ public class MysqlStorage implements Storage {
     private void initDb() {
         String setup;
         try (InputStream in = DataManager.class.getClassLoader().getResourceAsStream("dbsetup.sql")) {
-            setup = new BufferedReader(new InputStreamReader(in)).lines().collect(Collectors.joining("n"));
+            setup = new BufferedReader(new InputStreamReader(in)).lines().collect(Collectors.joining("\n"));
         } catch (IOException e) {
             plugin.getLogger().log(Level.SEVERE, "Could not read db setup file.", e);
             e.printStackTrace();
@@ -105,21 +106,24 @@ public class MysqlStorage implements Storage {
         plugin.getLogger().info("§2Database setup complete.");
     }
 
-    private MysqlDataSource initMySQLDataSource() {
+    private MysqlDataSource initMySQLDataSource(String dbName, String host, int port, String user, String password) {
         MysqlDataSource dataSource = new MysqlConnectionPoolDataSource();
-        try {
-            testDataSource(dataSource);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        dataSource.setDatabaseName(dbName);
+        dataSource.setServerName(host);
+        dataSource.setPortNumber(port);
+        dataSource.setUser(user);
+        dataSource.setPassword(password);
+        testDataSource(dataSource);
         return dataSource;
     }
 
-    private void testDataSource(DataSource dataSource) throws SQLException {
+    private void testDataSource(DataSource dataSource) {
         try (Connection conn = dataSource.getConnection()) {
             if (!conn.isValid(1000)) {
                 throw new SQLException("Could not establish database connection.");
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

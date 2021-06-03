@@ -35,7 +35,6 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     sender.sendMessage(ESFollowers.prefix + "§7You have insufficient permissions.");
                     return true;
                 }
-                ESFollowers.configManager.reloadConfig();
                 ESFollowers.dataManager.reloadFollowerInventories();
                 player.sendMessage(ChatColor.GREEN + "ESFollowers has been reloaded.");
                 return true;

@@ -7,10 +7,11 @@ Database:
   # type: Data storage type yml/MySQL
   type: yml
   # MySQL Info (THE BELOW IS FOR MySQL ONLY)
+  host: localhost
+  port: 3306
   name: dbName
   user: user
   password: pass
-  port: 3306
 
 
 # Follower Name
