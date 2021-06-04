@@ -52,13 +52,17 @@ public class MysqlStorage implements Storage {
             ResultSet resultSet = stmt.executeQuery();
             if (resultSet.next()) {
                 return new FollowerUser(
-                    UUID.fromString(resultSet.getString("uuid")),
+                    uuid,
                     resultSet.getString("name"),
                     resultSet.getString("follower"),
                     resultSet.getString("followerDisplayName"),
                     resultSet.getBoolean("followerNameEnabled"),
                     resultSet.getBoolean("followerEnabled")
                 );
+            } else {
+                FollowerUser newFollowerUser = new FollowerUser(uuid, Bukkit.getPlayer(uuid).getName(), "none", "Unnamed", false, false);
+                saveFollowerUser(newFollowerUser);
+                return newFollowerUser;
             }
         } catch (SQLException e) {
             e.printStackTrace();
