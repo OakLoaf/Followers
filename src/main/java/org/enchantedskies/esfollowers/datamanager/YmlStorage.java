@@ -2,7 +2,7 @@ package org.enchantedskies.esfollowers.datamanager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.enchantedskies.esfollowers.ESFollowers;
 
@@ -12,8 +12,8 @@ import java.util.UUID;
 
 public class YmlStorage implements Storage {
     private final ESFollowers plugin = ESFollowers.getInstance();
-    private final FileConfiguration config = ESFollowers.configManager.getConfig();
     private final File dataFile = initYML();
+    private final YamlConfiguration config = YamlConfiguration.loadConfiguration(dataFile);
 
     @Override
     public FollowerUser loadFollowerUser(UUID uuid) {

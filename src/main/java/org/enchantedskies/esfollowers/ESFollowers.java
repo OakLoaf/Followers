@@ -41,7 +41,7 @@ public final class ESFollowers extends JavaPlugin implements Listener {
             this,
             new FollowerUserEvents(followerKey),
             new FollowerGUIEvents(guiPlayerSet, followerKey),
-            new FollowerCreator(),
+            new FollowerCreator()
         };
         registerEvents(listeners);
 
