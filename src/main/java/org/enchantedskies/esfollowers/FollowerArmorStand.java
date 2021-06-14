@@ -46,8 +46,9 @@ public class FollowerArmorStand {
         }
     }
 
-    public FollowerArmorStand(String followerName, ArmorStand armorStand) {
+    public FollowerArmorStand(Player player, String followerName, ArmorStand armorStand) {
         this.armorStand = armorStand;
+        if (player.isInvisible()) return;
         changeFollower(followerName);
     }
 
@@ -58,6 +59,18 @@ public class FollowerArmorStand {
     public void changeFollower(String newFollowerName) {
         this.followerName = newFollowerName;
         reloadInventory();
+    }
+
+    public void setVisible(boolean visible) {
+        armorStand.setVisible(visible);
+        if (visible) reloadInventory();
+        else clearInventory();
+    }
+
+    public void clearInventory() {
+        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
+            armorStand.setItem(equipmentSlot, new ItemStack(Material.AIR));
+        }
     }
 
     public void reloadInventory() {
@@ -71,6 +84,7 @@ public class FollowerArmorStand {
         if (strUUID == null) return;
         Player player = Bukkit.getPlayer(UUID.fromString(strUUID));
         if (player == null) return;
+        final boolean[] playerIsVisible = {true};
         new BukkitRunnable() {
             public void run() {
                 if (!armorStand.isValid()) {
@@ -81,6 +95,13 @@ public class FollowerArmorStand {
                 if (armorStand.getWorld() != player.getWorld()) {
                     armorStand.teleport(player);
                     return;
+                }
+                if (playerIsVisible[0] == player.isInvisible()) {
+                    setVisible(!player.isInvisible());
+                    if (ESFollowers.dataManager.getFollowerUser(player.getUniqueId()).isDisplayNameEnabled()) {
+                        armorStand.setCustomNameVisible(!player.isInvisible());
+                    }
+                    playerIsVisible[0] = !player.isInvisible();
                 }
                 Location followerLoc = armorStand.getLocation();
                 Vector difference = getDifference(player, armorStand);

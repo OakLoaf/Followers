@@ -49,7 +49,7 @@ public class DataManager {
     public void reloadFollowerInventories() {
         for (UUID playerUUID : playerFollowerMap.keySet()) {
             UUID followerUUID = playerFollowerMap.get(playerUUID);
-            new FollowerArmorStand(getFollowerUser(playerUUID).getFollower(), (ArmorStand) Bukkit.getEntity(followerUUID));
+            new FollowerArmorStand(Bukkit.getPlayer(playerUUID), getFollowerUser(playerUUID).getFollower(), (ArmorStand) Bukkit.getEntity(followerUUID));
         }
     }
 }

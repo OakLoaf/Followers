@@ -142,7 +142,7 @@ public class FollowerGUIEvents implements Listener {
         followerInv.openInventory(player);
         if (playerFollowerMap.containsKey(player.getUniqueId())) {
             UUID armorstandUUID = playerFollowerMap.get(player.getUniqueId());
-            new FollowerArmorStand(followerName, (ArmorStand) Bukkit.getEntity(armorstandUUID));
+            new FollowerArmorStand(player, followerName, (ArmorStand) Bukkit.getEntity(armorstandUUID));
             followerUser.setFollower(followerName);
             return;
         }
