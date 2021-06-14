@@ -117,10 +117,10 @@ public class FollowerArmorStand {
     // Private functions
 
     private void setFollowerArmorSlot(EquipmentSlot equipmentSlot, String followerName) {
-        if (!ESFollowers.configManager.getFollowers().containsKey(followerName)) return;
+        if (!ESFollowers.followerManager.getFollowers().containsKey(followerName)) return;
         EntityEquipment armorEquipment = armorStand.getEquipment();
         if (armorEquipment == null) return;
-        FollowerHandler follower = ESFollowers.configManager.getFollower(followerName);
+        FollowerHandler follower = ESFollowers.followerManager.getFollower(followerName);
         ItemStack item = new ItemStack(Material.AIR);
         switch (equipmentSlot) {
             case HEAD: item = follower.getHead(); break;

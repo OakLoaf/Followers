@@ -4,8 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +20,6 @@ public class FollowerGUI {
     public FollowerGUI(Player player, int page, HashSet<UUID> playerSet) {
         ESFollowers plugin = ESFollowers.getInstance();
         NamespacedKey pageNumKey = new NamespacedKey(plugin, "page");
-        FileConfiguration config = ESFollowers.configManager.getConfig();
         this.openInvPlayerSet = playerSet;
         inventory = Bukkit.createInventory(null, 54, "Followers");
         ItemStack empty = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
@@ -35,33 +32,23 @@ public class FollowerGUI {
             else inventory.setItem(i + 36, empty);
         }
         List<String> followerSet = new ArrayList<>();
-        for (String followerName : config.getKeys(false)) {
-            if (followerName.equals("Database")) continue;
+        for (String followerName : ESFollowers.followerManager.getFollowers().keySet()) {
             if (!player.hasPermission("followers." + followerName.toLowerCase()) && !player.hasPermission("followers.all")) continue;
             followerSet.add(followerName);
         }
         int setStartPos = (page - 1) * 36;
         for (int i = 0; i < 36; i++, setStartPos++) {
-            if (setStartPos >= followerSet.size()) break;
+            if (setStartPos >= followerSet.size() || followerSet.isEmpty()) break;
             String followerName = followerSet.get(setStartPos);
-            ConfigurationSection configSection = config.getConfigurationSection(followerName + ".Head");
-            Material material;
-            if (configSection == null) material = Material.ARMOR_STAND;
-            else {
-                String materialStr = configSection.getString("Material", "ARMOR_STAND");
-                material = Material.getMaterial(materialStr.toUpperCase());
-            }
-            if (material == null) continue;
-            ItemStack item = new ItemStack(material);
-            if (material == Material.PLAYER_HEAD) item = ESFollowers.configManager.getFollower(followerName).getHead();
-            if (item == null) item = new ItemStack(Material.PLAYER_HEAD);
-            ItemMeta itemMeta = item.getItemMeta();
-            itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&e" + followerName));
-            item.setItemMeta(itemMeta);
-            inventory.setItem(i + 9, item);
+            ItemStack headItem = ESFollowers.followerManager.getFollower(followerName).getHead();
+            if (headItem == null || headItem.getType() == Material.AIR) headItem = new ItemStack(Material.ARMOR_STAND);
+            ItemMeta headItemMeta = headItem.getItemMeta();
+            headItemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&e" + followerName));
+            headItem.setItemMeta(headItemMeta);
+            inventory.setItem(i + 9, headItem);
         }
         FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());
-        if (followerSet.size() != 0) {
+        if (!followerSet.isEmpty()) {
             ItemStack followerToggle;
             if (followerUser.isFollowerEnabled()) {
                 followerToggle = new ItemStack(Material.LIME_WOOL);
@@ -97,7 +84,7 @@ public class FollowerGUI {
             previousPage.setItemMeta(previousPageMeta);
             inventory.setItem(48, previousPage);
         }
-        if (player.hasPermission("followers.name") && !player.getName().startsWith(".")) {
+        if (player.hasPermission("follower.name") && !player.getName().startsWith(".")) {
             ItemStack followerName = new ItemStack(Material.NAME_TAG);
             ItemMeta followerNameMeta = followerName.getItemMeta();
             followerNameMeta.setDisplayName("§eFollower Name: §f" + followerUser.getDisplayName());

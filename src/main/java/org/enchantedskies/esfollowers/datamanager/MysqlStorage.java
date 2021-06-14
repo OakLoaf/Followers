@@ -24,7 +24,7 @@ public class MysqlStorage implements Storage {
     private final MysqlDataSource dataSource;
 
     public MysqlStorage() {
-        ConfigurationSection databaseSection = plugin.getConfig().getConfigurationSection("Database");
+        ConfigurationSection databaseSection = ESFollowers.configManager.getDatabaseSection();
         String dbName = databaseSection.getString("name");
         String dbHost = databaseSection.getString("host");
         int dbPort = databaseSection.getInt("port");

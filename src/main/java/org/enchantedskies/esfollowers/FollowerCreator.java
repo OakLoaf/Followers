@@ -20,7 +20,7 @@ public class FollowerCreator implements Listener {
     private final SignMenuFactory signMenuFactory = new SignMenuFactory();
 
     public FollowerCreator() {
-        creatorItem = new ItemStack(Material.STICK);
+        creatorItem = new ItemStack(Material.TOTEM_OF_UNDYING);
         ItemMeta creatorMeta = creatorItem.getItemMeta();
         creatorMeta.setDisplayName("Follower Creator");
         creatorMeta.addEnchant(Enchantment.DURABILITY, 1, false);
@@ -40,6 +40,7 @@ public class FollowerCreator implements Listener {
             player.sendMessage(ESFollowers.prefix + "§7You have insufficient permissions.");
             return;
         }
+        if (ESFollowers.dataManager.getPlayerFollowerMap().containsValue(armorStand.getUniqueId())) return;
         String armorStandName = armorStand.getCustomName();
         if (armorStandName == null) {
             SignMenuFactory.Menu menu = signMenuFactory.newMenu(Arrays.asList("", "^^^^^^^^^^^", "Enter a name", "for the Follower"))
@@ -49,14 +50,14 @@ public class FollowerCreator implements Listener {
                             thisPlayer.sendMessage(ESFollowers.prefix + "§cFollower name cannot contain the character '.'.");
                             return false;
                         }
-                        ESFollowers.configManager.createFollower(player, strings[0], armorStand);
+                        ESFollowers.followerManager.createFollower(player, strings[0], armorStand);
                         return true;
                     });
             menu.open(player);
         } else if (armorStandName.contains(".")) {
             player.sendMessage(ESFollowers.prefix + "§cFollower name cannot contain the character '.'.");
         } else {
-            ESFollowers.configManager.createFollower(player, armorStandName, armorStand);
+            ESFollowers.followerManager.createFollower(player, armorStandName, armorStand);
         }
     }
 

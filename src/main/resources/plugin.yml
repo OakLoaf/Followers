@@ -22,6 +22,6 @@ permissions:
   follower.admin.delete:
     description: Allows you to delete followers
     default: op
-  followers.name:
+  follower.name:
     description: Allows you to name your Follower
     default: op

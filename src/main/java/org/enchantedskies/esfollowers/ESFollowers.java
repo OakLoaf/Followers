@@ -13,6 +13,7 @@ import org.enchantedskies.esfollowers.commands.FollowerCmd;
 import org.enchantedskies.esfollowers.commands.GetHexArmorCmd;
 import org.enchantedskies.esfollowers.datamanager.ConfigManager;
 import org.enchantedskies.esfollowers.datamanager.DataManager;
+import org.enchantedskies.esfollowers.datamanager.FollowerManager;
 import org.enchantedskies.esfollowers.events.EssentialsEvents;
 import org.enchantedskies.esfollowers.events.FollowerGUIEvents;
 import org.enchantedskies.esfollowers.events.FollowerUserEvents;
@@ -26,6 +27,7 @@ public final class ESFollowers extends JavaPlugin implements Listener {
     public static String prefix = "§8§l[§d§lES§8§l] §r";
     public static DataManager dataManager;
     public static ConfigManager configManager;
+    public static FollowerManager followerManager;
     public static SkullCreator skullCreator = new SkullCreator();
     private final HashSet<UUID> guiPlayerSet = new HashSet<>();
     private final NamespacedKey followerKey = new NamespacedKey(this, "ESFollower");
@@ -36,6 +38,7 @@ public final class ESFollowers extends JavaPlugin implements Listener {
         saveDefaultConfig();
         configManager = new ConfigManager();
         dataManager = new DataManager();
+        followerManager = new FollowerManager();
 
         Listener[] listeners = new Listener[] {
             this,

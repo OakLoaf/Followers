@@ -15,7 +15,7 @@ public class DataManager {
     private final HashMap<UUID, FollowerUser> uuidToFollowerUser = new HashMap<>();
 
     public DataManager() {
-        String databaseType = ESFollowers.configManager.getDatabaseType();
+        String databaseType = ESFollowers.configManager.getDatabaseSection().getString("type");
         if (databaseType.equalsIgnoreCase("mysql")) storage = new MysqlStorage();
         else storage = new YmlStorage();
     }
