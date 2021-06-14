@@ -24,24 +24,25 @@ public class GetHexArmorCmd implements CommandExecutor, TabCompleter {
             return true;
         }
         Player player = (Player) sender;
+        String prefix = ESFollowers.configManager.getPrefix();
         if (!player.hasPermission("follower.admin.gethexarmor")) {
-            sender.sendMessage(ESFollowers.prefix + "§7You have insufficient permissions.");
+            sender.sendMessage(prefix + "§7You have insufficient permissions.");
             return true;
         }
         if (args.length != 2) {
-            player.sendMessage(ESFollowers.prefix + "§7Incorrect Usage, try §c/gethexarmor <material> <hexcolor>");
+            player.sendMessage(prefix + "§7Incorrect Usage, try §c/gethexarmor <material> <hexcolor>");
             return true;
         }
         Material material = Material.getMaterial(args[0].toUpperCase());
         String color = args[1].replace("#", "");
         if (material == null || (color.length() != 6 && !(color.length() == 7 && color.startsWith("#")))) {
-            player.sendMessage(ESFollowers.prefix + "§7Incorrect Usage, try §c/gethexarmor <material> <hexcolor>");
+            player.sendMessage(prefix + "§7Incorrect Usage, try §c/gethexarmor <material> <hexcolor>");
             return true;
         }
         ItemStack item = new ItemStack(material);
         ItemMeta itemMeta = item.getItemMeta();
         if (!(itemMeta instanceof LeatherArmorMeta)) {
-            player.sendMessage(ESFollowers.prefix + "§7Material has to be a form of Leather Armor.");
+            player.sendMessage(prefix + "§7Material has to be a form of Leather Armor.");
             return true;
         }
         LeatherArmorMeta armorMeta = (LeatherArmorMeta) itemMeta;

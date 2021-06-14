@@ -24,7 +24,6 @@ import java.util.UUID;
 
 public final class ESFollowers extends JavaPlugin implements Listener {
     private static ESFollowers plugin;
-    public static String prefix = "§8§l[§d§lES§8§l] §r";
     public static DataManager dataManager;
     public static ConfigManager configManager;
     public static FollowerManager followerManager;
@@ -35,7 +34,6 @@ public final class ESFollowers extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         plugin = this;
-        saveDefaultConfig();
         configManager = new ConfigManager();
         dataManager = new DataManager();
         followerManager = new FollowerManager();

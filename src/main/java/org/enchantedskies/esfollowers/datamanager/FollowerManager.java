@@ -16,13 +16,15 @@ import org.enchantedskies.esfollowers.ESFollowers;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 
 public class FollowerManager {
     private final ESFollowers plugin = ESFollowers.getInstance();
     private final File followerConfigFile = initYML();
     private YamlConfiguration config = YamlConfiguration.loadConfiguration(followerConfigFile);
-    private final HashMap<String, FollowerHandler> followerList = new HashMap<>();
+    private final Map<String, FollowerHandler> followerList = new TreeMap<>();
 
     public FollowerManager() {
         for (String followerName : config.getKeys(false)) {
@@ -48,8 +50,9 @@ public class FollowerManager {
 
     public void createFollower(Player owner, String followerName, ArmorStand armorStand) {
         ConfigurationSection configurationSection = config.getConfigurationSection(followerName);
+        String prefix = ESFollowers.configManager.getPrefix();
         if (configurationSection != null) {
-            owner.sendMessage(ESFollowers.prefix + "§7A Follower already exists with this name.");
+            owner.sendMessage(prefix + "§7A Follower already exists with this name.");
             return;
         }
         configurationSection = config.createSection(followerName);
@@ -68,14 +71,14 @@ public class FollowerManager {
                 OfflinePlayer skullOwner = skullMeta.getOwningPlayer();
                 if (skullOwner == null) {
                     configurationSection.set(makeFriendly(equipmentSlot.name()) + ".SkullType", "Custom");
-                    owner.sendMessage(ESFollowers.prefix + "§7Could not find the owner of the skull in the §c" + makeFriendly(equipmentSlot.name()) + " §7slot, added Custom player head to config.yml file with no texture.");
+                    owner.sendMessage(prefix + "§7Could not find the owner of the skull in the §c" + makeFriendly(equipmentSlot.name()) + " §7slot, added Custom player head to config.yml file with no texture.");
                     configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Texture", "error");
                     continue;
                 }
                 configurationSection.set(makeFriendly(equipmentSlot.name()) + ".SkullType", "Default");
                 UUID skullUUID = skullOwner.getUniqueId();
                 configurationSection.set(makeFriendly(equipmentSlot.name()) + ".UUID", skullUUID.toString());
-                owner.sendMessage(ESFollowers.prefix + "§7Skull has been created as Default SkullType. To get custom textures manually edit the config.");
+                owner.sendMessage(prefix + "§7Skull has been created as Default SkullType. To get custom textures manually edit the config.");
             } else if (currItem.getItemMeta() instanceof LeatherArmorMeta) {
                 LeatherArmorMeta armorMeta = (LeatherArmorMeta) currItem.getItemMeta();
                 Color armorColor = armorMeta.getColor();
@@ -85,7 +88,7 @@ public class FollowerManager {
                 configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Enchanted", "True");
             }
         }
-        owner.sendMessage(ESFollowers.prefix + "§7A Follower has been added with the name §a" + followerName);
+        owner.sendMessage(prefix + "§7A Follower has been added with the name §a" + followerName);
         saveFollowers();
         loadFollower(followerName);
     }
@@ -106,7 +109,7 @@ public class FollowerManager {
         return followerList.get(followerName);
     }
 
-    public HashMap<String, FollowerHandler> getFollowers() {
+    public Map<String, FollowerHandler> getFollowers() {
         return followerList;
     }
 
@@ -116,11 +119,8 @@ public class FollowerManager {
 
     private File initYML() {
         File followerConfigFile = new File(plugin.getDataFolder(),"followers.yml");
-        try {
-            if (followerConfigFile.createNewFile()) plugin.getLogger().info("File Created: followers.yml");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        if (!followerConfigFile.exists()) plugin.saveResource("followers.yml", false);
+        plugin.getLogger().info("File Created: followers.yml");
         return followerConfigFile;
     }
 

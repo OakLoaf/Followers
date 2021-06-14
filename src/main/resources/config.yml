@@ -1,9 +1,12 @@
-#####################
-#     Followers     #
-#####################
+#############################
+#     Followers - Config    #
+#############################
+
+# prefix: Text to go before Followers messages
+prefix: "&8&l[§d§lES&8&l] &r"
 
 # Data storage
-Database:
+database:
   # type: Data storage type yml/MySQL
   type: yml
   # MySQL Info (THE BELOW IS FOR MySQL ONLY)
@@ -12,36 +15,3 @@ Database:
   name: dbName
   user: user
   password: pass
-
-
-# Follower Name
-Notch:
-  # Head: Data for head slot
-  Head:
-    # Material: Material for head slot
-    Material: player_head
-    # SkullType: Default/Custom, Default is a minecraft user's head, Custom allows for Skull Textures
-    SkullType: Default
-    # UUID: Only applicable for  Default SkullType, player uuid of skull.
-    UUID: 069a79f4-44e9-4726-a5be-fca90e38aaf5
-    # Texture: Only applicable for Custom SkullType, texture id of skull.
-    # Texture: textureGoesHere
-  # Chest: Data for chest slot
-  Chest:
-    Material: leather_chestplate
-    # Color: Only applicable for leather armour, hex value NOT including the '#'
-    Color: 9D9D97
-  # Legs: Data for legs slot
-  Legs:
-    Material: leather_leggings
-    Color: 897362
-  # Feet: Data for feet slot
-  Feet:
-    Material: leather_boots
-    Color: B02E26
-  # MainHand: Data for hand slot
-  MainHand:
-    Material: golden_apple
-  # OffHand: Data for off hand slot
-  OffHand:
-    Material: stick

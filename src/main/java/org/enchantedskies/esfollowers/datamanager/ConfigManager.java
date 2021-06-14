@@ -1,5 +1,6 @@
 package org.enchantedskies.esfollowers.datamanager;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.enchantedskies.esfollowers.ESFollowers;
@@ -10,11 +11,8 @@ public class ConfigManager {
     private FileConfiguration config;
 
     public ConfigManager() {
+        plugin.saveDefaultConfig();
         config = plugin.getConfig();
-    }
-
-    public FileConfiguration getConfig() {
-        return config;
     }
 
     public void saveConfig() {
@@ -28,6 +26,13 @@ public class ConfigManager {
     }
 
     public ConfigurationSection getDatabaseSection() {
-        return config.getConfigurationSection("Database");
+        return config.getConfigurationSection("database");
+    }
+
+    public String getPrefix() {
+        String prefix = config.getString("prefix");
+        if (prefix == null) prefix = "";
+        prefix = ChatColor.translateAlternateColorCodes('&', prefix);
+        return prefix;
     }
 }

@@ -36,8 +36,9 @@ public class FollowerCreator implements Listener {
         ArmorStand armorStand = (ArmorStand) event.getRightClicked();
         if (!heldItem.isSimilar(creatorItem)) return;
         event.setCancelled(true);
+        String prefix = ESFollowers.configManager.getPrefix();
         if (!player.hasPermission("follower.admin.create")) {
-            player.sendMessage(ESFollowers.prefix + "§7You have insufficient permissions.");
+            player.sendMessage(prefix + "§7You have insufficient permissions.");
             return;
         }
         if (ESFollowers.dataManager.getPlayerFollowerMap().containsValue(armorStand.getUniqueId())) return;
@@ -47,7 +48,7 @@ public class FollowerCreator implements Listener {
                     .reopenIfFail(true)
                     .response((thisPlayer, strings) -> {
                         if (strings[0].contains(".")) {
-                            thisPlayer.sendMessage(ESFollowers.prefix + "§cFollower name cannot contain the character '.'.");
+                            thisPlayer.sendMessage(prefix + "§cFollower name cannot contain the character '.'.");
                             return false;
                         }
                         ESFollowers.followerManager.createFollower(player, strings[0], armorStand);
@@ -55,7 +56,7 @@ public class FollowerCreator implements Listener {
                     });
             menu.open(player);
         } else if (armorStandName.contains(".")) {
-            player.sendMessage(ESFollowers.prefix + "§cFollower name cannot contain the character '.'.");
+            player.sendMessage(prefix + "§cFollower name cannot contain the character '.'.");
         } else {
             ESFollowers.followerManager.createFollower(player, armorStandName, armorStand);
         }
