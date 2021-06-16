@@ -1,10 +1,8 @@
 package org.enchantedskies.esfollowers.events;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,7 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.enchantedskies.esfollowers.ESFollowers;
-import org.enchantedskies.esfollowers.FollowerArmorStand;
+import org.enchantedskies.esfollowers.FollowerEntity;
 import org.enchantedskies.esfollowers.FollowerGUI;
 import org.enchantedskies.esfollowers.datamanager.FollowerUser;
 import org.enchantedskies.esfollowers.utils.SignMenuFactory;
@@ -32,17 +30,15 @@ public class FollowerGUIEvents implements Listener {
     private final SignMenuFactory signMenuFactory = new SignMenuFactory();
     private final ESFollowers plugin = ESFollowers.getInstance();
     private final HashSet<UUID> openInvPlayerSet;
-    private final NamespacedKey followerKey;
-    private final HashMap<UUID, UUID> playerFollowerMap;
+    private final HashMap<UUID, FollowerEntity> playerFollowerMap;
     private final ItemStack noFollowers = new ItemStack(Material.BARRIER);
     private final ItemStack nextPage = new ItemStack(Material.ARROW);
     private final ItemStack previousPage = new ItemStack(Material.ARROW);
     private final ItemStack followerToggleEnabled = new ItemStack(Material.LIME_WOOL);
     private final ItemStack followerToggleDisabled = new ItemStack(Material.RED_WOOL);
 
-    public FollowerGUIEvents(HashSet<UUID> playerSet, NamespacedKey followerKey) {
+    public FollowerGUIEvents(HashSet<UUID> playerSet) {
         this.openInvPlayerSet = playerSet;
-        this.followerKey = followerKey;
         this.playerFollowerMap = ESFollowers.dataManager.getPlayerFollowerMap();
 
         ItemMeta barrierMeta = noFollowers.getItemMeta();
@@ -83,18 +79,12 @@ public class FollowerGUIEvents implements Listener {
         if (clickedItem.isSimilar(noFollowers) || clickedItem.getItemMeta().getPersistentDataContainer().has(pageNumKey, PersistentDataType.INTEGER)) return;
         else if (clickedItem.isSimilar(followerToggleEnabled) || clickedItem.isSimilar(followerToggleDisabled)) {
             FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());
-            followerUser.setFollowerEnabled(!followerUser.isFollowerEnabled());
-            if (followerUser.isFollowerEnabled()) {
+            if (!followerUser.isFollowerEnabled()) {
                 String followerName = followerUser.getFollower();
-                if (!playerFollowerMap.containsKey(playerUUID)) {
-                    FollowerArmorStand followerArmorStand = new FollowerArmorStand(followerName, player, followerKey);
-                    followerArmorStand.startMovement(0.4);
-                    ESFollowers.dataManager.putInPlayerFollowerMap(playerUUID, followerArmorStand.getArmorStand().getUniqueId());
-                }
+                if (!playerFollowerMap.containsKey(playerUUID)) new FollowerEntity(player, followerName);
             } else {
-                UUID armorStandUUID = playerFollowerMap.get(playerUUID);
-                if (armorStandUUID == null) return;
-                Bukkit.getEntity(armorStandUUID).remove();
+                FollowerEntity followerEntity = playerFollowerMap.get(playerUUID);
+                followerEntity.disable();
             }
             FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
             followerInv.openInventory(player);
@@ -108,13 +98,10 @@ public class FollowerGUIEvents implements Listener {
             followerInv.openInventory(player);
             return;
         } else if (clickedItem.getType() == Material.NAME_TAG && clickedItem.getItemMeta().getDisplayName().startsWith("§eFollower Name:")) {
-            UUID armorStandUUID = playerFollowerMap.get(playerUUID);
-            if (armorStandUUID == null) return;
-            ArmorStand armorStand = (ArmorStand) Bukkit.getEntity(armorStandUUID);
+            FollowerEntity followerEntity = ESFollowers.dataManager.getPlayerFollowerMap().get(player.getUniqueId());
             FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());
             if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
-                followerUser.setDisplayNameEnabled(!armorStand.isCustomNameVisible());
-                armorStand.setCustomNameVisible(!armorStand.isCustomNameVisible());
+                followerEntity.setDisplayNameVisible(!followerUser.isDisplayNameEnabled());
                 FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
                 followerInv.openInventory(player);
                 return;
@@ -123,10 +110,7 @@ public class FollowerGUIEvents implements Listener {
                 .reopenIfFail(true)
                 .response((thisPlayer, strings) -> {
                     if (strings[0].equals("")) strings[0] = " ";
-                    armorStand.setCustomName(strings[0]);
-                    armorStand.setCustomNameVisible(true);
-                    followerUser.setDisplayName(strings[0]);
-                    followerUser.setDisplayNameEnabled(true);
+                    followerEntity.setDisplayName(strings[0]);
                     return true;
                 });
             player.closeInventory();
@@ -134,23 +118,15 @@ public class FollowerGUIEvents implements Listener {
             return;
         }
         String followerName = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName());
-        FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());
-        if (!followerUser.isFollowerEnabled()) {
-            followerUser.setFollowerEnabled(true);
-        }
         FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
         followerInv.openInventory(player);
         if (playerFollowerMap.containsKey(player.getUniqueId())) {
-            UUID armorstandUUID = playerFollowerMap.get(player.getUniqueId());
-            new FollowerArmorStand(player, followerName, (ArmorStand) Bukkit.getEntity(armorstandUUID));
-            followerUser.setFollower(followerName);
+            FollowerEntity followerEntity = playerFollowerMap.get(player.getUniqueId());
+            followerEntity.setFollower(followerName);
             return;
         }
-        FollowerArmorStand followerArmorStand = new FollowerArmorStand(followerName, player, followerKey);
-        followerArmorStand.startMovement(0.4);
-        followerUser.setFollower(followerName);
-        ESFollowers.dataManager.putInPlayerFollowerMap(player.getUniqueId(), followerArmorStand.getArmorStand().getUniqueId());
-        player.sendMessage(ChatColor.GREEN + "Follower Spawned.");
+        new FollowerEntity(player, followerName);
+        player.sendMessage(ESFollowers.configManager.getPrefix() + "§aFollower Spawned.");
     }
 
     @EventHandler

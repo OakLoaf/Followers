@@ -9,10 +9,18 @@ import org.enchantedskies.esfollowers.ESFollowers;
 public class ConfigManager {
     private final ESFollowers plugin = ESFollowers.getInstance();
     private FileConfiguration config;
+    private String prefix;
+    private double speed;
+    private boolean areHitboxesEnabled;
 
     public ConfigManager() {
         plugin.saveDefaultConfig();
         config = plugin.getConfig();
+
+        prefix = config.getString("prefix", "");
+        prefix = ChatColor.translateAlternateColorCodes('&', prefix);
+        speed = config.getDouble("speed", 0.4);
+        areHitboxesEnabled = config.getBoolean("hitboxesEnabled");
     }
 
     public void saveConfig() {
@@ -23,6 +31,11 @@ public class ConfigManager {
     public void reloadConfig() {
         plugin.reloadConfig();
         config = plugin.getConfig();
+
+        prefix = config.getString("prefix", "");
+        prefix = ChatColor.translateAlternateColorCodes('&', prefix);
+        speed = config.getDouble("speed", 0.4);
+        areHitboxesEnabled = config.getBoolean("hitboxesEnabled");
     }
 
     public ConfigurationSection getDatabaseSection() {
@@ -30,9 +43,14 @@ public class ConfigManager {
     }
 
     public String getPrefix() {
-        String prefix = config.getString("prefix");
-        if (prefix == null) prefix = "";
-        prefix = ChatColor.translateAlternateColorCodes('&', prefix);
         return prefix;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public boolean areHitboxesEnabled() {
+        return areHitboxesEnabled;
     }
 }

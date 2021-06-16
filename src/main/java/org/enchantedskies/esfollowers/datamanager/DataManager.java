@@ -4,14 +4,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.enchantedskies.esfollowers.ESFollowers;
-import org.enchantedskies.esfollowers.FollowerArmorStand;
+import org.enchantedskies.esfollowers.FollowerEntity;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 public class DataManager {
     private final Storage storage;
-    private final HashMap<UUID, UUID> playerFollowerMap = new HashMap<>();
+    private final HashMap<UUID, FollowerEntity> playerFollowerMap = new HashMap<>();
     private final HashMap<UUID, FollowerUser> uuidToFollowerUser = new HashMap<>();
 
     public DataManager() {
@@ -20,8 +20,10 @@ public class DataManager {
         else storage = new YmlStorage();
     }
 
-    public void loadFollowerUser(UUID uuid) {
-        uuidToFollowerUser.put(uuid, storage.loadFollowerUser(uuid));
+    public FollowerUser loadFollowerUser(UUID uuid) {
+        FollowerUser followerUser = storage.loadFollowerUser(uuid);
+        uuidToFollowerUser.put(uuid, followerUser);
+        return followerUser;
     }
 
     public void saveFollowerUser(FollowerUser followerUser) {
@@ -34,12 +36,12 @@ public class DataManager {
         return uuidToFollowerUser.getOrDefault(uuid, new FollowerUser(uuid, player.getName(), "none", "Unnamed", false, false));
     }
 
-    public HashMap<UUID, UUID> getPlayerFollowerMap() {
+    public HashMap<UUID, FollowerEntity> getPlayerFollowerMap() {
         return playerFollowerMap;
     }
 
-    public void putInPlayerFollowerMap(UUID playerUUID, UUID followerUUID) {
-        playerFollowerMap.put(playerUUID, followerUUID);
+    public void putInPlayerFollowerMap(UUID playerUUID, FollowerEntity follower) {
+        playerFollowerMap.put(playerUUID, follower);
     }
 
     public void removeFromPlayerFollowerMap(UUID playerUUID) {
@@ -48,8 +50,7 @@ public class DataManager {
 
     public void reloadFollowerInventories() {
         for (UUID playerUUID : playerFollowerMap.keySet()) {
-            UUID followerUUID = playerFollowerMap.get(playerUUID);
-            new FollowerArmorStand(Bukkit.getPlayer(playerUUID), getFollowerUser(playerUUID).getFollower(), (ArmorStand) Bukkit.getEntity(followerUUID));
+            playerFollowerMap.get(playerUUID).reloadInventory();
         }
     }
 }
