@@ -2,6 +2,7 @@ package org.enchantedskies.esfollowers.events;
 
 import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,8 +36,7 @@ public class FollowerUserEvents implements Listener {
     public void onPlayerDisconnect(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         FollowerEntity followerEntity = playerFollowerMap.get(player.getUniqueId());
-        if (followerEntity == null) return;
-        followerEntity.kill();
+        if (followerEntity != null) followerEntity.kill();
         FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());
         ESFollowers.dataManager.saveFollowerUser(followerUser);
     }
@@ -48,12 +48,12 @@ public class FollowerUserEvents implements Listener {
         FollowerEntity followerEntity = ESFollowers.dataManager.getPlayerFollowerMap().get(player.getUniqueId());
         if (followerEntity == null) return;
         UUID followerASUUID = followerEntity.getArmorStand().getUniqueId();
-        UUID nameTagASUUID = followerEntity.getNameTagArmorStand().getUniqueId();
+        ArmorStand nameTagAS = followerEntity.getArmorStand();
         for (Entity entity : fromChunk.getEntities()) {
             if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) {
                 if (!fromChunk.isLoaded()) fromChunk.load();
                 UUID entityUUID = entity.getUniqueId();
-                if (entityUUID == followerASUUID || entityUUID == nameTagASUUID) entity.teleport(player);
+                if (entityUUID == followerASUUID || (nameTagAS != null && entityUUID == nameTagAS.getUniqueId())) entity.teleport(player);
             }
         }
     }

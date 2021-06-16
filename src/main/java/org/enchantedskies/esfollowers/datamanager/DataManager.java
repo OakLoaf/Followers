@@ -45,6 +45,8 @@ public class DataManager {
     }
 
     public void removeFromPlayerFollowerMap(UUID playerUUID) {
+        FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(playerUUID);
+        if (followerUser != null) saveFollowerUser(followerUser);
         playerFollowerMap.remove(playerUUID);
     }
 

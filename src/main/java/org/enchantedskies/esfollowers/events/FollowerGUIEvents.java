@@ -1,5 +1,6 @@
 package org.enchantedskies.esfollowers.events;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -110,7 +111,7 @@ public class FollowerGUIEvents implements Listener {
                 .reopenIfFail(true)
                 .response((thisPlayer, strings) -> {
                     if (strings[0].equals("")) strings[0] = " ";
-                    followerEntity.setDisplayName(strings[0]);
+                    Bukkit.getScheduler().runTask(plugin, () -> followerEntity.setDisplayName(strings[0]));
                     return true;
                 });
             player.closeInventory();

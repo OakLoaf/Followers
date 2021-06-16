@@ -25,10 +25,12 @@ public class FollowerEntity {
     private final ArmorStand followerAS;
     private ArmorStand nameTagAS;
     private String follower;
+    private boolean isPlayerInvisible;
 
     public FollowerEntity(Player owner, String follower) {
         this.owner = owner;
         this.follower = follower;
+        this.isPlayerInvisible = owner.isInvisible();
         FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(owner.getUniqueId());
         ESFollowers.dataManager.putInPlayerFollowerMap(owner.getUniqueId(), this);
         followerUser.setFollowerEnabled(true);
@@ -46,19 +48,13 @@ public class FollowerEntity {
 
         if (!ESFollowers.configManager.areHitboxesEnabled()) {
             followerAS.setMarker(true);
-            nameTagAS = owner.getLocation().getWorld().spawn(followerAS.getLocation().add(0, 1, 0), ArmorStand.class, (armorStand -> {
-                armorStand.setInvulnerable(true);
-                armorStand.setVisible(false);
-                armorStand.setMarker(true);
-                armorStand.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, "");
-            }));
         }
 
         if (followerUser.isDisplayNameEnabled()) {
             if (ESFollowers.configManager.areHitboxesEnabled()) {
                 followerAS.setCustomName(followerUser.getDisplayName());
                 followerAS.setCustomNameVisible(followerUser.isDisplayNameEnabled());
-            } else {
+            } else if (nameTagAS != null) {
                 nameTagAS.setCustomName(followerUser.getDisplayName());
                 nameTagAS.setCustomNameVisible(followerUser.isDisplayNameEnabled());
             }
@@ -77,20 +73,18 @@ public class FollowerEntity {
         return followerAS;
     }
 
-    public ArmorStand getNameTagArmorStand() {
-        return nameTagAS;
-    }
-
     public void setFollower(String newFollower) {
         this.follower = newFollower;
         ESFollowers.dataManager.getFollowerUser(owner.getUniqueId()).setFollower(newFollower);
-        reloadInventory();
+        if (!owner.isInvisible()) reloadInventory();
     }
 
     public void setDisplayNameVisible(boolean visible) {
         ESFollowers.dataManager.getFollowerUser(owner.getUniqueId()).setDisplayNameEnabled(visible);
-        if (ESFollowers.configManager.areHitboxesEnabled()) followerAS.setCustomNameVisible(visible);
-        else displayNametag(visible);
+        if (!owner.isInvisible()) {
+            if (ESFollowers.configManager.areHitboxesEnabled()) followerAS.setCustomNameVisible(visible);
+            else displayNametag(visible);
+        }
     }
 
     public void setDisplayName(String newName) {
@@ -102,6 +96,7 @@ public class FollowerEntity {
 
     public void setVisible(boolean visible) {
         followerAS.setVisible(visible);
+        if (!ESFollowers.configManager.areHitboxesEnabled() && ESFollowers.dataManager.getFollowerUser(owner.getUniqueId()).isDisplayNameEnabled()) displayNametag(visible);
         if (visible) reloadInventory();
         else clearInventory();
     }
@@ -113,9 +108,12 @@ public class FollowerEntity {
     }
 
     public void reloadInventory() {
-        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-            setFollowerArmorSlot(equipmentSlot, follower);
-        }
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (owner.isInvisible()) return;
+            for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
+                setFollowerArmorSlot(equipmentSlot, follower);
+            }
+        }, 1);
     }
 
     public void setFollowerArmorSlot(EquipmentSlot equipmentSlot, String followerName) {
@@ -136,15 +134,15 @@ public class FollowerEntity {
     }
 
     public void disable() {
-        ESFollowers.dataManager.getFollowerUser(owner.getUniqueId()).setFollowerEnabled(false);
+        FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(owner.getUniqueId());
+        if (followerUser != null) followerUser.setFollowerEnabled(false);
         kill();
     }
 
     public void kill() {
-        ESFollowers.dataManager.removeFromPlayerFollowerMap(ESFollowers.dataManager.getFollowerUser(owner.getUniqueId()).getUUID());
+        ESFollowers.dataManager.removeFromPlayerFollowerMap(owner.getUniqueId());
         followerAS.remove();
         if (nameTagAS != null) nameTagAS.remove();
-        ESFollowers.dataManager.saveFollowerUser(ESFollowers.dataManager.getFollowerUser(owner.getUniqueId()));
     }
 
 
@@ -157,11 +155,10 @@ public class FollowerEntity {
         if (strUUID == null) return;
         Player player = Bukkit.getPlayer(UUID.fromString(strUUID));
         if (player == null) return;
-        final boolean[] playerIsVisible = {true};
         new BukkitRunnable() {
             public void run() {
                 if (!followerAS.isValid()) {
-                    ESFollowers.dataManager.removeFromPlayerFollowerMap(player.getUniqueId());
+                    ESFollowers.dataManager.removeFromPlayerFollowerMap(owner.getUniqueId());
                     FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(owner.getUniqueId());
                     if (followerUser != null) followerUser.setFollowerEnabled(false);
                     disable();
@@ -172,12 +169,9 @@ public class FollowerEntity {
                     teleportArmorStands(player.getLocation().add(1.5, 0, 1.5));
                     return;
                 }
-                if (playerIsVisible[0] == player.isInvisible()) {
+                if (isPlayerInvisible != player.isInvisible()) {
                     setVisible(!player.isInvisible());
-                    if (ESFollowers.dataManager.getFollowerUser(player.getUniqueId()).isDisplayNameEnabled()) {
-                        setDisplayNameVisible(!player.isInvisible());
-                    }
-                    playerIsVisible[0] = !player.isInvisible();
+                    isPlayerInvisible = player.isInvisible();
                 }
                 Location followerLoc = followerAS.getLocation();
                 Vector difference = getDifference(player, followerAS);
@@ -219,12 +213,11 @@ public class FollowerEntity {
                     armorStand.setMarker(true);
                     armorStand.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, "");
                 }));
-                return;
             }
             nameTagAS.setCustomName(ESFollowers.dataManager.getFollowerUser(owner.getUniqueId()).getDisplayName());
             nameTagAS.setCustomNameVisible(true);
         } else {
-            nameTagAS.remove();
+            if (nameTagAS != null) nameTagAS.remove();
             nameTagAS = null;
         }
     }
