@@ -1,7 +1,6 @@
 package org.enchantedskies.esfollowers.datamanager;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.enchantedskies.esfollowers.ESFollowers;
 import org.enchantedskies.esfollowers.FollowerEntity;
