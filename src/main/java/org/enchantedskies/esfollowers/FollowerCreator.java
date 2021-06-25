@@ -1,5 +1,7 @@
 package org.enchantedskies.esfollowers;
 
+import me.xemor.userinterface.TextInterface;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
@@ -11,13 +13,10 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.enchantedskies.esfollowers.utils.SignMenuFactory;
-
-import java.util.Arrays;
 
 public class FollowerCreator implements Listener {
+    private final ESFollowers plugin = ESFollowers.getInstance();
     private final ItemStack creatorItem;
-    private final SignMenuFactory signMenuFactory = new SignMenuFactory();
 
     public FollowerCreator() {
         creatorItem = new ItemStack(Material.TOTEM_OF_UNDYING);
@@ -44,17 +43,36 @@ public class FollowerCreator implements Listener {
         if (ESFollowers.dataManager.getPlayerFollowerMap().containsValue(armorStand.getUniqueId())) return;
         String armorStandName = armorStand.getCustomName();
         if (armorStandName == null) {
-            SignMenuFactory.Menu menu = signMenuFactory.newMenu(Arrays.asList("", "^^^^^^^^^^^", "Enter a name", "for the Follower"))
-                    .reopenIfFail(true)
-                    .response((thisPlayer, strings) -> {
-                        if (strings[0].contains(".")) {
-                            thisPlayer.sendMessage(prefix + "§cFollower name cannot contain the character '.'.");
-                            return false;
-                        }
-                        ESFollowers.followerManager.createFollower(player, strings[0], armorStand);
-                        return true;
-                    });
-            menu.open(player);
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+            //                                                                                           //
+            //                                          ______                                           //
+            //                                         //    \\                                          //
+            //                                        //      \\                                         //
+            //                                       //   ___  \\                                        //
+            //                                      //   |   |  \\                                       //
+            //                                     //    |   |   \\                                      //
+            //                                    //     |   |    \\                                     //
+            //                                   //      |   |     \\                                    //
+            //                                  //       |___|      \\                                   //
+            //                                 //         ___        \\                                  //
+            //                                //         |   |        \\                                 //
+            //                               //          |___|         \\                                //
+            //                              //                          \\                               //
+            //                             ////////////////////////////////                              //
+            //                                                                                           //
+            //     WARNING DOES NOT CHECK IF '.' IS THERE (CANNOT ALLOW NAMES WITH '.' DUE TO CONFIG     //
+            //                                                                                           //
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+
+            TextInterface textInterface = new TextInterface();
+            textInterface.title("Enter Name:");
+            textInterface.placeholder("Enter follower name");
+            textInterface.getInput(player, (output) -> {
+                if (output.equals("")) output = " ";
+                String finalOutput = output;
+                Bukkit.getScheduler().runTask(plugin, () -> ESFollowers.followerManager.createFollower(player, finalOutput, armorStand));
+            });
         } else if (armorStandName.contains(".")) {
             player.sendMessage(prefix + "§cFollower name cannot contain the character '.'.");
         } else {

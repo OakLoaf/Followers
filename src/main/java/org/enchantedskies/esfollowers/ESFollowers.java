@@ -1,11 +1,12 @@
 package org.enchantedskies.esfollowers;
 
+import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -65,11 +66,13 @@ public final class ESFollowers extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void onChunkLoad(ChunkLoadEvent event) {
-        for (Entity entity : event.getChunk().getEntities()) {
-            if (dataManager.getPlayerFollowerMap().containsValue(entity.getUniqueId())) continue;
+    public void onEntityLoad(EntityAddToWorldEvent event) {
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            Entity entity = event.getEntity();
+            if (entity.getType() != EntityType.ARMOR_STAND) return;
+            if (dataManager.getActiveArmorStandsSet().contains(entity.getUniqueId())) return;
             if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
-        }
+        }, 1);
     }
 
     public static ESFollowers getInstance() {

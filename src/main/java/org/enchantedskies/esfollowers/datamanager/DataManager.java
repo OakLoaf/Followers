@@ -6,12 +6,15 @@ import org.enchantedskies.esfollowers.ESFollowers;
 import org.enchantedskies.esfollowers.FollowerEntity;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.UUID;
 
 public class DataManager {
     private final Storage storage;
-    private final HashMap<UUID, FollowerEntity> playerFollowerMap = new HashMap<>();
     private final HashMap<UUID, FollowerUser> uuidToFollowerUser = new HashMap<>();
+    private final HashMap<UUID, FollowerEntity> playerFollowerMap = new HashMap<>();
+    private final HashSet<UUID> activeArmorStandsSet = new HashSet<>();
+
 
     public DataManager() {
         String databaseType = ESFollowers.configManager.getDatabaseSection().getString("type");
@@ -41,6 +44,19 @@ public class DataManager {
 
     public void putInPlayerFollowerMap(UUID playerUUID, FollowerEntity follower) {
         playerFollowerMap.put(playerUUID, follower);
+    }
+
+    public HashSet<UUID> getActiveArmorStandsSet() {
+        return activeArmorStandsSet;
+    }
+
+    public void setActiveArmorStand(UUID uuid) {
+        setActiveArmorStand(uuid, true);
+    }
+
+    public void setActiveArmorStand(UUID uuid, boolean setActive) {
+        if (setActive) activeArmorStandsSet.add(uuid);
+        else activeArmorStandsSet.remove(uuid);
     }
 
     public void removeFromPlayerFollowerMap(UUID playerUUID) {

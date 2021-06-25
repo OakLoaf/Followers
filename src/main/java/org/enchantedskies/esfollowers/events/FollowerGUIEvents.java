@@ -1,5 +1,6 @@
 package org.enchantedskies.esfollowers.events;
 
+import me.xemor.userinterface.TextInterface;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -20,15 +21,12 @@ import org.enchantedskies.esfollowers.ESFollowers;
 import org.enchantedskies.esfollowers.FollowerEntity;
 import org.enchantedskies.esfollowers.FollowerGUI;
 import org.enchantedskies.esfollowers.datamanager.FollowerUser;
-import org.enchantedskies.esfollowers.utils.SignMenuFactory;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
 public class FollowerGUIEvents implements Listener {
-    private final SignMenuFactory signMenuFactory = new SignMenuFactory();
     private final ESFollowers plugin = ESFollowers.getInstance();
     private final HashSet<UUID> openInvPlayerSet;
     private final HashMap<UUID, FollowerEntity> playerFollowerMap;
@@ -107,16 +105,23 @@ public class FollowerGUIEvents implements Listener {
                 followerInv.openInventory(player);
                 return;
             }
-            SignMenuFactory.Menu menu = signMenuFactory.newMenu(Arrays.asList("", "^^^^^^^^^^^", "Enter a name", "for the Follower"))
-                .reopenIfFail(true)
-                .response((thisPlayer, strings) -> {
-                    if (strings[0].equals("")) strings[0] = " ";
-                    Bukkit.getScheduler().runTask(plugin, () -> followerEntity.setDisplayName(strings[0]));
-                    return true;
-                });
             player.closeInventory();
-            menu.open(player);
-            return;
+            TextInterface textInterface = new TextInterface();
+            textInterface.title("Enter Name:");
+            textInterface.placeholder("Enter follower name");
+            textInterface.getInput(player, (output) -> {
+                if (output.equals("")) output = " ";
+                String finalOutput = output;
+                Bukkit.getScheduler().runTask(plugin, () -> followerEntity.setDisplayName(finalOutput));
+            });
+//            SignMenuFactory.Menu menu = signMenuFactory.newMenu(Arrays.asList("", "^^^^^^^^^^^", "Enter a name", "for the Follower"))
+//                .reopenIfFail(true)
+//                .response((thisPlayer, strings) -> {
+//
+//                });
+//            player.closeInventory();
+//            menu.open(player);
+//            return;
         }
         String followerName = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName());
         FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);

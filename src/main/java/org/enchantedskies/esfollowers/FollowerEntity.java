@@ -43,6 +43,7 @@ public class FollowerEntity {
             armorStand.setSmall(true);
             armorStand.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, owner.getUniqueId().toString());
         }));
+        ESFollowers.dataManager.setActiveArmorStand(followerAS.getUniqueId());
 
         setVisible(!owner.isInvisible());
 
@@ -140,6 +141,7 @@ public class FollowerEntity {
     }
 
     public void kill() {
+        ESFollowers.dataManager.setActiveArmorStand(followerAS.getUniqueId(), false);
         ESFollowers.dataManager.removeFromPlayerFollowerMap(owner.getUniqueId());
         followerAS.remove();
         if (nameTagAS != null) nameTagAS.remove();
@@ -158,10 +160,7 @@ public class FollowerEntity {
         new BukkitRunnable() {
             public void run() {
                 if (!followerAS.isValid()) {
-                    ESFollowers.dataManager.removeFromPlayerFollowerMap(owner.getUniqueId());
-                    FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(owner.getUniqueId());
-                    if (followerUser != null) followerUser.setFollowerEnabled(false);
-                    disable();
+                    kill();
                     cancel();
                     return;
                 }
@@ -213,10 +212,12 @@ public class FollowerEntity {
                     armorStand.setMarker(true);
                     armorStand.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, "");
                 }));
+                ESFollowers.dataManager.setActiveArmorStand(nameTagAS.getUniqueId());
             }
             nameTagAS.setCustomName(ESFollowers.dataManager.getFollowerUser(owner.getUniqueId()).getDisplayName());
             nameTagAS.setCustomNameVisible(true);
         } else {
+            ESFollowers.dataManager.setActiveArmorStand(nameTagAS.getUniqueId(), false);
             if (nameTagAS != null) nameTagAS.remove();
             nameTagAS = null;
         }

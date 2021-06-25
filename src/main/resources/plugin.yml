@@ -3,7 +3,7 @@ version: ${project.version}
 main: org.enchantedskies.esfollowers.ESFollowers
 api-version: 1.16
 authors: [Dav_e_]
-depend: [ProtocolLib]
+depend: [UserInterface]
 softdepend: [Essentials]
 commands:
   followers:
