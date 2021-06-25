@@ -106,14 +106,17 @@ public class FollowerGUIEvents implements Listener {
                 return;
             }
             player.closeInventory();
-            TextInterface textInterface = new TextInterface();
-            textInterface.title("Enter Name:");
-            textInterface.placeholder("Enter follower name");
-            textInterface.getInput(player, (output) -> {
-                if (output.equals("")) output = " ";
-                String finalOutput = output;
-                Bukkit.getScheduler().runTask(plugin, () -> followerEntity.setDisplayName(finalOutput));
-            });
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                TextInterface textInterface = new TextInterface()
+                        .title("Enter Name:")
+                        .placeholder("Enter follower name");
+                textInterface.getInput(player, (output) -> {
+                    if (output.equals("")) output = " ";
+                    String finalOutput = output;
+                    Bukkit.getScheduler().runTask(plugin, () -> followerEntity.setDisplayName(finalOutput));
+                });
+            }, 5L);
+            return;
 //            SignMenuFactory.Menu menu = signMenuFactory.newMenu(Arrays.asList("", "^^^^^^^^^^^", "Enter a name", "for the Follower"))
 //                .reopenIfFail(true)
 //                .response((thisPlayer, strings) -> {

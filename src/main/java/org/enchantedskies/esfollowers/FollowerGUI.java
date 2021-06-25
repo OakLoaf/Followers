@@ -84,7 +84,7 @@ public class FollowerGUI {
             previousPage.setItemMeta(previousPageMeta);
             inventory.setItem(48, previousPage);
         }
-        if (player.hasPermission("follower.name") && !player.getName().startsWith(".")) {
+        if (player.hasPermission("follower.name")) {
             ItemStack followerName = new ItemStack(Material.NAME_TAG);
             ItemMeta followerNameMeta = followerName.getItemMeta();
             followerNameMeta.setDisplayName("§eFollower Name: §f" + followerUser.getDisplayName());
