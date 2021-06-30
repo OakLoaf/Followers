@@ -8,8 +8,10 @@ import org.enchantedskies.esfollowers.FollowerEntity;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class DataManager {
+    private final ESFollowers plugin = ESFollowers.getInstance();
     private final Storage storage;
     private final HashMap<UUID, FollowerUser> uuidToFollowerUser = new HashMap<>();
     private final HashMap<UUID, FollowerEntity> playerFollowerMap = new HashMap<>();
@@ -22,10 +24,12 @@ public class DataManager {
         else storage = new YmlStorage();
     }
 
-    public FollowerUser loadFollowerUser(UUID uuid) {
-        FollowerUser followerUser = storage.loadFollowerUser(uuid);
-        uuidToFollowerUser.put(uuid, followerUser);
-        return followerUser;
+    public CompletableFuture<FollowerUser> loadFollowerUser(UUID uuid) {
+        CompletableFuture<FollowerUser> future = storage.loadFollowerUserAsync(uuid);
+        future.thenAccept((followerUser -> Bukkit.getScheduler().runTask(plugin, () -> {
+            uuidToFollowerUser.put(uuid, followerUser);
+        })));
+        return future;
     }
 
     public void saveFollowerUser(FollowerUser followerUser) {

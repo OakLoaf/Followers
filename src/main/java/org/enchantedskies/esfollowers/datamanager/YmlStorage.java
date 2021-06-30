@@ -9,6 +9,7 @@ import org.enchantedskies.esfollowers.ESFollowers;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class YmlStorage implements Storage {
     private final ESFollowers plugin = ESFollowers.getInstance();
@@ -36,6 +37,13 @@ public class YmlStorage implements Storage {
         boolean followerNameEnabled = configurationSection.getBoolean("followerNameEnabled");
         boolean followerEnabled = configurationSection.getBoolean("followerEnabled");
         return new FollowerUser(uuid, name, follower, followerDisplayName, followerNameEnabled, followerEnabled);
+    }
+
+    @Override
+    public CompletableFuture<FollowerUser> loadFollowerUserAsync(UUID uuid) {
+        CompletableFuture<FollowerUser> future = new CompletableFuture<>();
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> future.complete(loadFollowerUser(uuid)));
+        return future;
     }
 
     @Override
