@@ -2,12 +2,16 @@ package org.enchantedskies.esfollowers.datamanager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.enchantedskies.esfollowers.ESFollowers;
 import org.enchantedskies.esfollowers.FollowerEntity;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import static java.util.Objects.requireNonNull;
 
 public class DataManager {
     private final Storage storage;
@@ -22,10 +26,14 @@ public class DataManager {
         else storage = new YmlStorage();
     }
 
-    public FollowerUser loadFollowerUser(UUID uuid) {
-        FollowerUser followerUser = storage.loadFollowerUser(uuid);
-        uuidToFollowerUser.put(uuid, followerUser);
-        return followerUser;
+    public CompletableFuture<FollowerUser> loadFollowerUser(UUID uuid) {
+        CompletableFuture<FollowerUser> future = new CompletableFuture<>();
+        future.completeAsync(() -> {
+            final FollowerUser user = storage.loadFollowerUser(uuid);
+            uuidToFollowerUser.put(uuid, user);
+            return user;
+        }, Storage.SERVICE);
+        return future;
     }
 
     public void saveFollowerUser(FollowerUser followerUser) {

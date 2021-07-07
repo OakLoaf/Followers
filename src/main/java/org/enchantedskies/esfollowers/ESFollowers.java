@@ -32,20 +32,28 @@ public final class ESFollowers extends JavaPlugin implements Listener {
     private final HashSet<UUID> guiPlayerSet = new HashSet<>();
     private final NamespacedKey followerKey = new NamespacedKey(this, "ESFollower");
 
+    private void setThreadIOName() {
+        Storage.SERVICE.submit(() -> Thread.currentThread().setName("ESFollowers IO Thread"));
+    }
+
     @Override
     public void onEnable() {
         plugin = this;
         configManager = new ConfigManager();
         dataManager = new DataManager();
-        followerManager = new FollowerManager();
+        dataManager.initAsync((successful) -> {
+            if (successful) {
+                followerManager = new FollowerManager();
 
-        Listener[] listeners = new Listener[] {
-            this,
-            new FollowerUserEvents(),
-            new FollowerGUIEvents(guiPlayerSet),
-            new FollowerCreator()
-        };
-        registerEvents(listeners);
+                setThreadIOName();
+
+                Listener[] listeners = new Listener[] {
+                    this,
+                    new FollowerUserEvents(),
+                    new FollowerGUIEvents(guiPlayerSet),
+                    new FollowerCreator()
+                };
+                registerEvents(listeners);
 
         PluginManager pluginManager = getServer().getPluginManager();
         if (pluginManager.getPlugin("Essentials") != null) {
@@ -56,13 +64,17 @@ public final class ESFollowers extends JavaPlugin implements Listener {
         getCommand("followers").setExecutor(new FollowerCmd(guiPlayerSet));
         getCommand("gethexarmor").setExecutor(new GetHexArmorCmd());
 
-        for (World world : Bukkit.getWorlds()) {
-            for (Chunk chunk : world.getLoadedChunks()) {
-                for (Entity entity : chunk.getEntities()) {
-                    if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
+                for (World world : Bukkit.getWorlds()) {
+                    for (Chunk chunk : world.getLoadedChunks()) {
+                        for (Entity entity : chunk.getEntities()) {
+                            if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
+                        }
+                    }
                 }
+            } else {
+                Bukkit.getLogger().severe("Could not initialise the data. Aborting further plugin setup.");
             }
-        }
+        });
     }
 
     @EventHandler

@@ -107,9 +107,9 @@ public class FollowerGUIEvents implements Listener {
             }
             player.closeInventory();
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                TextInterface textInterface = new TextInterface()
-                        .title("Enter Name:")
-                        .placeholder("Enter follower name");
+                TextInterface textInterface = new TextInterface();
+                textInterface.title("Enter Name:");
+                textInterface.placeholder("Enter follower name");
                 textInterface.getInput(player, (output) -> {
                     if (output.equals("")) output = " ";
                     String finalOutput = output;
