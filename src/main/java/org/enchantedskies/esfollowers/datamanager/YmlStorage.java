@@ -13,8 +13,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class YmlStorage implements Storage {
     private final ESFollowers plugin = ESFollowers.getInstance();
-    private final File dataFile = initYML();
-    private final YamlConfiguration config = YamlConfiguration.loadConfiguration(dataFile);
+    private File dataFile;
+    private YamlConfiguration config;
+    private final ReentrantLock fileLock = new ReentrantLock();
 
     @Override
     public FollowerUser loadFollowerUser(UUID uuid) {

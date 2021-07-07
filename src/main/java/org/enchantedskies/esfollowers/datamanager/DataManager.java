@@ -21,25 +21,22 @@ public class DataManager {
 
     // Safe to use bukkit api in callback.
     public void initAsync(Consumer<Boolean> onComplete) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                String databaseType = ESFollowers.configManager.getDatabaseSection().getString("type");
-                final String errStr = "Could not read database type! Check config";
-                if (requireNonNull(databaseType, errStr).equalsIgnoreCase("mysql")) {
-                    storage = new MysqlStorage();
-                } else {
-                    storage = new YmlStorage();
-                }
-                final boolean init = storage.init();
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        onComplete.accept(init);
-                    }
-                }.runTask(ESFollowers.getInstance());
+        Storage.SERVICE.submit(() -> {
+            String databaseType = ESFollowers.configManager.getDatabaseSection().getString("type");
+            final String errStr = "Could not read database type! Check config";
+            if (requireNonNull(databaseType, errStr).equalsIgnoreCase("mysql")) {
+                storage = new MysqlStorage();
+            } else {
+                storage = new YmlStorage();
             }
-        }.runTaskAsynchronously(ESFollowers.getInstance());
+            final boolean init = storage.init();
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    onComplete.accept(init);
+                }
+            }.runTask(ESFollowers.getInstance());
+        });
     }
 
     public CompletableFuture<FollowerUser> loadFollowerUser(UUID uuid) {
@@ -53,12 +50,7 @@ public class DataManager {
     }
 
     public void saveFollowerUser(FollowerUser followerUser) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                storage.saveFollowerUser(followerUser);
-            }
-        }.runTaskAsynchronously(ESFollowers.getInstance());
+        Storage.SERVICE.submit(() -> storage.saveFollowerUser(followerUser));
     }
 
     public FollowerUser getFollowerUser(UUID uuid) {
