@@ -15,6 +15,7 @@ import org.enchantedskies.esfollowers.datamanager.FollowerUser;
 
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class FollowerUserEvents implements Listener {
     private final NamespacedKey followerKey = new NamespacedKey(ESFollowers.getInstance(), "ESFollower");
@@ -24,12 +25,14 @@ public class FollowerUserEvents implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
-        FollowerUser followerUser = ESFollowers.dataManager.loadFollowerUser(playerUUID);
-        followerUser.setUsername(player.getName());
-        String followerName = followerUser.getFollower();
-        if (followerUser.isFollowerEnabled() && player.hasPermission("followers." + followerName)) {
-            new FollowerEntity(player, followerName);
-        }
+        CompletableFuture<FollowerUser> future = ESFollowers.dataManager.loadFollowerUser(playerUUID);
+        future.thenAcceptAsync(followerUser -> {
+            followerUser.setUsername(player.getName());
+            String followerName = followerUser.getFollower();
+            if (followerUser.isFollowerEnabled() && player.hasPermission("followers." + followerName)) {
+                new FollowerEntity(player, followerName);
+            }
+        });
     }
 
     @EventHandler

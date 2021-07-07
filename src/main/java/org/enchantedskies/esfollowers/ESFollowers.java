@@ -15,6 +15,7 @@ import org.enchantedskies.esfollowers.commands.GetHexArmorCmd;
 import org.enchantedskies.esfollowers.datamanager.ConfigManager;
 import org.enchantedskies.esfollowers.datamanager.DataManager;
 import org.enchantedskies.esfollowers.datamanager.FollowerManager;
+import org.enchantedskies.esfollowers.datamanager.Storage;
 import org.enchantedskies.esfollowers.events.EssentialsEvents;
 import org.enchantedskies.esfollowers.events.FollowerGUIEvents;
 import org.enchantedskies.esfollowers.events.FollowerUserEvents;
@@ -75,6 +76,11 @@ public final class ESFollowers extends JavaPlugin implements Listener {
                 Bukkit.getLogger().severe("Could not initialise the data. Aborting further plugin setup.");
             }
         });
+    }
+
+    @Override
+    public void onDisable() {
+        Storage.SERVICE.shutdownNow();
     }
 
     @EventHandler

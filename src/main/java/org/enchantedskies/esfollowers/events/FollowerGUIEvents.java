@@ -117,14 +117,6 @@ public class FollowerGUIEvents implements Listener {
                 });
             }, 5L);
             return;
-//            SignMenuFactory.Menu menu = signMenuFactory.newMenu(Arrays.asList("", "^^^^^^^^^^^", "Enter a name", "for the Follower"))
-//                .reopenIfFail(true)
-//                .response((thisPlayer, strings) -> {
-//
-//                });
-//            player.closeInventory();
-//            menu.open(player);
-//            return;
         }
         String followerName = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName());
         FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);

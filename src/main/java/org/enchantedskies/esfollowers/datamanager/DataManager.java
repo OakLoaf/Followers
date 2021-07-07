@@ -14,16 +14,32 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 
 public class DataManager {
-    private final Storage storage;
+    private Storage storage;
     private final HashMap<UUID, FollowerUser> uuidToFollowerUser = new HashMap<>();
     private final HashMap<UUID, FollowerEntity> playerFollowerMap = new HashMap<>();
     private final HashSet<UUID> activeArmorStandsSet = new HashSet<>();
 
-
-    public DataManager() {
-        String databaseType = ESFollowers.configManager.getDatabaseSection().getString("type");
-        if (databaseType.equalsIgnoreCase("mysql")) storage = new MysqlStorage();
-        else storage = new YmlStorage();
+    // Safe to use bukkit api in callback.
+    public void initAsync(Consumer<Boolean> onComplete) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                String databaseType = ESFollowers.configManager.getDatabaseSection().getString("type");
+                final String errStr = "Could not read database type! Check config";
+                if (requireNonNull(databaseType, errStr).equalsIgnoreCase("mysql")) {
+                    storage = new MysqlStorage();
+                } else {
+                    storage = new YmlStorage();
+                }
+                final boolean init = storage.init();
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        onComplete.accept(init);
+                    }
+                }.runTask(ESFollowers.getInstance());
+            }
+        }.runTaskAsynchronously(ESFollowers.getInstance());
     }
 
     public CompletableFuture<FollowerUser> loadFollowerUser(UUID uuid) {
