@@ -21,9 +21,11 @@ import java.util.stream.Collectors;
 
 public class MysqlStorage implements Storage {
     private final ESFollowers plugin = ESFollowers.getInstance();
-    private final MysqlDataSource dataSource;
+    private MysqlDataSource dataSource;
 
-    public MysqlStorage() {
+
+    @Override
+    public boolean init() {
         ConfigurationSection databaseSection = ESFollowers.configManager.getDatabaseSection();
         String dbName = databaseSection.getString("name");
         String dbHost = databaseSection.getString("host");
@@ -31,7 +33,26 @@ public class MysqlStorage implements Storage {
         String dbUser = databaseSection.getString("user");
         String dbPass = databaseSection.getString("password", "");
         dataSource = initMySQLDataSource(dbName, dbHost, dbPort, dbUser, dbPass);
-        initDb();
+        String setup;
+        try (InputStream in = DataManager.class.getClassLoader().getResourceAsStream("dbsetup.sql")) {
+            setup = new BufferedReader(new InputStreamReader(in)).lines().collect(Collectors.joining("\n"));
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.SEVERE, "Could not read db setup file.", e);
+            e.printStackTrace();
+            return false;
+        }
+        String[] queries = setup.split(";");
+        for (String query : queries) {
+            if (query.isEmpty()) continue;
+            try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.execute();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        plugin.getLogger().info("§2Database setup complete.");
+        return true;
     }
 
     public Connection conn() {
@@ -89,26 +110,6 @@ public class MysqlStorage implements Storage {
         });
     }
 
-    private void initDb() {
-        String setup;
-        try (InputStream in = DataManager.class.getClassLoader().getResourceAsStream("dbsetup.sql")) {
-            setup = new BufferedReader(new InputStreamReader(in)).lines().collect(Collectors.joining("\n"));
-        } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE, "Could not read db setup file.", e);
-            e.printStackTrace();
-            return;
-        }
-        String[] queries = setup.split(";");
-        for (String query : queries) {
-            if (query.isEmpty()) continue;
-            try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.execute();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        plugin.getLogger().info("§2Database setup complete.");
-    }
 
     private MysqlDataSource initMySQLDataSource(String dbName, String host, int port, String user, String password) {
         MysqlDataSource dataSource = new MysqlConnectionPoolDataSource();

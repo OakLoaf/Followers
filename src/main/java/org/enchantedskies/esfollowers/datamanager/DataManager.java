@@ -53,7 +53,12 @@ public class DataManager {
     }
 
     public void saveFollowerUser(FollowerUser followerUser) {
-        storage.saveFollowerUser(followerUser);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                storage.saveFollowerUser(followerUser);
+            }
+        }.runTaskAsynchronously(ESFollowers.getInstance());
     }
 
     public FollowerUser getFollowerUser(UUID uuid) {
