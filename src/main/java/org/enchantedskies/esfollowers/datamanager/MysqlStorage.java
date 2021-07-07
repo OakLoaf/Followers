@@ -16,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -68,6 +69,13 @@ public class MysqlStorage implements Storage {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public CompletableFuture<FollowerUser> loadFollowerUserAsync(UUID uuid) {
+        CompletableFuture<FollowerUser> future = new CompletableFuture<>();
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> future.complete(loadFollowerUser(uuid)));
+        return future;
     }
 
     @Override
