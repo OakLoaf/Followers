@@ -9,6 +9,7 @@ import org.enchantedskies.esfollowers.ESFollowers;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class YmlStorage implements Storage {
     private final ESFollowers plugin = ESFollowers.getInstance();
@@ -40,6 +41,7 @@ public class YmlStorage implements Storage {
 
     @Override
     public void saveFollowerUser(FollowerUser followerUser) {
+        fileLock.lock();
         ConfigurationSection configurationSection = config.createSection(followerUser.getUUID().toString());
         configurationSection.set("name", followerUser.getUsername());
         configurationSection.set("follower", followerUser.getFollower());
@@ -50,16 +52,22 @@ public class YmlStorage implements Storage {
             config.save(dataFile);
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            fileLock.unlock();
         }
     }
 
-    private File initYML() {
+    @Override
+    public boolean init() {
         File dataFile = new File(plugin.getDataFolder(),"data.yml");
         try {
             if (dataFile.createNewFile()) plugin.getLogger().info("File Created: data.yml");
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
-        return dataFile;
+        this.dataFile = dataFile;
+        config = YamlConfiguration.loadConfiguration(dataFile);
+        return true;
     }
 }
