@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.persistence.PersistentDataType;
 import org.enchantedskies.esfollowers.ESFollowers;
 import org.enchantedskies.esfollowers.FollowerEntity;
@@ -26,11 +27,16 @@ public class FollowerUserEvents implements Listener {
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
         CompletableFuture<FollowerUser> future = ESFollowers.dataManager.loadFollowerUser(playerUUID);
-        future.thenAcceptAsync(followerUser -> {
+        future.thenAccept(followerUser -> {
             followerUser.setUsername(player.getName());
             String followerName = followerUser.getFollower();
             if (followerUser.isFollowerEnabled() && player.hasPermission("followers." + followerName)) {
-                new FollowerEntity(player, followerName);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        new FollowerEntity(player, followerName);
+                    }
+                }.runTask(ESFollowers.getInstance());
             }
         });
     }
@@ -49,7 +55,7 @@ public class FollowerUserEvents implements Listener {
         Chunk fromChunk = event.getFrom().getChunk();
         Player player = event.getPlayer();
         FollowerEntity followerEntity = ESFollowers.dataManager.getPlayerFollowerMap().get(player.getUniqueId());
-        if (followerEntity == null) return;
+        if (followerEntity == null || followerEntity.getArmorStand() == null) return;
         UUID followerASUUID = followerEntity.getArmorStand().getUniqueId();
         ArmorStand nameTagAS = followerEntity.getArmorStand();
         for (Entity entity : fromChunk.getEntities()) {

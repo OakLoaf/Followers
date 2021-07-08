@@ -36,12 +36,16 @@ public class FollowerEntity {
         followerUser.setFollowerEnabled(true);
 
         followerAS = owner.getLocation().getWorld().spawn(owner.getLocation().add(-1.5, 0, 1.5), ArmorStand.class, (armorStand -> {
-            armorStand.setBasePlate(false);
-            armorStand.setArms(true);
-            armorStand.setInvulnerable(true);
-            armorStand.setCanPickupItems(false);
-            armorStand.setSmall(true);
-            armorStand.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, owner.getUniqueId().toString());
+            try {
+                armorStand.setBasePlate(false);
+                armorStand.setArms(true);
+                armorStand.setInvulnerable(true);
+                armorStand.setCanPickupItems(false);
+                armorStand.setSmall(true);
+                armorStand.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, owner.getUniqueId().toString());
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
         }));
         ESFollowers.dataManager.setActiveArmorStand(followerAS.getUniqueId());
 
@@ -141,6 +145,7 @@ public class FollowerEntity {
     }
 
     public void kill() {
+        if (followerAS == null) return;
         ESFollowers.dataManager.setActiveArmorStand(followerAS.getUniqueId(), false);
         ESFollowers.dataManager.removeFromPlayerFollowerMap(owner.getUniqueId());
         followerAS.remove();

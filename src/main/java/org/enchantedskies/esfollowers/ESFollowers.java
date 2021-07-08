@@ -56,14 +56,12 @@ public final class ESFollowers extends JavaPlugin implements Listener {
                 };
                 registerEvents(listeners);
 
-        PluginManager pluginManager = getServer().getPluginManager();
-        if (pluginManager.getPlugin("Essentials") != null) {
-            pluginManager.registerEvents(new EssentialsEvents(), this);
-        } else {
-            getLogger().info("Essentials plugin not found. Continuing without Essentials.");
-        }
-        getCommand("followers").setExecutor(new FollowerCmd(guiPlayerSet));
-        getCommand("gethexarmor").setExecutor(new GetHexArmorCmd());
+                PluginManager pluginManager = getServer().getPluginManager();
+                if (pluginManager.getPlugin("Essentials") != null) pluginManager.registerEvents(new EssentialsEvents(), this);
+                else getLogger().info("Essentials plugin not found. Continuing without Essentials.");
+
+                getCommand("followers").setExecutor(new FollowerCmd(guiPlayerSet));
+                getCommand("gethexarmor").setExecutor(new GetHexArmorCmd());
 
                 for (World world : Bukkit.getWorlds()) {
                     for (Chunk chunk : world.getLoadedChunks()) {
