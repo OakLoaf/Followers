@@ -1,6 +1,7 @@
 package org.enchantedskies.esfollowers;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
+import me.gsit.api.GSitAPI;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -10,13 +11,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.enchantedskies.esfollowers.APIs.GSitEvents;
 import org.enchantedskies.esfollowers.commands.FollowerCmd;
 import org.enchantedskies.esfollowers.commands.GetHexArmorCmd;
 import org.enchantedskies.esfollowers.datamanager.ConfigManager;
 import org.enchantedskies.esfollowers.datamanager.DataManager;
 import org.enchantedskies.esfollowers.datamanager.FollowerManager;
 import org.enchantedskies.esfollowers.datamanager.Storage;
-import org.enchantedskies.esfollowers.events.EssentialsEvents;
+import org.enchantedskies.esfollowers.APIs.EssentialsEvents;
 import org.enchantedskies.esfollowers.events.FollowerGUIEvents;
 import org.enchantedskies.esfollowers.events.FollowerUserEvents;
 import org.enchantedskies.esfollowers.utils.SkullCreator;
@@ -33,6 +35,10 @@ public final class ESFollowers extends JavaPlugin implements Listener {
     private final HashSet<UUID> guiPlayerSet = new HashSet<>();
     private final NamespacedKey followerKey = new NamespacedKey(this, "ESFollower");
 
+    public static GSitAPI GAPI = new GSitAPI();
+
+    public static boolean isGSitEnabled = false;
+
     private void setThreadIOName() {
         Storage.SERVICE.submit(() -> Thread.currentThread().setName("ESFollowers IO Thread"));
     }
@@ -40,13 +46,12 @@ public final class ESFollowers extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         plugin = this;
+        setThreadIOName();
         configManager = new ConfigManager();
         dataManager = new DataManager();
         dataManager.initAsync((successful) -> {
             if (successful) {
                 followerManager = new FollowerManager();
-
-                setThreadIOName();
 
                 Listener[] listeners = new Listener[] {
                     this,
@@ -59,6 +64,11 @@ public final class ESFollowers extends JavaPlugin implements Listener {
                 PluginManager pluginManager = getServer().getPluginManager();
                 if (pluginManager.getPlugin("Essentials") != null) pluginManager.registerEvents(new EssentialsEvents(), this);
                 else getLogger().info("Essentials plugin not found. Continuing without Essentials.");
+                if (pluginManager.getPlugin("GSit") != null) {
+                    pluginManager.registerEvents(new GSitEvents(), this);
+                    isGSitEnabled = true;
+                }
+                else getLogger().info("GSit plugin not found. Continuing without GSit.");
 
                 getCommand("followers").setExecutor(new FollowerCmd(guiPlayerSet));
                 getCommand("gethexarmor").setExecutor(new GetHexArmorCmd());

@@ -1,9 +1,6 @@
 package org.enchantedskies.esfollowers;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
@@ -26,6 +23,17 @@ public class FollowerEntity {
     private ArmorStand nameTagAS;
     private String follower;
     private boolean isPlayerInvisible;
+    private String poseName;
+
+    private final EulerAngle defaultLeftArm = new EulerAngle(-0.17453292519943295, 0, -0.17453292519943295);
+    private final EulerAngle defaultRightArm = new EulerAngle(-0.2617993877991494, 0, 0.17453292519943295);
+    private final EulerAngle defaultLeftLeg = new EulerAngle(-0.017453292519943295, 0, -0.017453292519943295);
+    private final EulerAngle defaultRightLeg = new EulerAngle(0.017453292519943295, 0, 0.017453292519943295);
+
+    private final EulerAngle sittingLeftArm = new EulerAngle(-0.78, 0, -0.17453292519943295);
+    private final EulerAngle sittingRightArm = new EulerAngle(-0.78, 0, 0.17453292519943295);
+    private final EulerAngle sittingLeftLeg = new EulerAngle(4.6, -0.222, 0);
+    private final EulerAngle sittingRightLeg = new EulerAngle(4.6, 0.222, 0);
 
     public FollowerEntity(Player owner, String follower) {
         this.owner = owner;
@@ -51,9 +59,7 @@ public class FollowerEntity {
 
         setVisible(!owner.isInvisible());
 
-        if (!ESFollowers.configManager.areHitboxesEnabled()) {
-            followerAS.setMarker(true);
-        }
+        if (!ESFollowers.configManager.areHitboxesEnabled()) followerAS.setMarker(true);
 
         if (followerUser.isDisplayNameEnabled()) {
             if (ESFollowers.configManager.areHitboxesEnabled()) {
@@ -126,15 +132,15 @@ public class FollowerEntity {
         EntityEquipment armorEquipment = followerAS.getEquipment();
         if (armorEquipment == null) return;
         FollowerHandler follower = ESFollowers.followerManager.getFollower(followerName);
-        ItemStack item = new ItemStack(Material.AIR);
-        switch (equipmentSlot) {
-            case HEAD: item = follower.getHead(); break;
-            case CHEST: item = follower.getChest(); break;
-            case LEGS: item = follower.getLegs(); break;
-            case FEET: item = follower.getFeet(); break;
-            case HAND: item = follower.getMainHand(); break;
-            case OFF_HAND: item = follower.getOffHand(); break;
-        }
+        new ItemStack(Material.AIR);
+        ItemStack item = switch (equipmentSlot) {
+            case HEAD -> follower.getHead();
+            case CHEST -> follower.getChest();
+            case LEGS -> follower.getLegs();
+            case FEET -> follower.getFeet();
+            case HAND -> follower.getMainHand();
+            case OFF_HAND -> follower.getOffHand();
+        };
         armorEquipment.setItem(equipmentSlot, item);
     }
 
@@ -170,7 +176,7 @@ public class FollowerEntity {
                     return;
                 }
                 if (followerAS.getWorld() != player.getWorld()) {
-                    teleportArmorStands(player.getLocation().add(1.5, 0, 1.5));
+                    teleportToPlayer(player);
                     return;
                 }
                 if (isPlayerInvisible != player.isInvisible()) {
@@ -191,7 +197,7 @@ public class FollowerEntity {
                     followerLoc.add(normalizedDifference.multiply(speed * distance));
                 }
                 if (difference.lengthSquared() > 1024) {
-                    teleportArmorStands(player.getLocation().add(1.5, 0, 1.5));
+                    teleportToPlayer(player);
                     return;
                 }
                 followerLoc.setDirection(difference);
@@ -206,6 +212,41 @@ public class FollowerEntity {
                 followerAS.setHeadPose(newHeadPoseX);
             }
         }.runTaskTimer(plugin, 0L, 1L);
+    }
+
+    public void setPose(String poseName) {
+        if (poseName.equalsIgnoreCase(this.poseName)) return;
+        this.poseName = poseName;
+
+        switch (poseName) {
+            case "default" -> {
+                followerAS.setLeftArmPose(defaultLeftArm);
+                followerAS.setRightArmPose(defaultRightArm);
+                followerAS.setLeftLegPose(defaultLeftLeg);
+                followerAS.setRightLegPose(defaultRightLeg);
+            }
+            case "sitting" -> {
+                followerAS.setLeftArmPose(sittingLeftArm);
+                followerAS.setRightArmPose(sittingRightArm);
+                followerAS.setLeftLegPose(sittingLeftLeg);
+                followerAS.setRightLegPose(sittingRightLeg);
+                spawnSitParticles();
+            }
+        }
+    }
+
+    private void spawnSitParticles() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!poseName.equalsIgnoreCase("sitting")) {
+                    cancel();
+                    return;
+                }
+                if (isPlayerInvisible) return;
+                followerAS.getWorld().spawnParticle(Particle.CLOUD, followerAS.getLocation().add(0, -0.15, 0), 1, 0, 0, 0, 0);
+            }
+        }.runTaskTimer(plugin, 0, 3);
     }
 
     private void displayNametag(boolean isDisplayed) {
@@ -228,9 +269,17 @@ public class FollowerEntity {
         }
     }
 
+    public void teleportToPlayer(Player player) {
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            Location playerLoc = player.getLocation();
+            if (!followerAS.getChunk().isLoaded()) followerAS.getChunk().load();
+            teleportArmorStands(playerLoc.add(1.5, 0, 1.5));
+        }, 20);
+    }
+
     private void teleportArmorStands(Location location) {
+        followerAS.getChunk().load();
         followerAS.teleport(location);
-        if (nameTagAS != null) nameTagAS.teleport(location.add(0, 1, 0));
     }
 
     private double getArmorStandYOffset(ArmorStand armorStand) {

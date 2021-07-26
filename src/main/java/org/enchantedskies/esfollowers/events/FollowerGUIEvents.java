@@ -83,7 +83,9 @@ public class FollowerGUIEvents implements Listener {
                 if (!playerFollowerMap.containsKey(playerUUID)) new FollowerEntity(player, followerName);
             } else {
                 FollowerEntity followerEntity = playerFollowerMap.get(playerUUID);
-                followerEntity.disable();
+                if (followerEntity != null) {
+                    followerEntity.disable();
+                }
             }
             FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
             followerInv.openInventory(player);

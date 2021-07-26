@@ -1,8 +1,6 @@
 package org.enchantedskies.esfollowers.events;
 
-import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -48,23 +46,6 @@ public class FollowerUserEvents implements Listener {
         if (followerEntity != null) followerEntity.kill();
         FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());
         ESFollowers.dataManager.saveFollowerUser(followerUser);
-    }
-
-    @EventHandler
-    public void onPlayerTeleport(PlayerTeleportEvent event) {
-        Chunk fromChunk = event.getFrom().getChunk();
-        Player player = event.getPlayer();
-        FollowerEntity followerEntity = ESFollowers.dataManager.getPlayerFollowerMap().get(player.getUniqueId());
-        if (followerEntity == null || followerEntity.getArmorStand() == null) return;
-        UUID followerASUUID = followerEntity.getArmorStand().getUniqueId();
-        ArmorStand nameTagAS = followerEntity.getArmorStand();
-        for (Entity entity : fromChunk.getEntities()) {
-            if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) {
-                if (!fromChunk.isLoaded()) fromChunk.load();
-                UUID entityUUID = entity.getUniqueId();
-                if (entityUUID == followerASUUID || (nameTagAS != null && entityUUID == nameTagAS.getUniqueId())) entity.teleport(player);
-            }
-        }
     }
 
     @EventHandler
