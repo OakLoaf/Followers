@@ -197,7 +197,7 @@ public class FollowerEntity {
                     followerLoc.add(normalizedDifference.multiply(speed * distance));
                 }
                 if (difference.lengthSquared() > 1024) {
-                    teleportToPlayer(player);
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> teleportToPlayer(player), 5);
                     return;
                 }
                 followerLoc.setDirection(difference);
