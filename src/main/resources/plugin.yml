@@ -4,7 +4,7 @@ main: org.enchantedskies.esfollowers.ESFollowers
 api-version: 1.16
 authors: [Dav_e_]
 depend: [UserInterface]
-softdepend: [Essentials]
+softdepend: [Essentials, GSit]
 commands:
   followers:
     description: Opens Follower GUI

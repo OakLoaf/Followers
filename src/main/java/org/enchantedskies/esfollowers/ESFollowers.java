@@ -35,7 +35,7 @@ public final class ESFollowers extends JavaPlugin implements Listener {
     private final HashSet<UUID> guiPlayerSet = new HashSet<>();
     private final NamespacedKey followerKey = new NamespacedKey(this, "ESFollower");
 
-    public static GSitAPI GAPI = new GSitAPI();
+    public static GSitAPI GAPI;
 
     public static boolean isGSitEnabled = false;
 
@@ -66,6 +66,7 @@ public final class ESFollowers extends JavaPlugin implements Listener {
                 else getLogger().info("Essentials plugin not found. Continuing without Essentials.");
                 if (pluginManager.getPlugin("GSit") != null) {
                     pluginManager.registerEvents(new GSitEvents(), this);
+                    GAPI = new GSitAPI();
                     isGSitEnabled = true;
                 }
                 else getLogger().info("GSit plugin not found. Continuing without GSit.");

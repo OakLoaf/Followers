@@ -280,6 +280,7 @@ public class FollowerEntity {
     private void teleportArmorStands(Location location) {
         followerAS.getChunk().load();
         followerAS.teleport(location);
+        if (nameTagAS != null) nameTagAS.teleport(location.add(0, 1, 0));
     }
 
     private double getArmorStandYOffset(ArmorStand armorStand) {
