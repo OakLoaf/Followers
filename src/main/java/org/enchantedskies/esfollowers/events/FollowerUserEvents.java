@@ -49,6 +49,14 @@ public class FollowerUserEvents implements Listener {
     }
 
     @EventHandler
+    public void onPlayerTeleport(PlayerTeleportEvent event) {
+        Player player = event.getPlayer();
+        FollowerEntity followerEntity = playerFollowerMap.get(player.getUniqueId());
+        if (followerEntity == null) return;
+        followerEntity.setPose("default");
+    }
+
+    @EventHandler
     public void onPlayerInteractWithEntity(PlayerInteractAtEntityEvent event) {
         Entity entity = event.getRightClicked();
         if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) {
