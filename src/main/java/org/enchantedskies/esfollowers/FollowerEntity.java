@@ -239,7 +239,7 @@ public class FollowerEntity {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (!poseName.equalsIgnoreCase("sitting")) {
+                if (!poseName.equalsIgnoreCase("sitting") || !followerAS.isValid()) {
                     cancel();
                     return;
                 }

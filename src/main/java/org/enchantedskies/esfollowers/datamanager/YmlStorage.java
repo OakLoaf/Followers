@@ -29,8 +29,9 @@ public class YmlStorage implements Storage {
             configurationSection.set("followerDisplayName", "Unnamed");
             configurationSection.set("followerNameEnabled", Boolean.FALSE);
             configurationSection.set("followerEnabled", Boolean.TRUE);
-            plugin.saveConfig();
-            return new FollowerUser(uuid, playerName, "none", "Unnamed", false, false);
+            FollowerUser followerUser = new FollowerUser(uuid, playerName, "none", "Unnamed", false, false);
+            saveFollowerUser(followerUser);
+            return followerUser;
         }
         String name = configurationSection.getString("name");
         String follower = configurationSection.getString("follower");

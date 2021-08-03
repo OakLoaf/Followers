@@ -1,10 +1,7 @@
 package org.enchantedskies.esfollowers.events;
 
 import me.xemor.userinterface.TextInterface;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -102,6 +99,7 @@ public class FollowerGUIEvents implements Listener {
             FollowerEntity followerEntity = ESFollowers.dataManager.getPlayerFollowerMap().get(player.getUniqueId());
             FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());
             if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                player.playSound(player.getEyeLocation(), Sound.BLOCK_LEVER_CLICK, 0.6f, 1.0f);
                 followerEntity.setDisplayNameVisible(!followerUser.isDisplayNameEnabled());
                 FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
                 followerInv.openInventory(player);
