@@ -31,8 +31,7 @@ public class FollowerCreator implements Listener {
     public void onPlayerInteract(PlayerInteractAtEntityEvent event) {
         Player player = event.getPlayer();
         ItemStack heldItem = player.getInventory().getItemInMainHand();
-        if (!(event.getRightClicked() instanceof ArmorStand)) return;
-        ArmorStand armorStand = (ArmorStand) event.getRightClicked();
+        if (!(event.getRightClicked() instanceof ArmorStand armorStand)) return;
         if (!heldItem.isSimilar(creatorItem)) return;
         event.setCancelled(true);
         String prefix = ESFollowers.configManager.getPrefix();
@@ -40,7 +39,7 @@ public class FollowerCreator implements Listener {
             player.sendMessage(prefix + "§7You have insufficient permissions.");
             return;
         }
-        if (ESFollowers.dataManager.getPlayerFollowerMap().containsValue(armorStand.getUniqueId())) return;
+        if (ESFollowers.dataManager.getPlayerFollowerMap().containsKey(armorStand.getUniqueId())) return;
         String armorStandName = armorStand.getCustomName();
         if (armorStandName == null) {
 

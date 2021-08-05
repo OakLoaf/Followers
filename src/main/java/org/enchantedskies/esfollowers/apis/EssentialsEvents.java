@@ -1,4 +1,4 @@
-package org.enchantedskies.esfollowers.APIs;
+package org.enchantedskies.esfollowers.apis;
 
 import net.ess3.api.IUser;
 import net.ess3.api.events.AfkStatusChangeEvent;

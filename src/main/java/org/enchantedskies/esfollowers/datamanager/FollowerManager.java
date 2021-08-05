@@ -61,8 +61,8 @@ public class FollowerManager {
             if (material == Material.AIR) continue;
             String equipmentSlotName = makeFriendly(equipmentSlot.name());
             switch (equipmentSlotName) {
-                case "Hand": equipmentSlotName = "MainHand"; break;
-                case "Off_hand": equipmentSlotName = "OffHand"; break;
+                case "Hand" -> equipmentSlotName = "MainHand";
+                case "Off_hand" -> equipmentSlotName = "OffHand";
             }
             configurationSection.set(equipmentSlotName + ".Material", material.toString().toLowerCase());
             if (currItem.getType() == Material.PLAYER_HEAD) {
@@ -78,8 +78,7 @@ public class FollowerManager {
                 UUID skullUUID = skullOwner.getUniqueId();
                 configurationSection.set(makeFriendly(equipmentSlot.name()) + ".UUID", skullUUID.toString());
                 owner.sendMessage(prefix + "§7Skull has been created as Default SkullType. To get custom textures manually edit the config.");
-            } else if (currItem.getItemMeta() instanceof LeatherArmorMeta) {
-                LeatherArmorMeta armorMeta = (LeatherArmorMeta) currItem.getItemMeta();
+            } else if (currItem.getItemMeta() instanceof LeatherArmorMeta armorMeta) {
                 Color armorColor = armorMeta.getColor();
                 configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Color", String.format("%02x%02x%02x", armorColor.getRed(), armorColor.getGreen(), armorColor.getBlue()));
             }

@@ -23,11 +23,6 @@ public class ConfigManager {
         areHitboxesEnabled = config.getBoolean("hitboxesEnabled");
     }
 
-    public void saveConfig() {
-        plugin.saveConfig();
-        reloadConfig();
-    }
-
     public void reloadConfig() {
         plugin.reloadConfig();
         config = plugin.getConfig();

@@ -80,10 +80,6 @@ public class FollowerEntity {
         startMovement(ESFollowers.configManager.getSpeed());
     }
 
-    public ArmorStand getArmorStand() {
-        return followerAS;
-    }
-
     public void setFollower(String newFollower) {
         this.follower = newFollower;
         ESFollowers.dataManager.getFollowerUser(owner.getUniqueId()).setFollower(newFollower);

@@ -33,7 +33,7 @@ public class FollowerGUI {
         }
         List<String> followerSet = new ArrayList<>();
         for (String followerName : ESFollowers.followerManager.getFollowers().keySet()) {
-            if (!player.hasPermission("followers." + followerName.toLowerCase().replaceAll(" ", "_")) && !player.hasPermission("followers.all")) continue;
+            if (!player.hasPermission("followers." + followerName.toLowerCase().replaceAll(" ", "_"))) continue;
             followerSet.add(followerName);
         }
         int setStartPos = (page - 1) * 36;

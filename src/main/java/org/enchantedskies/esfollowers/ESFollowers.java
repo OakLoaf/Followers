@@ -11,14 +11,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.enchantedskies.esfollowers.APIs.GSitEvents;
+import org.enchantedskies.esfollowers.apis.GSitEvents;
 import org.enchantedskies.esfollowers.commands.FollowerCmd;
 import org.enchantedskies.esfollowers.commands.GetHexArmorCmd;
 import org.enchantedskies.esfollowers.datamanager.ConfigManager;
 import org.enchantedskies.esfollowers.datamanager.DataManager;
 import org.enchantedskies.esfollowers.datamanager.FollowerManager;
 import org.enchantedskies.esfollowers.datamanager.Storage;
-import org.enchantedskies.esfollowers.APIs.EssentialsEvents;
+import org.enchantedskies.esfollowers.apis.EssentialsEvents;
 import org.enchantedskies.esfollowers.events.FollowerGUIEvents;
 import org.enchantedskies.esfollowers.events.FollowerUserEvents;
 import org.enchantedskies.esfollowers.utils.SkullCreator;
@@ -31,7 +31,7 @@ public final class ESFollowers extends JavaPlugin implements Listener {
     public static DataManager dataManager;
     public static ConfigManager configManager;
     public static FollowerManager followerManager;
-    public static SkullCreator skullCreator = new SkullCreator();
+    public static final SkullCreator skullCreator = new SkullCreator();
     private final HashSet<UUID> guiPlayerSet = new HashSet<>();
     private final NamespacedKey followerKey = new NamespacedKey(this, "ESFollower");
 

@@ -19,11 +19,10 @@ public class GetHexArmorCmd implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("Console cannot run this command!");
             return true;
         }
-        Player player = (Player) sender;
         String prefix = ESFollowers.configManager.getPrefix();
         if (!player.hasPermission("follower.admin.gethexarmor")) {
             sender.sendMessage(prefix + "§7You have insufficient permissions.");
@@ -41,11 +40,10 @@ public class GetHexArmorCmd implements CommandExecutor, TabCompleter {
         }
         ItemStack item = new ItemStack(material);
         ItemMeta itemMeta = item.getItemMeta();
-        if (!(itemMeta instanceof LeatherArmorMeta)) {
+        if (!(itemMeta instanceof LeatherArmorMeta armorMeta)) {
             player.sendMessage(prefix + "§7Material has to be a form of Leather Armor.");
             return true;
         }
-        LeatherArmorMeta armorMeta = (LeatherArmorMeta) itemMeta;
         armorMeta.setColor(getRGBFromHex(color));
         item.setItemMeta(armorMeta);
         player.getInventory().addItem(item);

@@ -1,4 +1,4 @@
-package org.enchantedskies.esfollowers.APIs;
+package org.enchantedskies.esfollowers.apis;
 
 import me.gsit.api.events.PlayerGetUpSeatEvent;
 import me.gsit.api.events.PlayerSitEvent;

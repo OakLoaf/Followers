@@ -39,7 +39,7 @@ public class ItemStackData {
                 if (skullUUID == null || skullUUID.equalsIgnoreCase("error")) {
                     item = new ItemStack(Material.PLAYER_HEAD);
                 }
-                ESFollowers.skullCreator.getPlayerSkull(UUID.fromString(skullUUID), plugin).thenAccept(itemStack -> Bukkit.getScheduler().runTask(plugin, runnable -> { item = itemStack; }));
+                ESFollowers.skullCreator.getPlayerSkull(UUID.fromString(skullUUID), plugin).thenAccept(itemStack -> Bukkit.getScheduler().runTask(plugin, () -> item = itemStack));
             }
         }
         else if (item.getItemMeta() instanceof LeatherArmorMeta) {
