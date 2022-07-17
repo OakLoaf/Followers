@@ -23,7 +23,7 @@ public class EssentialsEvents implements Listener {
             public void run() {
                 if (iUser.isAfk()) follower.setPose("sitting");
                 else {
-                    if (ESFollowers.isGSitEnabled && ESFollowers.GAPI.isPlayerSitting(player)) follower.setPose("sitting");
+                    if (ESFollowers.isGSitEnabled && ESFollowers.GAPI.isSitting(player)) follower.setPose("sitting");
                     else follower.setPose("default");
                 }
             }

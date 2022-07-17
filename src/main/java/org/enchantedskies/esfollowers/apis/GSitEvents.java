@@ -1,7 +1,7 @@
 package org.enchantedskies.esfollowers.apis;
 
-import me.gsit.api.events.PlayerGetUpSeatEvent;
-import me.gsit.api.events.PlayerSitEvent;
+import dev.geco.gsit.api.event.PlayerGetUpSitEvent;
+import dev.geco.gsit.api.event.PlayerSitEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,7 +19,7 @@ public class GSitEvents implements Listener {
     }
 
     @EventHandler
-    public void onPlayerGetUpFromSeat(PlayerGetUpSeatEvent event) {
+    public void onPlayerGetUpFromSeat(PlayerGetUpSitEvent event) {
         Player player = event.getPlayer();
         FollowerEntity follower = ESFollowers.dataManager.getPlayerFollowerMap().get(player.getUniqueId());
         if (follower == null) return;

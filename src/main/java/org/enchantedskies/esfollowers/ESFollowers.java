@@ -1,7 +1,7 @@
 package org.enchantedskies.esfollowers;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
-import me.gsit.api.GSitAPI;
+import dev.geco.gsit.api.GSitAPI;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
