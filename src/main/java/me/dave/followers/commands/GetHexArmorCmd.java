@@ -1,4 +1,4 @@
-package org.enchantedskies.esfollowers.commands;
+package me.dave.followers.commands;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.enchantedskies.esfollowers.ESFollowers;
+import me.dave.followers.Followers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class GetHexArmorCmd implements CommandExecutor, TabCompleter {
             sender.sendMessage("Console cannot run this command!");
             return true;
         }
-        String prefix = ESFollowers.configManager.getPrefix();
+        String prefix = Followers.configManager.getPrefix();
         if (!player.hasPermission("follower.admin.dye")) {
             sender.sendMessage(prefix + "§7You have insufficient permissions.");
             return true;

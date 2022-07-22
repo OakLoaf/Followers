@@ -1,5 +1,7 @@
-package org.enchantedskies.esfollowers.events;
+package me.dave.followers.events;
 
+import me.dave.followers.FollowerGUI;
+import me.dave.followers.datamanager.FollowerUser;
 import me.xemor.userinterface.TextInterface;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -14,17 +16,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.enchantedskies.esfollowers.ESFollowers;
-import org.enchantedskies.esfollowers.FollowerEntity;
-import org.enchantedskies.esfollowers.FollowerGUI;
-import org.enchantedskies.esfollowers.datamanager.FollowerUser;
+import me.dave.followers.Followers;
+import me.dave.followers.FollowerEntity;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
 public class FollowerGUIEvents implements Listener {
-    private final ESFollowers plugin = ESFollowers.getInstance();
+    private final Followers plugin = Followers.getInstance();
     private final HashSet<UUID> openInvPlayerSet;
     private final HashMap<UUID, FollowerEntity> playerFollowerMap;
     private final ItemStack noFollowers = new ItemStack(Material.BARRIER);
@@ -35,7 +35,7 @@ public class FollowerGUIEvents implements Listener {
 
     public FollowerGUIEvents(HashSet<UUID> playerSet) {
         this.openInvPlayerSet = playerSet;
-        this.playerFollowerMap = ESFollowers.dataManager.getPlayerFollowerMap();
+        this.playerFollowerMap = Followers.dataManager.getPlayerFollowerMap();
 
         ItemMeta barrierMeta = noFollowers.getItemMeta();
         barrierMeta.setDisplayName("§cYou don't own any followers!");
@@ -74,7 +74,7 @@ public class FollowerGUIEvents implements Listener {
         NamespacedKey pageNumKey = new NamespacedKey(plugin, "page");
         if (clickedItem.isSimilar(noFollowers) || clickedItem.getItemMeta().getPersistentDataContainer().has(pageNumKey, PersistentDataType.INTEGER)) return;
         else if (clickedItem.isSimilar(followerToggleEnabled) || clickedItem.isSimilar(followerToggleDisabled)) {
-            FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             if (!followerUser.isFollowerEnabled()) {
                 String followerName = followerUser.getFollower();
                 if (!playerFollowerMap.containsKey(playerUUID)) new FollowerEntity(player, followerName);
@@ -96,8 +96,8 @@ public class FollowerGUIEvents implements Listener {
             followerInv.openInventory(player);
             return;
         } else if (clickedItem.getType() == Material.NAME_TAG && clickedItem.getItemMeta().getDisplayName().startsWith("§eFollower Name:")) {
-            FollowerEntity followerEntity = ESFollowers.dataManager.getPlayerFollowerMap().get(player.getUniqueId());
-            FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());
+            FollowerEntity followerEntity = Followers.dataManager.getPlayerFollowerMap().get(player.getUniqueId());
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                 player.playSound(player.getEyeLocation(), Sound.BLOCK_LEVER_CLICK, 0.6f, 1.0f);
                 followerEntity.setDisplayNameVisible(!followerUser.isDisplayNameEnabled());
@@ -127,7 +127,7 @@ public class FollowerGUIEvents implements Listener {
             return;
         }
         new FollowerEntity(player, followerName);
-        player.sendMessage(ESFollowers.configManager.getPrefix() + "§aFollower Spawned.");
+        player.sendMessage(Followers.configManager.getPrefix() + "§aFollower Spawned.");
     }
 
     @EventHandler

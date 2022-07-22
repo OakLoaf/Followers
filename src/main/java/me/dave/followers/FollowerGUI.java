@@ -1,4 +1,4 @@
-package org.enchantedskies.esfollowers;
+package me.dave.followers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -9,7 +9,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.enchantedskies.esfollowers.datamanager.FollowerUser;
+import me.dave.followers.datamanager.FollowerUser;
 
 import java.util.*;
 
@@ -18,7 +18,7 @@ public class FollowerGUI {
     private final HashSet<UUID> openInvPlayerSet;
 
     public FollowerGUI(Player player, int page, HashSet<UUID> playerSet) {
-        ESFollowers plugin = ESFollowers.getInstance();
+        Followers plugin = Followers.getInstance();
         NamespacedKey pageNumKey = new NamespacedKey(plugin, "page");
         this.openInvPlayerSet = playerSet;
         inventory = Bukkit.createInventory(null, 54, "Followers");
@@ -32,7 +32,7 @@ public class FollowerGUI {
             else inventory.setItem(i + 36, empty);
         }
         List<String> followerSet = new ArrayList<>();
-        for (String followerName : ESFollowers.followerManager.getFollowers().keySet()) {
+        for (String followerName : Followers.followerManager.getFollowers().keySet()) {
             if (!player.hasPermission("followers." + followerName.toLowerCase().replaceAll(" ", "_"))) continue;
             followerSet.add(followerName);
         }
@@ -40,14 +40,14 @@ public class FollowerGUI {
         for (int i = 0; i < 36; i++, setStartPos++) {
             if (setStartPos >= followerSet.size() || followerSet.isEmpty()) break;
             String followerName = followerSet.get(setStartPos);
-            ItemStack headItem = ESFollowers.followerManager.getFollower(followerName).getHead();
+            ItemStack headItem = Followers.followerManager.getFollower(followerName).getHead();
             if (headItem == null || headItem.getType() == Material.AIR) headItem = new ItemStack(Material.ARMOR_STAND);
             ItemMeta headItemMeta = headItem.getItemMeta();
             headItemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&e" + followerName));
             headItem.setItemMeta(headItemMeta);
             inventory.setItem(i + 9, headItem);
         }
-        FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
         if (!followerSet.isEmpty()) {
             ItemStack followerToggle;
             if (followerUser.isFollowerEnabled()) {

@@ -1,10 +1,10 @@
-package org.enchantedskies.esfollowers.datamanager;
+package me.dave.followers.datamanager;
 
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.enchantedskies.esfollowers.ESFollowers;
+import me.dave.followers.Followers;
 
 import javax.sql.DataSource;
 import java.io.BufferedReader;
@@ -20,13 +20,13 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class MysqlStorage implements Storage {
-    private final ESFollowers plugin = ESFollowers.getInstance();
+    private final Followers plugin = Followers.getInstance();
     private MysqlDataSource dataSource;
 
 
     @Override
     public boolean init() {
-        ConfigurationSection databaseSection = ESFollowers.configManager.getDatabaseSection();
+        ConfigurationSection databaseSection = Followers.configManager.getDatabaseSection();
         String dbName = databaseSection.getString("name");
         String dbHost = databaseSection.getString("host");
         int dbPort = databaseSection.getInt("port");

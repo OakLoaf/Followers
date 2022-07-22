@@ -1,10 +1,10 @@
-package org.enchantedskies.esfollowers.datamanager;
+package me.dave.followers.datamanager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.enchantedskies.esfollowers.ESFollowers;
-import org.enchantedskies.esfollowers.FollowerEntity;
+import me.dave.followers.Followers;
+import me.dave.followers.FollowerEntity;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,7 +22,7 @@ public class DataManager {
     // Safe to use bukkit api in callback.
     public void initAsync(Consumer<Boolean> onComplete) {
         Storage.SERVICE.submit(() -> {
-            String databaseType = ESFollowers.configManager.getDatabaseSection().getString("type");
+            String databaseType = Followers.configManager.getDatabaseSection().getString("type");
             final String errStr = "Could not read database type! Check config";
             if (requireNonNull(databaseType, errStr).equalsIgnoreCase("mysql")) {
                 storage = new MysqlStorage();
@@ -35,7 +35,7 @@ public class DataManager {
                 public void run() {
                     onComplete.accept(init);
                 }
-            }.runTask(ESFollowers.getInstance());
+            }.runTask(Followers.getInstance());
         });
     }
 
@@ -81,7 +81,7 @@ public class DataManager {
     }
 
     public void removeFromPlayerFollowerMap(UUID playerUUID) {
-        FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(playerUUID);
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(playerUUID);
         if (followerUser != null) saveFollowerUser(followerUser);
         playerFollowerMap.remove(playerUUID);
     }

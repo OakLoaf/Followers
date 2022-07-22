@@ -1,4 +1,4 @@
-package org.enchantedskies.esfollowers;
+package me.dave.followers;
 
 import me.xemor.userinterface.TextInterface;
 import org.bukkit.Bukkit;
@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class FollowerCreator implements Listener {
-    private final ESFollowers plugin = ESFollowers.getInstance();
+    private final Followers plugin = Followers.getInstance();
     private final ItemStack creatorItem;
 
     public FollowerCreator() {
@@ -34,12 +34,12 @@ public class FollowerCreator implements Listener {
         if (!(event.getRightClicked() instanceof ArmorStand armorStand)) return;
         if (!heldItem.isSimilar(creatorItem)) return;
         event.setCancelled(true);
-        String prefix = ESFollowers.configManager.getPrefix();
+        String prefix = Followers.configManager.getPrefix();
         if (!player.hasPermission("follower.admin.create")) {
             player.sendMessage(prefix + "§7You have insufficient permissions.");
             return;
         }
-        if (ESFollowers.dataManager.getPlayerFollowerMap().containsKey(armorStand.getUniqueId())) return;
+        if (Followers.dataManager.getPlayerFollowerMap().containsKey(armorStand.getUniqueId())) return;
         String armorStandName = armorStand.getCustomName();
         if (armorStandName == null) {
 
@@ -70,12 +70,12 @@ public class FollowerCreator implements Listener {
             textInterface.getInput(player, (output) -> {
                 if (output.equals("")) output = " ";
                 String finalOutput = output;
-                Bukkit.getScheduler().runTask(plugin, () -> ESFollowers.followerManager.createFollower(player, finalOutput, armorStand));
+                Bukkit.getScheduler().runTask(plugin, () -> Followers.followerManager.createFollower(player, finalOutput, armorStand));
             });
         } else if (armorStandName.contains(".")) {
             player.sendMessage(prefix + "§cFollower name cannot contain the character '.'.");
         } else {
-            ESFollowers.followerManager.createFollower(player, armorStandName, armorStand);
+            Followers.followerManager.createFollower(player, armorStandName, armorStand);
         }
     }
 

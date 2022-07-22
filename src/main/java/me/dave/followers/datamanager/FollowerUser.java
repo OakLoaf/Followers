@@ -1,6 +1,6 @@
-package org.enchantedskies.esfollowers.datamanager;
+package me.dave.followers.datamanager;
 
-import org.enchantedskies.esfollowers.ESFollowers;
+import me.dave.followers.Followers;
 
 import java.util.UUID;
 
@@ -23,27 +23,27 @@ public class FollowerUser {
 
     public void setUsername(String username) {
         this.username = username;
-        ESFollowers.dataManager.saveFollowerUser(this);
+        Followers.dataManager.saveFollowerUser(this);
     }
 
     public void setFollower(String follower) {
         this.follower = follower;
-        ESFollowers.dataManager.saveFollowerUser(this);
+        Followers.dataManager.saveFollowerUser(this);
     }
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
-        ESFollowers.dataManager.saveFollowerUser(this);
+        Followers.dataManager.saveFollowerUser(this);
     }
 
     public void setDisplayNameEnabled(boolean nameIsEnabled) {
         this.nameIsOn = nameIsEnabled;
-        ESFollowers.dataManager.saveFollowerUser(this);
+        Followers.dataManager.saveFollowerUser(this);
     }
 
     public void setFollowerEnabled(boolean followerIsEnabled) {
         this.isOn = followerIsEnabled;
-        ESFollowers.dataManager.saveFollowerUser(this);
+        Followers.dataManager.saveFollowerUser(this);
     }
 
     public UUID getUUID() {

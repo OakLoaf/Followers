@@ -1,4 +1,4 @@
-package org.enchantedskies.esfollowers.datamanager;
+package me.dave.followers.datamanager;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;

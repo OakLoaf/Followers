@@ -1,4 +1,4 @@
-package org.enchantedskies.esfollowers.datamanager;
+package me.dave.followers.datamanager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -8,12 +8,12 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.enchantedskies.esfollowers.ESFollowers;
+import me.dave.followers.Followers;
 
 import java.util.UUID;
 
 public class ItemStackData {
-    private final ESFollowers plugin = ESFollowers.getInstance();
+    private final Followers plugin = Followers.getInstance();
     private ItemStack item;
 
     public ItemStackData(ConfigurationSection configurationSection, String material) {
@@ -33,13 +33,13 @@ public class ItemStackData {
             String skullType = configurationSection.getString("SkullType", "");
             if (skullType.equalsIgnoreCase("custom")) {
                 String skullTexture = configurationSection.getString("Texture");
-                if (skullTexture != null) item = ESFollowers.skullCreator.getCustomSkull(skullTexture);
+                if (skullTexture != null) item = Followers.skullCreator.getCustomSkull(skullTexture);
             } else {
                 String skullUUID = configurationSection.getString("UUID");
                 if (skullUUID == null || skullUUID.equalsIgnoreCase("error")) {
                     item = new ItemStack(Material.PLAYER_HEAD);
                 }
-                ESFollowers.skullCreator.getPlayerSkull(UUID.fromString(skullUUID), plugin).thenAccept(itemStack -> Bukkit.getScheduler().runTask(plugin, () -> item = itemStack));
+                Followers.skullCreator.getPlayerSkull(UUID.fromString(skullUUID), plugin).thenAccept(itemStack -> Bukkit.getScheduler().runTask(plugin, () -> item = itemStack));
             }
         }
         else if (item.getItemMeta() instanceof LeatherArmorMeta) {

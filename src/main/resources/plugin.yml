@@ -1,6 +1,6 @@
-name: ESFollowers
+name: Followers
 version: ${project.version}
-main: org.enchantedskies.esfollowers.ESFollowers
+main: me.dave.followers.Followers
 api-version: 1.19
 authors: [Dav_e_]
 depend: [UserInterface]
@@ -20,7 +20,7 @@ permissions:
     description: Allows you to reload the Followers plugin
     default: op
   follower.admin.create:
-    description: Allows you to create followers using the follower creator stick
+    description: Allows you to create followers using the follower creator item
     default: op
   follower.admin.delete:
     description: Allows you to delete followers

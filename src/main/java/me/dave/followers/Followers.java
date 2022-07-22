@@ -1,4 +1,4 @@
-package org.enchantedskies.esfollowers;
+package me.dave.followers;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import dev.geco.gsit.api.GSitAPI;
@@ -11,37 +11,37 @@ import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.enchantedskies.esfollowers.apis.GSitEvents;
-import org.enchantedskies.esfollowers.commands.DyeCmd;
-import org.enchantedskies.esfollowers.commands.FollowerCmd;
-import org.enchantedskies.esfollowers.commands.GetHexArmorCmd;
-import org.enchantedskies.esfollowers.datamanager.ConfigManager;
-import org.enchantedskies.esfollowers.datamanager.DataManager;
-import org.enchantedskies.esfollowers.datamanager.FollowerManager;
-import org.enchantedskies.esfollowers.datamanager.Storage;
-import org.enchantedskies.esfollowers.apis.EssentialsEvents;
-import org.enchantedskies.esfollowers.events.FollowerGUIEvents;
-import org.enchantedskies.esfollowers.events.FollowerUserEvents;
-import org.enchantedskies.esfollowers.utils.SkullCreator;
+import me.dave.followers.apis.GSitEvents;
+import me.dave.followers.commands.DyeCmd;
+import me.dave.followers.commands.FollowerCmd;
+import me.dave.followers.commands.GetHexArmorCmd;
+import me.dave.followers.datamanager.ConfigManager;
+import me.dave.followers.datamanager.DataManager;
+import me.dave.followers.datamanager.FollowerManager;
+import me.dave.followers.datamanager.Storage;
+import me.dave.followers.apis.EssentialsEvents;
+import me.dave.followers.events.FollowerGUIEvents;
+import me.dave.followers.events.FollowerUserEvents;
+import me.dave.followers.utils.SkullCreator;
 
 import java.util.HashSet;
 import java.util.UUID;
 
-public final class ESFollowers extends JavaPlugin implements Listener {
-    private static ESFollowers plugin;
+public final class Followers extends JavaPlugin implements Listener {
+    private static Followers plugin;
     public static DataManager dataManager;
     public static ConfigManager configManager;
     public static FollowerManager followerManager;
     public static final SkullCreator skullCreator = new SkullCreator();
     private final HashSet<UUID> guiPlayerSet = new HashSet<>();
-    private final NamespacedKey followerKey = new NamespacedKey(this, "ESFollower");
+    private final NamespacedKey followerKey = new NamespacedKey(this, "Follower");
 
     public static GSitAPI GAPI;
 
     public static boolean isGSitEnabled = false;
 
     private void setThreadIOName() {
-        Storage.SERVICE.submit(() -> Thread.currentThread().setName("ESFollowers IO Thread"));
+        Storage.SERVICE.submit(() -> Thread.currentThread().setName("Followers IO Thread"));
     }
 
     @Override
@@ -104,7 +104,7 @@ public final class ESFollowers extends JavaPlugin implements Listener {
         }, 1);
     }
 
-    public static ESFollowers getInstance() {
+    public static Followers getInstance() {
         return plugin;
     }
 

@@ -1,9 +1,9 @@
-package org.enchantedskies.esfollowers.datamanager;
+package me.dave.followers.datamanager;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.enchantedskies.esfollowers.ESFollowers;
+import me.dave.followers.Followers;
 
 public class FollowerHandler {
     private ItemStack head;
@@ -20,7 +20,7 @@ public class FollowerHandler {
         ItemStackData feetData = new ItemStackData(configurationSection.getConfigurationSection("Feet"), "AIR");
         ItemStackData mainHandData = new ItemStackData(configurationSection.getConfigurationSection("MainHand"), "AIR");
         ItemStackData offHandData = new ItemStackData(configurationSection.getConfigurationSection("OffHand"), "AIR");
-        ESFollowers plugin = ESFollowers.getInstance();
+        Followers plugin = Followers.getInstance();
         head = headData.getItem();
         chest = chestData.getItem();
         legs = legsData.getItem();

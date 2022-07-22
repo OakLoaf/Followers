@@ -1,4 +1,4 @@
-package org.enchantedskies.esfollowers.datamanager;
+package me.dave.followers.datamanager;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -11,7 +11,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.enchantedskies.esfollowers.ESFollowers;
+import me.dave.followers.Followers;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 public class FollowerManager {
-    private final ESFollowers plugin = ESFollowers.getInstance();
+    private final Followers plugin = Followers.getInstance();
     private final File followerConfigFile = initYML();
     private YamlConfiguration config = YamlConfiguration.loadConfiguration(followerConfigFile);
     private final Map<String, FollowerHandler> followerList = new TreeMap<>();
@@ -49,7 +49,7 @@ public class FollowerManager {
 
     public void createFollower(Player owner, String followerName, ArmorStand armorStand) {
         ConfigurationSection configurationSection = config.getConfigurationSection(followerName);
-        String prefix = ESFollowers.configManager.getPrefix();
+        String prefix = Followers.configManager.getPrefix();
         if (configurationSection != null) {
             owner.sendMessage(prefix + "§7A Follower already exists with this name.");
             return;

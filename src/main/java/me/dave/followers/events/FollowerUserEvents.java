@@ -1,4 +1,4 @@
-package org.enchantedskies.esfollowers.events;
+package me.dave.followers.events;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
@@ -8,23 +8,23 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.persistence.PersistentDataType;
-import org.enchantedskies.esfollowers.ESFollowers;
-import org.enchantedskies.esfollowers.FollowerEntity;
-import org.enchantedskies.esfollowers.datamanager.FollowerUser;
+import me.dave.followers.Followers;
+import me.dave.followers.FollowerEntity;
+import me.dave.followers.datamanager.FollowerUser;
 
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class FollowerUserEvents implements Listener {
-    private final NamespacedKey followerKey = new NamespacedKey(ESFollowers.getInstance(), "ESFollower");
-    private final HashMap<UUID, FollowerEntity> playerFollowerMap = ESFollowers.dataManager.getPlayerFollowerMap();
+    private final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
+    private final HashMap<UUID, FollowerEntity> playerFollowerMap = Followers.dataManager.getPlayerFollowerMap();
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
-        CompletableFuture<FollowerUser> future = ESFollowers.dataManager.loadFollowerUser(playerUUID);
+        CompletableFuture<FollowerUser> future = Followers.dataManager.loadFollowerUser(playerUUID);
         future.thenAccept(followerUser -> {
             followerUser.setUsername(player.getName());
             String followerName = followerUser.getFollower();
@@ -34,7 +34,7 @@ public class FollowerUserEvents implements Listener {
                     public void run() {
                         new FollowerEntity(player, followerName);
                     }
-                }.runTask(ESFollowers.getInstance());
+                }.runTask(Followers.getInstance());
             }
         });
     }
@@ -44,8 +44,8 @@ public class FollowerUserEvents implements Listener {
         Player player = event.getPlayer();
         FollowerEntity followerEntity = playerFollowerMap.get(player.getUniqueId());
         if (followerEntity != null) followerEntity.kill();
-        FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(player.getUniqueId());
-        ESFollowers.dataManager.saveFollowerUser(followerUser);
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+        Followers.dataManager.saveFollowerUser(followerUser);
     }
 
     @EventHandler

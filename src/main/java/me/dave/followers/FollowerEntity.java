@@ -1,4 +1,4 @@
-package org.enchantedskies.esfollowers;
+package me.dave.followers;
 
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
@@ -10,14 +10,16 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
-import org.enchantedskies.esfollowers.datamanager.FollowerHandler;
-import org.enchantedskies.esfollowers.datamanager.FollowerUser;
+import me.dave.followers.datamanager.FollowerHandler;
+import me.dave.followers.datamanager.FollowerUser;
 
 import java.util.UUID;
 
 public class FollowerEntity {
-    private final ESFollowers plugin = ESFollowers.getInstance();
-    private final NamespacedKey followerKey = new NamespacedKey(ESFollowers.getInstance(), "ESFollower");
+    private final Followers plugin =
+        Followers.getInstance();
+    private final NamespacedKey followerKey = new NamespacedKey(
+        Followers.getInstance(), "Follower");
     private final Player owner;
     private final ArmorStand followerAS;
     private ArmorStand nameTagAS;
@@ -39,8 +41,8 @@ public class FollowerEntity {
         this.owner = owner;
         this.follower = follower;
         this.isPlayerInvisible = owner.isInvisible();
-        FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(owner.getUniqueId());
-        ESFollowers.dataManager.putInPlayerFollowerMap(owner.getUniqueId(), this);
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(owner.getUniqueId());
+        Followers.dataManager.putInPlayerFollowerMap(owner.getUniqueId(), this);
         followerUser.setFollowerEnabled(true);
 
         followerAS = owner.getLocation().getWorld().spawn(owner.getLocation().add(-1.5, 0, 1.5), ArmorStand.class, (armorStand -> {
@@ -55,14 +57,17 @@ public class FollowerEntity {
                 e.printStackTrace();
             }
         }));
-        ESFollowers.dataManager.setActiveArmorStand(followerAS.getUniqueId());
+
+        Followers.dataManager.setActiveArmorStand(followerAS.getUniqueId());
 
         setVisible(!owner.isInvisible());
 
-        if (!ESFollowers.configManager.areHitboxesEnabled()) followerAS.setMarker(true);
+        if (!
+            Followers.configManager.areHitboxesEnabled()) followerAS.setMarker(true);
 
         if (followerUser.isDisplayNameEnabled()) {
-            if (ESFollowers.configManager.areHitboxesEnabled()) {
+            if (
+                Followers.configManager.areHitboxesEnabled()) {
                 followerAS.setCustomName(followerUser.getDisplayName());
                 followerAS.setCustomNameVisible(followerUser.isDisplayNameEnabled());
             } else if (nameTagAS != null) {
@@ -77,33 +82,41 @@ public class FollowerEntity {
             }
         }
         setFollower(follower);
-        startMovement(ESFollowers.configManager.getSpeed());
+        startMovement(
+            Followers.configManager.getSpeed());
     }
 
     public void setFollower(String newFollower) {
         this.follower = newFollower;
-        ESFollowers.dataManager.getFollowerUser(owner.getUniqueId()).setFollower(newFollower);
+
+        Followers.dataManager.getFollowerUser(owner.getUniqueId()).setFollower(newFollower);
         if (!owner.isInvisible()) reloadInventory();
     }
 
     public void setDisplayNameVisible(boolean visible) {
-        ESFollowers.dataManager.getFollowerUser(owner.getUniqueId()).setDisplayNameEnabled(visible);
+
+        Followers.dataManager.getFollowerUser(owner.getUniqueId()).setDisplayNameEnabled(visible);
         if (!owner.isInvisible()) {
-            if (ESFollowers.configManager.areHitboxesEnabled()) followerAS.setCustomNameVisible(visible);
+            if (
+                Followers.configManager.areHitboxesEnabled()) followerAS.setCustomNameVisible(visible);
             else displayNametag(visible);
         }
     }
 
     public void setDisplayName(String newName) {
-        ESFollowers.dataManager.getFollowerUser(owner.getUniqueId()).setDisplayName(newName);
+
+        Followers.dataManager.getFollowerUser(owner.getUniqueId()).setDisplayName(newName);
         setDisplayNameVisible(true);
-        if (ESFollowers.configManager.areHitboxesEnabled()) followerAS.setCustomName(newName);
+        if (
+            Followers.configManager.areHitboxesEnabled()) followerAS.setCustomName(newName);
         else nameTagAS.setCustomName(newName);
     }
 
     public void setVisible(boolean visible) {
         followerAS.setVisible(visible);
-        if (!ESFollowers.configManager.areHitboxesEnabled() && ESFollowers.dataManager.getFollowerUser(owner.getUniqueId()).isDisplayNameEnabled()) displayNametag(visible);
+        if (!
+            Followers.configManager.areHitboxesEnabled() &&
+            Followers.dataManager.getFollowerUser(owner.getUniqueId()).isDisplayNameEnabled()) displayNametag(visible);
         if (visible) reloadInventory();
         else clearInventory();
     }
@@ -124,10 +137,12 @@ public class FollowerEntity {
     }
 
     public void setFollowerArmorSlot(EquipmentSlot equipmentSlot, String followerName) {
-        if (!ESFollowers.followerManager.getFollowers().containsKey(followerName)) return;
+        if (!
+            Followers.followerManager.getFollowers().containsKey(followerName)) return;
         EntityEquipment armorEquipment = followerAS.getEquipment();
         if (armorEquipment == null) return;
-        FollowerHandler follower = ESFollowers.followerManager.getFollower(followerName);
+        FollowerHandler follower =
+            Followers.followerManager.getFollower(followerName);
         new ItemStack(Material.AIR);
         ItemStack item = switch (equipmentSlot) {
             case HEAD -> follower.getHead();
@@ -141,15 +156,18 @@ public class FollowerEntity {
     }
 
     public void disable() {
-        FollowerUser followerUser = ESFollowers.dataManager.getFollowerUser(owner.getUniqueId());
+        FollowerUser followerUser =
+            Followers.dataManager.getFollowerUser(owner.getUniqueId());
         if (followerUser != null) followerUser.setFollowerEnabled(false);
         kill();
     }
 
     public void kill() {
         if (followerAS == null) return;
-        ESFollowers.dataManager.setActiveArmorStand(followerAS.getUniqueId(), false);
-        ESFollowers.dataManager.removeFromPlayerFollowerMap(owner.getUniqueId());
+
+        Followers.dataManager.setActiveArmorStand(followerAS.getUniqueId(), false);
+
+        Followers.dataManager.removeFromPlayerFollowerMap(owner.getUniqueId());
         followerAS.remove();
         if (nameTagAS != null) nameTagAS.remove();
     }
@@ -183,7 +201,8 @@ public class FollowerEntity {
                 Vector difference = getDifference(player, followerAS);
                 if (difference.clone().setY(0).lengthSquared() < 6.25) {
                     Vector differenceY = difference.clone().setX(0).setZ(0);
-                    if (ESFollowers.configManager.areHitboxesEnabled()) differenceY.setY(differenceY.getY() - 0.25);
+                    if (
+                        Followers.configManager.areHitboxesEnabled()) differenceY.setY(differenceY.getY() - 0.25);
                     else differenceY.setY(differenceY.getY() - 0.7);
                     followerLoc.add(differenceY.multiply(speed));
                 } else {
@@ -254,12 +273,15 @@ public class FollowerEntity {
                     armorStand.setMarker(true);
                     armorStand.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, "");
                 }));
-                ESFollowers.dataManager.setActiveArmorStand(nameTagAS.getUniqueId());
+
+                Followers.dataManager.setActiveArmorStand(nameTagAS.getUniqueId());
             }
-            nameTagAS.setCustomName(ESFollowers.dataManager.getFollowerUser(owner.getUniqueId()).getDisplayName());
+            nameTagAS.setCustomName(
+                Followers.dataManager.getFollowerUser(owner.getUniqueId()).getDisplayName());
             nameTagAS.setCustomNameVisible(true);
         } else {
-            ESFollowers.dataManager.setActiveArmorStand(nameTagAS.getUniqueId(), false);
+
+            Followers.dataManager.setActiveArmorStand(nameTagAS.getUniqueId(), false);
             if (nameTagAS != null) nameTagAS.remove();
             nameTagAS = null;
         }

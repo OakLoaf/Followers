@@ -1,4 +1,4 @@
-package org.enchantedskies.esfollowers.utils;
+package me.dave.followers.utils;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
@@ -7,7 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.enchantedskies.esfollowers.ESFollowers;
+import me.dave.followers.Followers;
 
 import java.util.Set;
 import java.util.UUID;
@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class SkullCreator {
 
-    public CompletableFuture<ItemStack> getPlayerSkull(UUID uuid, ESFollowers plugin) {
+    public CompletableFuture<ItemStack> getPlayerSkull(UUID uuid, Followers plugin) {
         CompletableFuture<ItemStack> futureItemStack = new CompletableFuture<>();
         new BukkitRunnable() {
             @Override
