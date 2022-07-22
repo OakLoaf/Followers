@@ -19,6 +19,7 @@ public class FollowerEntity {
     private final Followers plugin = Followers.getInstance();
     private final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
     private final Player owner;
+
     private final ArmorStand followerAS;
     private ArmorStand nameTagAS;
     private String follower;
@@ -307,6 +308,10 @@ public class FollowerEntity {
         Vector difference = (player.getEyeLocation().subtract(0,0.9, 0)).subtract(armorStand.getEyeLocation()).toVector();
         if (difference.getX() == 0.0D && difference.getZ() == 0.0D) return (float)(difference.getY() > 0.0D ? -90 : 90);
         else return Math.atan(-difference.getY() / Math.sqrt((difference.getX()*difference.getX()) + (difference.getZ()*difference.getZ())));
+    }
+
+    public ArmorStand getFollowerAS() {
+        return followerAS;
     }
 
     private Vector getDifference(Player player, ArmorStand armorStand) {

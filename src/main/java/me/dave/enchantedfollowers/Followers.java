@@ -2,6 +2,7 @@ package me.dave.enchantedfollowers;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import dev.geco.gsit.api.GSitAPI;
+import me.dave.enchantedfollowers.apis.GSitEvents;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -11,7 +12,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import me.dave.enchantedfollowers.apis.GSitEvents;
 import me.dave.enchantedfollowers.commands.DyeCmd;
 import me.dave.enchantedfollowers.commands.FollowerCmd;
 import me.dave.enchantedfollowers.commands.GetHexArmorCmd;

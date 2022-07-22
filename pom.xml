@@ -6,7 +6,7 @@
 
     <groupId>me.dave</groupId>
     <artifactId>EnchantedFollowers</artifactId>
-    <version>1.04a-SNAPSHOT</version>
+    <version>1.04-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>EnchantedFollowers</name>
@@ -14,7 +14,7 @@
     <properties>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <dir>D:\Servers\Paper 1.19\plugins\update</dir>
+        <dir>${env.PLUGINFOLDER}</dir>
     </properties>
 
 
