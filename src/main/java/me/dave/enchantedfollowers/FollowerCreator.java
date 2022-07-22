@@ -1,4 +1,4 @@
-package me.dave.followers;
+package me.dave.enchantedfollowers;
 
 import me.xemor.userinterface.TextInterface;
 import org.bukkit.Bukkit;

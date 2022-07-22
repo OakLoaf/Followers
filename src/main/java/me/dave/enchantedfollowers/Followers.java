@@ -1,4 +1,4 @@
-package me.dave.followers;
+package me.dave.enchantedfollowers;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import dev.geco.gsit.api.GSitAPI;
@@ -11,18 +11,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import me.dave.followers.apis.GSitEvents;
-import me.dave.followers.commands.DyeCmd;
-import me.dave.followers.commands.FollowerCmd;
-import me.dave.followers.commands.GetHexArmorCmd;
-import me.dave.followers.datamanager.ConfigManager;
-import me.dave.followers.datamanager.DataManager;
-import me.dave.followers.datamanager.FollowerManager;
-import me.dave.followers.datamanager.Storage;
-import me.dave.followers.apis.EssentialsEvents;
-import me.dave.followers.events.FollowerGUIEvents;
-import me.dave.followers.events.FollowerUserEvents;
-import me.dave.followers.utils.SkullCreator;
+import me.dave.enchantedfollowers.apis.GSitEvents;
+import me.dave.enchantedfollowers.commands.DyeCmd;
+import me.dave.enchantedfollowers.commands.FollowerCmd;
+import me.dave.enchantedfollowers.commands.GetHexArmorCmd;
+import me.dave.enchantedfollowers.datamanager.ConfigManager;
+import me.dave.enchantedfollowers.datamanager.DataManager;
+import me.dave.enchantedfollowers.datamanager.FollowerManager;
+import me.dave.enchantedfollowers.datamanager.Storage;
+import me.dave.enchantedfollowers.apis.EssentialsEvents;
+import me.dave.enchantedfollowers.events.FollowerGUIEvents;
+import me.dave.enchantedfollowers.events.FollowerUserEvents;
+import me.dave.enchantedfollowers.utils.SkullCreator;
 
 import java.util.HashSet;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package me.dave.followers.apis;
+package me.dave.enchantedfollowers.apis;
 
 import net.ess3.api.IUser;
 import net.ess3.api.events.AfkStatusChangeEvent;
@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
-import me.dave.followers.Followers;
-import me.dave.followers.FollowerEntity;
+import me.dave.enchantedfollowers.Followers;
+import me.dave.enchantedfollowers.FollowerEntity;
 
 public class EssentialsEvents implements Listener {
     private final Followers plugin = Followers.getInstance();

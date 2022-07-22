@@ -1,4 +1,4 @@
-package me.dave.followers.utils;
+package me.dave.enchantedfollowers.utils;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
@@ -7,7 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import me.dave.followers.Followers;
+import me.dave.enchantedfollowers.Followers;
 
 import java.util.Set;
 import java.util.UUID;

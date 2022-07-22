@@ -1,4 +1,4 @@
-package me.dave.followers;
+package me.dave.enchantedfollowers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -9,7 +9,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import me.dave.followers.datamanager.FollowerUser;
+import me.dave.enchantedfollowers.datamanager.FollowerUser;
 
 import java.util.*;
 

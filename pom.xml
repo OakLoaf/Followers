@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.dave</groupId>
-    <artifactId>Followers</artifactId>
+    <artifactId>EnchantedFollowers</artifactId>
     <version>1.02-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Followers</name>
+    <name>EnchantedFollowers</name>
 
     <properties>
         <java.version>17</java.version>

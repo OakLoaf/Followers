@@ -1,4 +1,4 @@
-package me.dave.followers.datamanager;
+package me.dave.enchantedfollowers.datamanager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -8,7 +8,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import me.dave.followers.Followers;
+import me.dave.enchantedfollowers.Followers;
 
 import java.util.UUID;
 

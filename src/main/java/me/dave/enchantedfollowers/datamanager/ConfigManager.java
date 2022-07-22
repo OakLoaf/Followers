@@ -1,9 +1,9 @@
-package me.dave.followers.datamanager;
+package me.dave.enchantedfollowers.datamanager;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import me.dave.followers.Followers;
+import me.dave.enchantedfollowers.Followers;
 
 
 public class ConfigManager {

@@ -1,6 +1,6 @@
-name: Followers
+name: EnchantedFollowers
 version: ${project.version}
-main: me.dave.followers.Followers
+main: me.dave.enchantedfollowers.Followers
 api-version: 1.19
 authors: [Dav_e_]
 depend: [UserInterface]

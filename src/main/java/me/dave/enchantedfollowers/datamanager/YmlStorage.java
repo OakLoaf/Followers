@@ -1,10 +1,10 @@
-package me.dave.followers.datamanager;
+package me.dave.enchantedfollowers.datamanager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import me.dave.followers.Followers;
+import me.dave.enchantedfollowers.Followers;
 
 import java.io.File;
 import java.io.IOException;

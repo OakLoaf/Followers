@@ -1,12 +1,12 @@
-package me.dave.followers.apis;
+package me.dave.enchantedfollowers.apis;
 
 import dev.geco.gsit.api.event.PlayerGetUpSitEvent;
 import dev.geco.gsit.api.event.PlayerSitEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import me.dave.followers.Followers;
-import me.dave.followers.FollowerEntity;
+import me.dave.enchantedfollowers.Followers;
+import me.dave.enchantedfollowers.FollowerEntity;
 
 public class GSitEvents implements Listener {
 
