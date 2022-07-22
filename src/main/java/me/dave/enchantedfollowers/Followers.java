@@ -104,9 +104,7 @@ public final class Followers extends JavaPlugin implements Listener {
         }, 1);
     }
 
-    public static Followers getInstance() {
-        return plugin;
-    }
+    public static Followers getInstance() { return plugin; }
 
     public void registerEvents(Listener[] listeners) {
         for (Listener listener : listeners) {
