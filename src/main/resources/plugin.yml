@@ -1,7 +1,7 @@
 name: ESFollowers
 version: ${project.version}
 main: org.enchantedskies.esfollowers.ESFollowers
-api-version: 1.16
+api-version: 1.19
 authors: [Dav_e_]
 depend: [UserInterface]
 softdepend: [Essentials, GSit]
@@ -12,6 +12,9 @@ commands:
   gethexarmor:
     description: Gives the user a colored piece of leather armor based on a hex value
     usage: /gethexarmor
+  dye:
+    description: Dyes a user's leather item
+    usage: /dye
 permissions:
   follower.admin.reload:
     description: Allows you to reload the Followers plugin
@@ -21,6 +24,9 @@ permissions:
     default: op
   follower.admin.delete:
     description: Allows you to delete followers
+    default: op
+  follower.admin.dye:
+    description: Allows you to get/dye armour
     default: op
   follower.name:
     description: Allows you to name your Follower

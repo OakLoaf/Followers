@@ -12,6 +12,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.enchantedskies.esfollowers.apis.GSitEvents;
+import org.enchantedskies.esfollowers.commands.DyeCmd;
 import org.enchantedskies.esfollowers.commands.FollowerCmd;
 import org.enchantedskies.esfollowers.commands.GetHexArmorCmd;
 import org.enchantedskies.esfollowers.datamanager.ConfigManager;
@@ -73,6 +74,7 @@ public final class ESFollowers extends JavaPlugin implements Listener {
 
                 getCommand("followers").setExecutor(new FollowerCmd(guiPlayerSet));
                 getCommand("gethexarmor").setExecutor(new GetHexArmorCmd());
+                getCommand("dye").setExecutor(new DyeCmd());
 
                 for (World world : Bukkit.getWorlds()) {
                     for (Chunk chunk : world.getLoadedChunks()) {
