@@ -121,7 +121,7 @@ public final class Followers extends JavaPlugin implements Listener {
                 if (dataManager.getActiveArmorStandsSet().contains(entity.getUniqueId())) return;
                 if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
             }
-        }, 2);
+        }, 20);
     }
 
     public static Followers getInstance() { return plugin; }

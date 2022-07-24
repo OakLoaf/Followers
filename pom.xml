@@ -6,7 +6,7 @@
 
     <groupId>me.dave</groupId>
     <artifactId>EnchantedFollowers</artifactId>
-    <version>1.06-SNAPSHOT</version>
+    <version>1.07-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>EnchantedFollowers</name>
