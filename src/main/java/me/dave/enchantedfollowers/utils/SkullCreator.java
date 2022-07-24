@@ -5,7 +5,6 @@ import com.mojang.authlib.properties.Property;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import me.dave.enchantedfollowers.Followers;
 
 import java.lang.reflect.Field;
 import java.util.Iterator;
@@ -24,7 +23,7 @@ public class SkullCreator {
 
     public String getB64(ItemStack itemStack) {
         try {
-            if (itemStack.isSimilar(new ItemStack(Material.PLAYER_HEAD)) && itemStack.hasItemMeta()) {
+            if (itemStack.getType() == Material.PLAYER_HEAD && itemStack.hasItemMeta()) {
                 SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
                 if (!skullMeta.hasOwner()) {
                     if (field_SkullMeta_profile == null) {

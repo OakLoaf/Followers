@@ -76,7 +76,7 @@ public class FollowerManager {
                     configurationSection.set(makeFriendly(equipmentSlot.name()) + ".SkullType", "Custom");
 //                    owner.sendMessage(prefix + "§7Could not find the owner of the skull in the §c" + makeFriendly(equipmentSlot.name()) + " §7slot, added Custom player head to config.yml file with no texture.");
                     String textureStr = Followers.skullCreator.getB64(currItem);
-                    configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Texture", "");
+                    configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Texture", textureStr);
                     continue;
                 }
                 configurationSection.set(makeFriendly(equipmentSlot.name()) + ".SkullType", "Default");
@@ -122,8 +122,10 @@ public class FollowerManager {
 
     private File initYML() {
         File followerConfigFile = new File(plugin.getDataFolder(),"followers.yml");
-        if (!followerConfigFile.exists()) plugin.saveResource("followers.yml", false);
-        plugin.getLogger().info("File Created: followers.yml");
+        if (!followerConfigFile.exists()) {
+            plugin.saveResource("followers.yml", false);
+            plugin.getLogger().info("File Created: followers.yml");
+        }
         return followerConfigFile;
     }
 

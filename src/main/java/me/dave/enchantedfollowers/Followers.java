@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -109,6 +110,18 @@ public final class Followers extends JavaPlugin implements Listener {
             if (dataManager.getActiveArmorStandsSet().contains(entity.getUniqueId())) return;
             if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
         }, 1);
+    }
+
+    @EventHandler
+    public void onChunkLoad(ChunkLoadEvent event) {
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            Entity[] entities = event.getChunk().getEntities();
+            for (Entity entity : entities) {
+                if (entity.getType() != EntityType.ARMOR_STAND) return;
+                if (dataManager.getActiveArmorStandsSet().contains(entity.getUniqueId())) return;
+                if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
+            }
+        }, 2);
     }
 
     public static Followers getInstance() { return plugin; }
