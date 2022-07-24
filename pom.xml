@@ -6,7 +6,7 @@
 
     <groupId>me.dave</groupId>
     <artifactId>EnchantedFollowers</artifactId>
-    <version>1.04a-SNAPSHOT</version>
+    <version>1.05-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>EnchantedFollowers</name>
@@ -73,6 +73,10 @@
             <id>dmulloy2-repo</id>
             <url>https://repo.dmulloy2.net/repository/public/</url>
         </repository>
+        <repository>
+            <id>skullcreator-repo</id>
+            <url>https://github.com/deanveloper/SkullCreator/raw/mvn-repo/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -82,9 +86,9 @@
             <version>3.3.0</version>
         </dependency>
         <dependency>
-            <groupId>io.papermc.paper</groupId>
-            <artifactId>paper-api</artifactId>
-            <version>1.17-R0.1-SNAPSHOT</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.19-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -110,6 +114,12 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.25</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.dbassett</groupId>
+            <artifactId>skullcreator</artifactId>
+            <version>3.0.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

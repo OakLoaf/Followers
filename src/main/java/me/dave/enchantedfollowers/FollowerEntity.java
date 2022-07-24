@@ -35,6 +35,13 @@ public class FollowerEntity {
     private final EulerAngle sittingLeftLeg = new EulerAngle(4.6, -0.222, 0);
     private final EulerAngle sittingRightLeg = new EulerAngle(4.6, 0.222, 0);
 
+    private final EulerAngle spinningLeftArm = new EulerAngle(-0.17453292519943295, 0, -0.17453292519943295);
+    private final EulerAngle spinningRightArm = new EulerAngle(-0.2617993877991494, 0, 0.17453292519943295);
+    private final EulerAngle spinningLeftLeg = new EulerAngle(-0.017453292519943295, 0, -0.017453292519943295);
+    private final EulerAngle spinningRightLeg = new EulerAngle(0.017453292519943295, 0, 0.017453292519943295);
+
+
+
     public FollowerEntity(Player owner, String follower) {
         this.owner = owner;
         this.follower = follower;
@@ -121,7 +128,7 @@ public class FollowerEntity {
 
     public void clearInventory() {
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-            followerAS.setItem(equipmentSlot, new ItemStack(Material.AIR));
+            followerAS.getEquipment().setItem(equipmentSlot, new ItemStack(Material.AIR));
         }
     }
 
@@ -215,7 +222,7 @@ public class FollowerEntity {
                 }
                 followerLoc.setDirection(difference);
                 teleportArmorStands(followerLoc.add(0, getArmorStandYOffset(followerAS), 0));
-                if (Bukkit.getCurrentTick() % 2 != 0) return;
+                if (Followers.getCurrentTick() % 2 != 0) return;
                 double headPoseX = eulerToDegree(followerAS.getHeadPose().getX());
                 EulerAngle newHeadPoseX = new EulerAngle(getPitch(player, followerAS), 0, 0);
                 if (headPoseX > 60 && headPoseX < 290) {
@@ -244,6 +251,12 @@ public class FollowerEntity {
                 followerAS.setLeftLegPose(sittingLeftLeg);
                 followerAS.setRightLegPose(sittingRightLeg);
                 spawnSitParticles();
+            }
+            case "spinning" -> {
+                followerAS.setLeftArmPose(spinningLeftArm);
+                followerAS.setRightArmPose(spinningRightArm);
+                followerAS.setLeftLegPose(spinningLeftLeg);
+                followerAS.setRightLegPose(spinningRightLeg);
             }
         }
     }
@@ -288,19 +301,19 @@ public class FollowerEntity {
     public void teleportToPlayer(Player player) {
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             Location playerLoc = player.getLocation();
-            if (!followerAS.getChunk().isLoaded()) followerAS.getChunk().load();
+            if (!followerAS.getLocation().getChunk().isLoaded()) followerAS.getLocation().getChunk().load();
             teleportArmorStands(playerLoc.add(1.5, 0, 1.5));
         }, 20);
     }
 
     private void teleportArmorStands(Location location) {
-        followerAS.getChunk().load();
+        followerAS.getLocation().getChunk().load();
         followerAS.teleport(location);
         if (nameTagAS != null) nameTagAS.teleport(location.add(0, 1, 0));
     }
 
     private double getArmorStandYOffset(ArmorStand armorStand) {
-        return (Math.PI / 60) * Math.sin(((double) 1/30) * Math.PI * (Bukkit.getCurrentTick() + armorStand.getEntityId()));
+        return (Math.PI / 60) * Math.sin(((double) 1/30) * Math.PI * (Followers.getCurrentTick() + armorStand.getEntityId()));
     }
 
     private double getPitch(Player player, ArmorStand armorStand) {

@@ -1,6 +1,5 @@
 package me.dave.enchantedfollowers;
 
-import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import dev.geco.gsit.api.GSitAPI;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -8,6 +7,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,6 +23,7 @@ import me.dave.enchantedfollowers.apis.EssentialsEvents;
 import me.dave.enchantedfollowers.events.FollowerGUIEvents;
 import me.dave.enchantedfollowers.events.FollowerUserEvents;
 import me.dave.enchantedfollowers.utils.SkullCreator;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -35,6 +36,7 @@ public final class Followers extends JavaPlugin implements Listener {
     public static final SkullCreator skullCreator = new SkullCreator();
     private final HashSet<UUID> guiPlayerSet = new HashSet<>();
     private final NamespacedKey followerKey = new NamespacedKey(this, "Follower");
+    private static int tickCount;
 
     public static GSitAPI GAPI;
 
@@ -87,6 +89,11 @@ public final class Followers extends JavaPlugin implements Listener {
                 Bukkit.getLogger().severe("Could not initialise the data. Aborting further plugin setup.");
             }
         });
+
+        new BukkitRunnable() {
+            @Override
+            public void run() { tickCount += 1; }
+        }.runTaskLater(plugin, 1);
     }
 
     @Override
@@ -95,7 +102,7 @@ public final class Followers extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void onEntityLoad(EntityAddToWorldEvent event) {
+    public void onEntityLoad(CreatureSpawnEvent event) {
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             Entity entity = event.getEntity();
             if (entity.getType() != EntityType.ARMOR_STAND) return;
@@ -105,6 +112,8 @@ public final class Followers extends JavaPlugin implements Listener {
     }
 
     public static Followers getInstance() { return plugin; }
+
+    public static int getCurrentTick() { return tickCount; }
 
     public void registerEvents(Listener[] listeners) {
         for (Listener listener : listeners) {

@@ -39,7 +39,8 @@ public class ItemStackData {
                 if (skullUUID == null || skullUUID.equalsIgnoreCase("error")) {
                     item = new ItemStack(Material.PLAYER_HEAD);
                 }
-                Followers.skullCreator.getPlayerSkull(UUID.fromString(skullUUID), plugin).thenAccept(itemStack -> Bukkit.getScheduler().runTask(plugin, () -> item = itemStack));
+                item = Followers.skullCreator.getPlayerSkull(UUID.fromString(skullUUID));
+//                Followers.skullCreator.getPlayerSkull(UUID.fromString(skullUUID), plugin).thenAccept(itemStack -> Bukkit.getScheduler().runTask(plugin, () -> item = itemStack));
             }
         }
         else if (item.getItemMeta() instanceof LeatherArmorMeta) {

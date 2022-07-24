@@ -1,5 +1,6 @@
 package me.dave.enchantedfollowers.datamanager;
 
+import me.dave.enchantedfollowers.utils.SkullCreator;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -7,6 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -56,7 +58,9 @@ public class FollowerManager {
         }
         configurationSection = config.createSection(followerName);
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-            ItemStack currItem = armorStand.getItem(equipmentSlot);
+            EntityEquipment armorStandEquipment = armorStand.getEquipment();
+            if (armorStandEquipment == null) return;
+            ItemStack currItem = armorStandEquipment.getItem(equipmentSlot);
             Material material = currItem.getType();
             if (material == Material.AIR) continue;
             String equipmentSlotName = makeFriendly(equipmentSlot.name());
@@ -70,8 +74,9 @@ public class FollowerManager {
                 OfflinePlayer skullOwner = skullMeta.getOwningPlayer();
                 if (skullOwner == null) {
                     configurationSection.set(makeFriendly(equipmentSlot.name()) + ".SkullType", "Custom");
-                    owner.sendMessage(prefix + "§7Could not find the owner of the skull in the §c" + makeFriendly(equipmentSlot.name()) + " §7slot, added Custom player head to config.yml file with no texture.");
-                    configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Texture", "error");
+//                    owner.sendMessage(prefix + "§7Could not find the owner of the skull in the §c" + makeFriendly(equipmentSlot.name()) + " §7slot, added Custom player head to config.yml file with no texture.");
+                    String textureStr = Followers.skullCreator.getB64(currItem);
+                    configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Texture", "");
                     continue;
                 }
                 configurationSection.set(makeFriendly(equipmentSlot.name()) + ".SkullType", "Default");
