@@ -6,7 +6,7 @@
 
     <groupId>me.dave</groupId>
     <artifactId>EnchantedFollowers</artifactId>
-    <version>1.07-SNAPSHOT</version>
+    <version>1.08-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>EnchantedFollowers</name>
@@ -100,7 +100,7 @@
         <dependency>
             <groupId>me.xemor</groupId>
             <artifactId>UserInterface</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>1.6.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

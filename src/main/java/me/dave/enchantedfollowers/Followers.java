@@ -39,8 +39,6 @@ public final class Followers extends JavaPlugin implements Listener {
     private final NamespacedKey followerKey = new NamespacedKey(this, "Follower");
     private static int tickCount;
 
-    public static GSitAPI GAPI;
-
     public static boolean isGSitEnabled = false;
 
     private void setThreadIOName() {
@@ -70,7 +68,6 @@ public final class Followers extends JavaPlugin implements Listener {
                 else getLogger().info("Essentials plugin not found. Continuing without Essentials.");
                 if (pluginManager.getPlugin("GSit") != null) {
                     pluginManager.registerEvents(new GSitEvents(), this);
-                    GAPI = new GSitAPI();
                     isGSitEnabled = true;
                 }
                 else getLogger().info("GSit plugin not found. Continuing without GSit.");
@@ -94,7 +91,7 @@ public final class Followers extends JavaPlugin implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() { tickCount += 1; }
-        }.runTaskLater(plugin, 1);
+        }.runTaskTimer(plugin, 1, 1);
     }
 
     @Override
@@ -114,14 +111,27 @@ public final class Followers extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent event) {
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            Entity[] entities = event.getChunk().getEntities();
-            for (Entity entity : entities) {
-                if (entity.getType() != EntityType.ARMOR_STAND) return;
-                if (dataManager.getActiveArmorStandsSet().contains(entity.getUniqueId())) return;
-                if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
+        int[] entityLoadAttempt = new int[1];
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                entityLoadAttempt[0] += 1;
+                if (entityLoadAttempt[0] >= 24) {
+                    cancel();
+                    return;
+                }
+                if (event.getChunk().isEntitiesLoaded()) {
+                    Entity[] entities = event.getChunk().getEntities();
+                    for (Entity entity : entities) {
+                        if (entity.getType() != EntityType.ARMOR_STAND) return;
+                        if (dataManager.getActiveArmorStandsSet().contains(entity.getUniqueId())) return;
+                        if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
+                    }
+                    cancel();
+                    return;
+                }
             }
-        }, 20);
+        }.runTaskTimer(plugin, 50, 100);
     }
 
     public static Followers getInstance() { return plugin; }
