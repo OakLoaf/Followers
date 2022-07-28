@@ -1,6 +1,5 @@
 package me.dave.enchantedfollowers;
 
-import dev.geco.gsit.api.GSitAPI;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -128,7 +127,6 @@ public final class Followers extends JavaPlugin implements Listener {
                         if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
                     }
                     cancel();
-                    return;
                 }
             }
         }.runTaskTimer(plugin, 50, 100);

@@ -1,6 +1,5 @@
 package me.dave.enchantedfollowers.datamanager;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,7 +12,6 @@ import me.dave.enchantedfollowers.Followers;
 import java.util.UUID;
 
 public class ItemStackData {
-    private final Followers plugin = Followers.getInstance();
     private ItemStack item;
 
     public ItemStackData(ConfigurationSection configurationSection, String material) {
@@ -40,7 +38,6 @@ public class ItemStackData {
                     item = new ItemStack(Material.PLAYER_HEAD);
                 }
                 item = Followers.skullCreator.getPlayerSkull(UUID.fromString(skullUUID));
-//                Followers.skullCreator.getPlayerSkull(UUID.fromString(skullUUID), plugin).thenAccept(itemStack -> Bukkit.getScheduler().runTask(plugin, () -> item = itemStack));
             }
         }
         else if (item.getItemMeta() instanceof LeatherArmorMeta) {
