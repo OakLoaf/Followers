@@ -123,8 +123,8 @@ public final class Followers extends JavaPlugin implements Listener {
                 if (event.getChunk().isEntitiesLoaded()) {
                     Entity[] entities = event.getChunk().getEntities();
                     for (Entity entity : entities) {
-                        if (entity.getType() != EntityType.ARMOR_STAND) return;
-                        if (dataManager.getActiveArmorStandsSet().contains(entity.getUniqueId())) return;
+                        if (entity.getType() != EntityType.ARMOR_STAND) continue;
+                        if (dataManager.getActiveArmorStandsSet().contains(entity.getUniqueId())) continue;
                         if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
                     }
                     cancel();
