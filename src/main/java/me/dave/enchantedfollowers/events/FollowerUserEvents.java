@@ -28,7 +28,7 @@ public class FollowerUserEvents implements Listener {
         future.thenAccept(followerUser -> {
             followerUser.setUsername(player.getName());
             String followerName = followerUser.getFollower();
-            if (followerUser.isFollowerEnabled() && player.hasPermission("followers." + followerName)) {
+            if (followerUser.isFollowerEnabled() && player.hasPermission("followers." +  followerName.toLowerCase().replaceAll(" ", "_"))) {
                 new BukkitRunnable() {
                     @Override
                     public void run() {

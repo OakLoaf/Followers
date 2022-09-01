@@ -23,23 +23,23 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) {
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage("Console cannot run this command!");
-            return true;
-        }
         String prefix = Followers.configManager.getPrefix();
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("reload")) {
-                if (!player.hasPermission("follower.admin.reload")) {
+                if (!sender.hasPermission("follower.admin.reload")) {
                     sender.sendMessage(prefix + "§7You have insufficient permissions.");
                     return true;
                 }
                 Followers.configManager.reloadConfig();
                 Followers.followerManager.reloadFollowers();
                 Followers.dataManager.reloadFollowerInventories();
-                player.sendMessage(ChatColor.GREEN + "Followers has been reloaded.");
+                sender.sendMessage(ChatColor.GREEN + "Followers has been reloaded.");
                 return true;
             } else if (args[0].equalsIgnoreCase("create")) {
+                if (!(sender instanceof Player player)) {
+                    sender.sendMessage("Console cannot run this command!");
+                    return true;
+                }
                 if (!player.hasPermission("follower.admin.create")) {
                     sender.sendMessage(prefix + "§7You have insufficient permissions.");
                     return true;
@@ -49,17 +49,17 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                 player.sendMessage(prefix + "§7You have been given a Follower Creator.");
                 return true;
             }  else if (args[0].equalsIgnoreCase("delete")) {
-                if (!player.hasPermission("follower.admin.delete")) {
+                if (!sender.hasPermission("follower.admin.delete")) {
                     sender.sendMessage(prefix + "§7You have insufficient permissions.");
                     return true;
                 }
-                player.sendMessage(prefix + "§cIncorrect usage: Try /follower delete <follower_name>.");
+                sender.sendMessage(prefix + "§cIncorrect usage: Try /follower delete <follower_name>.");
                 return true;
             }
         }
         if (args.length >= 2) {
             if (args[0].equalsIgnoreCase("delete")) {
-                if (!player.hasPermission("follower.admin.delete")) {
+                if (!sender.hasPermission("follower.admin.delete")) {
                     sender.sendMessage(prefix + "§7You have insufficient permissions.");
                     return true;
                 }
@@ -70,13 +70,17 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                 }
                 String followerNameFinal = followerName.substring(0, followerName.length() - 1);
                 FollowerHandler follower = Followers.followerManager.getFollower(followerNameFinal);
-                if (follower == null) player.sendMessage(prefix + "§cThe Follower " + followerNameFinal + " does not exist.");
+                if (follower == null) sender.sendMessage(prefix + "§cThe Follower " + followerNameFinal + " does not exist.");
                 else {
                     Followers.followerManager.removeFollower(followerNameFinal);
-                    player.sendMessage(prefix + "§aThe Follower " + followerNameFinal + " has been deleted.");
+                    sender.sendMessage(prefix + "§aThe Follower " + followerNameFinal + " has been deleted.");
                 }
                 return true;
             }
+        }
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("Console cannot run this command!");
+            return true;
         }
         FollowerGUI followerInv = new FollowerGUI(player, 1, openInvPlayerSet);
         followerInv.openInventory(player);

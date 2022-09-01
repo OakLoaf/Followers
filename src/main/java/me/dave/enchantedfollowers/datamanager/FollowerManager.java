@@ -72,21 +72,21 @@ public class FollowerManager {
                 SkullMeta skullMeta = (SkullMeta) currItem.getItemMeta();
                 OfflinePlayer skullOwner = skullMeta.getOwningPlayer();
                 if (skullOwner == null) {
-                    configurationSection.set(makeFriendly(equipmentSlot.name()) + ".SkullType", "Custom");
+                    configurationSection.set(makeFriendly(equipmentSlotName) + ".SkullType", "Custom");
                     String textureStr = Followers.skullCreator.getB64(currItem);
-                    configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Texture", textureStr);
+                    configurationSection.set(makeFriendly(equipmentSlotName) + ".Texture", textureStr);
                     continue;
                 }
-                configurationSection.set(makeFriendly(equipmentSlot.name()) + ".SkullType", "Default");
+                configurationSection.set(makeFriendly(equipmentSlotName) + ".SkullType", "Default");
                 UUID skullUUID = skullOwner.getUniqueId();
-                configurationSection.set(makeFriendly(equipmentSlot.name()) + ".UUID", skullUUID.toString());
+                configurationSection.set(makeFriendly(equipmentSlotName) + ".UUID", skullUUID.toString());
                 owner.sendMessage(prefix + "§7Skull has been created as Default SkullType. To get custom textures manually edit the config.");
             } else if (currItem.getItemMeta() instanceof LeatherArmorMeta armorMeta) {
                 Color armorColor = armorMeta.getColor();
-                configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Color", String.format("%02x%02x%02x", armorColor.getRed(), armorColor.getGreen(), armorColor.getBlue()));
+                configurationSection.set(makeFriendly(equipmentSlotName) + ".Color", String.format("%02x%02x%02x", armorColor.getRed(), armorColor.getGreen(), armorColor.getBlue()));
             }
             if (currItem.getEnchantments().size() >= 1) {
-                configurationSection.set(makeFriendly(equipmentSlot.name()) + ".Enchanted", "True");
+                configurationSection.set(makeFriendly(equipmentSlotName) + ".Enchanted", "True");
             }
         }
         owner.sendMessage(prefix + "§7A Follower has been added with the name §a" + followerName);
