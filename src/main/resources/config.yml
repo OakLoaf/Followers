@@ -4,9 +4,9 @@
 
 # prefix: Text to go before Followers messages
 prefix: "&e&lFollowers &8» &r"
-# hitboxesEnabled: Whether or not followers will have hitboxes. (Disabling this will allow for players to interact through Followers)
+# hitboxesEnabled: Whether followers will have hitboxes. (Disabling this will allow for players to interact through Followers)
 hitboxesEnabled: true
-# speed: The speed at which armorstands move.
+# speed: The speed at which the followers move.
 speed: 0.4
 
 # Data storage
