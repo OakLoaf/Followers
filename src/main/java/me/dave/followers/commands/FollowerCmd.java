@@ -1,4 +1,4 @@
-package me.dave.enchantedfollowers.commands;
+package me.dave.followers.commands;
 
 import org.bukkit.*;
 import org.bukkit.command.Command;
@@ -7,10 +7,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
-import me.dave.enchantedfollowers.FollowerCreator;
-import me.dave.enchantedfollowers.Followers;
-import me.dave.enchantedfollowers.FollowerGUI;
-import me.dave.enchantedfollowers.datamanager.FollowerHandler;
+import me.dave.followers.FollowerCreator;
+import me.dave.followers.Followers;
+import me.dave.followers.FollowerGUI;
+import me.dave.followers.datamanager.FollowerHandler;
 
 import java.util.*;
 

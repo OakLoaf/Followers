@@ -1,4 +1,4 @@
-package me.dave.enchantedfollowers.commands;
+package me.dave.followers.commands;
 
 import org.bukkit.Color;
 import org.bukkit.command.Command;
@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import me.dave.enchantedfollowers.Followers;
+import me.dave.followers.Followers;
 
 public class DyeCmd implements CommandExecutor {
 

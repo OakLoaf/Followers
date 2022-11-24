@@ -1,4 +1,4 @@
-package me.dave.enchantedfollowers;
+package me.dave.followers;
 
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
@@ -10,8 +10,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
-import me.dave.enchantedfollowers.datamanager.FollowerHandler;
-import me.dave.enchantedfollowers.datamanager.FollowerUser;
+import me.dave.followers.datamanager.FollowerHandler;
+import me.dave.followers.datamanager.FollowerUser;
 
 import java.util.UUID;
 

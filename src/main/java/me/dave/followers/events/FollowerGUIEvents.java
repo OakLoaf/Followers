@@ -1,7 +1,7 @@
-package me.dave.enchantedfollowers.events;
+package me.dave.followers.events;
 
-import me.dave.enchantedfollowers.FollowerGUI;
-import me.dave.enchantedfollowers.datamanager.FollowerUser;
+import me.dave.followers.FollowerGUI;
+import me.dave.followers.datamanager.FollowerUser;
 import me.xemor.userinterface.TextInterface;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -16,8 +16,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
-import me.dave.enchantedfollowers.Followers;
-import me.dave.enchantedfollowers.FollowerEntity;
+import me.dave.followers.Followers;
+import me.dave.followers.FollowerEntity;
 
 import java.util.HashMap;
 import java.util.HashSet;

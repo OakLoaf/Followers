@@ -1,10 +1,10 @@
-package me.dave.enchantedfollowers.datamanager;
+package me.dave.followers.datamanager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import me.dave.enchantedfollowers.Followers;
-import me.dave.enchantedfollowers.FollowerEntity;
+import me.dave.followers.Followers;
+import me.dave.followers.FollowerEntity;
 
 import java.util.HashMap;
 import java.util.HashSet;

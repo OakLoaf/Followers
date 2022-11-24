@@ -1,6 +1,6 @@
-package me.dave.enchantedfollowers.datamanager;
+package me.dave.followers.datamanager;
 
-import me.dave.enchantedfollowers.Followers;
+import me.dave.followers.Followers;
 
 import java.util.UUID;
 

@@ -1,9 +1,9 @@
-package me.dave.enchantedfollowers.datamanager;
+package me.dave.followers.datamanager;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import me.dave.enchantedfollowers.Followers;
+import me.dave.followers.Followers;
 
 public class FollowerHandler {
     private ItemStack head;

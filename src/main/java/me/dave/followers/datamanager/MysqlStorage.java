@@ -1,10 +1,10 @@
-package me.dave.enchantedfollowers.datamanager;
+package me.dave.followers.datamanager;
 
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import me.dave.enchantedfollowers.Followers;
+import me.dave.followers.Followers;
 
 import javax.sql.DataSource;
 import java.io.BufferedReader;

@@ -1,4 +1,4 @@
-package me.dave.enchantedfollowers.utils;
+package me.dave.followers.utils;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;

@@ -1,4 +1,4 @@
-package me.dave.enchantedfollowers.apis;
+package me.dave.followers.apis;
 
 import dev.geco.gsit.api.GSitAPI;
 import net.ess3.api.IUser;
@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
-import me.dave.enchantedfollowers.Followers;
-import me.dave.enchantedfollowers.FollowerEntity;
+import me.dave.followers.Followers;
+import me.dave.followers.FollowerEntity;
 
 public class EssentialsEvents implements Listener {
     private final Followers plugin = Followers.getInstance();
