@@ -81,14 +81,8 @@ public class FollowerEntity {
             }
         }
 
-        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-            for (ArmorStand.LockType lockType : ArmorStand.LockType.values()) {
-                followerAS.addEquipmentLock(equipmentSlot, lockType);
-            }
-        }
         setFollower(follower);
-        startMovement(
-            Followers.configManager.getSpeed());
+        startMovement(Followers.configManager.getSpeed());
     }
 
     public void setFollower(String newFollower) {
@@ -99,7 +93,6 @@ public class FollowerEntity {
     }
 
     public void setDisplayNameVisible(boolean visible) {
-
         Followers.dataManager.getFollowerUser(owner.getUniqueId()).setDisplayNameEnabled(visible);
         if (!owner.isInvisible()) {
             if (
@@ -109,7 +102,6 @@ public class FollowerEntity {
     }
 
     public void setDisplayName(String newName) {
-
         Followers.dataManager.getFollowerUser(owner.getUniqueId()).setDisplayName(newName);
         setDisplayNameVisible(true);
         if (
@@ -118,10 +110,8 @@ public class FollowerEntity {
     }
 
     public void setVisible(boolean visible) {
-        followerAS.setVisible(visible);
-        if (!
-            Followers.configManager.areHitboxesEnabled() &&
-            Followers.dataManager.getFollowerUser(owner.getUniqueId()).isDisplayNameEnabled()) displayNametag(visible);
+        followerAS.setVisible(Followers.followerManager.getFollower(follower).isVisible() && visible);
+        if (!Followers.configManager.areHitboxesEnabled() && Followers.dataManager.getFollowerUser(owner.getUniqueId()).isDisplayNameEnabled()) displayNametag(visible);
         if (visible) reloadInventory();
         else clearInventory();
     }
@@ -138,16 +128,15 @@ public class FollowerEntity {
             for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
                 setFollowerArmorSlot(equipmentSlot, follower);
             }
+            followerAS.setVisible(Followers.followerManager.getFollower(follower).isVisible());
         }, 1);
     }
 
     public void setFollowerArmorSlot(EquipmentSlot equipmentSlot, String followerName) {
-        if (!
-            Followers.followerManager.getFollowers().containsKey(followerName)) return;
+        if (!Followers.followerManager.getFollowers().containsKey(followerName)) return;
         EntityEquipment armorEquipment = followerAS.getEquipment();
         if (armorEquipment == null) return;
-        FollowerHandler follower =
-            Followers.followerManager.getFollower(followerName);
+        FollowerHandler follower = Followers.followerManager.getFollower(followerName);
         new ItemStack(Material.AIR);
         ItemStack item = switch (equipmentSlot) {
             case HEAD -> follower.getHead();

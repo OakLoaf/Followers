@@ -12,6 +12,7 @@ public class FollowerHandler {
     private ItemStack feet;
     private ItemStack mainHand;
     private ItemStack offHand;
+    private final boolean isVisible;
 
     public FollowerHandler(ConfigurationSection configurationSection) {
         ItemStackData headData = new ItemStackData(configurationSection.getConfigurationSection("Head"), "AIR");
@@ -27,6 +28,7 @@ public class FollowerHandler {
         feet = feetData.getItem();
         mainHand = mainHandData.getItem();
         offHand = offHandData.getItem();
+        isVisible = configurationSection.getBoolean("visible", true);
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -64,4 +66,7 @@ public class FollowerHandler {
         return offHand;
     }
 
+    public boolean isVisible() {
+        return isVisible;
+    }
 }

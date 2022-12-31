@@ -1,5 +1,7 @@
 # Follower Name
 Notch:
+  # visible: Whether the armour stand is visible or not
+  visible: true
   # Head: Data for head slot
   Head:
     # Material: Material for head slot
