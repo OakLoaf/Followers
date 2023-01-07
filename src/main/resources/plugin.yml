@@ -3,7 +3,7 @@ version: ${project.version}
 main: me.dave.followers.Followers
 api-version: 1.19
 authors: [ Dav_e_ ]
-depend: [ UserInterface ]
+depend: [ ProtocolLib ]
 softdepend: [ Essentials, GSit ]
 commands:
   followers:
