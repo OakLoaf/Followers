@@ -3,7 +3,7 @@ package me.dave.followers.events;
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.FollowerGUI;
 import me.dave.followers.datamanager.FollowerUser;
-import me.xemor.userinterface.TextInterface;
+import me.dave.followers.utils.TextInterface;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

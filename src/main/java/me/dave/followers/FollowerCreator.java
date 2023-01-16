@@ -1,7 +1,7 @@
 package me.dave.followers;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
-import me.xemor.userinterface.TextInterface;
+import me.dave.followers.utils.TextInterface;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;

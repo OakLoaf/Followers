@@ -38,7 +38,8 @@ public final class Followers extends JavaPlugin implements Listener {
     private final NamespacedKey followerKey = new NamespacedKey(this, "Follower");
     private static int tickCount;
 
-    public static boolean isGSitEnabled = false;
+    private static boolean hasGSit = false;
+    private static boolean hasFloodgate = false;
 
     private void setThreadIOName() {
         Storage.SERVICE.submit(() -> Thread.currentThread().setName("Followers IO Thread"));
@@ -65,11 +66,15 @@ public final class Followers extends JavaPlugin implements Listener {
                 PluginManager pluginManager = getServer().getPluginManager();
                 if (pluginManager.getPlugin("Essentials") != null) pluginManager.registerEvents(new EssentialsEvents(), this);
                 else getLogger().info("Essentials plugin not found. Continuing without Essentials.");
+
                 if (pluginManager.getPlugin("GSit") != null) {
                     pluginManager.registerEvents(new GSitEvents(), this);
-                    isGSitEnabled = true;
+                    hasGSit = true;
                 }
                 else getLogger().info("GSit plugin not found. Continuing without GSit.");
+
+                if (this.getServer().getPluginManager().getPlugin("Floodgate") != null) hasFloodgate= true;
+                else getLogger().info("Floodgate plugin not found. Continuing without Floodgate.");
 
                 getCommand("followers").setExecutor(new FollowerCmd(guiPlayerSet));
                 getCommand("gethexarmor").setExecutor(new GetHexArmorCmd());
@@ -133,6 +138,14 @@ public final class Followers extends JavaPlugin implements Listener {
     }
 
     public static Followers getInstance() { return plugin; }
+
+    public static boolean hasGSit() {
+        return hasGSit;
+    }
+
+    public static boolean hasFloodgate() {
+        return hasFloodgate;
+    }
 
     public static int getCurrentTick() { return tickCount; }
 
