@@ -1,5 +1,6 @@
 package me.dave.followers.datamanager;
 
+import me.dave.chatcolorhandler.ChatColorHandler;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -52,7 +53,7 @@ public class FollowerManager {
         ConfigurationSection configurationSection = config.getConfigurationSection(followerName);
         String prefix = Followers.configManager.getPrefix();
         if (configurationSection != null) {
-            owner.sendMessage(prefix + "§7A Follower already exists with this name.");
+            ChatColorHandler.sendMessage(owner, prefix + "§7A Follower already exists with this name.");
             return;
         }
         configurationSection = config.createSection(followerName);
@@ -80,7 +81,7 @@ public class FollowerManager {
                 configurationSection.set(makeFriendly(equipmentSlotName) + ".SkullType", "Default");
                 UUID skullUUID = skullOwner.getUniqueId();
                 configurationSection.set(makeFriendly(equipmentSlotName) + ".UUID", skullUUID.toString());
-                owner.sendMessage(prefix + "§7Skull has been created as Default SkullType. To get custom textures manually edit the config.");
+                ChatColorHandler.sendMessage(owner, prefix + "§7Skull has been created as Default SkullType. To get custom textures manually edit the config.");
             } else if (currItem.getItemMeta() instanceof LeatherArmorMeta armorMeta) {
                 Color armorColor = armorMeta.getColor();
                 configurationSection.set(makeFriendly(equipmentSlotName) + ".Color", String.format("%02x%02x%02x", armorColor.getRed(), armorColor.getGreen(), armorColor.getBlue()));
@@ -89,7 +90,7 @@ public class FollowerManager {
                 configurationSection.set(makeFriendly(equipmentSlotName) + ".Enchanted", "True");
             }
         }
-        owner.sendMessage(prefix + "§7A Follower has been added with the name §a" + followerName);
+        ChatColorHandler.sendMessage(owner, prefix + "§7A Follower has been added with the name §a" + followerName);
         saveFollowers();
         loadFollower(followerName);
     }

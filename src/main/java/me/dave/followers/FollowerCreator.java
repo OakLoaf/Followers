@@ -1,5 +1,6 @@
 package me.dave.followers;
 
+import me.dave.chatcolorhandler.ChatColorHandler;
 import me.xemor.userinterface.TextInterface;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -36,7 +37,7 @@ public class FollowerCreator implements Listener {
         event.setCancelled(true);
         String prefix = Followers.configManager.getPrefix();
         if (!player.hasPermission("follower.admin.create")) {
-            player.sendMessage(prefix + "§7You have insufficient permissions.");
+            ChatColorHandler.sendMessage(player, prefix + "§7You have insufficient permissions.");
             return;
         }
         if (Followers.dataManager.getPlayerFollowerMap().containsKey(armorStand.getUniqueId())) return;
@@ -73,7 +74,7 @@ public class FollowerCreator implements Listener {
                 Bukkit.getScheduler().runTask(plugin, () -> Followers.followerManager.createFollower(player, finalOutput, armorStand));
             });
         } else if (armorStandName.contains(".")) {
-            player.sendMessage(prefix + "§cFollower name cannot contain the character '.'.");
+            ChatColorHandler.sendMessage(player, prefix + "§cFollower name cannot contain the character '.'.");
         } else {
             Followers.followerManager.createFollower(player, armorStandName, armorStand);
         }

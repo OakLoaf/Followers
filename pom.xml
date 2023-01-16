@@ -77,6 +77,10 @@
             <id>skullcreator-repo</id>
             <url>https://github.com/deanveloper/SkullCreator/raw/mvn-repo/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -120,6 +124,11 @@
             <artifactId>skullcreator</artifactId>
             <version>3.0.1</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.CoolDCB</groupId>
+            <artifactId>ChatColorHandler</artifactId>
+            <version>v0.9.9</version>
         </dependency>
     </dependencies>
 </project>

@@ -1,5 +1,6 @@
 package me.dave.followers.events;
 
+import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.FollowerGUI;
 import me.dave.followers.datamanager.FollowerUser;
 import me.xemor.userinterface.TextInterface;
@@ -127,7 +128,7 @@ public class FollowerGUIEvents implements Listener {
             return;
         }
         new FollowerEntity(player, followerName);
-        player.sendMessage(Followers.configManager.getPrefix() + "§aFollower Spawned.");
+        ChatColorHandler.sendMessage(player, Followers.configManager.getPrefix() + "§aFollower Spawned.");
     }
 
     @EventHandler

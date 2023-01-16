@@ -1,5 +1,6 @@
 package me.dave.followers.commands;
 
+import me.dave.chatcolorhandler.ChatColorHandler;
 import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,22 +21,22 @@ public class DyeCmd implements CommandExecutor {
         }
         String prefix = Followers.configManager.getPrefix();
         if (!player.hasPermission("follower.admin.dye")) {
-            sender.sendMessage(prefix + "§7You have insufficient permissions.");
+            ChatColorHandler.sendMessage(player, prefix + "§7You have insufficient permissions.");
             return true;
         }
         if (args.length != 1) {
-            player.sendMessage(prefix + "§7Incorrect Usage, try §c/dye <hexcolor>");
+            ChatColorHandler.sendMessage(player, prefix + "§7Incorrect Usage, try §c/dye <hexcolor>");
             return true;
         }
         String color = args[0].replace("#", "");
         if (color.length() != 6 && !(color.length() == 7 && color.startsWith("#"))) {
-            player.sendMessage(prefix + "§7Incorrect Usage, try §c/gethexarmor <material> <hexcolor>");
+            ChatColorHandler.sendMessage(player, prefix + "§7Incorrect Usage, try §c/gethexarmor <material> <hexcolor>");
             return true;
         }
         ItemStack item = player.getInventory().getItemInMainHand();
         ItemMeta itemMeta = item.getItemMeta();
         if (!(itemMeta instanceof LeatherArmorMeta armorMeta)) {
-            player.sendMessage(prefix + "§7Material has to be a form of Leather Armor.");
+            ChatColorHandler.sendMessage(player, prefix + "§7Material has to be a form of Leather Armor.");
             return true;
         }
         armorMeta.setColor(getRGBFromHex(color));

@@ -1,5 +1,6 @@
 package me.dave.followers.commands;
 
+import me.dave.chatcolorhandler.ChatColorHandler;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -41,12 +42,12 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 if (!player.hasPermission("follower.admin.create")) {
-                    sender.sendMessage(prefix + "§7You have insufficient permissions.");
+                    ChatColorHandler.sendMessage(player, prefix + "§7You have insufficient permissions.");
                     return true;
                 }
                 ItemStack creator = new FollowerCreator().getCreatorItem();
                 player.getInventory().addItem(creator);
-                player.sendMessage(prefix + "§7You have been given a Follower Creator.");
+                ChatColorHandler.sendMessage(player, prefix + "§7You have been given a Follower Creator.");
                 return true;
             }  else if (args[0].equalsIgnoreCase("delete")) {
                 if (!sender.hasPermission("follower.admin.delete")) {

@@ -1,5 +1,6 @@
 package me.dave.followers.commands;
 
+import me.dave.chatcolorhandler.ChatColorHandler;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -25,23 +26,23 @@ public class GetHexArmorCmd implements CommandExecutor, TabCompleter {
         }
         String prefix = Followers.configManager.getPrefix();
         if (!player.hasPermission("follower.admin.dye")) {
-            sender.sendMessage(prefix + "§7You have insufficient permissions.");
+            ChatColorHandler.sendMessage(player, prefix + "§7You have insufficient permissions.");
             return true;
         }
         if (args.length != 2) {
-            player.sendMessage(prefix + "§7Incorrect Usage, try §c/gethexarmor <material> <hexcolor>");
+            ChatColorHandler.sendMessage(player, prefix + "§7Incorrect Usage, try §c/gethexarmor <material> <hexcolor>");
             return true;
         }
         Material material = Material.getMaterial(args[0].toUpperCase());
         String color = args[1].replace("#", "");
         if (material == null || (color.length() != 6 && !(color.length() == 7 && color.startsWith("#")))) {
-            player.sendMessage(prefix + "§7Incorrect Usage, try §c/gethexarmor <material> <hexcolor>");
+            ChatColorHandler.sendMessage(player, prefix + "§7Incorrect Usage, try §c/gethexarmor <material> <hexcolor>");
             return true;
         }
         ItemStack item = new ItemStack(material);
         ItemMeta itemMeta = item.getItemMeta();
         if (!(itemMeta instanceof LeatherArmorMeta armorMeta)) {
-            player.sendMessage(prefix + "§7Material has to be a form of Leather Armor.");
+            ChatColorHandler.sendMessage(player, prefix + "§7Material has to be a form of Leather Armor.");
             return true;
         }
         armorMeta.setColor(getRGBFromHex(color));
