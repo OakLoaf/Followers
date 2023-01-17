@@ -2,6 +2,7 @@ package me.dave.followers.datamanager;
 
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 import com.mysql.cj.jdbc.MysqlDataSource;
+import me.dave.chatcolorhandler.ChatColorHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import me.dave.followers.Followers;
@@ -51,7 +52,7 @@ public class MysqlStorage implements Storage {
                 return false;
             }
         }
-        plugin.getLogger().info("§2Database setup complete.");
+        plugin.getLogger().info(ChatColorHandler.translateAlternateColorCodes("&2Database setup complete."));
         return true;
     }
 

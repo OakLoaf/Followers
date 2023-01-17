@@ -1,5 +1,6 @@
 package me.dave.followers;
 
+import me.dave.chatcolorhandler.ChatColorHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,7 +26,7 @@ public class FollowerGUI {
         ItemStack empty = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta emptyMeta = empty.getItemMeta();
         emptyMeta.getPersistentDataContainer().set(pageNumKey, PersistentDataType.INTEGER, page);
-        emptyMeta.setDisplayName("§r");
+        emptyMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&r"));
         empty.setItemMeta(emptyMeta);
         for (int i = 0; i < 18; i++) {
             if (i <= 8) inventory.setItem(i, empty);
@@ -53,19 +54,19 @@ public class FollowerGUI {
             if (followerUser.isFollowerEnabled()) {
                 followerToggle = new ItemStack(Material.LIME_WOOL);
                 ItemMeta followerToggleMeta = followerToggle.getItemMeta();
-                followerToggleMeta.setDisplayName("§eFollower: §aEnabled");
+                followerToggleMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&eFollower: &aEnabled"));
                 followerToggle.setItemMeta(followerToggleMeta);
             } else {
                 followerToggle = new ItemStack(Material.RED_WOOL);
                 ItemMeta followerToggleMeta = followerToggle.getItemMeta();
-                followerToggleMeta.setDisplayName("§eFollower: §cDisabled");
+                followerToggleMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&eFollower: &cDisabled"));
                 followerToggle.setItemMeta(followerToggleMeta);
             }
             inventory.setItem(49, followerToggle);
         } else {
             ItemStack noFollowers = new ItemStack(Material.BARRIER);
             ItemMeta followerToggleMeta = noFollowers.getItemMeta();
-            followerToggleMeta.setDisplayName("§cYou don't own any followers!");
+            followerToggleMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&cYou don't own any followers!"));
             noFollowers.setItemMeta(followerToggleMeta);
             inventory.setItem(22, noFollowers);
         }
@@ -73,24 +74,24 @@ public class FollowerGUI {
         if (followerSet.size() > page * 36) {
             ItemStack nextPage = new ItemStack(Material.ARROW);
             ItemMeta nextPageMeta = nextPage.getItemMeta();
-            nextPageMeta.setDisplayName("§eNext Page ->");
+            nextPageMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&eNext Page ->"));
             nextPage.setItemMeta(nextPageMeta);
             inventory.setItem(50, nextPage);
         }
         if (page > 1) {
             ItemStack previousPage = new ItemStack(Material.ARROW);
             ItemMeta previousPageMeta = previousPage.getItemMeta();
-            previousPageMeta.setDisplayName("§e<- Previous Page");
+            previousPageMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&e<- Previous Page"));
             previousPage.setItemMeta(previousPageMeta);
             inventory.setItem(48, previousPage);
         }
         if (player.hasPermission("follower.name")) {
             ItemStack followerName = new ItemStack(Material.NAME_TAG);
             ItemMeta followerNameMeta = followerName.getItemMeta();
-            followerNameMeta.setDisplayName("§eFollower Name: §f" + followerUser.getDisplayName());
+            followerNameMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&eFollower Name: &f" + followerUser.getDisplayName()));
             List<String> lore = new ArrayList<>();
-            if (followerUser.isDisplayNameEnabled()) lore.add("§eShown §7§o(Shift-click to Hide)");
-            else lore.add("§eHidden §7§o(Shift-click to Show)");
+            if (followerUser.isDisplayNameEnabled()) lore.add(ChatColorHandler.translateAlternateColorCodes("&eShown &7&o(Shift-click to Hide)"));
+            else lore.add(ChatColorHandler.translateAlternateColorCodes("&eHidden &7&o(Shift-click to Show)"));
             followerNameMeta.setLore(lore);
             followerName.setItemMeta(followerNameMeta);
             inventory.setItem(45, followerName);

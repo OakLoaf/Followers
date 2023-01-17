@@ -28,7 +28,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("reload")) {
                 if (!sender.hasPermission("follower.admin.reload")) {
-                    sender.sendMessage(prefix + "§7You have insufficient permissions.");
+                    ChatColorHandler.sendMessage(sender, prefix + "&7You have insufficient permissions.");
                     return true;
                 }
                 Followers.configManager.reloadConfig();
@@ -42,26 +42,26 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 if (!player.hasPermission("follower.admin.create")) {
-                    ChatColorHandler.sendMessage(player, prefix + "§7You have insufficient permissions.");
+                    ChatColorHandler.sendMessage(player, prefix + "&7You have insufficient permissions.");
                     return true;
                 }
                 ItemStack creator = new FollowerCreator().getCreatorItem();
                 player.getInventory().addItem(creator);
-                ChatColorHandler.sendMessage(player, prefix + "§7You have been given a Follower Creator.");
+                ChatColorHandler.sendMessage(player, prefix + "&7You have been given a Follower Creator.");
                 return true;
             }  else if (args[0].equalsIgnoreCase("delete")) {
                 if (!sender.hasPermission("follower.admin.delete")) {
-                    sender.sendMessage(prefix + "§7You have insufficient permissions.");
+                    ChatColorHandler.sendMessage(sender, prefix + "&7You have insufficient permissions.");
                     return true;
                 }
-                sender.sendMessage(prefix + "§cIncorrect usage: Try /follower delete <follower_name>.");
+                ChatColorHandler.sendMessage(sender, prefix + "&cIncorrect usage: Try /follower delete <follower_name>.");
                 return true;
             }
         }
         if (args.length >= 2) {
             if (args[0].equalsIgnoreCase("delete")) {
                 if (!sender.hasPermission("follower.admin.delete")) {
-                    sender.sendMessage(prefix + "§7You have insufficient permissions.");
+                    ChatColorHandler.sendMessage(sender, prefix + "&7You have insufficient permissions.");
                     return true;
                 }
                 String[] temp = Arrays.copyOfRange(args, 1, args.length);
@@ -71,10 +71,10 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                 }
                 String followerNameFinal = followerName.substring(0, followerName.length() - 1);
                 FollowerHandler follower = Followers.followerManager.getFollower(followerNameFinal);
-                if (follower == null) sender.sendMessage(prefix + "§cThe Follower " + followerNameFinal + " does not exist.");
+                if (follower == null) ChatColorHandler.sendMessage(sender, prefix + "&cThe Follower " + followerNameFinal + " does not exist.");
                 else {
                     Followers.followerManager.removeFollower(followerNameFinal);
-                    sender.sendMessage(prefix + "§aThe Follower " + followerNameFinal + " has been deleted.");
+                    ChatColorHandler.sendMessage(sender, prefix + "&aThe Follower " + followerNameFinal + " has been deleted.");
                 }
                 return true;
             }

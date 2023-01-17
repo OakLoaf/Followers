@@ -15,6 +15,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import me.dave.followers.Followers;
@@ -39,24 +40,24 @@ public class FollowerGUIEvents implements Listener {
         this.playerFollowerMap = Followers.dataManager.getPlayerFollowerMap();
 
         ItemMeta barrierMeta = noFollowers.getItemMeta();
-        barrierMeta.setDisplayName("§cYou don't own any followers!");
+        barrierMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&cYou don't own any followers!"));
         noFollowers.setItemMeta(barrierMeta);
 
         ItemMeta nextPageMeta = nextPage.getItemMeta();
-        nextPageMeta.setDisplayName("§eNext Page ->");
+        nextPageMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&eNext Page ->"));
         nextPage.setItemMeta(nextPageMeta);
 
         ItemMeta previousPageMeta = previousPage.getItemMeta();
-        previousPageMeta.setDisplayName("§e<- Previous Page");
+        previousPageMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&e<- Previous Page"));
         previousPage.setItemMeta(previousPageMeta);
 
         ItemMeta followerToggleEnabledMeta = followerToggleEnabled.getItemMeta();
-        followerToggleEnabledMeta.setDisplayName("§eFollower: §aEnabled");
+        followerToggleEnabledMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&eFollower: &aEnabled"));
         followerToggleEnabled.setItemMeta(followerToggleEnabledMeta);
 
 
         ItemMeta followerToggleDisabledMeta = followerToggleDisabled.getItemMeta();
-        followerToggleDisabledMeta.setDisplayName("§eFollower: §cDisabled");
+        followerToggleDisabledMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&eFollower: &cDisabled"));
         followerToggleDisabled.setItemMeta(followerToggleDisabledMeta);
     }
 
@@ -96,7 +97,7 @@ public class FollowerGUIEvents implements Listener {
             FollowerGUI followerInv = new FollowerGUI(player, page - 1, openInvPlayerSet);
             followerInv.openInventory(player);
             return;
-        } else if (clickedItem.getType() == Material.NAME_TAG && clickedItem.getItemMeta().getDisplayName().startsWith("§eFollower Name:")) {
+        } else if (clickedItem.getType() == Material.NAME_TAG && clickedItem.getItemMeta().getDisplayName().startsWith(ChatColorHandler.translateAlternateColorCodes("&eFollower Name:"))) {
             FollowerEntity followerEntity = Followers.dataManager.getPlayerFollowerMap().get(player.getUniqueId());
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
@@ -114,7 +115,9 @@ public class FollowerGUIEvents implements Listener {
                 textInterface.getInput(player, (output) -> {
                     if (output.equals("")) output = " ";
                     String finalOutput = output;
-                    Bukkit.getScheduler().runTask(plugin, () -> followerEntity.setDisplayName(finalOutput));
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        if (followerEntity != null) followerEntity.setDisplayName(finalOutput);
+                    });
                 });
             }, 5L);
             return;
@@ -128,7 +131,7 @@ public class FollowerGUIEvents implements Listener {
             return;
         }
         new FollowerEntity(player, followerName);
-        ChatColorHandler.sendMessage(player, Followers.configManager.getPrefix() + "§aFollower Spawned.");
+        ChatColorHandler.sendMessage(player, Followers.configManager.getPrefix() + "&aFollower Spawned.");
     }
 
     @EventHandler
@@ -149,6 +152,7 @@ public class FollowerGUIEvents implements Listener {
         ItemStack item = inventory.getItem(0);
         if (item == null) return 0;
         ItemMeta itemMeta = item.getItemMeta();
+        if (itemMeta == null) return 0;
         return itemMeta.getPersistentDataContainer().get(pageNumKey, PersistentDataType.INTEGER);
     }
 }
