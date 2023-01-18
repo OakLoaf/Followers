@@ -95,8 +95,7 @@ public class FollowerEntity {
     public void setDisplayNameVisible(boolean visible) {
         Followers.dataManager.getFollowerUser(owner.getUniqueId()).setDisplayNameEnabled(visible);
         if (!owner.isInvisible()) {
-            if (
-                Followers.configManager.areHitboxesEnabled()) followerAS.setCustomNameVisible(visible);
+            if (Followers.configManager.areHitboxesEnabled()) followerAS.setCustomNameVisible(visible);
             else displayNametag(visible);
         }
     }
@@ -104,13 +103,14 @@ public class FollowerEntity {
     public void setDisplayName(String newName) {
         Followers.dataManager.getFollowerUser(owner.getUniqueId()).setDisplayName(newName);
         setDisplayNameVisible(true);
-        if (
-            Followers.configManager.areHitboxesEnabled()) followerAS.setCustomName(newName);
+        if (Followers.configManager.areHitboxesEnabled()) followerAS.setCustomName(newName);
         else nameTagAS.setCustomName(newName);
     }
 
     public void setVisible(boolean visible) {
-        followerAS.setVisible(Followers.followerManager.getFollower(follower).isVisible() && visible);
+        FollowerHandler followerConfig = Followers.followerManager.getFollower(follower);
+        if (followerConfig == null) return;
+        followerAS.setVisible(followerConfig.isVisible() && visible);
         if (!Followers.configManager.areHitboxesEnabled() && Followers.dataManager.getFollowerUser(owner.getUniqueId()).isDisplayNameEnabled()) displayNametag(visible);
         if (visible) reloadInventory();
         else clearInventory();
