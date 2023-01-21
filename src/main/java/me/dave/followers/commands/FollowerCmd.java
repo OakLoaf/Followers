@@ -24,17 +24,16 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) {
-        String prefix = Followers.configManager.getPrefix();
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("reload")) {
                 if (!sender.hasPermission("follower.admin.reload")) {
-                    ChatColorHandler.sendMessage(sender, prefix + "&7You have insufficient permissions.");
+                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
                     return true;
                 }
                 Followers.configManager.reloadConfig();
                 Followers.followerManager.reloadFollowers();
                 Followers.dataManager.reloadFollowerInventories();
-                sender.sendMessage(ChatColor.GREEN + "Followers has been reloaded.");
+                sender.sendMessage(Followers.configManager.getLangMessage("reloaded"));
                 return true;
             } else if (args[0].equalsIgnoreCase("create")) {
                 if (!(sender instanceof Player player)) {
@@ -42,26 +41,26 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 if (!player.hasPermission("follower.admin.create")) {
-                    ChatColorHandler.sendMessage(player, prefix + "&7You have insufficient permissions.");
+                    ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("no-permissions"));
                     return true;
                 }
                 ItemStack creator = new FollowerCreator().getCreatorItem();
                 player.getInventory().addItem(creator);
-                ChatColorHandler.sendMessage(player, prefix + "&7You have been given a Follower Creator.");
+                ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("get-follower-creator"));
                 return true;
             }  else if (args[0].equalsIgnoreCase("delete")) {
                 if (!sender.hasPermission("follower.admin.delete")) {
-                    ChatColorHandler.sendMessage(sender, prefix + "&7You have insufficient permissions.");
+                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
                     return true;
                 }
-                ChatColorHandler.sendMessage(sender, prefix + "&cIncorrect usage: Try /follower delete <follower_name>.");
+                ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/follower delete <follower_name>"));
                 return true;
             }
         }
         if (args.length >= 2) {
             if (args[0].equalsIgnoreCase("delete")) {
                 if (!sender.hasPermission("follower.admin.delete")) {
-                    ChatColorHandler.sendMessage(sender, prefix + "&7You have insufficient permissions.");
+                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
                     return true;
                 }
                 String[] temp = Arrays.copyOfRange(args, 1, args.length);
@@ -71,10 +70,10 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                 }
                 String followerNameFinal = followerName.substring(0, followerName.length() - 1);
                 FollowerHandler follower = Followers.followerManager.getFollower(followerNameFinal);
-                if (follower == null) ChatColorHandler.sendMessage(sender, prefix + "&cThe Follower " + followerNameFinal + " does not exist.");
+                if (follower == null) ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerNameFinal));
                 else {
                     Followers.followerManager.removeFollower(followerNameFinal);
-                    ChatColorHandler.sendMessage(sender, prefix + "&aThe Follower " + followerNameFinal + " has been deleted.");
+                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-deleted").replaceAll("%follower%", followerNameFinal));
                 }
                 return true;
             }

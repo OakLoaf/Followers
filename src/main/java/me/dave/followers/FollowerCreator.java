@@ -35,9 +35,8 @@ public class FollowerCreator implements Listener {
         if (!(event.getRightClicked() instanceof ArmorStand armorStand)) return;
         if (!heldItem.isSimilar(creatorItem)) return;
         event.setCancelled(true);
-        String prefix = Followers.configManager.getPrefix();
         if (!player.hasPermission("follower.admin.create")) {
-            ChatColorHandler.sendMessage(player, prefix + "&7You have insufficient permissions.");
+            ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("no-permissions"));
             return;
         }
         if (Followers.dataManager.getPlayerFollowerMap().containsKey(armorStand.getUniqueId())) return;
@@ -48,7 +47,7 @@ public class FollowerCreator implements Listener {
             textInterface.placeholder("Enter follower name");
             textInterface.getInput(player, (output) -> {
                 if (output.equals("")) {
-                    ChatColorHandler.sendMessage(player, prefix + "&7You did not enter a name for the follower.");
+                    ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-no-name"));
                     return;
                 }
                 String finalOutput = output.replaceAll("\\.", "-");

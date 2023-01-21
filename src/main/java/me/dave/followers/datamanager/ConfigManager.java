@@ -33,6 +33,10 @@ public class ConfigManager {
         areHitboxesEnabled = config.getBoolean("hitboxesEnabled");
     }
 
+    public String getLangMessage(String messageName) {
+        return prefix + config.getString("messages." + messageName.toLowerCase());
+    }
+
     public ConfigurationSection getDatabaseSection() {
         return config.getConfigurationSection("database");
     }

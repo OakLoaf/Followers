@@ -19,3 +19,22 @@ database:
   name: dbName
   user: user
   password: pass
+
+# %command-usage% - The command being used incorrectly
+# %follower% - The selected follower
+messages:
+  no-permissions: "&7You have insufficient permissions."
+  incorrect-usage: "&7Incorrect Usage, try &c%command-usage%"
+  reloaded: "&aFollowers has been reloaded."
+  follower-spawned: "&aFollower Spawned."
+  follower-no-name: "&7You did not enter a name for the follower."
+  follower-created: "&7A Follower has been added with the name &a%follower%"
+  follower-deleted: "&aThe Follower %follower% has been deleted."
+  follower-doesnt-exist: "&cThe Follower %follower% does not exist."
+  follower-already-exists: "&7A Follower already exists with this name."
+  follower-default-skull: "&7Skull has been created as Default SkullType. To get custom textures manually edit the config."
+  get-follower-creator: "&7You have been given a Follower Creator."
+  dye-wrong-material: "&7Material has to be a form of Leather Armor."
+
+
+

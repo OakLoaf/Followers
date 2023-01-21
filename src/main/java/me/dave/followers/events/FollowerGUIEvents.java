@@ -129,7 +129,7 @@ public class FollowerGUIEvents implements Listener {
             return;
         }
         new FollowerEntity(player, followerName);
-        ChatColorHandler.sendMessage(player, Followers.configManager.getPrefix() + "&aFollower Spawned.");
+        ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
     }
 
     @EventHandler

@@ -53,7 +53,7 @@ public class FollowerManager {
         ConfigurationSection configurationSection = config.getConfigurationSection(followerName);
         String prefix = Followers.configManager.getPrefix();
         if (configurationSection != null) {
-            ChatColorHandler.sendMessage(owner, prefix + "&7A Follower already exists with this name.");
+            ChatColorHandler.sendMessage(owner, Followers.configManager.getLangMessage("follower-already-exists"));
             return;
         }
         configurationSection = config.createSection(followerName);
@@ -81,7 +81,7 @@ public class FollowerManager {
                 configurationSection.set(makeFriendly(equipmentSlotName) + ".SkullType", "Default");
                 UUID skullUUID = skullOwner.getUniqueId();
                 configurationSection.set(makeFriendly(equipmentSlotName) + ".UUID", skullUUID.toString());
-                ChatColorHandler.sendMessage(owner, prefix + "&7Skull has been created as Default SkullType. To get custom textures manually edit the config.");
+                ChatColorHandler.sendMessage(owner, Followers.configManager.getLangMessage("follower-default-skull"));
             } else if (currItem.getItemMeta() instanceof LeatherArmorMeta armorMeta) {
                 Color armorColor = armorMeta.getColor();
                 configurationSection.set(makeFriendly(equipmentSlotName) + ".Color", String.format("%02x%02x%02x", armorColor.getRed(), armorColor.getGreen(), armorColor.getBlue()));
@@ -90,7 +90,7 @@ public class FollowerManager {
                 configurationSection.set(makeFriendly(equipmentSlotName) + ".Enchanted", "True");
             }
         }
-        ChatColorHandler.sendMessage(owner, prefix + "&7A Follower has been added with the name &a" + followerName);
+        ChatColorHandler.sendMessage(owner, Followers.configManager.getLangMessage("follower-created").replaceAll("%follower%", followerName));
         saveFollowers();
         loadFollower(followerName);
     }
