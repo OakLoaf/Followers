@@ -15,7 +15,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import me.dave.followers.Followers;
@@ -152,6 +151,7 @@ public class FollowerGUIEvents implements Listener {
         if (item == null) return 0;
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta == null) return 0;
+        if (itemMeta.getPersistentDataContainer().get(pageNumKey, PersistentDataType.INTEGER) == null) return 0;
         return itemMeta.getPersistentDataContainer().get(pageNumKey, PersistentDataType.INTEGER);
     }
 }

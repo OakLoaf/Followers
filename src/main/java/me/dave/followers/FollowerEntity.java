@@ -19,11 +19,12 @@ public class FollowerEntity {
     private final Followers plugin = Followers.getInstance();
     private final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
     private final Player owner;
-    private final ArmorStand followerAS;
+    private ArmorStand followerAS;
     private ArmorStand nameTagAS;
     private String follower;
     private boolean isPlayerInvisible;
     private String poseName;
+    private boolean isEnabled;
 
     private final EulerAngle defaultLeftArm = new EulerAngle(-0.17453292519943295, 0, -0.17453292519943295);
     private final EulerAngle defaultRightArm = new EulerAngle(-0.2617993877991494, 0, 0.17453292519943295);
@@ -46,43 +47,8 @@ public class FollowerEntity {
         this.owner = owner;
         this.follower = follower;
         this.isPlayerInvisible = owner.isInvisible();
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(owner.getUniqueId());
-        Followers.dataManager.putInPlayerFollowerMap(owner.getUniqueId(), this);
-        followerUser.setFollowerEnabled(true);
 
-        followerAS = owner.getLocation().getWorld().spawn(owner.getLocation().add(-1.5, 0, 1.5), ArmorStand.class, (armorStand -> {
-            try {
-                armorStand.setBasePlate(false);
-                armorStand.setArms(true);
-                armorStand.setInvulnerable(true);
-                armorStand.setCanPickupItems(false);
-                armorStand.setSmall(true);
-                armorStand.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, owner.getUniqueId().toString());
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-        }));
-
-        Followers.dataManager.setActiveArmorStand(followerAS.getUniqueId());
-
-        setVisible(!owner.isInvisible());
-
-        if (!
-            Followers.configManager.areHitboxesEnabled()) followerAS.setMarker(true);
-
-        if (followerUser.isDisplayNameEnabled()) {
-            if (
-                Followers.configManager.areHitboxesEnabled()) {
-                followerAS.setCustomName(followerUser.getDisplayName());
-                followerAS.setCustomNameVisible(followerUser.isDisplayNameEnabled());
-            } else if (nameTagAS != null) {
-                nameTagAS.setCustomName(followerUser.getDisplayName());
-                nameTagAS.setCustomNameVisible(followerUser.isDisplayNameEnabled());
-            }
-        }
-
-        setFollower(follower);
-        startMovement(Followers.configManager.getSpeed());
+        spawn();
     }
 
     public void setFollower(String newFollower) {
@@ -152,10 +118,49 @@ public class FollowerEntity {
     public void disable() {
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(owner.getUniqueId());
         if (followerUser != null) followerUser.setFollowerEnabled(false);
-        kill();
+        isEnabled = false;
+        kill(false);
     }
 
-    public void kill() {
+    public void spawn() {
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(owner.getUniqueId());
+        Followers.dataManager.putInPlayerFollowerMap(owner.getUniqueId(), this);
+        if (followerUser != null) followerUser.setFollowerEnabled(true);
+        isEnabled = true;
+
+        followerAS = owner.getLocation().getWorld().spawn(owner.getLocation().add(-1.5, 0, 1.5), ArmorStand.class, (armorStand -> {
+            try {
+                armorStand.setBasePlate(false);
+                armorStand.setArms(true);
+                armorStand.setInvulnerable(true);
+                armorStand.setCanPickupItems(false);
+                armorStand.setSmall(true);
+                armorStand.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, owner.getUniqueId().toString());
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }));
+
+        Followers.dataManager.setActiveArmorStand(followerAS.getUniqueId());
+
+        setVisible(!owner.isInvisible());
+        if (!Followers.configManager.areHitboxesEnabled()) followerAS.setMarker(true);
+
+        if (followerUser.isDisplayNameEnabled()) {
+            if (Followers.configManager.areHitboxesEnabled()) {
+                followerAS.setCustomName(followerUser.getDisplayName());
+                followerAS.setCustomNameVisible(followerUser.isDisplayNameEnabled());
+            } else if (nameTagAS != null) {
+                nameTagAS.setCustomName(followerUser.getDisplayName());
+                nameTagAS.setCustomNameVisible(followerUser.isDisplayNameEnabled());
+            }
+        }
+
+        setFollower(follower);
+        startMovement(Followers.configManager.getSpeed());
+    }
+
+    public void kill(boolean respawn) {
         if (followerAS == null) return;
 
         Followers.dataManager.setActiveArmorStand(followerAS.getUniqueId(), false);
@@ -163,6 +168,12 @@ public class FollowerEntity {
         Followers.dataManager.removeFromPlayerFollowerMap(owner.getUniqueId());
         followerAS.remove();
         if (nameTagAS != null) nameTagAS.remove();
+
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(owner.getUniqueId());
+        if (followerUser != null && owner.isOnline()) followerUser.setFollowerEnabled(false);
+        isEnabled = false;
+
+        if (respawn) spawn();
     }
 
 
@@ -178,7 +189,9 @@ public class FollowerEntity {
         new BukkitRunnable() {
             public void run() {
                 if (!followerAS.isValid()) {
-                    kill();
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                        kill(isEnabled);
+                    }, 5);
                     cancel();
                     return;
                 }
@@ -194,8 +207,7 @@ public class FollowerEntity {
                 Vector difference = getDifference(player, followerAS);
                 if (difference.clone().setY(0).lengthSquared() < 6.25) {
                     Vector differenceY = difference.clone().setX(0).setZ(0);
-                    if (
-                        Followers.configManager.areHitboxesEnabled()) differenceY.setY(differenceY.getY() - 0.25);
+                    if (Followers.configManager.areHitboxesEnabled()) differenceY.setY(differenceY.getY() - 0.25);
                     else differenceY.setY(differenceY.getY() - 0.7);
                     followerLoc.add(differenceY.multiply(speed));
                 } else {
