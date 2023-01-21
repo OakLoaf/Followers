@@ -43,40 +43,19 @@ public class FollowerCreator implements Listener {
         if (Followers.dataManager.getPlayerFollowerMap().containsKey(armorStand.getUniqueId())) return;
         String armorStandName = armorStand.getCustomName();
         if (armorStandName == null) {
-
-            ///////////////////////////////////////////////////////////////////////////////////////////////
-            //                                                                                           //
-            //                                          ______                                           //
-            //                                         //    \\                                          //
-            //                                        //      \\                                         //
-            //                                       //   ___  \\                                        //
-            //                                      //   |   |  \\                                       //
-            //                                     //    |   |   \\                                      //
-            //                                    //     |   |    \\                                     //
-            //                                   //      |   |     \\                                    //
-            //                                  //       |___|      \\                                   //
-            //                                 //         ___        \\                                  //
-            //                                //         |   |        \\                                 //
-            //                               //          |___|         \\                                //
-            //                              //                          \\                               //
-            //                             ////////////////////////////////                              //
-            //                                                                                           //
-            //     WARNING DOES NOT CHECK IF '.' IS THERE (CANNOT ALLOW NAMES WITH '.' DUE TO CONFIG     //
-            //                                                                                           //
-            ///////////////////////////////////////////////////////////////////////////////////////////////
-
             TextInterface textInterface = new TextInterface();
             textInterface.title("Enter Name:");
             textInterface.placeholder("Enter follower name");
             textInterface.getInput(player, (output) -> {
-                if (output.equals("")) output = " ";
-                String finalOutput = output;
+                if (output.equals("")) {
+                    ChatColorHandler.sendMessage(player, prefix + "&7You did not enter a name for the follower.");
+                    return;
+                }
+                String finalOutput = output.replaceAll("\\.", "-");
                 Bukkit.getScheduler().runTask(plugin, () -> Followers.followerManager.createFollower(player, finalOutput, armorStand));
             });
-        } else if (armorStandName.contains(".")) {
-            ChatColorHandler.sendMessage(player, prefix + "&cFollower name cannot contain the character '.'.");
         } else {
-            Followers.followerManager.createFollower(player, armorStandName, armorStand);
+            Followers.followerManager.createFollower(player, armorStandName.replaceAll("\\.", "-"), armorStand);
         }
     }
 

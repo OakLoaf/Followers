@@ -2,6 +2,7 @@ package me.dave.followers.utils;
 
 import me.dave.followers.Followers;
 import org.bukkit.entity.Player;
+import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -36,7 +37,7 @@ public class TextInterface {
 
     public void getInput(Player player, Consumer<String> response) {
         if (title == null) throw new IllegalStateException("Title is null! You must set a title to use this class");
-        if (Followers.hasFloodgate()) {
+        if (Followers.hasFloodgate() && FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
             formFactory.form(player, response, title, inputName, placeholder);
         }
         else {

@@ -150,8 +150,7 @@ public class FollowerEntity {
     }
 
     public void disable() {
-        FollowerUser followerUser =
-            Followers.dataManager.getFollowerUser(owner.getUniqueId());
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(owner.getUniqueId());
         if (followerUser != null) followerUser.setFollowerEnabled(false);
         kill();
     }
