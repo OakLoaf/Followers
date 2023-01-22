@@ -2,32 +2,32 @@
 Notch:
   # visible: Whether the armour stand is visible or not
   visible: true
-  # Head: Data for head slot
-  Head:
-    # Material: Material for head slot
+  # head: Data for head slot
+  head:
+    # material: Material for head slot
     Material: player_head
-    # SkullType: Default/Custom, Default is a minecraft user's head, Custom allows for Skull Textures
-    SkullType: Default
-    # UUID: Only applicable for  Default SkullType, player uuid of skull.
-    UUID: 069a79f4-44e9-4726-a5be-fca90e38aaf5
-    # Texture: Only applicable for Custom SkullType, texture id of skull.
-    # Texture: textureGoesHere
-  # Chest: Data for chest slot
-  Chest:
-    Material: leather_chestplate
-    # Color: Only applicable for leather armour, hex value NOT including the '#'
-    Color: 9D9D97
-  # Legs: Data for legs slot
-  Legs:
-    Material: leather_leggings
-    Color: 897362
-  # Feet: Data for feet slot
-  Feet:
-    Material: leather_boots
-    Color: B02E26
-  # MainHand: Data for hand slot
-  MainHand:
-    Material: golden_apple
-  # OffHand: Data for off hand slot
-  OffHand:
-    Material: stick
+    # skullType: Default/Custom, Default is a minecraft user's head, Custom allows for Skull Textures
+    skullType: Default
+    # uuid: Only applicable for  Default SkullType, player uuid of skull.
+    uuid: 069a79f4-44e9-4726-a5be-fca90e38aaf5
+    # texture: Only applicable for Custom SkullType, texture id of skull.
+    # texture: textureGoesHere
+  # chest: Data for chest slot
+  chest:
+    material: leather_chestplate
+    # color: Only applicable for leather armour, hex value NOT including the '#'
+    color: 9D9D97
+  # legs: Data for legs slot
+  legs:
+    material: leather_leggings
+    color: 897362
+  # feet: Data for feet slot
+  feet:
+    material: leather_boots
+    color: B02E26
+  # mainHand: Data for hand slot
+  mainHand:
+    material: golden_apple
+  # offHand: Data for off hand slot
+  offHand:
+    material: stick

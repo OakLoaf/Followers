@@ -1,14 +1,18 @@
 package me.dave.followers.datamanager;
 
+import me.dave.chatcolorhandler.ChatColorHandler;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import me.dave.followers.Followers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class ItemStackData {
@@ -23,31 +27,40 @@ public class ItemStackData {
             item = new ItemStack(Material.AIR);
             return;
         }
-        Material material = Material.valueOf(configurationSection.getString("Material", aMaterial).toUpperCase());
-        String colour = configurationSection.getString("Color", "A06540");
-        boolean isEnchanted = Boolean.parseBoolean(configurationSection.getString("Enchanted", "false"));
+        Material material = Material.valueOf(configurationSection.getString("material", aMaterial).toUpperCase());
+        String colour = configurationSection.getString("color", "A06540");
+        boolean isEnchanted = Boolean.parseBoolean(configurationSection.getString("enchanted", "false"));
         item = new ItemStack(material);
+
         if (material == Material.PLAYER_HEAD) {
-            String skullType = configurationSection.getString("SkullType", "");
+            String skullType = configurationSection.getString("skullType", "");
             if (skullType.equalsIgnoreCase("custom")) {
-                String skullTexture = configurationSection.getString("Texture");
+                String skullTexture = configurationSection.getString("texture");
                 if (skullTexture != null) item = Followers.skullCreator.getCustomSkull(skullTexture);
             } else {
-                String skullUUID = configurationSection.getString("UUID");
-                if (skullUUID == null || skullUUID.equalsIgnoreCase("error")) {
-                    item = new ItemStack(Material.PLAYER_HEAD);
-                }
-                item = Followers.skullCreator.getPlayerSkull(UUID.fromString(skullUUID));
+                String skullUUID = configurationSection.getString("uuid");
+                if (skullUUID == null || skullUUID.equalsIgnoreCase("error")) item = new ItemStack(Material.PLAYER_HEAD);
+                else item = Followers.skullCreator.getPlayerSkull(UUID.fromString(skullUUID));
             }
         }
         else if (item.getItemMeta() instanceof LeatherArmorMeta) {
             item = getColoredArmour(material, colour);
         }
+
+        ItemMeta itemMeta = item.getItemMeta();
+        String displayName = configurationSection.getString("name");
+        if (displayName != null) itemMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes(displayName));
+
+        List<String> loreList = new ArrayList<>();
+        configurationSection.getStringList("lore").forEach((loreLine) -> loreList.add(ChatColorHandler.translateAlternateColorCodes(loreLine)));
+        itemMeta.setLore(loreList);
+
         if (isEnchanted) {
-            ItemMeta itemMeta = item.getItemMeta();
             itemMeta.addEnchant(Enchantment.DURABILITY, 1, false);
-            item.setItemMeta(itemMeta);
+            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
+
+        item.setItemMeta(itemMeta);
     }
 
     private ItemStack getColoredArmour(Material material, String hexColour) {

@@ -15,12 +15,12 @@ public class FollowerHandler {
     private final boolean isVisible;
 
     public FollowerHandler(ConfigurationSection configurationSection) {
-        ItemStackData headData = new ItemStackData(configurationSection.getConfigurationSection("Head"), "AIR");
-        ItemStackData chestData = new ItemStackData(configurationSection.getConfigurationSection("Chest"), "AIR");
-        ItemStackData legsData = new ItemStackData(configurationSection.getConfigurationSection("Legs"), "AIR");
-        ItemStackData feetData = new ItemStackData(configurationSection.getConfigurationSection("Feet"), "AIR");
-        ItemStackData mainHandData = new ItemStackData(configurationSection.getConfigurationSection("MainHand"), "AIR");
-        ItemStackData offHandData = new ItemStackData(configurationSection.getConfigurationSection("OffHand"), "AIR");
+        ItemStackData headData = new ItemStackData(configurationSection.getConfigurationSection("head"), "AIR");
+        ItemStackData chestData = new ItemStackData(configurationSection.getConfigurationSection("chest"), "AIR");
+        ItemStackData legsData = new ItemStackData(configurationSection.getConfigurationSection("legs"), "AIR");
+        ItemStackData feetData = new ItemStackData(configurationSection.getConfigurationSection("feet"), "AIR");
+        ItemStackData mainHandData = new ItemStackData(configurationSection.getConfigurationSection("mainHand"), "AIR");
+        ItemStackData offHandData = new ItemStackData(configurationSection.getConfigurationSection("offHand"), "AIR");
         Followers plugin = Followers.getInstance();
         head = headData.getItem();
         chest = chestData.getItem();

@@ -1,17 +1,11 @@
 package me.dave.followers.datamanager;
 
-import me.dave.chatcolorhandler.ChatColorHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import me.dave.followers.Followers;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class ConfigManager {
     private final Followers plugin = Followers.getInstance();
@@ -46,17 +40,7 @@ public class ConfigManager {
         ConfigurationSection itemSection = config.getConfigurationSection("gui." + itemName);
         if (itemSection == null) return new ItemStack(Material.STONE);
 
-        Material material = Material.valueOf(itemSection.getString("material", "STONE").toUpperCase());
-        ItemStack item = new ItemStack(material);
-
-        ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes(itemSection.getString("name", material.name())));
-        List<String> loreList = new ArrayList<>();
-        itemSection.getStringList("lore").forEach((loreLine) -> loreList.add(ChatColorHandler.translateAlternateColorCodes(loreLine)));
-        itemMeta.setLore(loreList);
-        item.setItemMeta(itemMeta);
-
-        return item;
+        return new ItemStackData(itemSection, "STONE").getItem();
     }
 
     public String getGuiTitle() {
