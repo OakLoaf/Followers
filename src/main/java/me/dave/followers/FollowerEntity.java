@@ -291,11 +291,10 @@ public class FollowerEntity {
                 Followers.dataManager.setActiveArmorStand(nameTagAS.getUniqueId());
             }
 
-            String test3 = Followers.dataManager.getFollowerUser(owner.getUniqueId()).getDisplayName();
-            String test2 = Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", test3);
-            String test1 = ChatColorHandler.translateAlternateColorCodes(test2);
+            String nickname = Followers.dataManager.getFollowerUser(owner.getUniqueId()).getDisplayName();
+            nickname = Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", nickname);
 
-            nameTagAS.setCustomName(test1);
+            nameTagAS.setCustomName(ChatColorHandler.translateAlternateColorCodes(nickname));
             nameTagAS.setCustomNameVisible(true);
         } else {
             Followers.dataManager.setActiveArmorStand(nameTagAS.getUniqueId(), false);

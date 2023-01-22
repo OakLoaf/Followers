@@ -28,36 +28,10 @@ public class FollowerGUIEvents implements Listener {
     private final Followers plugin = Followers.getInstance();
     private final HashSet<UUID> openInvPlayerSet;
     private final HashMap<UUID, FollowerEntity> playerFollowerMap;
-    private final ItemStack noFollowers = new ItemStack(Material.BARRIER);
-    private final ItemStack nextPage = new ItemStack(Material.ARROW);
-    private final ItemStack previousPage = new ItemStack(Material.ARROW);
-    private final ItemStack followerToggleEnabled = new ItemStack(Material.LIME_WOOL);
-    private final ItemStack followerToggleDisabled = new ItemStack(Material.RED_WOOL);
 
     public FollowerGUIEvents(HashSet<UUID> playerSet) {
         this.openInvPlayerSet = playerSet;
         this.playerFollowerMap = Followers.dataManager.getPlayerFollowerMap();
-
-        ItemMeta barrierMeta = noFollowers.getItemMeta();
-        barrierMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&cYou don't own any followers!"));
-        noFollowers.setItemMeta(barrierMeta);
-
-        ItemMeta nextPageMeta = nextPage.getItemMeta();
-        nextPageMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&eNext Page ->"));
-        nextPage.setItemMeta(nextPageMeta);
-
-        ItemMeta previousPageMeta = previousPage.getItemMeta();
-        previousPageMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&e<- Previous Page"));
-        previousPage.setItemMeta(previousPageMeta);
-
-        ItemMeta followerToggleEnabledMeta = followerToggleEnabled.getItemMeta();
-        followerToggleEnabledMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&eFollower: &aEnabled"));
-        followerToggleEnabled.setItemMeta(followerToggleEnabledMeta);
-
-
-        ItemMeta followerToggleDisabledMeta = followerToggleDisabled.getItemMeta();
-        followerToggleDisabledMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&eFollower: &cDisabled"));
-        followerToggleDisabled.setItemMeta(followerToggleDisabledMeta);
     }
 
     @EventHandler
@@ -73,8 +47,8 @@ public class FollowerGUIEvents implements Listener {
         ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null) return;
         NamespacedKey pageNumKey = new NamespacedKey(plugin, "page");
-        if (clickedItem.isSimilar(noFollowers) || clickedItem.getItemMeta().getPersistentDataContainer().has(pageNumKey, PersistentDataType.INTEGER)) return;
-        else if (clickedItem.isSimilar(followerToggleEnabled) || clickedItem.isSimilar(followerToggleDisabled)) {
+        if (clickedItem.isSimilar(Followers.configManager.getGuiItem("no-followers")) || clickedItem.getItemMeta().getPersistentDataContainer().has(pageNumKey, PersistentDataType.INTEGER)) return;
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("follower-toggle.enabled")) || clickedItem.isSimilar(Followers.configManager.getGuiItem("follower-toggle.disabled"))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             if (!followerUser.isFollowerEnabled()) {
                 String followerName = followerUser.getFollower();
@@ -87,11 +61,11 @@ public class FollowerGUIEvents implements Listener {
             FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
             followerInv.openInventory(player);
             return;
-        } else if (clickedItem.isSimilar(nextPage)) {
+        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("next-page"))) {
             FollowerGUI followerInv = new FollowerGUI(player, page + 1, openInvPlayerSet);
             followerInv.openInventory(player);
             return;
-        } else if (clickedItem.isSimilar(previousPage)) {
+        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("previous-page"))) {
             FollowerGUI followerInv = new FollowerGUI(player, page - 1, openInvPlayerSet);
             followerInv.openInventory(player);
             return;
@@ -126,6 +100,7 @@ public class FollowerGUIEvents implements Listener {
         if (playerFollowerMap.containsKey(player.getUniqueId())) {
             FollowerEntity followerEntity = playerFollowerMap.get(player.getUniqueId());
             followerEntity.setFollower(followerName);
+            ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
             return;
         }
         new FollowerEntity(player, followerName);
