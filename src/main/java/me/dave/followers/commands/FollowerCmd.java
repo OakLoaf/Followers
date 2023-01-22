@@ -33,7 +33,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                 Followers.configManager.reloadConfig();
                 Followers.followerManager.reloadFollowers();
                 Followers.dataManager.reloadFollowerInventories();
-                sender.sendMessage(Followers.configManager.getLangMessage("reloaded"));
+                sender.sendMessage(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getLangMessage("reloaded")));
                 return true;
             } else if (args[0].equalsIgnoreCase("create")) {
                 if (!(sender instanceof Player player)) {

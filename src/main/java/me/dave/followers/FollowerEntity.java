@@ -1,5 +1,6 @@
 package me.dave.followers;
 
+import me.dave.chatcolorhandler.ChatColorHandler;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -69,8 +70,8 @@ public class FollowerEntity {
     public void setDisplayName(String newName) {
         Followers.dataManager.getFollowerUser(owner.getUniqueId()).setDisplayName(newName);
         setDisplayNameVisible(true);
-        if (Followers.configManager.areHitboxesEnabled()) followerAS.setCustomName(newName);
-        else nameTagAS.setCustomName(newName);
+        if (Followers.configManager.areHitboxesEnabled()) followerAS.setCustomName(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", newName)));
+        else nameTagAS.setCustomName(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", newName)));
     }
 
     public void setVisible(boolean visible) {
@@ -94,7 +95,9 @@ public class FollowerEntity {
             for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
                 setFollowerArmorSlot(equipmentSlot, follower);
             }
-            followerAS.setVisible(Followers.followerManager.getFollower(follower).isVisible());
+            FollowerHandler followerEntity = Followers.followerManager.getFollower(follower);
+            if (followerEntity == null) return;
+            followerAS.setVisible(followerEntity.isVisible());
         }, 1);
     }
 
@@ -148,10 +151,10 @@ public class FollowerEntity {
 
         if (followerUser.isDisplayNameEnabled()) {
             if (Followers.configManager.areHitboxesEnabled()) {
-                followerAS.setCustomName(followerUser.getDisplayName());
+                followerAS.setCustomName(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", followerUser.getDisplayName())));
                 followerAS.setCustomNameVisible(followerUser.isDisplayNameEnabled());
             } else if (nameTagAS != null) {
-                nameTagAS.setCustomName(followerUser.getDisplayName());
+                nameTagAS.setCustomName(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", followerUser.getDisplayName())));
                 nameTagAS.setCustomNameVisible(followerUser.isDisplayNameEnabled());
             }
         }
@@ -287,11 +290,14 @@ public class FollowerEntity {
 
                 Followers.dataManager.setActiveArmorStand(nameTagAS.getUniqueId());
             }
-            nameTagAS.setCustomName(
-                Followers.dataManager.getFollowerUser(owner.getUniqueId()).getDisplayName());
+
+            String test3 = Followers.dataManager.getFollowerUser(owner.getUniqueId()).getDisplayName();
+            String test2 = Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", test3);
+            String test1 = ChatColorHandler.translateAlternateColorCodes(test2);
+
+            nameTagAS.setCustomName(test1);
             nameTagAS.setCustomNameVisible(true);
         } else {
-
             Followers.dataManager.setActiveArmorStand(nameTagAS.getUniqueId(), false);
             if (nameTagAS != null) nameTagAS.remove();
             nameTagAS = null;

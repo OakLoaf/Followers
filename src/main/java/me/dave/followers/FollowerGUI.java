@@ -22,7 +22,7 @@ public class FollowerGUI {
         Followers plugin = Followers.getInstance();
         NamespacedKey pageNumKey = new NamespacedKey(plugin, "page");
         this.openInvPlayerSet = playerSet;
-        inventory = Bukkit.createInventory(null, 54, "Followers");
+        inventory = Bukkit.createInventory(null, 54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle()));
         ItemStack empty = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta emptyMeta = empty.getItemMeta();
         emptyMeta.getPersistentDataContainer().set(pageNumKey, PersistentDataType.INTEGER, page);
@@ -44,56 +44,38 @@ public class FollowerGUI {
             ItemStack headItem = Followers.followerManager.getFollower(followerName).getHead();
             if (headItem == null || headItem.getType() == Material.AIR) headItem = new ItemStack(Material.ARMOR_STAND);
             ItemMeta headItemMeta = headItem.getItemMeta();
-            headItemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&e" + followerName));
+            headItemMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiFollowerFormat().replaceAll("%follower%", followerName)));
             headItem.setItemMeta(headItemMeta);
             inventory.setItem(i + 9, headItem);
         }
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
         if (!followerSet.isEmpty()) {
             ItemStack followerToggle;
-            if (followerUser.isFollowerEnabled()) {
-                followerToggle = new ItemStack(Material.LIME_WOOL);
-                ItemMeta followerToggleMeta = followerToggle.getItemMeta();
-                followerToggleMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&eFollower: &aEnabled"));
-                followerToggle.setItemMeta(followerToggleMeta);
-            } else {
-                followerToggle = new ItemStack(Material.RED_WOOL);
-                ItemMeta followerToggleMeta = followerToggle.getItemMeta();
-                followerToggleMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&eFollower: &cDisabled"));
-                followerToggle.setItemMeta(followerToggleMeta);
-            }
+            if (followerUser.isFollowerEnabled()) followerToggle = Followers.configManager.getGuiItem("follower-toggle.enabled");
+            else followerToggle = Followers.configManager.getGuiItem("follower-toggle.disabled");
             inventory.setItem(49, followerToggle);
         } else {
-            ItemStack noFollowers = new ItemStack(Material.BARRIER);
-            ItemMeta followerToggleMeta = noFollowers.getItemMeta();
-            followerToggleMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&cYou don't own any followers!"));
-            noFollowers.setItemMeta(followerToggleMeta);
+            ItemStack noFollowers = Followers.configManager.getGuiItem("no-followers");
             inventory.setItem(22, noFollowers);
         }
 
         if (followerSet.size() > page * 36) {
-            ItemStack nextPage = new ItemStack(Material.ARROW);
-            ItemMeta nextPageMeta = nextPage.getItemMeta();
-            nextPageMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&eNext Page ->"));
-            nextPage.setItemMeta(nextPageMeta);
+            ItemStack nextPage = Followers.configManager.getGuiItem("next-page");
             inventory.setItem(50, nextPage);
         }
         if (page > 1) {
-            ItemStack previousPage = new ItemStack(Material.ARROW);
-            ItemMeta previousPageMeta = previousPage.getItemMeta();
-            previousPageMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&e<- Previous Page"));
-            previousPage.setItemMeta(previousPageMeta);
+            ItemStack previousPage = Followers.configManager.getGuiItem("previous-page");
             inventory.setItem(48, previousPage);
         }
         if (player.hasPermission("follower.name")) {
-            ItemStack followerName = new ItemStack(Material.NAME_TAG);
-            ItemMeta followerNameMeta = followerName.getItemMeta();
-            followerNameMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&eFollower Name: &f" + followerUser.getDisplayName()));
-            List<String> lore = new ArrayList<>();
-            if (followerUser.isDisplayNameEnabled()) lore.add(ChatColorHandler.translateAlternateColorCodes("&eShown &7&o(Shift-click to Hide)"));
-            else lore.add(ChatColorHandler.translateAlternateColorCodes("&eHidden &7&o(Shift-click to Show)"));
-            followerNameMeta.setLore(lore);
-            followerName.setItemMeta(followerNameMeta);
+            ItemStack followerName;
+            if (followerUser.isDisplayNameEnabled()) followerName = Followers.configManager.getGuiItem("nickname.shown");
+            else followerName = Followers.configManager.getGuiItem("nickname.hidden");
+
+            ItemMeta itemMeta = followerName.getItemMeta();
+            itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll("%nickname%", followerUser.getDisplayName()));
+            followerName.setItemMeta(itemMeta);
+
             inventory.setItem(45, followerName);
         }
     }

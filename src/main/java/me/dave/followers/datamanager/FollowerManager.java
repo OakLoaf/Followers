@@ -51,7 +51,6 @@ public class FollowerManager {
 
     public void createFollower(Player owner, String followerName, ArmorStand armorStand) {
         ConfigurationSection configurationSection = config.getConfigurationSection(followerName);
-        String prefix = Followers.configManager.getPrefix();
         if (configurationSection != null) {
             ChatColorHandler.sendMessage(owner, Followers.configManager.getLangMessage("follower-already-exists"));
             return;

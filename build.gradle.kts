@@ -27,7 +27,7 @@ dependencies {
     compileOnly("dev.geco:GSit:1.3.3")
     shadow("mysql:mysql-connector-java:8.0.25")
     shadow("dev.dbassett:skullcreator:3.0.1")
-    shadow("com.github.CoolDCB:ChatColorHandler:v0.9.9")
+    shadow("com.github.CoolDCB:ChatColorHandler:v1.1.3")
 }
 
 java {

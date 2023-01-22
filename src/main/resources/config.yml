@@ -8,6 +8,8 @@ prefix: "&e&lFollowers &8» &r"
 hitboxesEnabled: true
 # speed: The speed at which the followers move.
 speed: 0.4
+# follower-nickname-format: Changes the colour of the follower's nickname
+follower-nickname-format: "%nickname%"
 
 # Data storage
 database:
@@ -19,6 +21,45 @@ database:
   name: dbName
   user: user
   password: pass
+
+# gui: Config changes for the Followers Menu
+gui:
+  # title: The title of the Menu
+  title: "Followers"
+  #   follower-format: Format of the follower names within the Menu
+  follower-format: "&e%follower%"
+  # no-followers: Item displayed when a player has no followers
+  no-followers:
+    name: "&cYou don't own any followers!"
+    material: "barrier"
+  # follower-toggle: Item displaying whether a user has a follower enabled or not
+  follower-toggle:
+    enabled:
+      name: "&eFollower: &aEnabled"
+      material: "lime_wool"
+    disabled:
+      name: "&eFollower: &cDisabled"
+      material: "red_wool"
+  # next-page: Item to move to the next page
+  next-page:
+    name: "&eNext Page ->"
+    material: "arrow"
+  # previous-page: Item to move to the previous page
+  previous-page:
+    name: "&e<- Previous Page"
+    material: "arrow"
+  # nickname: Item to change the nickname of a player's follower
+  nickname:
+    shown:
+      name: "&eFollower Name: &f%nickname%"
+      material: "name_tag"
+      lore:
+        - "&eShown &7&o(Shift-click to Hide)"
+    hidden:
+      name: "&eFollower Name: &f%nickname%"
+      material: "name_tag"
+      lore:
+        - "&eHidden &7&o(Shift-click to Show)"
 
 # %command-usage% - The command being used incorrectly
 # %follower% - The selected follower
