@@ -52,7 +52,10 @@ public class FollowerGUIEvents implements Listener {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             if (!followerUser.isFollowerEnabled()) {
                 String followerName = followerUser.getFollower();
-                if (!playerFollowerMap.containsKey(playerUUID)) new FollowerEntity(player, followerName);
+                if (!playerFollowerMap.containsKey(playerUUID)) {
+                    new FollowerEntity(player, followerName);
+                    ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
+                }
             } else {
                 FollowerEntity followerEntity = playerFollowerMap.get(playerUUID);
                 if (followerEntity == null) Followers.dataManager.getFollowerUser(playerUUID).setFollowerEnabled(false);

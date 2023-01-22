@@ -22,6 +22,7 @@ public class FollowerEntity {
     private final Player owner;
     private ArmorStand followerAS;
     private ArmorStand nameTagAS;
+    private UUID nametagAsUUID;
     private String follower;
     private boolean isPlayerInvisible;
     private String poseName;
@@ -287,6 +288,7 @@ public class FollowerEntity {
                     armorStand.setMarker(true);
                     armorStand.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, "");
                 }));
+                nametagAsUUID = nameTagAS.getUniqueId();
 
                 Followers.dataManager.setActiveArmorStand(nameTagAS.getUniqueId());
             }
@@ -297,9 +299,14 @@ public class FollowerEntity {
             nameTagAS.setCustomName(ChatColorHandler.translateAlternateColorCodes(nickname));
             nameTagAS.setCustomNameVisible(true);
         } else {
-            Followers.dataManager.setActiveArmorStand(nameTagAS.getUniqueId(), false);
-            if (nameTagAS != null) nameTagAS.remove();
+            if (nameTagAS == null) {
+                Followers.dataManager.setActiveArmorStand(nametagAsUUID, false);
+            } else {
+                Followers.dataManager.setActiveArmorStand(nameTagAS.getUniqueId(), false);
+                nameTagAS.remove();
+            }
             nameTagAS = null;
+            nametagAsUUID = null;
         }
     }
 
