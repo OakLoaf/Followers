@@ -1,17 +1,16 @@
 # Follower Name
-Notch:
+Alex:
   # visible: Whether the armour stand is visible or not
   visible: true
   # head: Data for head slot
   head:
     # material: Material for head slot
-    Material: player_head
+    material: player_head
     # skullType: Default/Custom, Default is a minecraft user's head, Custom allows for Skull Textures
-    skullType: Default
+    skullType: custom
     # uuid: Only applicable for  Default SkullType, player uuid of skull.
-    uuid: 069a79f4-44e9-4726-a5be-fca90e38aaf5
     # texture: Only applicable for Custom SkullType, texture id of skull.
-    # texture: textureGoesHere
+    texture: e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDJjOWQ0ODUxMTUwNzllMzdjMWNlZjMyNDQ2YzM3NjE1MWJhNGYxYzJhZDlmYTQ2Zjk5MmY1NDQ4Njk2ZTNiNyJ9fX0=
   # chest: Data for chest slot
   chest:
     material: leather_chestplate
