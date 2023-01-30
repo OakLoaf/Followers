@@ -25,7 +25,7 @@ public class FollowerEntity {
     private UUID nametagAsUUID;
     private String follower;
     private boolean isPlayerInvisible;
-    private String poseName;
+    private String pose;
     private boolean isEnabled;
 
     private final EulerAngle defaultLeftArm = new EulerAngle(-0.17453292519943295, 0, -0.17453292519943295);
@@ -239,8 +239,8 @@ public class FollowerEntity {
     }
 
     public void setPose(String poseName) {
-        if (poseName.equalsIgnoreCase(this.poseName)) return;
-        this.poseName = poseName;
+        if (poseName.equalsIgnoreCase(this.pose)) return;
+        this.pose = poseName;
 
         switch (poseName) {
             case "default" -> {
@@ -265,11 +265,15 @@ public class FollowerEntity {
         }
     }
 
+    public String getPose() {
+        return pose;
+    }
+
     private void spawnSitParticles() {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (!poseName.equalsIgnoreCase("sitting") || !followerAS.isValid()) {
+                if (!pose.equalsIgnoreCase("sitting") || !followerAS.isValid()) {
                     cancel();
                     return;
                 }

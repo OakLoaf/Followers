@@ -4,7 +4,7 @@ main: me.dave.followers.Followers
 api-version: 1.19
 authors: [ Dav_e_ ]
 depend: [ ProtocolLib ]
-softdepend: [ Essentials, GSit, floodgate ]
+softdepend: [ Essentials, GSit, PlaceholderAPI, floodgate ]
 commands:
   followers:
     description: Opens Follower GUI

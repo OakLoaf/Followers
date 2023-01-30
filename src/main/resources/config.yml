@@ -11,7 +11,7 @@
 # prefix: Text to go before Followers messages
 prefix: "&e&lFollowers &8» &r"
 # hitboxesEnabled: Whether followers will have hitboxes. (Disabling this will allow for players to interact through Followers)
-hitboxesEnabled: true
+hitboxesEnabled: false
 # speed: The speed at which the followers move.
 speed: 0.4
 # follower-nickname-format: Changes the colour of the follower's nickname

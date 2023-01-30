@@ -1,5 +1,6 @@
 package me.dave.followers;
 
+import me.dave.followers.apis.PlaceholderAPIHook;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -72,6 +73,9 @@ public final class Followers extends JavaPlugin implements Listener {
                     hasGSit = true;
                 }
                 else getLogger().info("GSit plugin not found. Continuing without GSit.");
+
+                if (pluginManager.getPlugin("PlaceholderAPI") != null) new PlaceholderAPIHook().register();
+                else getLogger().info("PlaceholderAPI plugin not found. Continuing without PlaceholderAPI.");
 
                 if (this.getServer().getPluginManager().getPlugin("Floodgate") != null) hasFloodgate= true;
                 else getLogger().info("Floodgate plugin not found. Continuing without Floodgate.");

@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "me.dave"
-version = "v1.2.5"
+version = "1.2.5"
 
 repositories {
     mavenCentral()
@@ -16,6 +16,7 @@ repositories {
     maven { url = uri("https://ci.ender.zone/plugin/repository/everything/") }
     maven { url = uri("https://repo.dmulloy2.net/repository/public/") }
     maven { url = uri("https://github.com/deanveloper/SkullCreator/raw/mvn-repo/") }
+    maven { url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/")}
     maven { url = uri("https://jitpack.io") }
 }
 
@@ -25,6 +26,7 @@ dependencies {
     compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0")
     compileOnly("net.ess3:EssentialsX:2.18.1")
     compileOnly("dev.geco:GSit:1.3.3")
+    compileOnly("me.clip:placeholderapi:2.11.2")
     shadow("mysql:mysql-connector-java:8.0.25")
     shadow("dev.dbassett:skullcreator:3.0.1")
     shadow("com.github.CoolDCB:ChatColorHandler:v1.1.3")
