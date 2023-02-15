@@ -56,7 +56,10 @@ public class DataManager {
     public FollowerUser getFollowerUser(UUID uuid) {
         Player player = Bukkit.getPlayer(uuid);
         if (player == null) return null;
-        return uuidToFollowerUser.getOrDefault(uuid, new FollowerUser(uuid, player.getName(), "none", "Unnamed", false, false));
+
+        FollowerUser followerUser = uuidToFollowerUser.get(uuid);
+        if (followerUser == null) followerUser = new FollowerUser(uuid, player.getName(), "none", "Unnamed", false, false);
+        return followerUser;
     }
 
     public HashMap<UUID, FollowerEntity> getPlayerFollowerMap() {

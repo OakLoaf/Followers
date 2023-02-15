@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "me.dave"
-version = "1.2.5"
+version = "1.2.6"
 
 repositories {
     mavenCentral()
@@ -29,7 +29,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.2")
     shadow("mysql:mysql-connector-java:8.0.25")
     shadow("dev.dbassett:skullcreator:3.0.1")
-    shadow("com.github.CoolDCB:ChatColorHandler:v1.1.3")
+    shadow("com.github.CoolDCB:ChatColorHandler:v1.2.3")
 }
 
 java {
