@@ -55,6 +55,9 @@ public class ItemStackData {
         configurationSection.getStringList("lore").forEach((loreLine) -> loreList.add(ChatColorHandler.translateAlternateColorCodes(loreLine)));
         itemMeta.setLore(loreList);
 
+        int customModelData = configurationSection.getInt("customModelData", -1);
+        if (customModelData >= 0) itemMeta.setCustomModelData(customModelData);
+
         if (isEnchanted) {
             itemMeta.addEnchant(Enchantment.DURABILITY, 1, false);
             itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
