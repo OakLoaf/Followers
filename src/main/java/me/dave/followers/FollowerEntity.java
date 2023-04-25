@@ -17,7 +17,6 @@ import me.dave.followers.datamanager.FollowerUser;
 import java.util.UUID;
 
 public class FollowerEntity {
-    private final Followers plugin = Followers.getInstance();
     private final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
     private final Player owner;
     private ArmorStand followerAS;
@@ -79,7 +78,9 @@ public class FollowerEntity {
         FollowerHandler followerConfig = Followers.followerManager.getFollower(follower);
         if (followerConfig == null) return;
         followerAS.setVisible(followerConfig.isVisible() && visible);
-        if (!Followers.configManager.areHitboxesEnabled() && Followers.dataManager.getFollowerUser(owner.getUniqueId()).isDisplayNameEnabled()) displayNametag(visible);
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(owner.getUniqueId());
+        if (followerUser == null) return;
+        if (!Followers.configManager.areHitboxesEnabled() && followerUser.isDisplayNameEnabled()) displayNametag(visible);
         if (visible) reloadInventory();
         else clearInventory();
     }
@@ -91,7 +92,7 @@ public class FollowerEntity {
     }
 
     public void reloadInventory() {
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+        Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> {
             if (owner.isInvisible()) return;
             for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
                 setFollowerArmorSlot(equipmentSlot, follower);
@@ -193,9 +194,7 @@ public class FollowerEntity {
         new BukkitRunnable() {
             public void run() {
                 if (!followerAS.isValid()) {
-                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                        kill(isEnabled);
-                    }, 5);
+                    Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> kill(isEnabled), 5);
                     cancel();
                     return;
                 }
@@ -221,7 +220,7 @@ public class FollowerEntity {
                     followerLoc.add(normalizedDifference.multiply(speed * distance));
                 }
                 if (difference.lengthSquared() > 1024) {
-                    Bukkit.getScheduler().runTaskLater(plugin, () -> teleportToPlayer(player), 5);
+                    Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> teleportToPlayer(player), 5);
                     return;
                 }
                 followerLoc.setDirection(difference);
@@ -235,7 +234,7 @@ public class FollowerEntity {
                 }
                 followerAS.setHeadPose(newHeadPoseX);
             }
-        }.runTaskTimer(plugin, 0L, 1L);
+        }.runTaskTimer(Followers.getInstance(), 0L, 1L);
     }
 
     public void setPose(String poseName) {
@@ -280,7 +279,7 @@ public class FollowerEntity {
                 if (isPlayerInvisible) return;
                 followerAS.getWorld().spawnParticle(Particle.CLOUD, followerAS.getLocation().add(0, -0.15, 0), 1, 0, 0, 0, 0);
             }
-        }.runTaskTimer(plugin, 0, 3);
+        }.runTaskTimer(Followers.getInstance(), 0, 3);
     }
 
     private void displayNametag(boolean isDisplayed) {
@@ -315,7 +314,7 @@ public class FollowerEntity {
     }
 
     public void teleportToPlayer(Player player) {
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+        Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> {
             Location playerLoc = player.getLocation();
             if (!followerAS.getLocation().getChunk().isLoaded()) followerAS.getLocation().getChunk().load();
             teleportArmorStands(playerLoc.add(1.5, 0, 1.5));

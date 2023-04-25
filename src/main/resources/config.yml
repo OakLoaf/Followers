@@ -16,6 +16,8 @@ hitboxesEnabled: false
 speed: 0.4
 # follower-nickname-format: Changes the colour of the follower's nickname
 follower-nickname-format: "%nickname%"
+# force-spawn: Spawn the Follower even if another plugin cancels the event
+force-spawn: true
 
 # Data storage
 database:
