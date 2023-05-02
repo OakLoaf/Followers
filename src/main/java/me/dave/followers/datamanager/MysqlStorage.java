@@ -93,7 +93,7 @@ public class MysqlStorage implements Storage {
 
     @Override
     public void saveFollowerUser(FollowerUser followerUser) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Followers.getInstance(), () -> {
             try (Connection conn = conn(); PreparedStatement stmt = conn.prepareStatement(
                 "REPLACE INTO follower_users(uuid, name, follower, followerDisplayName, followerNameEnabled, followerEnabled) VALUES(?, ?, ?, ?, ?, ?);"
             )) {
