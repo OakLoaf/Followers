@@ -21,7 +21,6 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class MysqlStorage implements Storage {
-    private final Followers plugin = Followers.getInstance();
     private MysqlDataSource dataSource;
 
 
@@ -38,7 +37,7 @@ public class MysqlStorage implements Storage {
         try (InputStream in = DataManager.class.getClassLoader().getResourceAsStream("dbsetup.sql")) {
             setup = new BufferedReader(new InputStreamReader(in)).lines().collect(Collectors.joining("\n"));
         } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE, "Could not read db setup file.", e);
+            Followers.getInstance().getLogger().log(Level.SEVERE, "Could not read db setup file.", e);
             e.printStackTrace();
             return false;
         }
@@ -52,7 +51,7 @@ public class MysqlStorage implements Storage {
                 return false;
             }
         }
-        plugin.getLogger().info(ChatColorHandler.translateAlternateColorCodes("&2Database setup complete."));
+        Followers.getInstance().getLogger().info(ChatColorHandler.translateAlternateColorCodes("&2Database setup complete."));
         return true;
     }
 

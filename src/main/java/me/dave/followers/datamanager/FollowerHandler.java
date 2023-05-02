@@ -1,5 +1,6 @@
 package me.dave.followers.datamanager;
 
+import me.dave.followers.utils.ItemStackData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;

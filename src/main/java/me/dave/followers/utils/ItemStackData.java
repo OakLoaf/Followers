@@ -1,4 +1,4 @@
-package me.dave.followers.datamanager;
+package me.dave.followers.utils;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
 import org.bukkit.Color;

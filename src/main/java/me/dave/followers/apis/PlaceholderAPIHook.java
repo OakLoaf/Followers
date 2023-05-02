@@ -6,7 +6,6 @@ import me.dave.followers.datamanager.FollowerUser;
 import org.bukkit.entity.Player;
 
 public class PlaceholderAPIHook extends PlaceholderExpansion {
-    private final Followers plugin = Followers.getInstance();
 
     public String onPlaceholderRequest(Player player, String params) {
         if (player == null) return "null";
@@ -47,10 +46,10 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
     }
 
     public String getAuthor() {
-        return this.plugin.getDescription().getAuthors().toString();
+        return Followers.getInstance().getDescription().getAuthors().toString();
     }
 
     public String getVersion() {
-        return this.plugin.getDescription().getVersion();
+        return Followers.getInstance().getDescription().getVersion();
     }
 }

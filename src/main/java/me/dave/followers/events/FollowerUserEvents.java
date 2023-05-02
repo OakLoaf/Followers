@@ -18,7 +18,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class FollowerUserEvents implements Listener {
-    private final Followers plugin = Followers.getInstance();
     private final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
     private final HashMap<UUID, FollowerEntity> playerFollowerMap = Followers.dataManager.getPlayerFollowerMap();
 
@@ -45,9 +44,10 @@ public class FollowerUserEvents implements Listener {
     public void onPlayerDisconnect(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         FollowerEntity followerEntity = playerFollowerMap.get(player.getUniqueId());
-        if (followerEntity != null) Bukkit.getScheduler().runTaskLater(plugin, () -> followerEntity.kill(false), 5);
+        if (followerEntity != null) Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> followerEntity.kill(false), 5);
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
         Followers.dataManager.saveFollowerUser(followerUser);
+        Followers.dataManager.unloadFollowerUser(player.getUniqueId());
     }
 
     @EventHandler

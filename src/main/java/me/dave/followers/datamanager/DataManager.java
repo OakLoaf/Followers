@@ -49,6 +49,10 @@ public class DataManager {
         return future;
     }
 
+    public void unloadFollowerUser(UUID uuid) {
+        uuidToFollowerUser.remove(uuid);
+    }
+
     public void saveFollowerUser(FollowerUser followerUser) {
         Storage.SERVICE.submit(() -> storage.saveFollowerUser(followerUser));
     }

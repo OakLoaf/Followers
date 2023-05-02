@@ -22,7 +22,6 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 public class FollowerManager {
-    private final Followers plugin = Followers.getInstance();
     private final File followerConfigFile = initYML();
     private YamlConfiguration config = YamlConfiguration.loadConfiguration(followerConfigFile);
     private final Map<String, FollowerHandler> followerList = new TreeMap<>();
@@ -119,6 +118,7 @@ public class FollowerManager {
     }
 
     private File initYML() {
+        Followers plugin = Followers.getInstance();
         File followerConfigFile = new File(plugin.getDataFolder(),"followers.yml");
         if (!followerConfigFile.exists()) {
             plugin.saveResource("followers.yml", false);

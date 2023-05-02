@@ -30,7 +30,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
                     return true;
                 }
-                Followers.configManager.reloadConfig();
+                Followers.configManager.reloadConfig(Followers.getInstance());
                 Followers.followerManager.reloadFollowers();
                 Followers.dataManager.reloadFollowerInventories();
                 sender.sendMessage(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getLangMessage("reloaded")));

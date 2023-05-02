@@ -10,8 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.dave.followers.Followers;
 import me.dave.followers.FollowerEntity;
 
-public class EssentialsEvents implements Listener {
-    private final Followers plugin = Followers.getInstance();
+public class EssentialsHook implements Listener {
 
     @EventHandler
     public void onAFK(AfkStatusChangeEvent event) {
@@ -28,6 +27,6 @@ public class EssentialsEvents implements Listener {
                     else follower.setPose("default");
                 }
             }
-        }.runTaskLater(plugin, 1);
+        }.runTaskLater(Followers.getInstance(), 1);
     }
 }

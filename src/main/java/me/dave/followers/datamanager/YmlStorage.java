@@ -12,7 +12,6 @@ import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class YmlStorage implements Storage {
-    private final Followers plugin = Followers.getInstance();
     private File dataFile;
     private YamlConfiguration config;
     private final ReentrantLock fileLock = new ReentrantLock();
@@ -61,9 +60,9 @@ public class YmlStorage implements Storage {
 
     @Override
     public boolean init() {
-        File dataFile = new File(plugin.getDataFolder(),"data.yml");
+        File dataFile = new File(Followers.getInstance().getDataFolder(),"data.yml");
         try {
-            if (dataFile.createNewFile()) plugin.getLogger().info("File Created: data.yml");
+            if (dataFile.createNewFile()) Followers.getInstance().getLogger().info("File Created: data.yml");
         } catch (IOException e) {
             e.printStackTrace();
             return false;

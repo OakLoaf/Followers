@@ -16,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class FollowerCreator implements Listener {
-    private final Followers plugin = Followers.getInstance();
     private final ItemStack creatorItem;
 
     public FollowerCreator() {
@@ -51,7 +50,7 @@ public class FollowerCreator implements Listener {
                     return;
                 }
                 String finalOutput = output.replaceAll("\\.", "-");
-                Bukkit.getScheduler().runTask(plugin, () -> Followers.followerManager.createFollower(player, finalOutput, armorStand));
+                Bukkit.getScheduler().runTask(Followers.getInstance(), () -> Followers.followerManager.createFollower(player, finalOutput, armorStand));
             });
         } else {
             Followers.followerManager.createFollower(player, armorStandName.replaceAll("\\.", "-"), armorStand);

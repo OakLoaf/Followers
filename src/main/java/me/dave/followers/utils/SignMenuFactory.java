@@ -22,23 +22,19 @@ import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
 public final class SignMenuFactory {
-
-    private final Plugin plugin;
-
     private final Map<Player, SignMenuFactory.Menu> inputs;
 
     public SignMenuFactory(Plugin plugin) {
-        this.plugin = plugin;
         this.inputs = new HashMap<>();
-        this.listen();
+        this.listen(plugin);
     }
 
     public SignMenuFactory.Menu newMenu(List<String> text) {
         return new SignMenuFactory.Menu(text);
     }
 
-    private void listen() {
-        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this.plugin, PacketType.Play.Client.UPDATE_SIGN) {
+    private void listen(Plugin plugin) {
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(plugin, PacketType.Play.Client.UPDATE_SIGN) {
             @Override
             public void onPacketReceiving(PacketEvent event) {
                 Player player = event.getPlayer();

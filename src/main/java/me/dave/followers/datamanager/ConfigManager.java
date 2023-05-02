@@ -1,5 +1,6 @@
 package me.dave.followers.datamanager;
 
+import me.dave.followers.utils.ItemStackData;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -8,7 +9,6 @@ import me.dave.followers.Followers;
 import org.bukkit.inventory.ItemStack;
 
 public class ConfigManager {
-    private final Followers plugin = Followers.getInstance();
     private FileConfiguration config;
     private String prefix;
     private double speed;
@@ -16,12 +16,13 @@ public class ConfigManager {
     private String nicknameFormat;
 
     public ConfigManager() {
+        Followers plugin = Followers.getInstance();
         plugin.saveDefaultConfig();
 
-        reloadConfig();
+        reloadConfig(plugin);
     }
 
-    public void reloadConfig() {
+    public void reloadConfig(Followers plugin) {
         plugin.reloadConfig();
         config = plugin.getConfig();
 

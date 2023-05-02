@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import me.dave.followers.Followers;
 import me.dave.followers.FollowerEntity;
 
-public class GSitEvents implements Listener {
+public class GSitHook implements Listener {
 
     @EventHandler
     public void onPlayerSit(EntitySitEvent event) {

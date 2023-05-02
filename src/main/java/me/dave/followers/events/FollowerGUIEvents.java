@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.UUID;
 
 public class FollowerGUIEvents implements Listener {
-    private final Followers plugin = Followers.getInstance();
     private final HashSet<UUID> openInvPlayerSet;
     private final HashMap<UUID, FollowerEntity> playerFollowerMap;
 
@@ -46,7 +45,7 @@ public class FollowerGUIEvents implements Listener {
         if (clickedInv.getType() != InventoryType.CHEST) return;
         ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null) return;
-        NamespacedKey pageNumKey = new NamespacedKey(plugin, "page");
+        NamespacedKey pageNumKey = new NamespacedKey(Followers.getInstance(), "page");
         if (clickedItem.isSimilar(Followers.configManager.getGuiItem("no-followers")) || clickedItem.getItemMeta().getPersistentDataContainer().has(pageNumKey, PersistentDataType.INTEGER)) return;
         else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("follower-toggle.enabled")) || clickedItem.isSimilar(Followers.configManager.getGuiItem("follower-toggle.disabled"))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
@@ -83,14 +82,14 @@ public class FollowerGUIEvents implements Listener {
                 return;
             }
             player.closeInventory();
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> {
                 TextInterface textInterface = new TextInterface();
                 textInterface.title("Enter Name:");
                 textInterface.placeholder("Enter follower name");
                 textInterface.getInput(player, (output) -> {
                     if (output.equals("")) output = " ";
                     String finalOutput = output;
-                    Bukkit.getScheduler().runTask(plugin, () -> {
+                    Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
                         if (followerEntity != null) followerEntity.setDisplayName(finalOutput);
                     });
                 });
@@ -120,11 +119,11 @@ public class FollowerGUIEvents implements Listener {
                     openInvPlayerSet.remove(playerUUID);
                 }
             }
-        }.runTaskLater(plugin, 1);
+        }.runTaskLater(Followers.getInstance(), 1);
     }
 
     private int getPageNum(Inventory inventory) {
-        NamespacedKey pageNumKey = new NamespacedKey(plugin, "page");
+        NamespacedKey pageNumKey = new NamespacedKey(Followers.getInstance(), "page");
         ItemStack item = inventory.getItem(0);
         if (item == null) return 0;
         ItemMeta itemMeta = item.getItemMeta();
