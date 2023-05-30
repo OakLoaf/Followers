@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import me.dave.followers.Followers;
-import me.dave.followers.FollowerEntity;
+import me.dave.followers.entity.FollowerEntity;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -78,13 +78,12 @@ public class DataManager {
         return activeArmorStandsSet;
     }
 
-    public void setActiveArmorStand(UUID uuid) {
-        setActiveArmorStand(uuid, true);
+    public void addActiveArmorStand(UUID uuid) {
+        activeArmorStandsSet.add(uuid);
     }
 
-    public void setActiveArmorStand(UUID uuid, boolean setActive) {
-        if (setActive) activeArmorStandsSet.add(uuid);
-        else activeArmorStandsSet.remove(uuid);
+    public void removeActiveArmorStand(UUID uuid) {
+        activeArmorStandsSet.remove(uuid);
     }
 
     public void removeFromPlayerFollowerMap(UUID playerUUID) {

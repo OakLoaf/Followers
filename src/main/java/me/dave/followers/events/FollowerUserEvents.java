@@ -10,7 +10,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.persistence.PersistentDataType;
 import me.dave.followers.Followers;
-import me.dave.followers.FollowerEntity;
+import me.dave.followers.entity.FollowerEntity;
 import me.dave.followers.datamanager.FollowerUser;
 
 import java.util.HashMap;

@@ -18,7 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import me.dave.followers.Followers;
-import me.dave.followers.FollowerEntity;
+import me.dave.followers.entity.FollowerEntity;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -115,7 +115,6 @@ public class FollowerGUIEvents implements Listener {
             public void run() {
                 if (event.getPlayer().getOpenInventory().getType() != InventoryType.CHEST) {
                     UUID playerUUID = event.getPlayer().getUniqueId();
-                    if (!openInvPlayerSet.contains(playerUUID)) return;
                     openInvPlayerSet.remove(playerUUID);
                 }
             }

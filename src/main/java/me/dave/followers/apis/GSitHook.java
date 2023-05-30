@@ -6,7 +6,7 @@ import org.bukkit.entity.Pose;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import me.dave.followers.Followers;
-import me.dave.followers.FollowerEntity;
+import me.dave.followers.entity.FollowerEntity;
 
 public class GSitHook implements Listener {
 

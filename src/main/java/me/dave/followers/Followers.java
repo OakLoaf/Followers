@@ -12,7 +12,7 @@ import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import me.dave.followers.apis.GSitEvents;
+import me.dave.followers.apis.GSitHook;
 import me.dave.followers.commands.DyeCmd;
 import me.dave.followers.commands.FollowerCmd;
 import me.dave.followers.commands.GetHexArmorCmd;
@@ -20,7 +20,7 @@ import me.dave.followers.datamanager.ConfigManager;
 import me.dave.followers.datamanager.DataManager;
 import me.dave.followers.datamanager.FollowerManager;
 import me.dave.followers.datamanager.Storage;
-import me.dave.followers.apis.EssentialsEvents;
+import me.dave.followers.apis.EssentialsHook;
 import me.dave.followers.events.FollowerGUIEvents;
 import me.dave.followers.events.FollowerUserEvents;
 import me.dave.followers.utils.SkullCreator;
@@ -65,11 +65,11 @@ public final class Followers extends JavaPlugin implements Listener {
                 registerEvents(listeners);
 
                 PluginManager pluginManager = getServer().getPluginManager();
-                if (pluginManager.getPlugin("Essentials") != null) pluginManager.registerEvents(new EssentialsEvents(), this);
+                if (pluginManager.getPlugin("Essentials") != null) pluginManager.registerEvents(new EssentialsHook(), this);
                 else getLogger().info("Essentials plugin not found. Continuing without Essentials.");
 
                 if (pluginManager.getPlugin("GSit") != null) {
-                    pluginManager.registerEvents(new GSitEvents(), this);
+                    pluginManager.registerEvents(new GSitHook(), this);
                     hasGSit = true;
                 }
                 else getLogger().info("GSit plugin not found. Continuing without GSit.");
