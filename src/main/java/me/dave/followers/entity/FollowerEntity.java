@@ -204,7 +204,7 @@ public class FollowerEntity {
         }
 
 //        setFollower(follower);
-        restartMovement();
+        startMovement();
     }
 
     public void kill() {
@@ -232,7 +232,7 @@ public class FollowerEntity {
     //    Movement Functions    //
     //////////////////////////////
 
-    private void restartMovement() {
+    private void startMovement() {
         String strUUID = bodyArmorStand.getPersistentDataContainer().get(followerKey, PersistentDataType.STRING);
         if (strUUID == null) return;
         Player player = Bukkit.getPlayer(UUID.fromString(strUUID));
