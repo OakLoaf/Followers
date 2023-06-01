@@ -26,7 +26,7 @@ public class FollowerUserEvents implements Listener {
             followerUser.setUsername(player.getName());
             String followerName = followerUser.getFollowerType();
             if (followerUser.isFollowerEnabled() && player.hasPermission("followers." +  followerName.toLowerCase().replaceAll(" ", "_"))) {
-                Bukkit.getScheduler().runTask(Followers.getInstance(), () -> new FollowerEntity(player, followerName));
+                Bukkit.getScheduler().runTask(Followers.getInstance(), followerUser::spawnFollowerEntity);
             }
         });
     }
