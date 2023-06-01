@@ -26,11 +26,9 @@ import java.util.UUID;
 
 public class FollowerGUIEvents implements Listener {
     private final HashSet<UUID> openInvPlayerSet;
-    private final HashMap<UUID, FollowerEntity> playerFollowerMap;
 
     public FollowerGUIEvents(HashSet<UUID> playerSet) {
         this.openInvPlayerSet = playerSet;
-        this.playerFollowerMap = Followers.dataManager.getPlayerFollowerMap();
     }
 
     @EventHandler
@@ -50,15 +48,14 @@ public class FollowerGUIEvents implements Listener {
         else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("follower-toggle.enabled")) || clickedItem.isSimilar(Followers.configManager.getGuiItem("follower-toggle.disabled"))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             if (!followerUser.isFollowerEnabled()) {
-                String followerName = followerUser.getFollower();
-                if (!playerFollowerMap.containsKey(playerUUID)) {
-                    new FollowerEntity(player, followerName);
+                if (followerUser.getFollowerEntity() == null) {
+                    followerUser.spawnFollowerEntity();
                     ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
                 }
             } else {
-                FollowerEntity followerEntity = playerFollowerMap.get(playerUUID);
+                FollowerEntity followerEntity = followerUser.getFollowerEntity();
                 if (followerEntity == null) Followers.dataManager.getFollowerUser(playerUUID).setFollowerEnabled(false);
-                else followerEntity.disable();
+                else followerEntity.kill();
             }
             FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
             followerInv.openInventory(player);
@@ -72,7 +69,7 @@ public class FollowerGUIEvents implements Listener {
             followerInv.openInventory(player);
             return;
         } else if (clickedItem.getType() == Material.NAME_TAG && clickedItem.getItemMeta().getDisplayName().startsWith(ChatColorHandler.translateAlternateColorCodes("&eFollower Name:"))) {
-            FollowerEntity followerEntity = Followers.dataManager.getPlayerFollowerMap().get(player.getUniqueId());
+            FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player.getUniqueId()).getFollowerEntity();
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                 player.playSound(player.getEyeLocation(), Sound.BLOCK_LEVER_CLICK, 0.6f, 1.0f);
@@ -99,13 +96,10 @@ public class FollowerGUIEvents implements Listener {
         String followerName = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName());
         FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
         followerInv.openInventory(player);
-        if (playerFollowerMap.containsKey(player.getUniqueId())) {
-            FollowerEntity followerEntity = playerFollowerMap.get(player.getUniqueId());
-            followerEntity.setFollowerType(followerName);
-            ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
-            return;
-        }
-        new FollowerEntity(player, followerName);
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(playerUUID);
+        FollowerEntity followerEntity = followerUser.getFollowerEntity();
+        if (followerEntity != null) followerEntity.setFollowerType(followerName);
+        else followerUser.spawnFollowerEntity();
         ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
     }
 

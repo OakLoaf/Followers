@@ -1,24 +1,52 @@
 package me.dave.followers.data;
 
 import me.dave.followers.Followers;
+import me.dave.followers.entity.FollowerEntity;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
 public class FollowerUser {
     private final UUID uuid;
     private String username;
-    private boolean isOn;
-    private String follower;
+    private boolean isEnabled;
+    private String followerType;
     private String displayName;
     private boolean nameIsOn;
+    private FollowerEntity followerEntity;
 
-    public FollowerUser(UUID uuid, String username, String follower, String followerDisplayName, boolean followerNameEnabled, boolean followerIsEnabled) {
+    public FollowerUser(UUID uuid, String username, String followerType, String followerDisplayName, boolean followerNameEnabled, boolean followerIsEnabled) {
         this.uuid = uuid;
         this.username = username;
-        this.isOn = followerIsEnabled;
-        this.follower = follower;
+        this.isEnabled = followerIsEnabled;
+        this.followerType = followerType;
         this.displayName = followerDisplayName;
         this.nameIsOn = followerNameEnabled;
+    }
+
+    public UUID getUUID() {
+        return this.uuid;
+    }
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public String getFollowerType() {
+        return this.followerType;
+    }
+
+    public String getDisplayName() {
+        return this.displayName;
+    }
+
+    public boolean isDisplayNameEnabled() {
+        return this.nameIsOn;
+    }
+
+    public boolean isFollowerEnabled() {
+        return this.isEnabled;
     }
 
     public void setUsername(String username) {
@@ -26,8 +54,8 @@ public class FollowerUser {
         Followers.dataManager.saveFollowerUser(this);
     }
 
-    public void setFollower(String follower) {
-        this.follower = follower;
+    public void setFollowerType(String followerType) {
+        this.followerType = followerType;
         Followers.dataManager.saveFollowerUser(this);
     }
 
@@ -42,31 +70,23 @@ public class FollowerUser {
     }
 
     public void setFollowerEnabled(boolean followerIsEnabled) {
-        this.isOn = followerIsEnabled;
+        this.isEnabled = followerIsEnabled;
         Followers.dataManager.saveFollowerUser(this);
     }
 
-    public UUID getUUID() {
-        return this.uuid;
+    public FollowerEntity getFollowerEntity() {
+        return followerEntity;
     }
 
-    public String getUsername() {
-        return this.username;
+    public void spawnFollowerEntity() {
+        removeFollowerEntity();
+        Player player = Bukkit.getPlayer(uuid);
+        if (player != null) followerEntity = new FollowerEntity(player, followerType);
     }
 
-    public String getFollower() {
-        return this.follower;
-    }
-
-    public String getDisplayName() {
-        return this.displayName;
-    }
-
-    public boolean isDisplayNameEnabled() {
-        return this.nameIsOn;
-    }
-
-    public boolean isFollowerEnabled() {
-        return this.isOn;
+    public void removeFollowerEntity() {
+        if (followerEntity == null || !followerEntity.isAlive) return;
+        followerEntity.kill();
+        followerEntity = null;
     }
 }

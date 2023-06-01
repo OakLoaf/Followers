@@ -10,9 +10,9 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
 import me.dave.followers.data.FollowerHandler;
 import me.dave.followers.data.FollowerUser;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 
@@ -25,7 +25,7 @@ public class FollowerEntity {
     private String followerType;
     protected boolean isPlayerInvisible;
     private FollowerPose pose;
-    private boolean isAlive;
+    public boolean isAlive;
     private MoveTask moveTask;
     private ParticleTask particleTask;
 
@@ -36,7 +36,6 @@ public class FollowerEntity {
         this.isAlive = true;
 
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(owner.getUniqueId());
-        Followers.dataManager.putInPlayerFollowerMap(owner.getUniqueId(), this);
         if (followerUser != null) followerUser.setFollowerEnabled(true);
 
         this.bodyArmorStand = summonBodyArmorStand();
@@ -51,7 +50,7 @@ public class FollowerEntity {
     public void setFollowerType(String newFollower) {
         this.followerType = newFollower;
 
-        Followers.dataManager.getFollowerUser(owner.getUniqueId()).setFollower(newFollower);
+        Followers.dataManager.getFollowerUser(owner.getUniqueId()).setFollowerType(newFollower);
         if (!owner.isInvisible()) reloadInventory();
     }
 
@@ -109,13 +108,6 @@ public class FollowerEntity {
             case OFF_HAND -> follower.getOffHand();
         };
         armorEquipment.setItem(equipmentSlot, item);
-    }
-
-    public void disable() {
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(owner.getUniqueId());
-        if (followerUser != null) followerUser.setFollowerEnabled(false);
-        isAlive = false;
-        kill(false);
     }
 
     private ArmorStand summonBodyArmorStand() {
@@ -177,10 +169,6 @@ public class FollowerEntity {
     }
 
     public void kill() {
-        kill(isAlive);
-    }
-
-    public void kill(boolean respawn) {
         stopMovement();
         stopParticles();
 
@@ -192,13 +180,10 @@ public class FollowerEntity {
         if (nameArmorStand != null) nameArmorStand.remove();
         Followers.dataManager.removeActiveArmorStand(nameArmorStandUUID);
 
-        Followers.dataManager.removeFromPlayerFollowerMap(owner.getUniqueId());
-
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(owner.getUniqueId());
-        if (followerUser != null && owner.isOnline()) followerUser.setFollowerEnabled(false);
+//        FollowerUser followerUser = Followers.dataManager.getFollowerUser(owner.getUniqueId());
+//        if (followerUser != null && owner.isOnline()) followerUser.setFollowerEnabled(false);
         isAlive = false;
     }
-
 
     //////////////////////////////
     //    Movement Functions    //
@@ -226,36 +211,19 @@ public class FollowerEntity {
     //    Pose Functions    //
     //////////////////////////
 
+    public FollowerPose getPose() {
+        return pose;
+    }
+
     public void setPose(FollowerPose pose) {
         if (this.pose == pose) return;
         this.pose = pose;
         pose.pose(bodyArmorStand);
     }
 
-    public FollowerPose getPose() {
-        return pose;
-    }
-
     //////////////////////////////
     //    Particle Functions    //
     //////////////////////////////
-
-    private void spawnSitParticles() {
-        particleTask = new ParticleTask(this, Particle.CLOUD);
-        particleTask.runTaskTimer(Followers.getInstance(), 0, 3);
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!pose.equals(FollowerPose.SITTING) || !bodyArmorStand.isValid()) {
-                    cancel();
-                    return;
-                }
-                if (isPlayerInvisible) return;
-                bodyArmorStand.getWorld().spawnParticle(Particle.CLOUD, bodyArmorStand.getLocation().add(0, -0.15, 0), 1, 0, 0, 0, 0);
-            }
-        }.runTaskTimer(Followers.getInstance(), 0, 3);
-    }
 
     public void startParticles(Particle particle) {
         stopParticles();
@@ -268,5 +236,18 @@ public class FollowerEntity {
             particleTask.cancel();
             particleTask = null;
         }
+    }
+
+    public void validateTask() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (bodyArmorStand == null || !bodyArmorStand.isValid()) {
+                    cancel();
+                    return;
+                }
+                if (!owner.isOnline()) Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> kill(), 5);
+            }
+        }.runTaskTimer(Followers.getInstance(), 0, 1);
     }
 }

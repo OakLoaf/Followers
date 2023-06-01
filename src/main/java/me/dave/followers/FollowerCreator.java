@@ -38,7 +38,7 @@ public class FollowerCreator implements Listener {
             ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("no-permissions"));
             return;
         }
-        if (Followers.dataManager.getPlayerFollowerMap().containsKey(armorStand.getUniqueId())) return;
+        if (Followers.dataManager.getActiveArmorStandsSet().contains(armorStand.getUniqueId())) return;
         String armorStandName = armorStand.getCustomName();
         if (armorStandName == null) {
             TextInterface textInterface = new TextInterface();

@@ -17,10 +17,10 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
                 return String.valueOf(followerUser.isFollowerEnabled());
             }
             case "name" -> {
-                return followerUser.getFollower();
+                return followerUser.getFollowerType();
             }
             case "pose" -> {
-                return Followers.dataManager.getPlayerFollowerMap().get(player.getUniqueId()).getPose().toString().toLowerCase();
+                return Followers.dataManager.getFollowerUser(player.getUniqueId()).getFollowerEntity().getPose().toString().toLowerCase();
             }
             case "nickname" -> {
                 return followerUser.getDisplayName();

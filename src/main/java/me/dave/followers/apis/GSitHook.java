@@ -15,41 +15,41 @@ public class GSitHook implements Listener {
     @EventHandler
     public void onPlayerSit(EntitySitEvent event) {
         if (event.getEntity() instanceof Player player) {
-            FollowerEntity follower = Followers.dataManager.getPlayerFollowerMap().get(player.getUniqueId());
-            if (follower == null) return;
-            follower.setPose(FollowerPose.SITTING);
-            follower.startParticles(Particle.CLOUD);
+            FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player.getUniqueId()).getFollowerEntity();
+            if (followerEntity == null) return;
+            followerEntity.setPose(FollowerPose.SITTING);
+            followerEntity.startParticles(Particle.CLOUD);
         }
     }
 
     @EventHandler
     public void onPlayerGetUpFromSeat(EntityGetUpSitEvent event) {
         if (event.getEntity() instanceof Player player) {
-            FollowerEntity follower = Followers.dataManager.getPlayerFollowerMap().get(player.getUniqueId());
-            if (follower == null) return;
-            follower.setPose(FollowerPose.DEFAULT);
-            follower.stopParticles();
+            FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player.getUniqueId()).getFollowerEntity();
+            if (followerEntity == null) return;
+            followerEntity.setPose(FollowerPose.DEFAULT);
+            followerEntity.stopParticles();
         }
     }
 
     @EventHandler
     public void onPlayerPose(PlayerPoseEvent event) {
         Player player = event.getPlayer();
-        FollowerEntity follower = Followers.dataManager.getPlayerFollowerMap().get(player.getUniqueId());
-        if (follower == null) return;
+        FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player.getUniqueId()).getFollowerEntity();
+        if (followerEntity == null) return;
         Pose pose = event.getPoseSeat().getPose();
         if (pose == Pose.SPIN_ATTACK) {
-            follower.setPose(FollowerPose.SPINNING);
-            follower.startParticles(Particle.CLOUD);
+            followerEntity.setPose(FollowerPose.SPINNING);
+            followerEntity.startParticles(Particle.CLOUD);
         }
     }
 
     @EventHandler
     public void onPlayerUnpose(PlayerGetUpPoseEvent event) {
         Player player = event.getPlayer();
-        FollowerEntity follower = Followers.dataManager.getPlayerFollowerMap().get(player.getUniqueId());
-        if (follower == null) return;
-        follower.setPose(FollowerPose.DEFAULT);
-        follower.stopParticles();
+        FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player.getUniqueId()).getFollowerEntity();
+        if (followerEntity == null) return;
+        followerEntity.setPose(FollowerPose.DEFAULT);
+        followerEntity.stopParticles();
     }
 }

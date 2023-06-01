@@ -26,15 +26,15 @@ public class EssentialsHook implements Listener {
     public void onAFK(AfkStatusChangeEvent event) {
         IUser iUser = event.getAffected();
         Player player = iUser.getBase();
-        FollowerEntity follower = Followers.dataManager.getPlayerFollowerMap().get(player.getUniqueId());
-        if (follower == null) return;
+        FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player.getUniqueId()).getFollowerEntity();
+        if (followerEntity == null) return;
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (iUser.isAfk()) follower.setPose(FollowerPose.SITTING);
+                if (iUser.isAfk()) followerEntity.setPose(FollowerPose.SITTING);
                 else {
-                    if (Followers.hasGSit() && GSitAPI.isSitting(player)) follower.setPose(FollowerPose.SITTING);
-                    else follower.setPose(FollowerPose.DEFAULT);
+                    if (Followers.hasGSit() && GSitAPI.isSitting(player)) followerEntity.setPose(FollowerPose.SITTING);
+                    else followerEntity.setPose(FollowerPose.DEFAULT);
                 }
             }
         }.runTaskLater(Followers.getInstance(), 1);

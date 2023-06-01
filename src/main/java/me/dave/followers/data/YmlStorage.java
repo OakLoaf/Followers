@@ -45,7 +45,7 @@ public class YmlStorage implements Storage {
         fileLock.lock();
         ConfigurationSection configurationSection = config.createSection(followerUser.getUUID().toString());
         configurationSection.set("name", followerUser.getUsername());
-        configurationSection.set("follower", followerUser.getFollower());
+        configurationSection.set("follower", followerUser.getFollowerType());
         configurationSection.set("followerDisplayName", followerUser.getDisplayName());
         configurationSection.set("followerNameEnabled", followerUser.isDisplayNameEnabled());
         configurationSection.set("followerEnabled", followerUser.isFollowerEnabled());

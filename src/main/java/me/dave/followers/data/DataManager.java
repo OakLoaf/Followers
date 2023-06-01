@@ -16,7 +16,6 @@ import static java.util.Objects.requireNonNull;
 public class DataManager {
     private Storage storage;
     private final HashMap<UUID, FollowerUser> uuidToFollowerUser = new HashMap<>();
-    private final HashMap<UUID, FollowerEntity> playerFollowerMap = new HashMap<>();
     private final HashSet<UUID> activeArmorStandsSet = new HashSet<>();
 
     // Safe to use bukkit api in callback.
@@ -66,14 +65,6 @@ public class DataManager {
         return followerUser;
     }
 
-    public HashMap<UUID, FollowerEntity> getPlayerFollowerMap() {
-        return playerFollowerMap;
-    }
-
-    public void putInPlayerFollowerMap(UUID playerUUID, FollowerEntity follower) {
-        playerFollowerMap.put(playerUUID, follower);
-    }
-
     public HashSet<UUID> getActiveArmorStandsSet() {
         return activeArmorStandsSet;
     }
@@ -86,15 +77,11 @@ public class DataManager {
         activeArmorStandsSet.remove(uuid);
     }
 
-    public void removeFromPlayerFollowerMap(UUID playerUUID) {
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(playerUUID);
-        if (followerUser != null) saveFollowerUser(followerUser);
-        playerFollowerMap.remove(playerUUID);
-    }
 
     public void reloadFollowerInventories() {
-        for (UUID playerUUID : playerFollowerMap.keySet()) {
-            playerFollowerMap.get(playerUUID).reloadInventory();
+        for (UUID playerUUID : uuidToFollowerUser.keySet()) {
+            FollowerEntity followerEntity = getFollowerUser(playerUUID).getFollowerEntity();
+            if (followerEntity != null) followerEntity.reloadInventory();
         }
     }
 }
