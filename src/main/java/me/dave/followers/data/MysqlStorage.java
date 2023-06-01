@@ -1,4 +1,4 @@
-package me.dave.followers.datamanager;
+package me.dave.followers.data;
 
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 import com.mysql.cj.jdbc.MysqlDataSource;

@@ -1,4 +1,4 @@
-package me.dave.followers.datamanager;
+package me.dave.followers.data;
 
 import me.dave.followers.Followers;
 

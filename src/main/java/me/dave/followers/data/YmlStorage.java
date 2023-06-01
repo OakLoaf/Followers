@@ -1,4 +1,4 @@
-package me.dave.followers.datamanager;
+package me.dave.followers.data;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
