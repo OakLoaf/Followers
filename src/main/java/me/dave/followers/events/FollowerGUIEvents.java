@@ -20,7 +20,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.dave.followers.Followers;
 import me.dave.followers.entity.FollowerEntity;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 

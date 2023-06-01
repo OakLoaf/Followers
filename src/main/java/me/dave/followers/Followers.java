@@ -4,12 +4,8 @@ import me.dave.followers.apis.PlaceholderAPIHook;
 import me.dave.followers.events.WorldEvents;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
