@@ -1,6 +1,7 @@
 package me.dave.followers;
 
 import me.dave.followers.apis.PlaceholderAPIHook;
+import me.dave.followers.events.WorldEvents;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -29,7 +30,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.HashSet;
 import java.util.UUID;
 
-public final class Followers extends JavaPlugin implements Listener {
+public final class Followers extends JavaPlugin {
     private static Followers plugin;
     public static DataManager dataManager;
     public static ConfigManager configManager;
@@ -56,11 +57,11 @@ public final class Followers extends JavaPlugin implements Listener {
             if (successful) {
                 followerManager = new FollowerManager();
 
-                Listener[] listeners = new Listener[] {
-                    this,
-                    new FollowerUserEvents(),
-                    new FollowerGUIEvents(guiPlayerSet),
-                    new FollowerCreator()
+                Listener[] listeners = new Listener[]{
+                        new FollowerUserEvents(),
+                        new FollowerGUIEvents(guiPlayerSet),
+                        new WorldEvents(),
+                        new FollowerCreator()
                 };
                 registerEvents(listeners);
 
@@ -71,13 +72,12 @@ public final class Followers extends JavaPlugin implements Listener {
                 if (pluginManager.getPlugin("GSit") != null) {
                     pluginManager.registerEvents(new GSitHook(), this);
                     hasGSit = true;
-                }
-                else getLogger().info("GSit plugin not found. Continuing without GSit.");
+                } else getLogger().info("GSit plugin not found. Continuing without GSit.");
 
                 if (pluginManager.getPlugin("PlaceholderAPI") != null) new PlaceholderAPIHook().register();
                 else getLogger().info("PlaceholderAPI plugin not found. Continuing without PlaceholderAPI.");
 
-                if (this.getServer().getPluginManager().getPlugin("Floodgate") != null) hasFloodgate= true;
+                if (this.getServer().getPluginManager().getPlugin("Floodgate") != null) hasFloodgate = true;
                 else getLogger().info("Floodgate plugin not found. Continuing without Floodgate.");
 
                 getCommand("followers").setExecutor(new FollowerCmd(guiPlayerSet));
@@ -87,7 +87,8 @@ public final class Followers extends JavaPlugin implements Listener {
                 for (World world : Bukkit.getWorlds()) {
                     for (Chunk chunk : world.getLoadedChunks()) {
                         for (Entity entity : chunk.getEntities()) {
-                            if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
+                            if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING))
+                                entity.remove();
                         }
                     }
                 }
@@ -98,7 +99,9 @@ public final class Followers extends JavaPlugin implements Listener {
 
         new BukkitRunnable() {
             @Override
-            public void run() { tickCount += 1; }
+            public void run() {
+                tickCount += 1;
+            }
         }.runTaskTimer(plugin, 1, 1);
     }
 
@@ -107,41 +110,9 @@ public final class Followers extends JavaPlugin implements Listener {
         Storage.SERVICE.shutdownNow();
     }
 
-    @EventHandler
-    public void onEntityLoad(CreatureSpawnEvent event) {
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            Entity entity = event.getEntity();
-            if (entity.getType() != EntityType.ARMOR_STAND) return;
-            if (dataManager.getActiveArmorStandsSet().contains(entity.getUniqueId())) return;
-            if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
-        }, 1);
+    public static Followers getInstance() {
+        return plugin;
     }
-
-    @EventHandler
-    public void onChunkLoad(ChunkLoadEvent event) {
-        int[] entityLoadAttempt = new int[1];
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                entityLoadAttempt[0] += 1;
-                if (entityLoadAttempt[0] >= 24) {
-                    cancel();
-                    return;
-                }
-                if (event.getChunk().isEntitiesLoaded()) {
-                    Entity[] entities = event.getChunk().getEntities();
-                    for (Entity entity : entities) {
-                        if (entity.getType() != EntityType.ARMOR_STAND) continue;
-                        if (dataManager.getActiveArmorStandsSet().contains(entity.getUniqueId())) continue;
-                        if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
-                    }
-                    cancel();
-                }
-            }
-        }.runTaskTimer(plugin, 50, 100);
-    }
-
-    public static Followers getInstance() { return plugin; }
 
     public static boolean hasGSit() {
         return hasGSit;
@@ -151,7 +122,9 @@ public final class Followers extends JavaPlugin implements Listener {
         return hasFloodgate;
     }
 
-    public static int getCurrentTick() { return tickCount; }
+    public static int getCurrentTick() {
+        return tickCount;
+    }
 
     public void registerEvents(Listener[] listeners) {
         for (Listener listener : listeners) {
