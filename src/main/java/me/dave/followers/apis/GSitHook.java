@@ -1,6 +1,8 @@
 package me.dave.followers.apis;
 
 import dev.geco.gsit.api.event.*;
+import me.dave.followers.entity.pose.FollowerPose;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 import org.bukkit.event.EventHandler;
@@ -15,7 +17,8 @@ public class GSitHook implements Listener {
         if (event.getEntity() instanceof Player player) {
             FollowerEntity follower = Followers.dataManager.getPlayerFollowerMap().get(player.getUniqueId());
             if (follower == null) return;
-            follower.setPose("sitting");
+            follower.setPose(FollowerPose.SITTING);
+            follower.startParticles(Particle.CLOUD);
         }
     }
 
@@ -24,7 +27,8 @@ public class GSitHook implements Listener {
         if (event.getEntity() instanceof Player player) {
             FollowerEntity follower = Followers.dataManager.getPlayerFollowerMap().get(player.getUniqueId());
             if (follower == null) return;
-            follower.setPose("default");
+            follower.setPose(FollowerPose.DEFAULT);
+            follower.stopParticles();
         }
     }
 
@@ -34,7 +38,10 @@ public class GSitHook implements Listener {
         FollowerEntity follower = Followers.dataManager.getPlayerFollowerMap().get(player.getUniqueId());
         if (follower == null) return;
         Pose pose = event.getPoseSeat().getPose();
-        if (pose == Pose.SPIN_ATTACK) follower.setPose("spinning");
+        if (pose == Pose.SPIN_ATTACK) {
+            follower.setPose(FollowerPose.SPINNING);
+            follower.startParticles(Particle.CLOUD);
+        }
     }
 
     @EventHandler
@@ -42,6 +49,7 @@ public class GSitHook implements Listener {
         Player player = event.getPlayer();
         FollowerEntity follower = Followers.dataManager.getPlayerFollowerMap().get(player.getUniqueId());
         if (follower == null) return;
-        follower.setPose("default");
+        follower.setPose(FollowerPose.DEFAULT);
+        follower.stopParticles();
     }
 }

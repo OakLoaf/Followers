@@ -22,6 +22,7 @@ public class MoveTask extends BukkitRunnable {
 
     @Override
     public void run() {
+        // TODO: Run general entity validation checkers elsewhere
         if (!followerEntity.bodyArmorStand.isValid() || !player.isOnline()) {
             Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> followerEntity.kill(), 5);
             cancel();

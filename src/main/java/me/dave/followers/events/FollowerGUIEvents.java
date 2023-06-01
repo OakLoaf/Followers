@@ -2,7 +2,7 @@ package me.dave.followers.events;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.FollowerGUI;
-import me.dave.followers.datamanager.FollowerUser;
+import me.dave.followers.data.FollowerUser;
 import me.dave.followers.utils.TextInterface;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -101,7 +101,7 @@ public class FollowerGUIEvents implements Listener {
         followerInv.openInventory(player);
         if (playerFollowerMap.containsKey(player.getUniqueId())) {
             FollowerEntity followerEntity = playerFollowerMap.get(player.getUniqueId());
-            followerEntity.setFollower(followerName);
+            followerEntity.setFollowerType(followerName);
             ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
             return;
         }

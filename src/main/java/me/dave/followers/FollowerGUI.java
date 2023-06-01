@@ -2,7 +2,6 @@ package me.dave.followers;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -10,7 +9,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import me.dave.followers.datamanager.FollowerUser;
+import me.dave.followers.data.FollowerUser;
 
 import java.util.*;
 

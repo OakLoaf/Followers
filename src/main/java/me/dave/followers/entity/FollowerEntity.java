@@ -2,6 +2,7 @@ package me.dave.followers.entity;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.Followers;
+import me.dave.followers.entity.pose.FollowerPose;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -10,56 +11,45 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.EulerAngle;
-import me.dave.followers.datamanager.FollowerHandler;
-import me.dave.followers.datamanager.FollowerUser;
+import me.dave.followers.data.FollowerHandler;
+import me.dave.followers.data.FollowerUser;
 
 import java.util.UUID;
 
 public class FollowerEntity {
-    private final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
+    private static final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
     protected final Player owner;
     protected final ArmorStand bodyArmorStand;
     protected ArmorStand nameArmorStand;
     private UUID nameArmorStandUUID;
-    private String follower;
+    private String followerType;
     protected boolean isPlayerInvisible;
-    private String pose;
-    private boolean isEnabled;
+    private FollowerPose pose;
+    private boolean isAlive;
     private MoveTask moveTask;
     private ParticleTask particleTask;
 
-    // Default Pose
-    private final EulerAngle defaultLeftArm = new EulerAngle(-0.17453292519943295, 0, -0.17453292519943295);
-    private final EulerAngle defaultRightArm = new EulerAngle(-0.2617993877991494, 0, 0.17453292519943295);
-    private final EulerAngle defaultLeftLeg = new EulerAngle(-0.017453292519943295, 0, -0.017453292519943295);
-    private final EulerAngle defaultRightLeg = new EulerAngle(0.017453292519943295, 0, 0.017453292519943295);
-    // Sitting Pose
-    private final EulerAngle sittingLeftArm = new EulerAngle(-0.78, 0, -0.17453292519943295);
-    private final EulerAngle sittingRightArm = new EulerAngle(-0.78, 0, 0.17453292519943295);
-    private final EulerAngle sittingLeftLeg = new EulerAngle(4.6, -0.222, 0);
-    private final EulerAngle sittingRightLeg = new EulerAngle(4.6, 0.222, 0);
-    // Spinning Pose
-    private final EulerAngle spinningLeftArm = new EulerAngle(-0.17453292519943295, 0, -0.17453292519943295);
-    private final EulerAngle spinningRightArm = new EulerAngle(-0.2617993877991494, 0, 0.17453292519943295);
-    private final EulerAngle spinningLeftLeg = new EulerAngle(-0.017453292519943295, 0, -0.017453292519943295);
-    private final EulerAngle spinningRightLeg = new EulerAngle(0.017453292519943295, 0, 0.017453292519943295);
-
-
     public FollowerEntity(Player player, String follower) {
         this.owner = player;
-        this.follower = follower;
+        this.followerType = follower;
         this.isPlayerInvisible = player.isInvisible();
+        this.isAlive = true;
+
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(owner.getUniqueId());
+        Followers.dataManager.putInPlayerFollowerMap(owner.getUniqueId(), this);
+        if (followerUser != null) followerUser.setFollowerEnabled(true);
 
         this.bodyArmorStand = summonBodyArmorStand();
-        setFollower(follower);
+        displayName(followerUser.isDisplayNameEnabled());
+
+        setFollowerType(follower);
         setVisible(!player.isInvisible());
 
-//        spawn();
+        startMovement();
     }
 
-    public void setFollower(String newFollower) {
-        this.follower = newFollower;
+    public void setFollowerType(String newFollower) {
+        this.followerType = newFollower;
 
         Followers.dataManager.getFollowerUser(owner.getUniqueId()).setFollower(newFollower);
         if (!owner.isInvisible()) reloadInventory();
@@ -67,10 +57,7 @@ public class FollowerEntity {
 
     public void setDisplayNameVisible(boolean visible) {
         Followers.dataManager.getFollowerUser(owner.getUniqueId()).setDisplayNameEnabled(visible);
-        if (!owner.isInvisible()) {
-            if (Followers.configManager.areHitboxesEnabled()) bodyArmorStand.setCustomNameVisible(visible);
-            else displayName(visible);
-        }
+        if (!owner.isInvisible()) displayName(visible);
     }
 
     public void setDisplayName(String newName) {
@@ -81,12 +68,10 @@ public class FollowerEntity {
     }
 
     public void setVisible(boolean visible) {
-        FollowerHandler followerConfig = Followers.followerManager.getFollower(follower);
+        FollowerHandler followerConfig = Followers.followerManager.getFollower(followerType);
         if (followerConfig == null) return;
         bodyArmorStand.setVisible(followerConfig.isVisible() && visible);
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(owner.getUniqueId());
-        if (followerUser == null) return;
-        if (!Followers.configManager.areHitboxesEnabled() && followerUser.isDisplayNameEnabled()) displayName(visible);
+        displayName(visible);
         if (visible) reloadInventory();
         else clearInventory();
     }
@@ -101,9 +86,9 @@ public class FollowerEntity {
         Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> {
             if (owner.isInvisible()) return;
             for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-                setFollowerArmorSlot(equipmentSlot, follower);
+                setFollowerArmorSlot(equipmentSlot, followerType);
             }
-            FollowerHandler followerEntity = Followers.followerManager.getFollower(follower);
+            FollowerHandler followerEntity = Followers.followerManager.getFollower(followerType);
             if (followerEntity == null) return;
             bodyArmorStand.setVisible(followerEntity.isVisible());
         }, 1);
@@ -129,11 +114,11 @@ public class FollowerEntity {
     public void disable() {
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(owner.getUniqueId());
         if (followerUser != null) followerUser.setFollowerEnabled(false);
-        isEnabled = false;
+        isAlive = false;
         kill(false);
     }
 
-    public ArmorStand summonBodyArmorStand() {
+    private ArmorStand summonBodyArmorStand() {
         ArmorStand armorStand = owner.getLocation().getWorld().spawn(owner.getLocation().add(-1.5, 0, 1.5), ArmorStand.class, (as -> {
             try {
                 as.setBasePlate(false);
@@ -170,61 +155,48 @@ public class FollowerEntity {
         return armorStand;
     }
 
-    public void spawn() {
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(owner.getUniqueId());
-        Followers.dataManager.putInPlayerFollowerMap(owner.getUniqueId(), this);
-        if (followerUser != null) followerUser.setFollowerEnabled(true);
-        isEnabled = true;
+    private void displayName(boolean display) {
+        if (display) {
+            if (nameArmorStand == null) {
+                nameArmorStand = summonNameArmorStand();
+                nameArmorStandUUID = nameArmorStand.getUniqueId();
 
-//        bodyArmorStand = owner.getLocation().getWorld().spawn(owner.getLocation().add(-1.5, 0, 1.5), ArmorStand.class, (armorStand -> {
-//            try {
-//                armorStand.setBasePlate(false);
-//                armorStand.setArms(true);
-//                armorStand.setInvulnerable(true);
-//                armorStand.setCanPickupItems(false);
-//                armorStand.setSmall(true);
-//                armorStand.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, owner.getUniqueId().toString());
-//            } catch(Exception e) {
-//                e.printStackTrace();
-//            }
-//        }));
-
-//        Followers.dataManager.setActiveArmorStand(bodyArmorStand.getUniqueId());
-
-//        setVisible(!owner.isInvisible());
-
-        if (followerUser.isDisplayNameEnabled()) {
-            if (Followers.configManager.areHitboxesEnabled()) {
-                bodyArmorStand.setCustomName(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", followerUser.getDisplayName())));
-                bodyArmorStand.setCustomNameVisible(followerUser.isDisplayNameEnabled());
-            } else if (nameArmorStand != null) {
-                nameArmorStand.setCustomName(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", followerUser.getDisplayName())));
-                nameArmorStand.setCustomNameVisible(followerUser.isDisplayNameEnabled());
+                Followers.dataManager.addActiveArmorStand(nameArmorStand.getUniqueId());
             }
-        }
 
-//        setFollower(follower);
-        startMovement();
+            String nickname = Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", Followers.dataManager.getFollowerUser(owner.getUniqueId()).getDisplayName());
+            nameArmorStand.setCustomName(ChatColorHandler.translateAlternateColorCodes(nickname));
+            nameArmorStand.setCustomNameVisible(true);
+        }
+        else {
+            if (nameArmorStand != null) nameArmorStand.remove();
+            Followers.dataManager.removeActiveArmorStand(nameArmorStandUUID);
+            nameArmorStand = null;
+            nameArmorStandUUID = null;
+        }
     }
 
     public void kill() {
-        kill(isEnabled);
+        kill(isAlive);
     }
 
     public void kill(boolean respawn) {
-        if (bodyArmorStand == null) return;
+        stopMovement();
+        stopParticles();
 
-        Followers.dataManager.removeActiveArmorStand(bodyArmorStand.getUniqueId());
+        if (bodyArmorStand != null) {
+            bodyArmorStand.remove();
+            Followers.dataManager.removeActiveArmorStand(bodyArmorStand.getUniqueId());
+        }
+
+        if (nameArmorStand != null) nameArmorStand.remove();
+        Followers.dataManager.removeActiveArmorStand(nameArmorStandUUID);
 
         Followers.dataManager.removeFromPlayerFollowerMap(owner.getUniqueId());
-        bodyArmorStand.remove();
-        if (nameArmorStand != null) nameArmorStand.remove();
 
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(owner.getUniqueId());
         if (followerUser != null && owner.isOnline()) followerUser.setFollowerEnabled(false);
-        isEnabled = false;
-
-        if (respawn) spawn();
+        isAlive = false;
     }
 
 
@@ -250,36 +222,23 @@ public class FollowerEntity {
         }
     }
 
-    public void setPose(String poseName) {
-        if (poseName.equalsIgnoreCase(this.pose)) return;
-        this.pose = poseName;
+    //////////////////////////
+    //    Pose Functions    //
+    //////////////////////////
 
-        switch (poseName) {
-            case "default" -> {
-                bodyArmorStand.setLeftArmPose(defaultLeftArm);
-                bodyArmorStand.setRightArmPose(defaultRightArm);
-                bodyArmorStand.setLeftLegPose(defaultLeftLeg);
-                bodyArmorStand.setRightLegPose(defaultRightLeg);
-            }
-            case "sitting" -> {
-                bodyArmorStand.setLeftArmPose(sittingLeftArm);
-                bodyArmorStand.setRightArmPose(sittingRightArm);
-                bodyArmorStand.setLeftLegPose(sittingLeftLeg);
-                bodyArmorStand.setRightLegPose(sittingRightLeg);
-                spawnSitParticles();
-            }
-            case "spinning" -> {
-                bodyArmorStand.setLeftArmPose(spinningLeftArm);
-                bodyArmorStand.setRightArmPose(spinningRightArm);
-                bodyArmorStand.setLeftLegPose(spinningLeftLeg);
-                bodyArmorStand.setRightLegPose(spinningRightLeg);
-            }
-        }
+    public void setPose(FollowerPose pose) {
+        if (this.pose == pose) return;
+        this.pose = pose;
+        pose.pose(bodyArmorStand);
     }
 
-    public String getPose() {
+    public FollowerPose getPose() {
         return pose;
     }
+
+    //////////////////////////////
+    //    Particle Functions    //
+    //////////////////////////////
 
     private void spawnSitParticles() {
         particleTask = new ParticleTask(this, Particle.CLOUD);
@@ -288,7 +247,7 @@ public class FollowerEntity {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (!pose.equalsIgnoreCase("sitting") || !bodyArmorStand.isValid()) {
+                if (!pose.equals(FollowerPose.SITTING) || !bodyArmorStand.isValid()) {
                     cancel();
                     return;
                 }
@@ -298,31 +257,16 @@ public class FollowerEntity {
         }.runTaskTimer(Followers.getInstance(), 0, 3);
     }
 
-    private void stopParticles() {
+    public void startParticles(Particle particle) {
+        stopParticles();
+        particleTask = new ParticleTask(this, particle);
+        particleTask.runTaskTimer(Followers.getInstance(), 0, 3);
+    }
+
+    public void stopParticles() {
         if (particleTask != null && !particleTask.isCancelled()) {
             particleTask.cancel();
             particleTask = null;
-        }
-    }
-
-    private void displayName(boolean display) {
-        if (display) {
-            if (nameArmorStand == null) {
-                nameArmorStand = summonNameArmorStand();
-                nameArmorStandUUID = nameArmorStand.getUniqueId();
-
-                Followers.dataManager.addActiveArmorStand(nameArmorStand.getUniqueId());
-            }
-
-            String nickname = Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", Followers.dataManager.getFollowerUser(owner.getUniqueId()).getDisplayName());
-            nameArmorStand.setCustomName(ChatColorHandler.translateAlternateColorCodes(nickname));
-            nameArmorStand.setCustomNameVisible(true);
-        }
-        else {
-            if (nameArmorStand != null) nameArmorStand.remove();
-            Followers.dataManager.removeActiveArmorStand(nameArmorStandUUID);
-            nameArmorStand = null;
-            nameArmorStandUUID = null;
         }
     }
 }

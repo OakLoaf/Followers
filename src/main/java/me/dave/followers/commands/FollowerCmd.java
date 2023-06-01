@@ -1,7 +1,6 @@
 package me.dave.followers.commands;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
-import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import me.dave.followers.FollowerCreator;
 import me.dave.followers.Followers;
 import me.dave.followers.FollowerGUI;
-import me.dave.followers.datamanager.FollowerHandler;
+import me.dave.followers.data.FollowerHandler;
 
 import java.util.*;
 

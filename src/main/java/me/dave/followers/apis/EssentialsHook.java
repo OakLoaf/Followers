@@ -2,6 +2,7 @@ package me.dave.followers.apis;
 
 import com.earth2me.essentials.Essentials;
 import dev.geco.gsit.api.GSitAPI;
+import me.dave.followers.entity.pose.FollowerPose;
 import net.ess3.api.IUser;
 import net.ess3.api.events.AfkStatusChangeEvent;
 import org.bukkit.Bukkit;
@@ -30,10 +31,10 @@ public class EssentialsHook implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (iUser.isAfk()) follower.setPose("sitting");
+                if (iUser.isAfk()) follower.setPose(FollowerPose.SITTING);
                 else {
-                    if (Followers.hasGSit() && GSitAPI.isSitting(player)) follower.setPose("sitting");
-                    else follower.setPose("default");
+                    if (Followers.hasGSit() && GSitAPI.isSitting(player)) follower.setPose(FollowerPose.SITTING);
+                    else follower.setPose(FollowerPose.DEFAULT);
                 }
             }
         }.runTaskLater(Followers.getInstance(), 1);

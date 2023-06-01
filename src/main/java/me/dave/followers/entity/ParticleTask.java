@@ -6,7 +6,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class ParticleTask extends BukkitRunnable {
     private final ArmorStand armorStand;
-    private Particle particle;
+    private final Particle particle;
 
     public ParticleTask(FollowerEntity follower, Particle particle) {
         this.armorStand = follower.bodyArmorStand;
@@ -15,10 +15,10 @@ public class ParticleTask extends BukkitRunnable {
 
     @Override
     public void run() {
+        if (armorStand == null || !armorStand.isValid()) {
+            cancel();
+            return;
+        }
         armorStand.getWorld().spawnParticle(particle, armorStand.getLocation().add(0, -0.15, 0), 1, 0, 0, 0, 0);
-    }
-
-    public void setParticle(Particle particle) {
-        this.particle = particle;
     }
 }
