@@ -39,11 +39,12 @@ public class FollowerEntity {
         if (followerUser != null) followerUser.setFollowerEnabled(true);
 
         this.bodyArmorStand = summonBodyArmorStand();
-        displayName(followerUser.isDisplayNameEnabled());
+        if (followerUser != null) displayName(followerUser.isDisplayNameEnabled());
 
         setFollowerType(follower);
         setVisible(!player.isInvisible());
 
+        validateTask();
         startMovement();
     }
 
@@ -180,8 +181,6 @@ public class FollowerEntity {
         if (nameArmorStand != null) nameArmorStand.remove();
         Followers.dataManager.removeActiveArmorStand(nameArmorStandUUID);
 
-//        FollowerUser followerUser = Followers.dataManager.getFollowerUser(owner.getUniqueId());
-//        if (followerUser != null && owner.isOnline()) followerUser.setFollowerEnabled(false);
         isAlive = false;
     }
 
@@ -242,7 +241,8 @@ public class FollowerEntity {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (bodyArmorStand == null || !bodyArmorStand.isValid()) {
+                if (bodyArmorStand == null || !bodyArmorStand.isValid() || !isAlive) {
+                    Followers.dataManager.getFollowerUser(owner.getUniqueId()).respawnFollowerEntity();
                     cancel();
                     return;
                 }

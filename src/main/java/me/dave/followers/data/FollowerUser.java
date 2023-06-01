@@ -84,9 +84,18 @@ public class FollowerUser {
         if (player != null) followerEntity = new FollowerEntity(player, followerType);
     }
 
+    public void respawnFollowerEntity() {
+        spawnFollowerEntity();
+    }
+
     public void removeFollowerEntity() {
         if (followerEntity == null || !followerEntity.isAlive) return;
         followerEntity.kill();
         followerEntity = null;
+    }
+
+    public void disableFollowerEntity() {
+        removeFollowerEntity();
+        setFollowerEnabled(false);
     }
 }

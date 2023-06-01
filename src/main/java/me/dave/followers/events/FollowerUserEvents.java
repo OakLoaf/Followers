@@ -35,8 +35,7 @@ public class FollowerUserEvents implements Listener {
     public void onPlayerDisconnect(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
-        FollowerEntity followerEntity = followerUser.getFollowerEntity();
-        if (followerEntity != null) Bukkit.getScheduler().runTaskLater(Followers.getInstance(), followerEntity::kill, 5);
+        Bukkit.getScheduler().runTaskLater(Followers.getInstance(), followerUser::removeFollowerEntity, 5);
         Followers.dataManager.saveFollowerUser(followerUser);
         Followers.dataManager.unloadFollowerUser(player.getUniqueId());
     }
