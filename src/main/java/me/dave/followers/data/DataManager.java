@@ -21,7 +21,7 @@ public class DataManager {
     // Safe to use bukkit api in callback.
     public void initAsync(Consumer<Boolean> onComplete) {
         Storage.SERVICE.submit(() -> {
-            String databaseType = Followers.configManager.getDatabaseSection().getString("type");
+            String databaseType = Followers.configManager.getDatabaseType();
             final String errStr = "Could not read database type! Check config";
             if (requireNonNull(databaseType, errStr).equalsIgnoreCase("mysql")) {
                 storage = new MysqlStorage();
