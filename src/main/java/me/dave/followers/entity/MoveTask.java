@@ -16,7 +16,7 @@ public class MoveTask extends BukkitRunnable {
 
     public MoveTask(FollowerEntity follower) {
         this.followerEntity = follower;
-        this.player = follower.owner;
+        this.player = follower.player;
         this.speed = Followers.configManager.getSpeed();
     }
 

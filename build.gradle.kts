@@ -7,7 +7,7 @@ plugins {
 
 
 group = "me.dave"
-version = "1.2.8"
+version = "1.3.0"
 
 repositories {
     mavenCentral()
@@ -28,6 +28,7 @@ dependencies {
     compileOnly("net.ess3:EssentialsX:2.18.1")
     compileOnly("com.github.Gecolay.GSit:core:1.4.3")
     compileOnly("me.clip:placeholderapi:2.11.2")
+    compileOnly(files("libs/SimpleSit.jar"))
     shadow("mysql:mysql-connector-java:8.0.25")
     shadow("dev.dbassett:skullcreator:3.0.1")
     shadow("com.github.CoolDCB:ChatColorHandler:v1.2.3")
@@ -42,7 +43,7 @@ tasks.shadowJar {
     minimize()
     configurations = listOf(project.configurations.shadow.get())
     val folder = System.getenv("pluginFolder")
-    destinationDirectory.set(file("/Users/davidbryce/IdeaProjects/PluginBuilds"))
+    destinationDirectory.set(file(folder))
 }
 
 tasks.processResources {

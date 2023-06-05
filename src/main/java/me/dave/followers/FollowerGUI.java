@@ -18,12 +18,11 @@ public class FollowerGUI {
     private final HashSet<UUID> openInvPlayerSet;
 
     public FollowerGUI(Player player, int page, HashSet<UUID> playerSet) {
-        Followers plugin = Followers.getInstance();
-        NamespacedKey pageNumKey = new NamespacedKey(plugin, "page");
         this.openInvPlayerSet = playerSet;
         inventory = Bukkit.createInventory(null, 54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle()));
         ItemStack empty = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta emptyMeta = empty.getItemMeta();
+        NamespacedKey pageNumKey = new NamespacedKey(Followers.getInstance(), "page");
         emptyMeta.getPersistentDataContainer().set(pageNumKey, PersistentDataType.INTEGER, page);
         emptyMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&r"));
         empty.setItemMeta(emptyMeta);

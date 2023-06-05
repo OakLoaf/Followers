@@ -2,6 +2,7 @@ package me.dave.followers.data;
 
 import me.dave.followers.Followers;
 import me.dave.followers.entity.FollowerEntity;
+import me.dave.followers.entity.pose.FollowerPose;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -15,6 +16,8 @@ public class FollowerUser {
     private String displayName;
     private boolean nameIsOn;
     private FollowerEntity followerEntity;
+    private boolean afk = false;
+    private boolean posing = false;
 
     public FollowerUser(UUID uuid, String username, String followerType, String followerDisplayName, boolean followerNameEnabled, boolean followerIsEnabled) {
         this.uuid = uuid;
@@ -74,6 +77,29 @@ public class FollowerUser {
         Followers.dataManager.saveFollowerUser(this);
     }
 
+    public boolean isAfk() {
+        return afk;
+    }
+
+    public void setAfk(boolean afk) {
+        this.afk = afk;
+
+        if (posing) return;
+        if (afk) followerEntity.setPose(FollowerPose.SITTING);
+        else followerEntity.setPose(FollowerPose.DEFAULT);
+    }
+
+    public boolean isPosing() {
+        return posing;
+    }
+
+    public void setPose(FollowerPose pose) {
+        this.posing = (pose != null && !pose.equals(FollowerPose.DEFAULT));
+
+        if (posing) followerEntity.setPose(pose);
+        else if (!afk) followerEntity.setPose(FollowerPose.DEFAULT);
+    }
+
     public FollowerEntity getFollowerEntity() {
         return followerEntity;
     }
@@ -95,7 +121,9 @@ public class FollowerUser {
     }
 
     public void disableFollowerEntity() {
-        removeFollowerEntity();
+        if (followerEntity == null || !followerEntity.isAlive) return;
+        followerEntity.deactivate();
+        followerEntity = null;
         setFollowerEnabled(false);
     }
 }

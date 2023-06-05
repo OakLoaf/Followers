@@ -1,6 +1,7 @@
 package me.dave.followers.apis;
 
 import dev.geco.gsit.api.event.*;
+import me.dave.followers.data.FollowerUser;
 import me.dave.followers.entity.pose.FollowerPose;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -15,9 +16,10 @@ public class GSitHook implements Listener {
     @EventHandler
     public void onPlayerSit(EntitySitEvent event) {
         if (event.getEntity() instanceof Player player) {
-            FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player.getUniqueId()).getFollowerEntity();
-            if (followerEntity == null) return;
-            followerEntity.setPose(FollowerPose.SITTING);
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+            followerUser.setPose(FollowerPose.SITTING);
+            FollowerEntity followerEntity = followerUser.getFollowerEntity();
+            if (followerEntity == null || !followerEntity.isAlive) return;
             followerEntity.startParticles(Particle.CLOUD);
         }
     }
@@ -25,9 +27,10 @@ public class GSitHook implements Listener {
     @EventHandler
     public void onPlayerGetUpFromSeat(EntityGetUpSitEvent event) {
         if (event.getEntity() instanceof Player player) {
-            FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player.getUniqueId()).getFollowerEntity();
-            if (followerEntity == null) return;
-            followerEntity.setPose(FollowerPose.DEFAULT);
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+            followerUser.setPose(FollowerPose.DEFAULT);
+            FollowerEntity followerEntity = followerUser.getFollowerEntity();
+            if (followerEntity == null || !followerEntity.isAlive) return;
             followerEntity.stopParticles();
         }
     }

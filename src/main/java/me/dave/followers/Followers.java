@@ -1,6 +1,7 @@
 package me.dave.followers;
 
 import me.dave.followers.apis.PlaceholderAPIHook;
+import me.dave.followers.apis.SimpleSitHook;
 import me.dave.followers.events.WorldEvents;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -68,7 +69,14 @@ public final class Followers extends JavaPlugin {
                 if (pluginManager.getPlugin("GSit") != null) {
                     pluginManager.registerEvents(new GSitHook(), this);
                     hasGSit = true;
-                } else getLogger().info("GSit plugin not found. Continuing without GSit.");
+                    getLogger().info("Found plugin \"GSIT\". GSit support enabled.");
+                }
+
+                if (pluginManager.getPlugin("SimpleSit") != null) {
+                    pluginManager.registerEvents(new SimpleSitHook(), this);
+                    hasGSit = true;
+                    getLogger().info("Found plugin \"SimpleSit\". GSit support enabled.");
+                }
 
                 if (pluginManager.getPlugin("PlaceholderAPI") != null) new PlaceholderAPIHook().register();
                 else getLogger().info("PlaceholderAPI plugin not found. Continuing without PlaceholderAPI.");

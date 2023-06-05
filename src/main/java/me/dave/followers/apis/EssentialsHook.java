@@ -1,7 +1,7 @@
 package me.dave.followers.apis;
 
 import com.earth2me.essentials.Essentials;
-import dev.geco.gsit.api.GSitAPI;
+import me.dave.followers.data.FollowerUser;
 import me.dave.followers.entity.pose.FollowerPose;
 import net.ess3.api.IUser;
 import net.ess3.api.events.AfkStatusChangeEvent;
@@ -26,15 +26,18 @@ public class EssentialsHook implements Listener {
     public void onAFK(AfkStatusChangeEvent event) {
         IUser iUser = event.getAffected();
         Player player = iUser.getBase();
-        FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player.getUniqueId()).getFollowerEntity();
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+        FollowerEntity followerEntity = followerUser.getFollowerEntity();
         if (followerEntity == null) return;
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (iUser.isAfk()) followerEntity.setPose(FollowerPose.SITTING);
-                else {
-                    if (Followers.hasGSit() && GSitAPI.isSitting(player)) followerEntity.setPose(FollowerPose.SITTING);
-                    else followerEntity.setPose(FollowerPose.DEFAULT);
+                if (iUser.isAfk()) {
+                    followerUser.setAfk(true);
+                    followerEntity.setPose(FollowerPose.SITTING);
+                } else {
+                    followerUser.setAfk(false);
+                    if (!followerUser.isPosing()) followerUser.setPose(FollowerPose.DEFAULT);
                 }
             }
         }.runTaskLater(Followers.getInstance(), 1);
