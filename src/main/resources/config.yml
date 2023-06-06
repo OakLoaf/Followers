@@ -68,6 +68,14 @@ gui:
       material: "name_tag"
       lore:
         - "&eHidden &7&o(Shift-click to Show)"
+  # random: Item to enable the random follower setting
+  random:
+    enabled:
+      name: "&eRandom Follower: &aEnabled"
+      material: "conduit"
+    disabled:
+      name: "&eRandom Follower: &cDisabled"
+      material: "conduit"
 
 # %command-usage% - The command being used incorrectly
 # %follower% - The selected follower

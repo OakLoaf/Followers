@@ -64,7 +64,7 @@ public class DataManager {
         if (player == null) return null;
 
         FollowerUser followerUser = uuidToFollowerUser.get(uuid);
-        if (followerUser == null) followerUser = new FollowerUser(uuid, player.getName(), "none", "Unnamed", false, false);
+        if (followerUser == null) followerUser = new FollowerUser(uuid, player.getName(), "none", "Unnamed", false, false, false);
         return followerUser;
     }
 

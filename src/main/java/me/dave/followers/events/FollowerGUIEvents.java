@@ -67,6 +67,19 @@ public class FollowerGUIEvents implements Listener {
             FollowerGUI followerInv = new FollowerGUI(player, page - 1, openInvPlayerSet);
             followerInv.openInventory(player);
             return;
+        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("random.enabled"))) {
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+            followerUser.setRandom(false);
+            FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
+            followerInv.openInventory(player);
+            return;
+        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("random.disabled"))) {
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+            followerUser.setRandom(true);
+            followerUser.randomizeFollowerType();
+            FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
+            followerInv.openInventory(player);
+            return;
         } else if (clickedItem.getType() == Material.NAME_TAG && clickedItem.getItemMeta().getDisplayName().startsWith(ChatColorHandler.translateAlternateColorCodes("&eFollower Name:"))) {
             FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player.getUniqueId()).getFollowerEntity();
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());

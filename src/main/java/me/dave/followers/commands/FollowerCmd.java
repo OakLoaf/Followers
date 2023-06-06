@@ -99,7 +99,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
             if (commandSender.hasPermission("follower.admin.delete")) tabComplete.add("delete");
         } else if (args.length == 2) {
             if (commandSender.hasPermission("follower.admin.delete")) {
-                tabComplete.addAll(Followers.followerManager.getFollowers().keySet());
+                tabComplete.addAll(Followers.followerManager.getFollowerNames());
             }
         }
 

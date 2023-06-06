@@ -80,10 +80,11 @@ public class MysqlStorage implements Storage {
                     resultSet.getString("follower"),
                     resultSet.getString("followerDisplayName"),
                     resultSet.getBoolean("followerNameEnabled"),
-                    resultSet.getBoolean("followerEnabled")
+                    resultSet.getBoolean("followerEnabled"),
+                    resultSet.getBoolean("randomFollower")
                 );
             } else {
-                FollowerUser newFollowerUser = new FollowerUser(uuid, Bukkit.getPlayer(uuid).getName(), "none", "Unnamed", false, false);
+                FollowerUser newFollowerUser = new FollowerUser(uuid, Bukkit.getPlayer(uuid).getName(), "none", "Unnamed", false, false, false);
                 saveFollowerUser(newFollowerUser);
                 return newFollowerUser;
             }
@@ -97,7 +98,7 @@ public class MysqlStorage implements Storage {
     public void saveFollowerUser(FollowerUser followerUser) {
         Bukkit.getScheduler().runTaskAsynchronously(Followers.getInstance(), () -> {
             try (Connection conn = conn(); PreparedStatement stmt = conn.prepareStatement(
-                "REPLACE INTO follower_users(uuid, name, follower, followerDisplayName, followerNameEnabled, followerEnabled) VALUES(?, ?, ?, ?, ?, ?);"
+                "REPLACE INTO follower_users(uuid, name, follower, followerDisplayName, followerNameEnabled, followerEnabled, randomFollower) VALUES(?, ?, ?, ?, ?, ?, ?);"
             )) {
                 stmt.setString(1, followerUser.getUUID().toString());
                 stmt.setString(2, followerUser.getUsername());
@@ -105,6 +106,7 @@ public class MysqlStorage implements Storage {
                 stmt.setString(4, followerUser.getDisplayName());
                 stmt.setBoolean(5, followerUser.isDisplayNameEnabled());
                 stmt.setBoolean(6, followerUser.isFollowerEnabled());
+                stmt.setBoolean(7, followerUser.isRandomType());
                 stmt.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();

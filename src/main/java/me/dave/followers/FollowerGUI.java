@@ -31,7 +31,7 @@ public class FollowerGUI {
             else inventory.setItem(i + 36, empty);
         }
         List<String> followerSet = new ArrayList<>();
-        for (String followerName : Followers.followerManager.getFollowers().keySet()) {
+        for (String followerName : Followers.followerManager.getFollowerNames()) {
             if (!player.hasPermission("followers." + followerName.toLowerCase().replaceAll(" ", "_"))) continue;
             followerSet.add(followerName);
         }
@@ -75,6 +75,12 @@ public class FollowerGUI {
             followerName.setItemMeta(itemMeta);
 
             inventory.setItem(45, followerName);
+        }
+        if (player.hasPermission("follower.random")) {
+            ItemStack followerName;
+            if (followerUser.isRandomType()) followerName = Followers.configManager.getGuiItem("random.enabled");
+            else followerName = Followers.configManager.getGuiItem("random.disabled");
+            inventory.setItem(46, followerName);
         }
     }
 

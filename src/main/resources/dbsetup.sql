@@ -6,5 +6,6 @@ CREATE TABLE IF NOT EXISTS follower_users
     followerDisplayName TEXT NOT NULL,
     followerNameEnabled BOOLEAN DEFAULT false,
     followerEnabled BOOLEAN DEFAULT true,
+    randomFollower BOOLEAN DEFAULT false,
     PRIMARY KEY (uuid)
 );

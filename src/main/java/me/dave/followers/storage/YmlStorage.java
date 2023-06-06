@@ -29,7 +29,8 @@ public class YmlStorage implements Storage {
             configurationSection.set("followerDisplayName", "Unnamed");
             configurationSection.set("followerNameEnabled", Boolean.FALSE);
             configurationSection.set("followerEnabled", Boolean.TRUE);
-            FollowerUser followerUser = new FollowerUser(uuid, playerName, "none", "Unnamed", false, false);
+            configurationSection.set("randomFollower", Boolean.FALSE);
+            FollowerUser followerUser = new FollowerUser(uuid, playerName, "none", "Unnamed", false, false, false);
             saveFollowerUser(followerUser);
             return followerUser;
         }
@@ -38,7 +39,8 @@ public class YmlStorage implements Storage {
         String followerDisplayName = configurationSection.getString("followerDisplayName");
         boolean followerNameEnabled = configurationSection.getBoolean("followerNameEnabled");
         boolean followerEnabled = configurationSection.getBoolean("followerEnabled");
-        return new FollowerUser(uuid, name, follower, followerDisplayName, followerNameEnabled, followerEnabled);
+        boolean randomType = configurationSection.getBoolean("randomFollower");
+        return new FollowerUser(uuid, name, follower, followerDisplayName, followerNameEnabled, followerEnabled, randomType);
     }
 
     @Override
@@ -50,6 +52,7 @@ public class YmlStorage implements Storage {
         configurationSection.set("followerDisplayName", followerUser.getDisplayName());
         configurationSection.set("followerNameEnabled", followerUser.isDisplayNameEnabled());
         configurationSection.set("followerEnabled", followerUser.isFollowerEnabled());
+        configurationSection.set("randomFollower", followerUser.isRandomType());
         try {
             config.save(dataFile);
         } catch (IOException e) {

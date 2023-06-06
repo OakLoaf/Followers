@@ -120,39 +120,53 @@ public class FollowerEntity {
         Vector direction = player.getLocation().getDirection().setY(0);
         float offSet = direction.setY(0).angle(spawnLoc.toVector());
 
-        ArmorStand armorStand = player.getLocation().getWorld().spawn(spawnLoc.add(direction.rotateAroundY(0.5)), ArmorStand.class, (as -> {
-            try {
-                as.setBasePlate(false);
-                as.setArms(true);
-                as.setInvulnerable(true);
-                as.setCanPickupItems(false);
-                as.setSmall(true);
-                as.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, player.getUniqueId().toString());
-                if (!Followers.configManager.areHitboxesEnabled()) as.setMarker(true);
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-        }));
+        ArmorStand armorStand;
+        try {
+            armorStand = player.getLocation().getWorld().spawn(spawnLoc.add(direction.rotateAroundY(0.5)), ArmorStand.class, (as -> {
+                try {
+                    as.setBasePlate(false);
+                    as.setArms(true);
+                    as.setInvulnerable(true);
+                    as.setCanPickupItems(false);
+                    as.setSmall(true);
+                    as.setAI(false);
+                    as.setGravity(false);
+                    as.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, player.getUniqueId().toString());
+                    if (!Followers.configManager.areHitboxesEnabled()) as.setMarker(true);
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
 
         Followers.dataManager.addActiveArmorStand(armorStand.getUniqueId());
-
         return armorStand;
     }
 
     private ArmorStand summonNameArmorStand() {
-        ArmorStand armorStand = player.getLocation().getWorld().spawn(bodyArmorStand.getLocation().add(0, 1, 0), ArmorStand.class, (as -> {
-            try {
-                as.setInvulnerable(true);
-                as.setVisible(false);
-                as.setMarker(true);
-                as.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, "");
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-        }));
+        ArmorStand armorStand;
+        try {
+            armorStand = player.getLocation().getWorld().spawn(bodyArmorStand.getLocation().add(0, 1, 0), ArmorStand.class, (as -> {
+                try {
+                    as.setInvulnerable(true);
+                    as.setVisible(false);
+                    as.setMarker(true);
+                    as.setAI(false);
+                    as.setGravity(false);
+                    as.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, "");
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }));
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
 
         Followers.dataManager.addActiveArmorStand(armorStand.getUniqueId());
-
         return armorStand;
     }
 

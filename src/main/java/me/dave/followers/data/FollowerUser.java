@@ -6,26 +6,31 @@ import me.dave.followers.entity.pose.FollowerPose;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 public class FollowerUser {
+    private static final Random random = new Random();
     private final UUID uuid;
     private String username;
     private boolean isEnabled;
     private String followerType;
+    private boolean randomType = false;
     private String displayName;
     private boolean nameIsOn;
     private FollowerEntity followerEntity;
     private boolean afk = false;
     private boolean posing = false;
 
-    public FollowerUser(UUID uuid, String username, String followerType, String followerDisplayName, boolean followerNameEnabled, boolean followerIsEnabled) {
+    public FollowerUser(UUID uuid, String username, String followerType, String followerDisplayName, boolean followerNameEnabled, boolean followerIsEnabled, boolean randomFollower) {
         this.uuid = uuid;
         this.username = username;
         this.isEnabled = followerIsEnabled;
         this.followerType = followerType;
         this.displayName = followerDisplayName;
         this.nameIsOn = followerNameEnabled;
+        this.randomType = randomFollower;
     }
 
     public UUID getUUID() {
@@ -52,6 +57,10 @@ public class FollowerUser {
         return this.isEnabled;
     }
 
+    public boolean isRandomType() {
+        return this.randomType;
+    }
+
     public void setUsername(String username) {
         this.username = username;
         Followers.dataManager.saveFollowerUser(this);
@@ -60,6 +69,17 @@ public class FollowerUser {
     public void setFollowerType(String followerType) {
         this.followerType = followerType;
         Followers.dataManager.saveFollowerUser(this);
+    }
+
+    public void setRandom(boolean randomize) {
+        this.randomType = randomize;
+        Followers.dataManager.saveFollowerUser(this);
+    }
+
+    public void randomizeFollowerType() {
+        List<String> followerTypes = Followers.followerManager.getFollowerNames(Bukkit.getPlayer(uuid));
+        if (followerEntity == null) return;
+        followerEntity.setFollowerType(followerTypes.get(random.nextInt(followerTypes.size())));
     }
 
     public void setDisplayName(String displayName) {
@@ -84,7 +104,7 @@ public class FollowerUser {
     public void setAfk(boolean afk) {
         this.afk = afk;
 
-        if (posing) return;
+        if (followerEntity == null || posing) return;
         if (afk) followerEntity.setPose(FollowerPose.SITTING);
         else followerEntity.setPose(FollowerPose.DEFAULT);
     }
@@ -96,6 +116,7 @@ public class FollowerUser {
     public void setPose(FollowerPose pose) {
         this.posing = (pose != null && !pose.equals(FollowerPose.DEFAULT));
 
+        if (followerEntity == null) return;
         if (posing) followerEntity.setPose(pose);
         else if (!afk) followerEntity.setPose(FollowerPose.DEFAULT);
     }
@@ -108,6 +129,7 @@ public class FollowerUser {
         removeFollowerEntity();
         Player player = Bukkit.getPlayer(uuid);
         if (player != null) followerEntity = new FollowerEntity(player, followerType);
+        if (randomType) randomizeFollowerType();
     }
 
     public void respawnFollowerEntity() {

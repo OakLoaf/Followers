@@ -55,4 +55,12 @@ public class FollowerUserEvents implements Listener {
             event.setCancelled(true);
         }
     }
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+        if (followerUser == null) return;
+        if (followerUser.isRandomType()) followerUser.randomizeFollowerType();
+    }
 }

@@ -17,13 +17,9 @@ import me.dave.followers.Followers;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Random;
-import java.util.TreeMap;
-import java.util.UUID;
+import java.util.*;
 
 public class FollowerManager {
-    private final Random random = new Random();
     private final File followerConfigFile = initYML();
     private YamlConfiguration config = YamlConfiguration.loadConfiguration(followerConfigFile);
     private final Map<String, FollowerHandler> followerList = new TreeMap<>();
@@ -115,8 +111,17 @@ public class FollowerManager {
         return followerList;
     }
 
-    public FollowerHandler getRandomFollower() {
-        return followerList.values().stream().toList().get(random.nextInt(followerList.size()));
+    public Set<String> getFollowerNames() {
+        return followerList.keySet();
+    }
+
+    public List<String> getFollowerNames(Player player) {
+        List<String> followers = new ArrayList<>();
+        for (String followerName : followerList.keySet()) {
+            if (!player.hasPermission("followers." + followerName.toLowerCase().replaceAll(" ", "_"))) continue;
+            followers.add(followerName);
+        }
+        return followers;
     }
 
     public void clearFollowerCache() {
