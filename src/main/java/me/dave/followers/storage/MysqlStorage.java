@@ -1,8 +1,10 @@
-package me.dave.followers.data;
+package me.dave.followers.storage;
 
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import me.dave.chatcolorhandler.ChatColorHandler;
+import me.dave.followers.data.DataManager;
+import me.dave.followers.data.FollowerUser;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import me.dave.followers.Followers;

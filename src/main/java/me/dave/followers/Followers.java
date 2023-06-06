@@ -17,7 +17,7 @@ import me.dave.followers.commands.GetHexArmorCmd;
 import me.dave.followers.data.ConfigManager;
 import me.dave.followers.data.DataManager;
 import me.dave.followers.data.FollowerManager;
-import me.dave.followers.data.Storage;
+import me.dave.followers.storage.Storage;
 import me.dave.followers.apis.EssentialsHook;
 import me.dave.followers.events.FollowerGUIEvents;
 import me.dave.followers.events.FollowerUserEvents;

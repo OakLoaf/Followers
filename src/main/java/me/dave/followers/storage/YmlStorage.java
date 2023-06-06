@@ -1,5 +1,6 @@
-package me.dave.followers.data;
+package me.dave.followers.storage;
 
+import me.dave.followers.data.FollowerUser;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
