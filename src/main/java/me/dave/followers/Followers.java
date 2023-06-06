@@ -3,6 +3,7 @@ package me.dave.followers;
 import me.dave.followers.apis.PlaceholderAPIHook;
 import me.dave.followers.apis.SimpleSitHook;
 import me.dave.followers.events.WorldEvents;
+import me.dave.followers.item.FollowerCreator;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Listener;

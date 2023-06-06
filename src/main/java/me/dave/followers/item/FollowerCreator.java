@@ -1,6 +1,7 @@
-package me.dave.followers;
+package me.dave.followers.item;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
+import me.dave.followers.Followers;
 import me.dave.followers.utils.TextInterface;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

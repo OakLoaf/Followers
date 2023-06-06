@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
-import me.dave.followers.FollowerCreator;
+import me.dave.followers.item.FollowerCreator;
 import me.dave.followers.Followers;
 import me.dave.followers.FollowerGUI;
 import me.dave.followers.data.FollowerHandler;
