@@ -1,6 +1,7 @@
 package me.dave.followers.data;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
+import me.dave.followers.utils.ItemStackData;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -56,36 +57,14 @@ public class FollowerManager {
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
             EntityEquipment armorStandEquipment = armorStand.getEquipment();
             if (armorStandEquipment == null) return;
-            ItemStack currItem = armorStandEquipment.getItem(equipmentSlot);
-            Material material = currItem.getType();
-            if (material == Material.AIR) continue;
             String equipmentSlotName = equipmentSlot.name().toLowerCase();
             switch (equipmentSlot) {
                 case HAND -> equipmentSlotName = "mainHand";
                 case OFF_HAND -> equipmentSlotName = "offHand";
             }
-            configurationSection.set(equipmentSlotName + ".material", material.toString().toLowerCase());
-            if (currItem.getType() == Material.PLAYER_HEAD) {
-                SkullMeta skullMeta = (SkullMeta) currItem.getItemMeta();
-                OfflinePlayer skullOwner = skullMeta.getOwningPlayer();
-                if (skullOwner == null) {
-                    configurationSection.set(equipmentSlotName + ".skullType", "custom");
-                    String textureStr = Followers.skullCreator.getB64(currItem);
-                    configurationSection.set(equipmentSlotName + ".texture", textureStr);
-                    continue;
-                }
-                configurationSection.set(equipmentSlotName + ".skullType", "default");
-                UUID skullUUID = skullOwner.getUniqueId();
-                configurationSection.set(equipmentSlotName + ".uuid", skullUUID.toString());
-                ChatColorHandler.sendMessage(owner, Followers.configManager.getLangMessage("follower-default-skull"));
-            } else if (currItem.getItemMeta() instanceof LeatherArmorMeta armorMeta) {
-                Color armorColor = armorMeta.getColor();
-                configurationSection.set(equipmentSlotName + ".color", String.format("%02x%02x%02x", armorColor.getRed(), armorColor.getGreen(), armorColor.getBlue()));
-            }
-            if (currItem.getEnchantments().size() >= 1) {
-                configurationSection.set(equipmentSlotName + ".enchanted", "True");
-            }
+            ItemStackData.save(armorStandEquipment.getItem(equipmentSlot), configurationSection.createSection(equipmentSlotName));
         }
+
         ChatColorHandler.sendMessage(owner, Followers.configManager.getLangMessage("follower-created").replaceAll("%follower%", followerName));
         saveFollowers();
         loadFollower(followerName);

@@ -3,6 +3,7 @@ package me.dave.followers.utils;
 import me.dave.chatcolorhandler.ChatColorHandler;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -10,27 +11,22 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import me.dave.followers.Followers;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class ItemStackData {
-    private ItemStack item;
 
-    public ItemStackData(ConfigurationSection configurationSection, String material) {
-        init(configurationSection, material);
-    }
-
-    public void init(ConfigurationSection configurationSection, String aMaterial) {
+    public static ItemStack parse(ConfigurationSection configurationSection, Material material) {
+        ItemStack item = new ItemStack(material);
         if (configurationSection == null) {
             item = new ItemStack(Material.AIR);
-            return;
+            return item;
         }
-        Material material = Material.valueOf(configurationSection.getString("material", aMaterial).toUpperCase());
         String colour = configurationSection.getString("color", "A06540");
         boolean isEnchanted = Boolean.parseBoolean(configurationSection.getString("enchanted", "false"));
-        item = new ItemStack(material);
 
         if (material == Material.PLAYER_HEAD) {
             String skullType = configurationSection.getString("skullType", "");
@@ -64,9 +60,35 @@ public class ItemStackData {
         }
 
         item.setItemMeta(itemMeta);
+        return item;
     }
 
-    private ItemStack getColoredArmour(Material material, String hexColour) {
+    public static void save(ItemStack item, ConfigurationSection configurationSection) {
+        Material material = item.getType();
+        if (material == Material.AIR) return;
+        configurationSection.set("material", material.toString().toLowerCase());
+
+        if (item.getEnchantments().size() >= 1) configurationSection.set("enchanted", "True");
+
+        if (material == Material.PLAYER_HEAD) {
+            SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
+            OfflinePlayer skullOwner = skullMeta.getOwningPlayer();
+            if (skullOwner == null) {
+                configurationSection.set("skullType", "custom");
+                String textureStr = Followers.skullCreator.getB64(item);
+                configurationSection.set("texture", textureStr);
+                return;
+            }
+            configurationSection.set("skullType", "default");
+            UUID skullUUID = skullOwner.getUniqueId();
+            configurationSection.set("uuid", skullUUID.toString());
+        } else if (item.getItemMeta() instanceof LeatherArmorMeta armorMeta) {
+            Color armorColor = armorMeta.getColor();
+            configurationSection.set("color", String.format("%02x%02x%02x", armorColor.getRed(), armorColor.getGreen(), armorColor.getBlue()));
+        }
+    }
+
+    private static ItemStack getColoredArmour(Material material, String hexColour) {
         ItemStack item = new ItemStack(material);
         ItemMeta itemMeta = item.getItemMeta();
         if (!(itemMeta instanceof LeatherArmorMeta)) return item;
@@ -76,10 +98,6 @@ public class ItemStackData {
         int blue = Integer.valueOf(hexColour.substring(4, 6), 16);
         armorMeta.setColor(Color.fromRGB(red, green, blue));
         item.setItemMeta(armorMeta);
-        return item;
-    }
-
-    public ItemStack getItem() {
         return item;
     }
 }

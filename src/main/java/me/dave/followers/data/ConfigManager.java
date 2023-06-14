@@ -47,9 +47,7 @@ public class ConfigManager {
 
     public ItemStack getGuiItem(String itemName) {
         ConfigurationSection itemSection = Followers.getInstance().getConfig().getConfigurationSection("gui." + itemName);
-        if (itemSection == null) return new ItemStack(Material.STONE);
-
-        return new ItemStackData(itemSection, "STONE").getItem();
+        return ItemStackData.parse(itemSection, Material.STONE);
     }
 
     public String getGuiTitle() {
