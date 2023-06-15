@@ -20,11 +20,9 @@ import java.util.UUID;
 public class ItemStackData {
 
     public static ItemStack parse(ConfigurationSection configurationSection, Material material) {
+        if (configurationSection == null || material == Material.AIR) return new ItemStack(Material.AIR);
+
         ItemStack item = new ItemStack(material);
-        if (configurationSection == null) {
-            item = new ItemStack(Material.AIR);
-            return item;
-        }
         String colour = configurationSection.getString("color", "A06540");
         boolean isEnchanted = Boolean.parseBoolean(configurationSection.getString("enchanted", "false"));
 
