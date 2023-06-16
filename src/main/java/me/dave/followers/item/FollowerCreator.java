@@ -59,10 +59,6 @@ public class FollowerCreator implements Listener {
         event.setCancelled(true);
     }
 
-    public ItemStack getCreatorItem() {
-        return creatorItem;
-    }
-
     public static ItemStack getOrLoadCreatorItem() {
         if (creatorItem != null) return creatorItem;
 
