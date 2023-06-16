@@ -109,6 +109,11 @@ public class FollowerGUIEvents implements Listener {
         FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
         followerInv.openInventory(player);
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(playerUUID);
+        if (followerUser.isRandomType()) {
+            followerUser.setRandom(false);
+            new FollowerGUI(player, page, openInvPlayerSet).openInventory(player);
+        }
+
         FollowerEntity followerEntity = followerUser.getFollowerEntity();
         if (followerEntity != null) followerEntity.setFollowerType(followerName);
         else followerUser.spawnFollowerEntity();
