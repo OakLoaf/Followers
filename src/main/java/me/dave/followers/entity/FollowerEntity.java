@@ -49,6 +49,8 @@ public class FollowerEntity {
 
         validateTask();
         startMovement();
+
+        Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::reloadInventory, 5);
     }
 
     public void setFollowerType(String newFollower) {
@@ -89,29 +91,33 @@ public class FollowerEntity {
 
     public void reloadInventory() {
         Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> {
+            FollowerHandler followerHandler = Followers.followerManager.getFollower(this.followerType);
+            if (followerHandler == null) {
+                FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+                if (followerUser != null) followerUser.disableFollowerEntity();
+                else kill();
+                return;
+            }
+
             if (player.isInvisible()) return;
             for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-                setFollowerArmorSlot(equipmentSlot, followerType);
+                setFollowerArmorSlot(equipmentSlot, followerHandler);
             }
-            FollowerHandler followerEntity = Followers.followerManager.getFollower(followerType);
-            if (followerEntity == null) return;
-            bodyArmorStand.setVisible(followerEntity.isVisible());
+
+            bodyArmorStand.setVisible(followerHandler.isVisible());
         }, 1);
     }
 
-    public void setFollowerArmorSlot(EquipmentSlot equipmentSlot, String followerName) {
-        if (!Followers.followerManager.getFollowers().containsKey(followerName)) return;
+    public void setFollowerArmorSlot(EquipmentSlot equipmentSlot, FollowerHandler followerType) {
         EntityEquipment armorEquipment = bodyArmorStand.getEquipment();
         if (armorEquipment == null) return;
-        FollowerHandler follower = Followers.followerManager.getFollower(followerName);
-        new ItemStack(Material.AIR);
         ItemStack item = switch (equipmentSlot) {
-            case HEAD -> follower.getHead();
-            case CHEST -> follower.getChest();
-            case LEGS -> follower.getLegs();
-            case FEET -> follower.getFeet();
-            case HAND -> follower.getMainHand();
-            case OFF_HAND -> follower.getOffHand();
+            case HEAD -> followerType.getHead();
+            case CHEST -> followerType.getChest();
+            case LEGS -> followerType.getLegs();
+            case FEET -> followerType.getFeet();
+            case HAND -> followerType.getMainHand();
+            case OFF_HAND -> followerType.getOffHand();
         };
         armorEquipment.setItem(equipmentSlot, item);
     }
@@ -119,12 +125,13 @@ public class FollowerEntity {
     private ArmorStand summonBodyArmorStand() {
         Location spawnLoc = player.getLocation().add(1.5, 0, 0);
         Vector direction = player.getLocation().getDirection().setY(0);
+        spawnLoc = spawnLoc.add(direction.rotateAroundY(0.5));
         float offSet = direction.setY(0).angle(spawnLoc.toVector());
 
         ArmorStand armorStand;
         if (!spawnLoc.getChunk().isLoaded()) return null;
         try {
-            armorStand = player.getLocation().getWorld().spawn(spawnLoc.add(direction.rotateAroundY(0.5)), ArmorStand.class, (as -> {
+            armorStand = player.getLocation().getWorld().spawn(spawnLoc, ArmorStand.class, (as -> {
                 try {
                     as.setBasePlate(false);
                     as.setArms(true);

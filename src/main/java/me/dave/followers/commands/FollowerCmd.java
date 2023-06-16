@@ -43,7 +43,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("no-permissions"));
                     return true;
                 }
-                ItemStack creator = new FollowerCreator().getCreatorItem();
+                ItemStack creator = FollowerCreator.getOrLoadCreatorItem();
                 player.getInventory().addItem(creator);
                 ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("get-follower-creator"));
                 return true;
