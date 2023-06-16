@@ -4,6 +4,7 @@ import me.dave.followers.Followers;
 import me.dave.followers.entity.FollowerEntity;
 import me.dave.followers.entity.pose.FollowerPose;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -128,7 +129,14 @@ public class FollowerUser {
     public void spawnFollowerEntity() {
         removeFollowerEntity();
         Player player = Bukkit.getPlayer(uuid);
-        if (player != null) followerEntity = new FollowerEntity(player, followerType);
+        if (player == null) return;
+
+        Chunk chunk = player.getLocation().getChunk();
+        if (!chunk.isLoaded()) {
+            if (!chunk.load()) return;
+        }
+
+        followerEntity = new FollowerEntity(player, followerType);
         if (randomType) randomizeFollowerType();
     }
 

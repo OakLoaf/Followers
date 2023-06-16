@@ -19,8 +19,15 @@ import java.util.UUID;
 
 public class ItemStackData {
 
-    public static ItemStack parse(ConfigurationSection configurationSection, Material material) {
-        if (configurationSection == null || material == Material.AIR) return new ItemStack(Material.AIR);
+    public static ItemStack parse(ConfigurationSection configurationSection, Material def) {
+        if (configurationSection == null) return new ItemStack(Material.AIR);
+
+        Material material;
+        try {
+            material = Material.valueOf(configurationSection.getString("material", def.name()).toUpperCase());
+        } catch (IllegalArgumentException exc) {
+            material = def;
+        }
 
         ItemStack item = new ItemStack(material);
         String colour = configurationSection.getString("color", "A06540");

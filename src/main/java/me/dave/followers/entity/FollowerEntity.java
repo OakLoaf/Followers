@@ -41,6 +41,7 @@ public class FollowerEntity {
         if (followerUser != null) followerUser.setFollowerEnabled(true);
 
         this.bodyArmorStand = summonBodyArmorStand();
+        if (this.bodyArmorStand == null) kill();
         if (followerUser != null) displayName(followerUser.isDisplayNameEnabled());
 
         setFollowerType(follower);
@@ -121,6 +122,7 @@ public class FollowerEntity {
         float offSet = direction.setY(0).angle(spawnLoc.toVector());
 
         ArmorStand armorStand;
+        if (!spawnLoc.getChunk().isLoaded()) return null;
         try {
             armorStand = player.getLocation().getWorld().spawn(spawnLoc.add(direction.rotateAroundY(0.5)), ArmorStand.class, (as -> {
                 try {
@@ -148,6 +150,7 @@ public class FollowerEntity {
 
     private ArmorStand summonNameArmorStand() {
         ArmorStand armorStand;
+        if (!bodyArmorStand.getLocation().getChunk().isLoaded()) return null;
         try {
             armorStand = player.getLocation().getWorld().spawn(bodyArmorStand.getLocation().add(0, 1, 0), ArmorStand.class, (as -> {
                 try {
@@ -174,6 +177,7 @@ public class FollowerEntity {
         if (display) {
             if (nameArmorStand == null) {
                 nameArmorStand = summonNameArmorStand();
+                if (nameArmorStand == null) return;
                 nameArmorStandUUID = nameArmorStand.getUniqueId();
 
                 Followers.dataManager.addActiveArmorStand(nameArmorStand.getUniqueId());

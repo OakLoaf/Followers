@@ -37,8 +37,6 @@ public final class Followers extends JavaPlugin {
     private final HashSet<UUID> guiPlayerSet = new HashSet<>();
     private final NamespacedKey followerKey = new NamespacedKey(this, "Follower");
     private static int tickCount;
-
-    private static boolean hasGSit = false;
     private static boolean hasFloodgate = false;
 
     private void setThreadIOName() {
@@ -64,26 +62,30 @@ public final class Followers extends JavaPlugin {
                 registerEvents(listeners);
 
                 PluginManager pluginManager = getServer().getPluginManager();
-                if (pluginManager.getPlugin("Essentials") != null) pluginManager.registerEvents(new EssentialsHook(), this);
-                else getLogger().info("Essentials plugin not found. Continuing without Essentials.");
+                if (pluginManager.getPlugin("Essentials") != null) {
+                    pluginManager.registerEvents(new EssentialsHook(), this);
+                    getLogger().info("Found plugin \"Essentials\". Essentials support enabled.");
+                }
+
+                if (this.getServer().getPluginManager().getPlugin("Floodgate") != null) {
+                    hasFloodgate = true;
+                    getLogger().info("Found plugin \"Floodgate\". Floodgate support enabled.");
+                }
 
                 if (pluginManager.getPlugin("GSit") != null) {
                     pluginManager.registerEvents(new GSitHook(), this);
-                    hasGSit = true;
-                    getLogger().info("Found plugin \"GSIT\". GSit support enabled.");
+                    getLogger().info("Found plugin \"GSit\". GSit support enabled.");
+                }
+
+                if (pluginManager.getPlugin("PlaceholderAPI") != null) {
+                    new PlaceholderAPIHook().register();
+                    getLogger().info("Found plugin \"PlaceholderAPI\". PlaceholderAPI support enabled.");
                 }
 
                 if (pluginManager.getPlugin("SimpleSit") != null) {
                     pluginManager.registerEvents(new SimpleSitHook(), this);
-                    hasGSit = true;
-                    getLogger().info("Found plugin \"SimpleSit\". GSit support enabled.");
+                    getLogger().info("Found plugin \"SimpleSit\". SimpleSit support enabled.");
                 }
-
-                if (pluginManager.getPlugin("PlaceholderAPI") != null) new PlaceholderAPIHook().register();
-                else getLogger().info("PlaceholderAPI plugin not found. Continuing without PlaceholderAPI.");
-
-                if (this.getServer().getPluginManager().getPlugin("Floodgate") != null) hasFloodgate = true;
-                else getLogger().info("Floodgate plugin not found. Continuing without Floodgate.");
 
                 getCommand("followers").setExecutor(new FollowerCmd(guiPlayerSet));
                 getCommand("gethexarmor").setExecutor(new GetHexArmorCmd());
@@ -102,12 +104,7 @@ public final class Followers extends JavaPlugin {
             }
         });
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                tickCount += 1;
-            }
-        }.runTaskTimer(plugin, 1, 1);
+        Bukkit.getScheduler().runTaskTimer(plugin, () -> tickCount++, 1, 1);
     }
 
     @Override
@@ -117,10 +114,6 @@ public final class Followers extends JavaPlugin {
 
     public static Followers getInstance() {
         return plugin;
-    }
-
-    public static boolean hasGSit() {
-        return hasGSit;
     }
 
     public static boolean hasFloodgate() {
