@@ -1,5 +1,6 @@
 package me.dave.followers;
 
+import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.apis.PlaceholderAPIHook;
 import me.dave.followers.apis.SimpleSitHook;
 import me.dave.followers.events.WorldEvents;
@@ -23,7 +24,6 @@ import me.dave.followers.apis.EssentialsHook;
 import me.dave.followers.events.FollowerGUIEvents;
 import me.dave.followers.events.FollowerUserEvents;
 import me.dave.followers.utils.SkullCreator;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -46,6 +46,7 @@ public final class Followers extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
+        ChatColorHandler.enableMiniMessage(true);
         setThreadIOName();
         configManager = new ConfigManager();
         dataManager = new DataManager();
