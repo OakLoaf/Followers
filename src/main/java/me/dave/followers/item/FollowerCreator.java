@@ -16,17 +16,11 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class FollowerCreator implements Listener {
-    private final ItemStack creatorItem;
+import java.util.ArrayList;
+import java.util.Arrays;
 
-    public FollowerCreator() {
-        creatorItem = new ItemStack(Material.TOTEM_OF_UNDYING);
-        ItemMeta creatorMeta = creatorItem.getItemMeta();
-        creatorMeta.setDisplayName("Follower Creator");
-        creatorMeta.addEnchant(Enchantment.DURABILITY, 1, false);
-        creatorMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        creatorItem.setItemMeta(creatorMeta);
-    }
+public class FollowerCreator implements Listener {
+    private static final ItemStack creatorItem = getOrLoadCreatorItem();
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractAtEntityEvent event) {
@@ -67,5 +61,18 @@ public class FollowerCreator implements Listener {
 
     public ItemStack getCreatorItem() {
         return creatorItem;
+    }
+
+    public static ItemStack getOrLoadCreatorItem() {
+        if (creatorItem != null) return creatorItem;
+
+        ItemStack item = new ItemStack(Material.TOTEM_OF_UNDYING);
+        ItemMeta creatorMeta = item.getItemMeta();
+        creatorMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("<gradient:#FBDA00:#EEFDEA>Follower Creator"));
+        creatorMeta.setLore(ChatColorHandler.translateAlternateColorCodes(Arrays.asList("&7Right Click an Armor Stand", "&7to turn it into a new Follower!")));
+        creatorMeta.addEnchant(Enchantment.DURABILITY, 1, false);
+        creatorMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        item.setItemMeta(creatorMeta);
+        return item;
     }
 }
