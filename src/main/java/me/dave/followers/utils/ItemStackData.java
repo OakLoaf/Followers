@@ -49,22 +49,25 @@ public class ItemStackData {
         }
 
         ItemMeta itemMeta = item.getItemMeta();
-        String displayName = configurationSection.getString("name");
-        if (displayName != null) itemMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes(displayName));
+        if (itemMeta != null) {
+            String displayName = configurationSection.getString("name");
+            if (displayName != null) itemMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes(displayName));
 
-        List<String> loreList = new ArrayList<>();
-        configurationSection.getStringList("lore").forEach((loreLine) -> loreList.add(ChatColorHandler.translateAlternateColorCodes(loreLine)));
-        itemMeta.setLore(loreList);
+            List<String> loreList = new ArrayList<>();
+            configurationSection.getStringList("lore").forEach((loreLine) -> loreList.add(ChatColorHandler.translateAlternateColorCodes(loreLine)));
+            itemMeta.setLore(loreList);
 
-        int customModelData = configurationSection.getInt("customModelData", -1);
-        if (customModelData >= 0) itemMeta.setCustomModelData(customModelData);
+            int customModelData = configurationSection.getInt("customModelData", -1);
+            if (customModelData >= 0) itemMeta.setCustomModelData(customModelData);
 
-        if (isEnchanted) {
-            itemMeta.addEnchant(Enchantment.DURABILITY, 1, false);
-            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            if (isEnchanted) {
+                itemMeta.addEnchant(Enchantment.DURABILITY, 1, false);
+                itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            }
+
+            item.setItemMeta(itemMeta);
         }
 
-        item.setItemMeta(itemMeta);
         return item;
     }
 
