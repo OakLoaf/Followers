@@ -43,8 +43,8 @@ public class FollowerGUIEvents implements Listener {
         if (clickedInv.getType() != InventoryType.CHEST) return;
         ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null) return;
-        if (clickedItem.isSimilar(Followers.configManager.getGuiItem("no-followers")) || clickedItem.getItemMeta().getPersistentDataContainer().has(pageNumKey, PersistentDataType.INTEGER)) return;
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("follower-toggle.enabled")) || clickedItem.isSimilar(Followers.configManager.getGuiItem("follower-toggle.disabled"))) {
+        if (clickedItem.isSimilar(Followers.configManager.getGuiItem("no-followers", Material.BARRIER)) || clickedItem.getItemMeta().getPersistentDataContainer().has(pageNumKey, PersistentDataType.INTEGER)) return;
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("follower-toggle.enabled", Material.LIME_WOOL)) || clickedItem.isSimilar(Followers.configManager.getGuiItem("follower-toggle.disabled", Material.RED_WOOL))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             if (!followerUser.isFollowerEnabled()) {
                 if (followerUser.getFollowerEntity() == null) {
@@ -59,21 +59,21 @@ public class FollowerGUIEvents implements Listener {
             FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
             followerInv.openInventory(player);
             return;
-        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("next-page"))) {
+        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("next-page", Material.ARROW))) {
             FollowerGUI followerInv = new FollowerGUI(player, page + 1, openInvPlayerSet);
             followerInv.openInventory(player);
             return;
-        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("previous-page"))) {
+        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("previous-page", Material.ARROW))) {
             FollowerGUI followerInv = new FollowerGUI(player, page - 1, openInvPlayerSet);
             followerInv.openInventory(player);
             return;
-        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("random.enabled"))) {
+        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("random.enabled", Material.CONDUIT))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             followerUser.setRandom(false);
             FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
             followerInv.openInventory(player);
             return;
-        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("random.disabled"))) {
+        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("random.disabled", Material.CONDUIT))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             followerUser.setRandom(true);
             followerUser.randomizeFollowerType();

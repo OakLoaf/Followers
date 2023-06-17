@@ -49,26 +49,26 @@ public class FollowerGUI {
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
         if (!followerSet.isEmpty()) {
             ItemStack followerToggle;
-            if (followerUser.isFollowerEnabled()) followerToggle = Followers.configManager.getGuiItem("follower-toggle.enabled");
-            else followerToggle = Followers.configManager.getGuiItem("follower-toggle.disabled");
+            if (followerUser.isFollowerEnabled()) followerToggle = Followers.configManager.getGuiItem("follower-toggle.enabled", Material.LIME_WOOL);
+            else followerToggle = Followers.configManager.getGuiItem("follower-toggle.disabled", Material.RED_WOOL);
             inventory.setItem(49, followerToggle);
         } else {
-            ItemStack noFollowers = Followers.configManager.getGuiItem("no-followers");
+            ItemStack noFollowers = Followers.configManager.getGuiItem("no-followers", Material.BARRIER);
             inventory.setItem(22, noFollowers);
         }
 
         if (followerSet.size() > page * 36) {
-            ItemStack nextPage = Followers.configManager.getGuiItem("next-page");
+            ItemStack nextPage = Followers.configManager.getGuiItem("next-page", Material.ARROW);
             inventory.setItem(50, nextPage);
         }
         if (page > 1) {
-            ItemStack previousPage = Followers.configManager.getGuiItem("previous-page");
+            ItemStack previousPage = Followers.configManager.getGuiItem("previous-page", Material.ARROW);
             inventory.setItem(48, previousPage);
         }
         if (player.hasPermission("follower.name")) {
             ItemStack followerName;
-            if (followerUser.isDisplayNameEnabled()) followerName = Followers.configManager.getGuiItem("nickname.shown");
-            else followerName = Followers.configManager.getGuiItem("nickname.hidden");
+            if (followerUser.isDisplayNameEnabled()) followerName = Followers.configManager.getGuiItem("nickname.shown", Material.NAME_TAG);
+            else followerName = Followers.configManager.getGuiItem("nickname.hidden", Material.NAME_TAG);
 
             ItemMeta itemMeta = followerName.getItemMeta();
             itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll("%nickname%", followerUser.getDisplayName()));
@@ -78,8 +78,8 @@ public class FollowerGUI {
         }
         if (player.hasPermission("follower.random")) {
             ItemStack followerName;
-            if (followerUser.isRandomType()) followerName = Followers.configManager.getGuiItem("random.enabled");
-            else followerName = Followers.configManager.getGuiItem("random.disabled");
+            if (followerUser.isRandomType()) followerName = Followers.configManager.getGuiItem("random.enabled", Material.CONDUIT);
+            else followerName = Followers.configManager.getGuiItem("random.disabled", Material.CONDUIT);
             inventory.setItem(46, followerName);
         }
     }
