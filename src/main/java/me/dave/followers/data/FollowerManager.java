@@ -62,7 +62,7 @@ public class FollowerManager {
                 case HAND -> equipmentSlotName = "mainHand";
                 case OFF_HAND -> equipmentSlotName = "offHand";
             }
-            ItemStackData.save(armorStandEquipment.getItem(equipmentSlot), configurationSection.createSection(equipmentSlotName));
+            ItemStackData.save(armorStandEquipment.getItem(equipmentSlot), configurationSection, equipmentSlotName);
         }
 
         ChatColorHandler.sendMessage(owner, Followers.configManager.getLangMessage("follower-created").replaceAll("%follower%", followerName));

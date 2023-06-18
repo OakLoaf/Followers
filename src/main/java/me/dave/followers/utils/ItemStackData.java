@@ -80,9 +80,11 @@ public class ItemStackData {
         return item;
     }
 
-    public static void save(ItemStack item, ConfigurationSection configurationSection) {
+    public static void save(ItemStack item, ConfigurationSection parentSection, String sectionName) {
         Material material = item.getType();
         if (material == Material.AIR) return;
+
+        ConfigurationSection configurationSection = parentSection.createSection(sectionName);
         configurationSection.set("material", material.toString().toLowerCase());
 
         if (item.getEnchantments().size() >= 1) configurationSection.set("enchanted", "True");
@@ -105,9 +107,12 @@ public class ItemStackData {
         }
 
         if (Bukkit.getVersion().contains("1.20")) {
-            if (item.getItemMeta() instanceof ArmorTrim armorMeta) {
-                configurationSection.set("trim.material", armorMeta.getMaterial().toString().toLowerCase());
-                configurationSection.set("trim.pattern", armorMeta.getPattern().toString().toLowerCase());
+            if (item.getItemMeta() instanceof ArmorMeta armorMeta) {
+                ArmorTrim armorTrim = armorMeta.getTrim();
+                if (armorTrim != null) {
+                    configurationSection.set("trim.material", armorTrim.getMaterial().getKey().toString().replace("minecraft:", "").toLowerCase());
+                    configurationSection.set("trim.pattern", armorTrim.getPattern().getKey().toString().replace("minecraft:", "").toLowerCase());
+                }
             }
         }
     }
