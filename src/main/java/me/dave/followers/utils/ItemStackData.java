@@ -1,17 +1,20 @@
 package me.dave.followers.utils;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
-import org.bukkit.Color;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import net.minecraft.world.item.armortrim.TrimPatterns;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import me.dave.followers.Followers;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.trim.ArmorTrim;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
+import org.bukkit.inventory.meta.trim.TrimPattern;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,12 +47,18 @@ public class ItemStackData {
                 else item = Followers.skullCreator.getPlayerSkull(UUID.fromString(skullUUID));
             }
         }
-        else if (item.getItemMeta() instanceof LeatherArmorMeta) {
-            item = getColoredArmour(material, colour);
-        }
+        if (item.getItemMeta() instanceof LeatherArmorMeta) item = getColoredArmour(material, colour);
 
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta != null) {
+            if (Bukkit.getVersion().contains("1.20") && configurationSection.contains("trim") && itemMeta instanceof ArmorMeta armorMeta) {
+                TrimMaterial trimMaterial = Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(configurationSection.getString("trim.material", "")));
+                TrimPattern trimPattern = Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(configurationSection.getString("trim.pattern", "")));
+                if (trimMaterial != null && trimPattern != null) {
+                    armorMeta.setTrim(new ArmorTrim(trimMaterial, trimPattern));
+                }
+            }
+
             String displayName = configurationSection.getString("name");
             if (displayName != null) itemMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes(displayName));
 
@@ -93,6 +102,13 @@ public class ItemStackData {
         } else if (item.getItemMeta() instanceof LeatherArmorMeta armorMeta) {
             Color armorColor = armorMeta.getColor();
             configurationSection.set("color", String.format("%02x%02x%02x", armorColor.getRed(), armorColor.getGreen(), armorColor.getBlue()));
+        }
+
+        if (Bukkit.getVersion().contains("1.20")) {
+            if (item.getItemMeta() instanceof ArmorTrim armorMeta) {
+                configurationSection.set("trim.material", armorMeta.getMaterial().toString().toLowerCase());
+                configurationSection.set("trim.pattern", armorMeta.getPattern().toString().toLowerCase());
+            }
         }
     }
 

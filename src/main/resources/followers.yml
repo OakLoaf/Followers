@@ -61,6 +61,9 @@ Ghost:
   chest:
     material: leather_chestplate
     color: f0ffff
+    trim:
+      material: diamond
+      pattern: eye
 Bee:
   visible: false
   head:
