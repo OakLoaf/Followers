@@ -1,6 +1,6 @@
 package me.dave.followers.events;
 
-import me.dave.followers.entity.pose.FollowerPose;
+import me.dave.followers.entity.poses.FollowerPose;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
