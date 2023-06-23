@@ -29,7 +29,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.2")
     compileOnly(files("libs/SimpleSit.jar"))
     shadow("mysql:mysql-connector-java:8.0.25")
-    shadow("com.github.CoolDCB:ChatColorHandler:v1.2.3")
+    shadow("com.github.CoolDCB:ChatColorHandler:v1.2.5")
 }
 
 java {
@@ -40,8 +40,8 @@ java {
 tasks.shadowJar {
     minimize()
     configurations = listOf(project.configurations.shadow.get())
-//    val folder = System.getenv("pluginFolder_1-20")
-    destinationDirectory.set(file("/Users/davidbryce/IdeaProjects/PluginBuilds"))
+    val folder = System.getenv("pluginFolder_1-20")
+    destinationDirectory.set(file(folder))
 }
 
 tasks.processResources {

@@ -1,6 +1,7 @@
-package me.dave.followers;
+package me.dave.followers.gui;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
+import me.dave.followers.Followers;
 import me.dave.followers.entity.FollowerEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -14,23 +15,31 @@ import me.dave.followers.data.FollowerUser;
 
 import java.util.*;
 
-public class FollowerGUI {
-    private final Inventory inventory;
-    private final HashSet<UUID> openInvPlayerSet;
+public class MenuGui extends AbstractGui {
+    private final Inventory inventory = Bukkit.createInventory(null, 54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle()));
+    private final Player player;
+    private int page = 1;
 
-    public FollowerGUI(Player player, int page, HashSet<UUID> playerSet) {
-        this.openInvPlayerSet = playerSet;
-        inventory = Bukkit.createInventory(null, 54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle()));
-        ItemStack empty = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemMeta emptyMeta = empty.getItemMeta();
-        NamespacedKey pageNumKey = new NamespacedKey(Followers.getInstance(), "page");
-        emptyMeta.getPersistentDataContainer().set(pageNumKey, PersistentDataType.INTEGER, page);
-        emptyMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&r"));
-        empty.setItemMeta(emptyMeta);
+    public MenuGui(Player player) {
+        this.player = player;
+        recalculateContents();
+    }
+
+    @Override
+    public String getType() {
+        return "followers-menu";
+    }
+
+    @Override
+    public void recalculateContents() {
+        inventory.clear();
+
+        ItemStack borderItem = getBorderItem();
         for (int i = 0; i < 18; i++) {
-            if (i <= 8) inventory.setItem(i, empty);
-            else inventory.setItem(i + 36, empty);
+            if (i <= 8) inventory.setItem(i, borderItem);
+            else inventory.setItem(i + 36, borderItem);
         }
+
         List<String> followerSet = new ArrayList<>();
         for (String followerName : Followers.followerManager.getFollowerNames()) {
             if (!player.hasPermission("followers." + followerName.toLowerCase().replaceAll(" ", "_"))) continue;
@@ -86,8 +95,32 @@ public class FollowerGUI {
         }
     }
 
-    public void openInventory(Player player) {
-        openInvPlayerSet.add(player.getUniqueId());
+    @Override
+    public void openInventory() {
         player.openInventory(inventory);
+        InventoryHandler.putInventory(player.getUniqueId(), this);
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+        recalculateContents();
+    }
+
+    public void nextPage() {
+        setPage(++page);
+    }
+
+    public void previousPage() {
+        setPage(--page);
+    }
+
+    private ItemStack getBorderItem() {
+        ItemStack borderItem = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemMeta borderMeta = borderItem.getItemMeta();
+        NamespacedKey pageNumKey = new NamespacedKey(Followers.getInstance(), "page");
+        borderMeta.getPersistentDataContainer().set(pageNumKey, PersistentDataType.INTEGER, page);
+        borderMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&r"));
+        borderItem.setItemMeta(borderMeta);
+        return borderItem;
     }
 }

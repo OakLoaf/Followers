@@ -2,7 +2,7 @@ package me.dave.followers.apis;
 
 import dev.geco.gsit.api.event.*;
 import me.dave.followers.data.FollowerUser;
-import me.dave.followers.entity.pose.FollowerPose;
+import me.dave.followers.entity.poses.FollowerPose;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;

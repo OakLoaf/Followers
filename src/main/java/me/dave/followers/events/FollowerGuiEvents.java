@@ -1,8 +1,11 @@
 package me.dave.followers.events;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
-import me.dave.followers.FollowerGUI;
+import me.dave.followers.gui.AbstractGui;
+import me.dave.followers.gui.BuilderGui;
+import me.dave.followers.gui.MenuGui;
 import me.dave.followers.data.FollowerUser;
+import me.dave.followers.gui.InventoryHandler;
 import me.dave.followers.utils.TextInterface;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -14,78 +17,93 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import me.dave.followers.Followers;
 import me.dave.followers.entity.FollowerEntity;
 
-import java.util.HashSet;
 import java.util.UUID;
 
-public class FollowerGUIEvents implements Listener {
+public class FollowerGuiEvents implements Listener {
     private final NamespacedKey pageNumKey = new NamespacedKey(Followers.getInstance(), "page");
-    private final HashSet<UUID> openInvPlayerSet;
-
-    public FollowerGUIEvents(HashSet<UUID> playerSet) {
-        this.openInvPlayerSet = playerSet;
-    }
 
     @EventHandler
     public void onItemClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         UUID playerUUID = player.getUniqueId();
-        if (!openInvPlayerSet.contains(playerUUID)) return;
+
+        Inventory clickedInventory = event.getClickedInventory();
+        if (clickedInventory == null) return;
+
+        AbstractGui playerGui = InventoryHandler.getGui(playerUUID);
+        if (playerGui == null) return;
+
+        switch(playerGui.getType()) {
+            case "followers-menu" -> onFollowerGuiClick(event, (MenuGui) playerGui);
+            case "followers-builder" -> onBuilderGuiClick(event, (BuilderGui) playerGui);
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        new BukkitRunnable() {
+            public void run() {
+                UUID playerUUID = event.getPlayer().getUniqueId();
+                InventoryHandler.removeInventory(playerUUID);
+            }
+        }.runTaskLater(Followers.getInstance(), 1);
+    }
+
+    private void onFollowerGuiClick(InventoryClickEvent event, MenuGui followerGui) {
         event.setCancelled(true);
-        Inventory clickedInv = event.getClickedInventory();
-        if (clickedInv == null) return;
-        int page = getPageNum(clickedInv);
-        if (clickedInv.getType() != InventoryType.CHEST) return;
+
         ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null) return;
+
+        Player player = (Player) event.getWhoClicked();
+
         if (clickedItem.isSimilar(Followers.configManager.getGuiItem("no-followers", Material.BARRIER)) || clickedItem.getItemMeta().getPersistentDataContainer().has(pageNumKey, PersistentDataType.INTEGER)) return;
         else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("follower-toggle.enabled", Material.LIME_WOOL))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             followerUser.disableFollowerEntity();
-            FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
-            followerInv.openInventory(player);
+            followerGui.recalculateContents();
             return;
-        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("follower-toggle.disabled", Material.RED_WOOL))) {
+        }
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("follower-toggle.disabled", Material.RED_WOOL))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             followerUser.respawnFollowerEntity();
             ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
-            FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
-            followerInv.openInventory(player);
+            followerGui.recalculateContents();
             return;
-        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("next-page", Material.ARROW))) {
-            FollowerGUI followerInv = new FollowerGUI(player, page + 1, openInvPlayerSet);
-            followerInv.openInventory(player);
+        }
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("next-page", Material.ARROW))) {
+            followerGui.nextPage();
             return;
-        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("previous-page", Material.ARROW))) {
-            FollowerGUI followerInv = new FollowerGUI(player, page - 1, openInvPlayerSet);
-            followerInv.openInventory(player);
+        }
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("previous-page", Material.ARROW))) {
+            followerGui.previousPage();
             return;
-        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("random.enabled", Material.CONDUIT))) {
+        }
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("random.enabled", Material.CONDUIT))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             followerUser.setRandom(false);
-            FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
-            followerInv.openInventory(player);
+            followerGui.recalculateContents();
             return;
-        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("random.disabled", Material.CONDUIT))) {
+        }
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("random.disabled", Material.CONDUIT))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             followerUser.setRandom(true);
             followerUser.randomizeFollowerType();
-            FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
-            followerInv.openInventory(player);
+            followerGui.recalculateContents();
             return;
-        } else if (clickedItem.getType() == Material.NAME_TAG && clickedItem.getItemMeta().getDisplayName().startsWith(ChatColorHandler.translateAlternateColorCodes("&eFollower Name:"))) {
+        }
+        else if (clickedItem.getType() == Material.NAME_TAG && clickedItem.getItemMeta().getDisplayName().startsWith(ChatColorHandler.translateAlternateColorCodes("&eFollower Name:"))) {
             FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player.getUniqueId()).getFollowerEntity();
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                 player.playSound(player.getEyeLocation(), Sound.BLOCK_LEVER_CLICK, 0.6f, 1.0f);
                 followerEntity.setDisplayNameVisible(!followerUser.isDisplayNameEnabled());
-                FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
-                followerInv.openInventory(player);
+                followerGui.recalculateContents();
                 return;
             }
             player.closeInventory();
@@ -103,39 +121,25 @@ public class FollowerGUIEvents implements Listener {
             }, 5L);
             return;
         }
-        String followerName = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName());
-        FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
-        followerInv.openInventory(player);
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(playerUUID);
-        if (followerUser.isRandomType()) {
-            followerUser.setRandom(false);
-            new FollowerGUI(player, page, openInvPlayerSet).openInventory(player);
-        }
+
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+        if (followerUser.isRandomType()) followerUser.setRandom(false);
+        followerGui.recalculateContents();
 
         FollowerEntity followerEntity = followerUser.getFollowerEntity();
+        String followerName = ChatColorHandler.stripColor(clickedItem.getItemMeta().getDisplayName());
         if (followerEntity != null) followerEntity.setFollowerType(followerName);
         else followerUser.spawnFollowerEntity();
+
         ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
     }
 
-    @EventHandler
-    public void onInventoryClose(InventoryCloseEvent event) {
-        new BukkitRunnable() {
-            public void run() {
-                if (event.getPlayer().getOpenInventory().getType() != InventoryType.CHEST) {
-                    UUID playerUUID = event.getPlayer().getUniqueId();
-                    openInvPlayerSet.remove(playerUUID);
-                }
-            }
-        }.runTaskLater(Followers.getInstance(), 1);
-    }
+    private void onBuilderGuiClick(InventoryClickEvent event, BuilderGui builderGui) {
+        event.setCancelled(true);
 
-    private int getPageNum(Inventory inventory) {
-        ItemStack item = inventory.getItem(0);
-        if (item == null) return 0;
-        ItemMeta itemMeta = item.getItemMeta();
-        if (itemMeta == null) return 0;
-        if (itemMeta.getPersistentDataContainer().get(pageNumKey, PersistentDataType.INTEGER) == null) return 0;
-        return itemMeta.getPersistentDataContainer().get(pageNumKey, PersistentDataType.INTEGER);
+        ItemStack clickedItem = event.getCurrentItem();
+        if (clickedItem == null) return;
+
+        Player player = (Player) event.getWhoClicked();
     }
 }

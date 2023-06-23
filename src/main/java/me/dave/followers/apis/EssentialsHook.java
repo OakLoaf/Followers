@@ -2,7 +2,7 @@ package me.dave.followers.apis;
 
 import com.earth2me.essentials.Essentials;
 import me.dave.followers.data.FollowerUser;
-import me.dave.followers.entity.pose.FollowerPose;
+import me.dave.followers.entity.poses.FollowerPose;
 import net.ess3.api.IUser;
 import net.ess3.api.events.AfkStatusChangeEvent;
 import org.bukkit.Bukkit;

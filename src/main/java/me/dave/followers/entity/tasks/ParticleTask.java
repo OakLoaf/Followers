@@ -1,5 +1,6 @@
-package me.dave.followers.entity;
+package me.dave.followers.entity.tasks;
 
+import me.dave.followers.entity.FollowerEntity;
 import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -9,7 +10,7 @@ public class ParticleTask extends BukkitRunnable {
     private final Particle particle;
 
     public ParticleTask(FollowerEntity follower, Particle particle) {
-        this.armorStand = follower.bodyArmorStand;
+        this.armorStand = follower.getBodyArmorStand();
         this.particle = particle;
     }
 

@@ -78,13 +78,23 @@ public class FollowerHandler {
 
 
     protected static class Builder {
-        private ItemStack head = null;
+        private ItemStack head;
         private ItemStack chest;
         private ItemStack legs;
         private ItemStack feet;
         private ItemStack mainHand;
         private ItemStack offHand;
         private boolean visible;
+
+        public Builder(FollowerHandler handler) {
+            this.head = handler.getHead();
+            this.chest = handler.getChest();
+            this.legs = handler.getLegs();
+            this.feet = handler.getFeet();
+            this.mainHand = handler.getMainHand();
+            this.offHand = handler.getOffHand();
+            this.visible = handler.isVisible;
+        }
 
         public Builder setSlot(EquipmentSlot slot, ItemStack item) {
             switch(slot) {

@@ -2,7 +2,9 @@ package me.dave.followers.entity;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.Followers;
-import me.dave.followers.entity.pose.FollowerPose;
+import me.dave.followers.entity.poses.FollowerPose;
+import me.dave.followers.entity.tasks.MoveTask;
+import me.dave.followers.entity.tasks.ParticleTask;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -19,12 +21,12 @@ import java.util.UUID;
 
 public class FollowerEntity {
     private static final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
-    protected final Player player;
-    protected final ArmorStand bodyArmorStand;
-    protected ArmorStand nameArmorStand;
+    private final Player player;
+    private final ArmorStand bodyArmorStand;
+    private ArmorStand nameArmorStand;
     private UUID nameArmorStandUUID;
     private String followerType;
-    protected boolean isPlayerInvisible;
+    private boolean isPlayerInvisible;
     private FollowerPose pose;
     public boolean isAlive;
     private boolean dying;
@@ -51,6 +53,26 @@ public class FollowerEntity {
         startMovement();
 
         Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::reloadInventory, 5);
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public boolean isPlayerInvisible() {
+        return isPlayerInvisible;
+    }
+
+    public void setPlayerInvisible(boolean invisible) {
+        isPlayerInvisible = invisible;
+    }
+
+    public ArmorStand getBodyArmorStand() {
+        return bodyArmorStand;
+    }
+
+    public ArmorStand getNameArmorStand() {
+        return nameArmorStand;
     }
 
     public void setFollowerType(String newFollower) {

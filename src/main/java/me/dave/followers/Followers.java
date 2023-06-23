@@ -21,18 +21,14 @@ import me.dave.followers.data.DataManager;
 import me.dave.followers.data.FollowerManager;
 import me.dave.followers.storage.Storage;
 import me.dave.followers.apis.EssentialsHook;
-import me.dave.followers.events.FollowerGUIEvents;
+import me.dave.followers.events.FollowerGuiEvents;
 import me.dave.followers.events.FollowerUserEvents;
-
-import java.util.HashSet;
-import java.util.UUID;
 
 public final class Followers extends JavaPlugin {
     private static Followers plugin;
     public static DataManager dataManager;
     public static ConfigManager configManager;
     public static FollowerManager followerManager;
-    private final HashSet<UUID> guiPlayerSet = new HashSet<>();
     private final NamespacedKey followerKey = new NamespacedKey(this, "Follower");
     private static int tickCount;
     private static boolean hasFloodgate = false;
@@ -54,7 +50,7 @@ public final class Followers extends JavaPlugin {
 
                 Listener[] listeners = new Listener[]{
                         new FollowerUserEvents(),
-                        new FollowerGUIEvents(guiPlayerSet),
+                        new FollowerGuiEvents(),
                         new WorldEvents(),
                         new FollowerCreator()
                 };
@@ -86,7 +82,7 @@ public final class Followers extends JavaPlugin {
                     getLogger().info("Found plugin \"SimpleSit\". SimpleSit support enabled.");
                 }
 
-                getCommand("followers").setExecutor(new FollowerCmd(guiPlayerSet));
+                getCommand("followers").setExecutor(new FollowerCmd());
                 getCommand("gethexarmor").setExecutor(new GetHexArmorCmd());
                 getCommand("dye").setExecutor(new DyeCmd());
 

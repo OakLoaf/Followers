@@ -1,6 +1,7 @@
 package me.dave.followers.commands;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
+import me.dave.followers.gui.BuilderGui;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -9,17 +10,12 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import me.dave.followers.item.FollowerCreator;
 import me.dave.followers.Followers;
-import me.dave.followers.FollowerGUI;
+import me.dave.followers.gui.MenuGui;
 import me.dave.followers.data.FollowerHandler;
 
 import java.util.*;
 
 public class FollowerCmd implements CommandExecutor, TabCompleter {
-    private final HashSet<UUID> openInvPlayerSet;
-
-    public FollowerCmd(HashSet<UUID> openInvPlayerSet) {
-        this.openInvPlayerSet = openInvPlayerSet;
-    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) {
@@ -54,6 +50,13 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                 }
                 ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/follower delete <follower_name>"));
                 return true;
+            } else if (args[0].equalsIgnoreCase("edit")) {
+                if (!sender.hasPermission("follower.admin.edit")) {
+                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
+                    return true;
+                }
+                ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/follower edit <follower_name>"));
+                return true;
             }
         }
         if (args.length >= 2) {
@@ -76,13 +79,36 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                 }
                 return true;
             }
+            else if (args[0].equalsIgnoreCase("edit")) {
+                if (!(sender instanceof Player player)) {
+                    sender.sendMessage("Console cannot run this command!");
+                    return true;
+                }
+                if (!sender.hasPermission("follower.admin.edit")) {
+                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
+                    return true;
+                }
+                String[] temp = Arrays.copyOfRange(args, 1, args.length);
+                StringBuilder followerName = new StringBuilder();
+                for (String currString : temp) {
+                    followerName.append(currString).append(" ");
+                }
+                String followerNameFinal = followerName.substring(0, followerName.length() - 1);
+                FollowerHandler follower = Followers.followerManager.getFollower(followerNameFinal);
+                if (follower == null) ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerNameFinal));
+                else {
+                    BuilderGui builderGui = new BuilderGui(player);
+                    builderGui.openInventory();
+                }
+                return true;
+            }
         }
         if (!(sender instanceof Player player)) {
             sender.sendMessage("Console cannot run this command!");
             return true;
         }
-        FollowerGUI followerInv = new FollowerGUI(player, 1, openInvPlayerSet);
-        followerInv.openInventory(player);
+        MenuGui menuGui = new MenuGui(player);
+        menuGui.openInventory();
         return true;
     }
 
@@ -94,11 +120,15 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
         boolean wordCompletionSuccess = false;
 
         if (args.length == 1) {
-            if (commandSender.hasPermission("follower.admin.reload")) tabComplete.add("reload");
             if (commandSender.hasPermission("follower.admin.create")) tabComplete.add("create");
             if (commandSender.hasPermission("follower.admin.delete")) tabComplete.add("delete");
+            if (commandSender.hasPermission("follower.admin.edit")) tabComplete.add("edit");
+            if (commandSender.hasPermission("follower.admin.reload")) tabComplete.add("reload");
         } else if (args.length == 2) {
-            if (commandSender.hasPermission("follower.admin.delete")) {
+            if (args[0].equalsIgnoreCase("delete") && commandSender.hasPermission("follower.admin.delete")) {
+                tabComplete.addAll(Followers.followerManager.getFollowerNames());
+            }
+            else if (args[0].equalsIgnoreCase("edit") && commandSender.hasPermission("follower.admin.edit")) {
                 tabComplete.addAll(Followers.followerManager.getFollowerNames());
             }
         }

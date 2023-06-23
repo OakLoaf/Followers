@@ -1,9 +1,9 @@
-package me.dave.followers.entity.pose;
+package me.dave.followers.entity.poses;
 
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.util.EulerAngle;
 
-public class PoseStack {
+public class PoseData {
     private EulerAngle headPose;
     private EulerAngle bodyPose;
     private EulerAngle leftArmPose;
@@ -11,32 +11,32 @@ public class PoseStack {
     private EulerAngle leftLegPose;
     private EulerAngle rightLegPose;
 
-    public PoseStack setHeadPose(EulerAngle eulerAngle) {
+    public PoseData setHeadPose(EulerAngle eulerAngle) {
         this.headPose = eulerAngle;
         return this;
     }
 
-    public PoseStack setBodyPose(EulerAngle eulerAngle) {
+    public PoseData setBodyPose(EulerAngle eulerAngle) {
         this.bodyPose = eulerAngle;
         return this;
     }
 
-    public PoseStack setLeftArmPose(EulerAngle eulerAngle) {
+    public PoseData setLeftArmPose(EulerAngle eulerAngle) {
         this.leftArmPose = eulerAngle;
         return this;
     }
 
-    public PoseStack setRightArmPose(EulerAngle eulerAngle) {
+    public PoseData setRightArmPose(EulerAngle eulerAngle) {
         this.rightArmPose = eulerAngle;
         return this;
     }
 
-    public PoseStack setLeftLegPose(EulerAngle eulerAngle) {
+    public PoseData setLeftLegPose(EulerAngle eulerAngle) {
         this.leftLegPose = eulerAngle;
         return this;
     }
 
-    public PoseStack setRightLegPose(EulerAngle eulerAngle) {
+    public PoseData setRightLegPose(EulerAngle eulerAngle) {
         this.rightLegPose = eulerAngle;
         return this;
     }

@@ -2,7 +2,7 @@ package me.dave.followers.data;
 
 import me.dave.followers.Followers;
 import me.dave.followers.entity.FollowerEntity;
-import me.dave.followers.entity.pose.FollowerPose;
+import me.dave.followers.entity.poses.FollowerPose;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
