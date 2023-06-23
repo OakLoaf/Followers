@@ -2,35 +2,50 @@ package me.dave.followers.utils;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.UUID;
 
 public class SkullCreator {
-    private Field field_SkullMeta_profile;
+    private static Method skullMetaSetProfileMethod;
+    private static Field skullMetaProfileField;
 
-    public ItemStack getPlayerSkull(UUID uuid) {
-        return dev.dbassett.skullcreator.SkullCreator.itemFromUuid(uuid);
+    public static ItemStack getPlayerSkull(UUID uuid) {
+        ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta meta = (SkullMeta) item.getItemMeta();
+        meta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
+        item.setItemMeta(meta);
+        return item;
     }
 
-    public ItemStack getCustomSkull(String texture) {
-        return dev.dbassett.skullcreator.SkullCreator.itemFromBase64(texture);
+    public static ItemStack getCustomSkull(String texture) {
+        ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+        if (item.getItemMeta() instanceof SkullMeta meta) {
+            mutateItemMeta(meta, texture);
+            item.setItemMeta(meta);
+            return item;
+        } else {
+            return null;
+        }
     }
 
-    public String getB64(ItemStack itemStack) {
+    public static String getB64(ItemStack itemStack) {
         try {
             if (itemStack.getType() == Material.PLAYER_HEAD && itemStack.hasItemMeta()) {
                 SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
                 if (!skullMeta.hasOwner()) {
-                    if (field_SkullMeta_profile == null) {
-                        field_SkullMeta_profile = skullMeta.getClass().getDeclaredField("profile");
-                        field_SkullMeta_profile.setAccessible(true);
+                    if (skullMetaProfileField == null) {
+                        skullMetaProfileField = skullMeta.getClass().getDeclaredField("profile");
+                        skullMetaProfileField.setAccessible(true);
                     }
-                    GameProfile gameProfile = (GameProfile) field_SkullMeta_profile.get(skullMeta);
+                    GameProfile gameProfile = (GameProfile) skullMetaProfileField.get(skullMeta);
                     Iterator<Property> iterator = gameProfile.getProperties().get("textures").iterator();
                     if (iterator.hasNext()) {
                         Property property = iterator.next();
@@ -42,5 +57,35 @@ public class SkullCreator {
         } catch (Exception exception) {
             return "";
         }
+    }
+
+    private static void mutateItemMeta(SkullMeta meta, String b64) {
+        try {
+            if (skullMetaSetProfileMethod == null) {
+                skullMetaSetProfileMethod = meta.getClass().getDeclaredMethod("setProfile", GameProfile.class);
+                skullMetaSetProfileMethod.setAccessible(true);
+            }
+
+            skullMetaSetProfileMethod.invoke(meta, makeProfile(b64));
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException var5) {
+            try {
+                if (skullMetaProfileField == null) {
+                    skullMetaProfileField = meta.getClass().getDeclaredField("profile");
+                    skullMetaProfileField.setAccessible(true);
+                }
+
+                skullMetaProfileField.set(meta, makeProfile(b64));
+            } catch (IllegalAccessException | NoSuchFieldException var4) {
+                var4.printStackTrace();
+            }
+        }
+
+    }
+
+    private static GameProfile makeProfile(String b64) {
+        UUID id = new UUID(b64.substring(b64.length() - 20).hashCode(), (long)b64.substring(b64.length() - 10).hashCode());
+        GameProfile profile = new GameProfile(id, "Player");
+        profile.getProperties().put("textures", new Property("textures", b64));
+        return profile;
     }
 }

@@ -1,7 +1,6 @@
 package me.dave.followers.utils;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
-import net.minecraft.world.item.armortrim.TrimPatterns;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
@@ -10,7 +9,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import me.dave.followers.Followers;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
@@ -40,11 +38,11 @@ public class ItemStackData {
             String skullType = configurationSection.getString("skullType", "");
             if (skullType.equalsIgnoreCase("custom")) {
                 String skullTexture = configurationSection.getString("texture");
-                if (skullTexture != null) item = Followers.skullCreator.getCustomSkull(skullTexture);
+                if (skullTexture != null) item = SkullCreator.getCustomSkull(skullTexture);
             } else {
                 String skullUUID = configurationSection.getString("uuid");
                 if (skullUUID == null || skullUUID.equalsIgnoreCase("error")) item = new ItemStack(Material.PLAYER_HEAD);
-                else item = Followers.skullCreator.getPlayerSkull(UUID.fromString(skullUUID));
+                else item = SkullCreator.getPlayerSkull(UUID.fromString(skullUUID));
             }
         }
         if (item.getItemMeta() instanceof LeatherArmorMeta) item = getColoredArmour(material, colour);
@@ -94,7 +92,7 @@ public class ItemStackData {
             OfflinePlayer skullOwner = skullMeta.getOwningPlayer();
             if (skullOwner == null) {
                 configurationSection.set("skullType", "custom");
-                String textureStr = Followers.skullCreator.getB64(item);
+                String textureStr = SkullCreator.getB64(item);
                 configurationSection.set("texture", textureStr);
                 return;
             }

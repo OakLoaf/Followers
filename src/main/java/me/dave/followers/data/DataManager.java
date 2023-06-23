@@ -32,12 +32,7 @@ public class DataManager {
                 storage = new YmlStorage();
             }
             final boolean init = storage.init();
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    onComplete.accept(init);
-                }
-            }.runTask(Followers.getInstance());
+            Bukkit.getScheduler().runTask(Followers.getInstance(), () -> onComplete.accept(init));
         });
     }
 

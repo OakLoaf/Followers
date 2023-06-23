@@ -23,7 +23,6 @@ import me.dave.followers.storage.Storage;
 import me.dave.followers.apis.EssentialsHook;
 import me.dave.followers.events.FollowerGUIEvents;
 import me.dave.followers.events.FollowerUserEvents;
-import me.dave.followers.utils.SkullCreator;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -33,7 +32,6 @@ public final class Followers extends JavaPlugin {
     public static DataManager dataManager;
     public static ConfigManager configManager;
     public static FollowerManager followerManager;
-    public static final SkullCreator skullCreator = new SkullCreator();
     private final HashSet<UUID> guiPlayerSet = new HashSet<>();
     private final NamespacedKey followerKey = new NamespacedKey(this, "Follower");
     private static int tickCount;
@@ -101,7 +99,7 @@ public final class Followers extends JavaPlugin {
                     }
                 }
             } else {
-                Bukkit.getLogger().severe("Could not initialise the data. Aborting further plugin setup.");
+                Followers.getInstance().getLogger().severe("Could not initialise the data. Aborting further plugin setup.");
             }
         });
 
