@@ -1,6 +1,7 @@
 package me.dave.followers;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
+import me.dave.followers.entity.FollowerEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -49,7 +50,8 @@ public class FollowerGUI {
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
         if (!followerSet.isEmpty()) {
             ItemStack followerToggle;
-            if (followerUser.isFollowerEnabled()) followerToggle = Followers.configManager.getGuiItem("follower-toggle.enabled", Material.LIME_WOOL);
+            FollowerEntity followerEntity = followerUser.getFollowerEntity();
+            if (followerUser.isFollowerEnabled() && followerEntity != null && followerEntity.isAlive) followerToggle = Followers.configManager.getGuiItem("follower-toggle.enabled", Material.LIME_WOOL);
             else followerToggle = Followers.configManager.getGuiItem("follower-toggle.disabled", Material.RED_WOOL);
             inventory.setItem(49, followerToggle);
         } else {

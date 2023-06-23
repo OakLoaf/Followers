@@ -44,18 +44,16 @@ public class FollowerGUIEvents implements Listener {
         ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null) return;
         if (clickedItem.isSimilar(Followers.configManager.getGuiItem("no-followers", Material.BARRIER)) || clickedItem.getItemMeta().getPersistentDataContainer().has(pageNumKey, PersistentDataType.INTEGER)) return;
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("follower-toggle.enabled", Material.LIME_WOOL)) || clickedItem.isSimilar(Followers.configManager.getGuiItem("follower-toggle.disabled", Material.RED_WOOL))) {
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("follower-toggle.enabled", Material.LIME_WOOL))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
-            if (!followerUser.isFollowerEnabled()) {
-                if (followerUser.getFollowerEntity() == null) {
-                    followerUser.spawnFollowerEntity();
-                    ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
-                }
-            } else {
-                FollowerEntity followerEntity = followerUser.getFollowerEntity();
-                if (followerEntity == null) Followers.dataManager.getFollowerUser(playerUUID).setFollowerEnabled(false);
-                else followerUser.disableFollowerEntity();
-            }
+            followerUser.disableFollowerEntity();
+            FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
+            followerInv.openInventory(player);
+            return;
+        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("follower-toggle.disabled", Material.RED_WOOL))) {
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+            followerUser.respawnFollowerEntity();
+            ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
             FollowerGUI followerInv = new FollowerGUI(player, page, openInvPlayerSet);
             followerInv.openInventory(player);
             return;

@@ -7,6 +7,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.persistence.PersistentDataType;
 import me.dave.followers.Followers;
@@ -57,10 +58,19 @@ public class FollowerUserEvents implements Listener {
     }
 
     @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity();
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+        if (followerUser == null) return;
+        followerUser.getFollowerEntity().kill();
+    }
+
+    @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
         if (followerUser == null) return;
+        if (followerUser.isFollowerEnabled()) Bukkit.getScheduler().runTaskLater(Followers.getInstance(), followerUser::respawnFollowerEntity, 1);
         if (followerUser.isRandomType()) followerUser.randomizeFollowerType();
     }
 }

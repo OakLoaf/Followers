@@ -129,7 +129,7 @@ public class FollowerUser {
     public void spawnFollowerEntity() {
         removeFollowerEntity();
         Player player = Bukkit.getPlayer(uuid);
-        if (player == null) return;
+        if (player == null || player.isDead()) return;
 
         Chunk chunk = player.getLocation().getChunk();
         if (!chunk.isLoaded()) {
@@ -151,9 +151,9 @@ public class FollowerUser {
     }
 
     public void disableFollowerEntity() {
+        setFollowerEnabled(false);
         if (followerEntity == null || !followerEntity.isAlive) return;
         followerEntity.deactivate();
         followerEntity = null;
-        setFollowerEnabled(false);
     }
 }
