@@ -7,7 +7,7 @@ plugins {
 
 
 group = "me.dave"
-version = "1.4.1"
+version = "1.4.2"
 
 repositories {
     mavenCentral()
@@ -17,7 +17,6 @@ repositories {
     maven { url = uri("https://ci.ender.zone/plugin/repository/everything/") }
     maven { url = uri("https://repo.dmulloy2.net/repository/public/") }
     maven { url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/")}
-    maven { url = uri("https://github.com/deanveloper/SkullCreator/raw/mvn-repo/") }
     maven { url = uri("https://jitpack.io") }
 }
 
