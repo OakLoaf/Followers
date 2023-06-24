@@ -22,7 +22,6 @@ public class MenuGui extends AbstractGui {
 
     public MenuGui(Player player) {
         this.player = player;
-        recalculateContents();
     }
 
     @Override
@@ -97,6 +96,7 @@ public class MenuGui extends AbstractGui {
 
     @Override
     public void openInventory() {
+        recalculateContents();
         player.openInventory(inventory);
         InventoryHandler.putInventory(player.getUniqueId(), this);
     }

@@ -1,6 +1,7 @@
 package me.dave.followers.commands;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
+import me.dave.followers.exceptions.ObjectNameLockedException;
 import me.dave.followers.gui.BuilderGui;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -94,10 +95,15 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     followerName.append(currString).append(" ");
                 }
                 String followerNameFinal = followerName.substring(0, followerName.length() - 1);
-                FollowerHandler follower = Followers.followerManager.getFollower(followerNameFinal);
-                if (follower == null) ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerNameFinal));
+                FollowerHandler followerHandler = Followers.followerManager.getFollower(followerNameFinal);
+                if (followerHandler == null) ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerNameFinal));
                 else {
-                    BuilderGui builderGui = new BuilderGui(player);
+                    FollowerHandler.Builder followerBuilder = new FollowerHandler.Builder(followerHandler);
+                    try {
+                        followerBuilder.setName(followerNameFinal);
+                    } catch (ObjectNameLockedException ignored) {}
+
+                    BuilderGui builderGui = new BuilderGui(player, followerBuilder.setNameLocked(true));
                     builderGui.openInventory();
                 }
                 return true;

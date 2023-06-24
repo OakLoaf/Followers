@@ -40,7 +40,8 @@ java {
 tasks.shadowJar {
     minimize()
     configurations = listOf(project.configurations.shadow.get())
-    val folder = System.getenv("pluginFolder_1-20")
+    var folder = System.getenv("pluginFolder_1-20")
+    if (folder == null) folder = "/Users/davidbryce/IdeaProjects/PluginBuilds"
     destinationDirectory.set(file(folder))
 }
 

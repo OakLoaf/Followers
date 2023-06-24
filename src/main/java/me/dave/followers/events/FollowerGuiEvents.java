@@ -1,6 +1,7 @@
 package me.dave.followers.events;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
+import me.dave.followers.exceptions.ObjectNameLockedException;
 import me.dave.followers.gui.AbstractGui;
 import me.dave.followers.gui.BuilderGui;
 import me.dave.followers.gui.MenuGui;
@@ -141,5 +142,34 @@ public class FollowerGuiEvents implements Listener {
         if (clickedItem == null) return;
 
         Player player = (Player) event.getWhoClicked();
+
+        if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-name.default", Material.OAK_SIGN))) {
+            TextInterface textInterface = new TextInterface();
+            textInterface.title("Enter Name:");
+            textInterface.placeholder("Enter follower name");
+            textInterface.getInput(player, (output) -> {
+                if (output.equals("")) {
+                    ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-no-name"));
+                    return;
+                }
+                String finalOutput = output.replaceAll("\\.", "-");
+                Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
+                    try {
+                        builderGui.getBuilder().setName(finalOutput);
+                    } catch (ObjectNameLockedException ignored) {}
+                    builderGui.openInventory();
+                });
+            });
+        }
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-visible.visible", Material.GLASS))) {
+            builderGui.getBuilder().setVisible(false);
+            builderGui.recalculateContents();
+        }
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-visible.invisible", Material.WHITE_STAINED_GLASS))) {
+            builderGui.getBuilder().setVisible(true);
+            builderGui.recalculateContents();
+        }
+
+        builderGui.recalculateContents();
     }
 }
