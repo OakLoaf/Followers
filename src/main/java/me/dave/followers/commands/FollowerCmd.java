@@ -77,6 +77,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                 else {
                     Followers.followerManager.removeFollower(followerNameFinal);
                     ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-deleted").replaceAll("%follower%", followerNameFinal));
+                    Followers.followerManager.refreshAllFollowers();
                 }
                 return true;
             }
@@ -103,7 +104,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                         followerBuilder.setName(followerNameFinal);
                     } catch (ObjectNameLockedException ignored) {}
 
-                    BuilderGui builderGui = new BuilderGui(player, followerBuilder.setNameLocked(true));
+                    BuilderGui builderGui = new BuilderGui(player, BuilderGui.Mode.EDIT, followerBuilder.setNameLocked(true));
                     builderGui.openInventory();
                 }
                 return true;

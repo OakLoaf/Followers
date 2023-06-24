@@ -15,7 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -25,7 +24,7 @@ import me.dave.followers.entity.FollowerEntity;
 
 import java.util.UUID;
 
-public class FollowerGuiEvents implements Listener {
+public class GuiEvents implements Listener {
     private final NamespacedKey pageNumKey = new NamespacedKey(Followers.getInstance(), "page");
 
     @EventHandler
@@ -63,35 +62,35 @@ public class FollowerGuiEvents implements Listener {
 
         Player player = (Player) event.getWhoClicked();
 
-        if (clickedItem.isSimilar(Followers.configManager.getGuiItem("no-followers", Material.BARRIER)) || clickedItem.getItemMeta().getPersistentDataContainer().has(pageNumKey, PersistentDataType.INTEGER)) return;
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("follower-toggle.enabled", Material.LIME_WOOL))) {
+        if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "no-followers", Material.BARRIER)) || clickedItem.getItemMeta().getPersistentDataContainer().has(pageNumKey, PersistentDataType.INTEGER)) return;
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "follower-toggle.enabled", Material.LIME_WOOL))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             followerUser.disableFollowerEntity();
             followerGui.recalculateContents();
             return;
         }
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("follower-toggle.disabled", Material.RED_WOOL))) {
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "follower-toggle.disabled", Material.RED_WOOL))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             followerUser.respawnFollowerEntity();
             ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
             followerGui.recalculateContents();
             return;
         }
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("next-page", Material.ARROW))) {
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "next-page", Material.ARROW))) {
             followerGui.nextPage();
             return;
         }
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("previous-page", Material.ARROW))) {
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "previous-page", Material.ARROW))) {
             followerGui.previousPage();
             return;
         }
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("random.enabled", Material.CONDUIT))) {
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "random.enabled", Material.CONDUIT))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             followerUser.setRandom(false);
             followerGui.recalculateContents();
             return;
         }
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("random.disabled", Material.CONDUIT))) {
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "random.disabled", Material.CONDUIT))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             followerUser.setRandom(true);
             followerUser.randomizeFollowerType();
@@ -143,7 +142,8 @@ public class FollowerGuiEvents implements Listener {
 
         Player player = (Player) event.getWhoClicked();
 
-        if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-name.default", Material.OAK_SIGN))) {
+        if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "name-button.default", Material.OAK_SIGN))) {
+            player.closeInventory();
             TextInterface textInterface = new TextInterface();
             textInterface.title("Enter Name:");
             textInterface.placeholder("Enter follower name");
@@ -161,13 +161,22 @@ public class FollowerGuiEvents implements Listener {
                 });
             });
         }
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-visible.visible", Material.GLASS))) {
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "visibility-button.visible", Material.WHITE_STAINED_GLASS))) {
             builderGui.getBuilder().setVisible(false);
             builderGui.recalculateContents();
         }
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-visible.invisible", Material.WHITE_STAINED_GLASS))) {
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "visibility-button.invisible", Material.GLASS))) {
             builderGui.getBuilder().setVisible(true);
             builderGui.recalculateContents();
+        }
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "complete-button", Material.LIME_WOOL))) {
+            builderGui.complete();
+            return;
+        }
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "cancel-button", Material.RED_WOOL))) {
+            player.closeInventory();
+            InventoryHandler.removeInventory(player.getUniqueId());
+            return;
         }
 
         builderGui.recalculateContents();

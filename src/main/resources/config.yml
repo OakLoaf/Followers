@@ -76,26 +76,38 @@ gui:
     disabled:
       name: "&eRandom Follower: &cDisabled"
       material: "conduit"
-  # builder-name: Builder Item to change a Follower's name
-  builder-name:
-    default:
-      name: "&eFollower Name: &f%name%"
-      material: "oak_sign"
-      lore:
-        - "&7&oClick to change the Follower's name"
-    locked:
-      name: "&eFollower Name: &f%name%"
-      material: "oak_sign"
-      lore:
-        - "&c&oName Locked"
-  # builder-visible: Builder Item to change a Follower's visible
-  builder-visible:
-    visible:
-      name: "&eVisible: &fTrue"
-      material: "glass"
-    invisible:
-      name: "&eVisible: &fFalse"
-      material: "white_stained_glass"
+
+# builder-gui: Config changes for the Follower Editor menu
+builder-gui:
+  items:
+    # name-button: Button to change a Follower's name
+    name-button:
+      default:
+        name: "&eFollower Name: &f%name%"
+        material: "oak_sign"
+        lore:
+          - "&7&oClick to change the Follower's name"
+      locked:
+        name: "&eFollower Name: &f%name%"
+        material: "oak_sign"
+        lore:
+          - "&c&oName Locked"
+    # visibility-button: Button to change a Follower's visibility
+    visibility-button:
+      visible:
+        name: "&eArmor Stand Visible: &fTrue"
+        material: "white_stained_glass"
+      invisible:
+        name: "&eArmor Stand Visible: &fFalse"
+        material: "glass"
+    # complete-button: Button to complete editing
+    complete-button:
+      name: "&aComplete Button"
+      material: "lime_wool"
+    # cancel-button: Button to cancel editing
+    cancel-button:
+      name: "&cCancel Button"
+      material: "red_wool"
 
 # %command-usage% - The command being used incorrectly
 # %follower% - The selected follower

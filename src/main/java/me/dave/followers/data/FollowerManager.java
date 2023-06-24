@@ -2,12 +2,10 @@ package me.dave.followers.data;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.utils.ItemStackData;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.EquipmentSlot;
 import me.dave.followers.Followers;
 
 import java.io.File;
@@ -39,40 +37,61 @@ public class FollowerManager {
         for (String followerName : config.getKeys(false)) {
             loadFollower(followerName);
         }
+
+
     }
 
-    public void createFollower(Player player, String followerName, ArmorStand armorStand) {
+    public void refreshAllFollowers() {
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+            if (followerUser == null) return;
+            followerUser.refreshFollowerEntity();
+        });
+    }
+
+    public void createFollower(Player player, FollowerHandler followerHandler) {
+        createFollower(player, followerHandler, false);
+    }
+
+    public void createFollower(Player player, FollowerHandler followerHandler, boolean replace) {
+        String followerName = followerHandler.getName();
         ConfigurationSection configurationSection = config.getConfigurationSection(followerName);
-        if (configurationSection != null) {
+        if (!replace && configurationSection != null) {
             ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-already-exists"));
             return;
         }
 
         configurationSection = config.createSection(followerName);
-        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-            EntityEquipment armorStandEquipment = armorStand.getEquipment();
-            if (armorStandEquipment == null) return;
-            String equipmentSlotName = equipmentSlot.name().toLowerCase();
-            switch (equipmentSlot) {
-                case HAND -> equipmentSlotName = "mainHand";
-                case OFF_HAND -> equipmentSlotName = "offHand";
-            }
-            ItemStackData.save(armorStandEquipment.getItem(equipmentSlot), configurationSection, equipmentSlotName);
-        }
+        ItemStackData.save(followerHandler.getHead(), configurationSection, "head");
+        ItemStackData.save(followerHandler.getChest(), configurationSection, "chest");
+        ItemStackData.save(followerHandler.getLegs(), configurationSection, "legs");
+        ItemStackData.save(followerHandler.getFeet(), configurationSection, "feet");
+        ItemStackData.save(followerHandler.getMainHand(), configurationSection, "mainHand");
+        ItemStackData.save(followerHandler.getOffHand(), configurationSection, "offHand");
+
+        configurationSection.set("visible", followerHandler.isVisible());
 
         ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-created").replaceAll("%follower%", followerName));
         saveFollowers();
-        loadFollower(followerName);
+        loadFollower(followerName, followerHandler);
+        Followers.followerManager.refreshAllFollowers();
     }
 
-    public void createFollower(Player player, FollowerHandler followerHandler) {
-
+    public void editFollower(Player player, FollowerHandler followerHandler) {
+        createFollower(player, followerHandler, true);
     }
 
     public void loadFollower(String followerName) {
         ConfigurationSection configurationSection = config.getConfigurationSection(followerName);
-        if (followerList.containsKey(followerName)) return;
+        if (configurationSection == null) {
+            Followers.getInstance().getLogger().severe("Tried to load follower \"" + followerName + "\" but data for this follower could not be found");
+            return;
+        }
         followerList.put(followerName, new FollowerHandler(configurationSection));
+    }
+
+    public void loadFollower(String followerName, FollowerHandler followerHandler) {
+        followerList.put(followerName, followerHandler);
     }
 
     public void removeFollower(String followerName) {

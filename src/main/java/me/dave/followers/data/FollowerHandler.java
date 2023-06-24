@@ -6,27 +6,17 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class FollowerHandler {
-    private String name;
-    private ItemStack head;
-    private ItemStack chest;
-    private ItemStack legs;
-    private ItemStack feet;
-    private ItemStack mainHand;
-    private ItemStack offHand;
+    private final String name;
+    private final ItemStack head;
+    private final ItemStack chest;
+    private final ItemStack legs;
+    private final ItemStack feet;
+    private final ItemStack mainHand;
+    private final ItemStack offHand;
     private final boolean isVisible;
-
-    public FollowerHandler(String name, ItemStack head, ItemStack chest, ItemStack legs, ItemStack feet, ItemStack mainHand, ItemStack offHand, boolean visible) {
-        this.name = name;
-        this.head = head;
-        this.chest = chest;
-        this.legs = legs;
-        this.feet = feet;
-        this.mainHand = mainHand;
-        this.offHand = offHand;
-        this.isVisible = visible;
-    }
 
     public FollowerHandler(ConfigurationSection configurationSection) {
         this.name = configurationSection.getName();
@@ -37,6 +27,17 @@ public class FollowerHandler {
         this.mainHand = ItemStackData.parse(configurationSection.getConfigurationSection("mainHand"), Material.AIR);
         this.offHand = ItemStackData.parse(configurationSection.getConfigurationSection("offHand"), Material.AIR);
         this.isVisible = configurationSection.getBoolean("visible", true);
+    }
+
+    private FollowerHandler(String name, ItemStack head, ItemStack chest, ItemStack legs, ItemStack feet, ItemStack mainHand, ItemStack offHand, boolean visible) {
+        this.name = name;
+        this.head = head;
+        this.chest = chest;
+        this.legs = legs;
+        this.feet = feet;
+        this.mainHand = mainHand;
+        this.offHand = offHand;
+        this.isVisible = visible;
     }
 
     public String getName() {
@@ -73,7 +74,7 @@ public class FollowerHandler {
 
 
     public static class Builder {
-        private boolean nameLocked;
+        private boolean nameLocked = false;
         private String name;
         private ItemStack head;
         private ItemStack chest;
@@ -83,7 +84,15 @@ public class FollowerHandler {
         private ItemStack offHand;
         private boolean visible;
 
-        public Builder() {}
+        public Builder() {
+            this.head = new ItemStack(Material.AIR);
+            this.chest = new ItemStack(Material.AIR);
+            this.legs = new ItemStack(Material.AIR);
+            this.feet = new ItemStack(Material.AIR);
+            this.mainHand = new ItemStack(Material.AIR);
+            this.offHand = new ItemStack(Material.AIR);
+            this.visible = true;
+        }
 
         public Builder(FollowerHandler handler) {
             this.name = handler.getName();
@@ -130,7 +139,7 @@ public class FollowerHandler {
             return offHand;
         }
 
-        public Builder setSlot(EquipmentSlot slot, ItemStack item) {
+        public Builder setSlot(EquipmentSlot slot, @NotNull ItemStack item) {
             switch(slot) {
                 case HEAD -> this.head = item;
                 case CHEST -> this.chest = item;

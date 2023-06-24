@@ -11,20 +11,25 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class BuilderGui extends AbstractGui {
     private final Inventory inventory = Bukkit.createInventory(null, 54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle()));
     private final FollowerHandler.Builder followerBuilder;
     private final Player player;
+    private final Mode mode;
 
-    public BuilderGui(Player player, FollowerHandler.Builder followerBuilder) {
+    public BuilderGui(Player player, Mode mode, FollowerHandler.Builder followerBuilder) {
         this.player = player;
+        this.mode = mode;
         this.followerBuilder = followerBuilder;
     }
 
-    public BuilderGui(Player player) {
+    public BuilderGui(Player player, Mode mode) {
         this.player = player;
+        this.mode = mode;
         this.followerBuilder = new FollowerHandler.Builder();
     }
 
@@ -42,49 +47,47 @@ public class BuilderGui extends AbstractGui {
             inventory.setItem(i, borderItem);
         }
 
-        ItemStack airItem = new ItemStack(Material.AIR);
-
         // Head Item
-        inventory.setItem(11, followerBuilder.getHead());
+        setItem(11, followerBuilder.getHead());
         // Chest Item
-        inventory.setItem(20, followerBuilder.getChest());
+        setItem(20, followerBuilder.getChest());
         // Leggings Item
-        inventory.setItem(29, followerBuilder.getLegs());
+        setItem(29, followerBuilder.getLegs());
         // Boots Item
-        inventory.setItem(38, followerBuilder.getFeet());
+        setItem(38, followerBuilder.getFeet());
         // Main Hand Item
-        inventory.setItem(19, followerBuilder.getMainHand());
+        setItem(19, followerBuilder.getMainHand());
         // Off-Hand Item
-        inventory.setItem(21, followerBuilder.getOffHand());
+        setItem(21, followerBuilder.getOffHand());
 
 
         List<ItemStack> buttons = new ArrayList<>();
 
+        ItemStack nameButtonItem;
+        if (!followerBuilder.isNameLocked()) nameButtonItem = Followers.configManager.getGuiItem("builder-gui", "name-button.default", Material.OAK_SIGN);
+        else nameButtonItem = Followers.configManager.getGuiItem("builder-gui", "name-button.locked", Material.OAK_SIGN);
+
+        ItemMeta itemMeta = nameButtonItem.getItemMeta();
+        if (followerBuilder.getName() != null) itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll("%name%", followerBuilder.getName()));
+        else itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll("%name%", ChatColorHandler.translateAlternateColorCodes("&c&oUnnamed")));
+        nameButtonItem.setItemMeta(itemMeta);
+        buttons.add(nameButtonItem);
+
+
+        if (followerBuilder.isVisible()) buttons.add(Followers.configManager.getGuiItem("builder-gui", "visibility-button.visible", Material.WHITE_STAINED_GLASS));
+        else buttons.add(Followers.configManager.getGuiItem("builder-gui", "visibility-button.invisible", Material.GLASS));
+
         // Button Section
-        int index = 14;
-
-
-        for (int i = 14; i < 26; i++) {
-            inventory.setItem(i, buttons);
-        }
-
-        inventory.setItem(14, airItem);
-        inventory.setItem(15, airItem);
-        inventory.setItem(16, airItem);
-        inventory.setItem(23, airItem);
-        inventory.setItem(24, airItem);
-        inventory.setItem(25, airItem);
+        List<Integer> buttonSlots = new LinkedList<>(Arrays.asList(14, 15, 16, 23, 24, 25));
+        buttons.forEach(button -> {
+            if (buttonSlots.isEmpty()) return;
+            inventory.setItem(buttonSlots.remove(0), button);
+        });
 
         // Complete Button
-        inventory.setItem(41, airItem);
+        inventory.setItem(41, Followers.configManager.getGuiItem("builder-gui", "complete-button", Material.LIME_WOOL));
         // Cancel Button
-        inventory.setItem(43, airItem);
-
-        Followers.configManager.getGuiItem("builder-name.default", Material.OAK_SIGN);
-        Followers.configManager.getGuiItem("builder-name.locked", Material.OAK_SIGN);
-
-        Followers.configManager.getGuiItem("builder-visible.visible", Material.GLASS);
-        Followers.configManager.getGuiItem("builder-visible.invisible", Material.WHITE_STAINED_GLASS);
+        inventory.setItem(43, Followers.configManager.getGuiItem("builder-gui", "cancel-button", Material.RED_WOOL));
     }
 
     @Override
@@ -94,15 +97,19 @@ public class BuilderGui extends AbstractGui {
         InventoryHandler.putInventory(player.getUniqueId(), this);
     }
 
+    public void complete() {
+        player.closeInventory();
+        InventoryHandler.removeInventory(player.getUniqueId());
+
+        if (mode.equals(Mode.CREATE)) Followers.followerManager.createFollower(player, followerBuilder.build());
+        else if (mode.equals(Mode.EDIT)) Followers.followerManager.editFollower(player, followerBuilder.build());
+    }
+
     public FollowerHandler.Builder getBuilder() {
         return followerBuilder;
     }
 
-    public boolean isNameLocked() {
-        return followerBuilder.isNameLocked();
-    }
-
-    private void setItem(int slot, ItemStack item, Material def) {
+    private void setItem(int slot, ItemStack item) {
         if (item == null) item = new ItemStack(Material.AIR);
         inventory.setItem(slot, item);
     }
@@ -113,5 +120,10 @@ public class BuilderGui extends AbstractGui {
         borderMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&r"));
         borderItem.setItemMeta(borderMeta);
         return borderItem;
+    }
+
+    public enum Mode {
+        CREATE,
+        EDIT
     }
 }

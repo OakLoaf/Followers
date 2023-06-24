@@ -21,7 +21,7 @@ import me.dave.followers.data.DataManager;
 import me.dave.followers.data.FollowerManager;
 import me.dave.followers.storage.Storage;
 import me.dave.followers.apis.EssentialsHook;
-import me.dave.followers.events.FollowerGuiEvents;
+import me.dave.followers.events.GuiEvents;
 import me.dave.followers.events.FollowerUserEvents;
 
 public final class Followers extends JavaPlugin {
@@ -50,7 +50,7 @@ public final class Followers extends JavaPlugin {
 
                 Listener[] listeners = new Listener[]{
                         new FollowerUserEvents(),
-                        new FollowerGuiEvents(),
+                        new GuiEvents(),
                         new WorldEvents(),
                         new FollowerCreator()
                 };

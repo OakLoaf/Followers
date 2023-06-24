@@ -45,12 +45,14 @@ public class ConfigManager {
         return langMessages.get(messageName.toLowerCase());
     }
 
-    public ItemStack getGuiItem(String itemName) {
-        return getGuiItem(itemName, Material.STONE);
+    public ItemStack getGuiItem(String guiType, String itemName) {
+        return getGuiItem(guiType, itemName, Material.STONE);
     }
 
-    public ItemStack getGuiItem(String itemName, Material def) {
-        ConfigurationSection itemSection = Followers.getInstance().getConfig().getConfigurationSection("gui." + itemName);
+    public ItemStack getGuiItem(String guiType, String itemName, Material def) {
+        if (guiType.equals("menu-gui")) guiType = "gui";
+        else guiType = "builder-gui.items";
+        ConfigurationSection itemSection = Followers.getInstance().getConfig().getConfigurationSection(guiType + "." + itemName);
         return ItemStackData.parse(itemSection, def);
     }
 

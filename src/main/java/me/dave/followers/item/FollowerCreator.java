@@ -2,6 +2,9 @@ package me.dave.followers.item;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.Followers;
+import me.dave.followers.data.FollowerHandler;
+import me.dave.followers.exceptions.ObjectNameLockedException;
+import me.dave.followers.gui.BuilderGui;
 import me.dave.followers.utils.TextInterface;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -35,21 +38,15 @@ public class FollowerCreator implements Listener {
         }
         if (Followers.dataManager.getActiveArmorStandsSet().contains(armorStand.getUniqueId())) return;
         String armorStandName = armorStand.getCustomName();
-        if (armorStandName == null) {
-            TextInterface textInterface = new TextInterface();
-            textInterface.title("Enter Name:");
-            textInterface.placeholder("Enter follower name");
-            textInterface.getInput(player, (output) -> {
-                if (output.equals("")) {
-                    ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-no-name"));
-                    return;
-                }
-                String finalOutput = output.replaceAll("\\.", "-");
-                Bukkit.getScheduler().runTask(Followers.getInstance(), () -> Followers.followerManager.createFollower(player, finalOutput, armorStand));
-            });
-        } else {
-            Followers.followerManager.createFollower(player, armorStandName.replaceAll("\\.", "-"), armorStand);
+        FollowerHandler.Builder followerBuilder = new FollowerHandler.Builder();
+        if (armorStandName != null) {
+            try {
+                followerBuilder.setName(armorStandName);
+            } catch (ObjectNameLockedException ignored) {}
         }
+
+        BuilderGui builderGui = new BuilderGui(player, BuilderGui.Mode.CREATE, followerBuilder);
+        builderGui.openInventory();
     }
 
     @EventHandler

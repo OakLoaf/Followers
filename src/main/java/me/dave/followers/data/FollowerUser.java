@@ -126,6 +126,10 @@ public class FollowerUser {
         return followerEntity;
     }
 
+    public void refreshFollowerEntity() {
+        if (followerEntity != null) followerEntity.reloadInventory();
+    }
+
     public void spawnFollowerEntity() {
         removeFollowerEntity();
         Player player = Bukkit.getPlayer(uuid);
