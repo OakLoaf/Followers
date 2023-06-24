@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
-public class MoveTask extends AbstractEntityTask {
+public class MoveTask extends FollowerEntityTask {
     private final Player player;
     private final double speed;
 
@@ -30,10 +30,7 @@ public class MoveTask extends AbstractEntityTask {
             teleportToPlayer(player, bodyArmorStand, followerEntity.getNameArmorStand());
             return;
         }
-        if (followerEntity.isPlayerInvisible() != player.isInvisible()) {
-            followerEntity.setVisible(!player.isInvisible());
-            followerEntity.setPlayerInvisible(player.isInvisible());
-        }
+
         Location followerLoc = bodyArmorStand.getLocation();
         Vector difference = getDifference(player, bodyArmorStand);
         if (difference.clone().setY(0).lengthSquared() < 6.25) {

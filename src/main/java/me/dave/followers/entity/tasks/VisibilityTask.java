@@ -1,11 +1,21 @@
 package me.dave.followers.entity.tasks;
 
-import org.bukkit.scheduler.BukkitRunnable;
+import me.dave.followers.entity.FollowerEntity;
+import org.bukkit.entity.Player;
 
-public class VisibilityTask extends BukkitRunnable {
+public class VisibilityTask extends FollowerEntityTask {
+    private final Player player;
+
+    public VisibilityTask(FollowerEntity followerEntity) {
+        super(followerEntity);
+        this.player = followerEntity.getPlayer();
+    }
 
     @Override
     public void run() {
-
+        if (followerEntity.isPlayerInvisible() != player.isInvisible()) {
+            followerEntity.setVisible(!player.isInvisible());
+            followerEntity.setPlayerInvisible(player.isInvisible());
+        }
     }
 }

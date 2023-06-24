@@ -5,6 +5,8 @@ import me.dave.followers.Followers;
 import me.dave.followers.entity.poses.FollowerPose;
 import me.dave.followers.entity.tasks.MoveTask;
 import me.dave.followers.entity.tasks.ParticleTask;
+import me.dave.followers.entity.tasks.ValidateTask;
+import me.dave.followers.entity.tasks.VisibilityTask;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -14,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import me.dave.followers.data.FollowerHandler;
 import me.dave.followers.data.FollowerUser;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.UUID;
@@ -32,6 +33,7 @@ public class FollowerEntity {
     private boolean dying;
     private MoveTask moveTask;
     private ParticleTask particleTask;
+    private VisibilityTask visibilityTask;
 
     public FollowerEntity(Player player, String follower) {
         this.player = player;
@@ -49,7 +51,8 @@ public class FollowerEntity {
         setFollowerType(follower);
         setVisible(!player.isInvisible());
 
-        validateTask();
+        new ValidateTask(this).runTaskTimer(Followers.getInstance(), 0, 1);
+        startVisiblityTask();
         startMovement();
 
         Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::reloadInventory, 5);
@@ -244,6 +247,27 @@ public class FollowerEntity {
         kill();
     }
 
+    public boolean isDying() {
+        return dying;
+    }
+
+    //////////////////////////////
+    //     Visibility Task      //
+    //////////////////////////////
+
+    private void startVisiblityTask() {
+        stopVisiblityTask();
+        visibilityTask = new VisibilityTask(this);
+        visibilityTask.runTaskTimer(Followers.getInstance(), 0L, 20L);
+    }
+
+    private void stopVisiblityTask() {
+        if (visibilityTask != null && !visibilityTask.isCancelled()) {
+            visibilityTask.cancel();
+            visibilityTask = null;
+        }
+    }
+
     //////////////////////////////
     //    Movement Functions    //
     //////////////////////////////
@@ -295,25 +319,5 @@ public class FollowerEntity {
             particleTask.cancel();
             particleTask = null;
         }
-    }
-
-    public void validateTask() {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (dying) {
-                    cancel();
-                    return;
-                }
-                if (bodyArmorStand == null || !bodyArmorStand.isValid() || !isAlive) {
-                    FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
-                    if (followerUser != null) followerUser.respawnFollowerEntity();
-                    else kill();
-                    cancel();
-                    return;
-                }
-                if (!player.isOnline()) Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> kill(), 5);
-            }
-        }.runTaskTimer(Followers.getInstance(), 0, 1);
     }
 }

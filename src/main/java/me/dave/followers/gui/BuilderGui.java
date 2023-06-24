@@ -2,6 +2,7 @@ package me.dave.followers.gui;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.Followers;
+import me.dave.followers.data.FollowerHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -11,6 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class BuilderGui extends AbstractGui {
     private final Inventory inventory = Bukkit.createInventory(null, 54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle()));
+    private final FollowerHandler followerHandler;
     private final Player player;
 
     public BuilderGui(Player player) {
@@ -59,6 +61,11 @@ public class BuilderGui extends AbstractGui {
     public void openInventory() {
         player.openInventory(inventory);
         InventoryHandler.putInventory(player.getUniqueId(), this);
+    }
+
+    private void setItem(int slot, ItemStack item, Material def) {
+        if (item == null) item = new ItemStack(Material.AIR);
+        inventory.setItem(slot, item);
     }
 
     private ItemStack getBorderItem() {

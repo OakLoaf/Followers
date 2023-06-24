@@ -2,18 +2,12 @@ package me.dave.followers.data;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.utils.ItemStackData;
-import org.bukkit.Color;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import me.dave.followers.Followers;
 
 import java.io.File;
@@ -47,12 +41,13 @@ public class FollowerManager {
         }
     }
 
-    public void createFollower(Player owner, String followerName, ArmorStand armorStand) {
+    public void createFollower(Player player, String followerName, ArmorStand armorStand) {
         ConfigurationSection configurationSection = config.getConfigurationSection(followerName);
         if (configurationSection != null) {
-            ChatColorHandler.sendMessage(owner, Followers.configManager.getLangMessage("follower-already-exists"));
+            ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-already-exists"));
             return;
         }
+
         configurationSection = config.createSection(followerName);
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
             EntityEquipment armorStandEquipment = armorStand.getEquipment();
@@ -65,9 +60,13 @@ public class FollowerManager {
             ItemStackData.save(armorStandEquipment.getItem(equipmentSlot), configurationSection, equipmentSlotName);
         }
 
-        ChatColorHandler.sendMessage(owner, Followers.configManager.getLangMessage("follower-created").replaceAll("%follower%", followerName));
+        ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-created").replaceAll("%follower%", followerName));
         saveFollowers();
         loadFollower(followerName);
+    }
+
+    public void createFollower(Player player, FollowerHandler followerHandler) {
+
     }
 
     public void loadFollower(String followerName) {

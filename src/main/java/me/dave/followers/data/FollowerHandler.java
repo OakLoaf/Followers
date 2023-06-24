@@ -77,7 +77,7 @@ public class FollowerHandler {
     }
 
 
-    protected static class Builder {
+    public static class Builder {
         private ItemStack head;
         private ItemStack chest;
         private ItemStack legs;
