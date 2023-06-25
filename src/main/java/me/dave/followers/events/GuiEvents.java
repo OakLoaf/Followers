@@ -25,9 +25,9 @@ public class GuiEvents implements Listener {
         Inventory clickedInventory = event.getClickedInventory();
         if (clickedInventory == null) return;
 
-        AbstractGui playerGui = InventoryHandler.getGui(playerUUID);
-        if (playerGui == null) return;
-        playerGui.onClick(event);
+        AbstractGui gui = InventoryHandler.getGui(playerUUID);
+        if (gui == null) return;
+        gui.onClick(event);
     }
 
     @EventHandler
