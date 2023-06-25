@@ -2,6 +2,7 @@ package me.dave.followers.utils;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import me.dave.followers.Followers;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -83,7 +84,13 @@ public class SkullCreator {
     }
 
     private static GameProfile makeProfile(String b64) {
-        UUID id = new UUID(b64.substring(b64.length() - 20).hashCode(), (long)b64.substring(b64.length() - 10).hashCode());
+        UUID id = null;
+        try {
+            id = new UUID(b64.substring(b64.length() - 20).hashCode(), b64.substring(b64.length() - 10).hashCode());
+        } catch (StringIndexOutOfBoundsException ex) {
+            if (b64.length() == 0) Followers.getInstance().getLogger().warning("Missing base64 texture found - check your config");
+            else Followers.getInstance().getLogger().warning("Invalid base64 texture (" + b64 + ") found - check your config");
+        }
         GameProfile profile = new GameProfile(id, "Player");
         profile.getProperties().put("textures", new Property("textures", b64));
         return profile;
