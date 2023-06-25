@@ -142,7 +142,7 @@ public class MenuGui extends AbstractGui {
             recalculateContents();
             return;
         }
-        else if (clickedItem.getType() == Material.NAME_TAG && clickedItem.getItemMeta().getDisplayName().startsWith(ChatColorHandler.translateAlternateColorCodes("&eFollower Name:"))) {
+        else if ((clickedItem.getType() == Followers.configManager.getGuiItem("menu-gui", "nickname.shown", Material.NAME_TAG).getType() || (clickedItem.getType() == Followers.configManager.getGuiItem("menu-gui", "nickname.hidden", Material.NAME_TAG).getType())) && clickedItem.getItemMeta().getDisplayName().startsWith(ChatColorHandler.translateAlternateColorCodes("&eFollower Name:"))) {
             FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player.getUniqueId()).getFollowerEntity();
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
             if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
