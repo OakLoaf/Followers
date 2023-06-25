@@ -88,17 +88,10 @@ public class ItemStackData {
         if (item.getEnchantments().size() >= 1) configurationSection.set("enchanted", "True");
 
         if (material == Material.PLAYER_HEAD) {
-            SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
-            OfflinePlayer skullOwner = skullMeta.getOwningPlayer();
-            if (skullOwner == null) {
-                configurationSection.set("skullType", "custom");
-                String textureStr = SkullCreator.getB64(item);
-                configurationSection.set("texture", textureStr);
-                return;
-            }
-            configurationSection.set("skullType", "default");
-            UUID skullUUID = skullOwner.getUniqueId();
-            configurationSection.set("uuid", skullUUID.toString());
+            configurationSection.set("skullType", "custom");
+            String textureStr = SkullCreator.getB64(item);
+            configurationSection.set("texture", textureStr);
+            return;
         } else if (item.getItemMeta() instanceof LeatherArmorMeta armorMeta) {
             Color armorColor = armorMeta.getColor();
             configurationSection.set("color", String.format("%02x%02x%02x", armorColor.getRed(), armorColor.getGreen(), armorColor.getBlue()));

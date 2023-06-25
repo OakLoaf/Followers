@@ -41,17 +41,15 @@ public class SkullCreator {
         try {
             if (itemStack.getType() == Material.PLAYER_HEAD && itemStack.hasItemMeta()) {
                 SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
-                if (!skullMeta.hasOwner()) {
-                    if (skullMetaProfileField == null) {
-                        skullMetaProfileField = skullMeta.getClass().getDeclaredField("profile");
-                        skullMetaProfileField.setAccessible(true);
-                    }
-                    GameProfile gameProfile = (GameProfile) skullMetaProfileField.get(skullMeta);
-                    Iterator<Property> iterator = gameProfile.getProperties().get("textures").iterator();
-                    if (iterator.hasNext()) {
-                        Property property = iterator.next();
-                        return property.getValue();
-                    }
+                if (skullMetaProfileField == null) {
+                    skullMetaProfileField = skullMeta.getClass().getDeclaredField("profile");
+                    skullMetaProfileField.setAccessible(true);
+                }
+                GameProfile gameProfile = (GameProfile) skullMetaProfileField.get(skullMeta);
+                Iterator<Property> iterator = gameProfile.getProperties().get("textures").iterator();
+                if (iterator.hasNext()) {
+                    Property property = iterator.next();
+                    return property.getValue();
                 }
             }
             return "";
@@ -88,8 +86,10 @@ public class SkullCreator {
         try {
             id = new UUID(b64.substring(b64.length() - 20).hashCode(), b64.substring(b64.length() - 10).hashCode());
         } catch (StringIndexOutOfBoundsException ex) {
-            if (b64.length() == 0) Followers.getInstance().getLogger().warning("Missing base64 texture found - check your config");
-            else Followers.getInstance().getLogger().warning("Invalid base64 texture (" + b64 + ") found - check your config");
+            if (b64.length() == 0)
+                Followers.getInstance().getLogger().warning("Missing base64 texture found - check your config");
+            else
+                Followers.getInstance().getLogger().warning("Invalid base64 texture (" + b64 + ") found - check your config");
         }
         GameProfile profile = new GameProfile(id, "Player");
         profile.getProperties().put("textures", new Property("textures", b64));
