@@ -3,14 +3,16 @@ package me.dave.followers.gui;
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.Followers;
 import me.dave.followers.entity.FollowerEntity;
+import me.dave.followers.utils.TextInterface;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import me.dave.followers.data.FollowerUser;
 
 import java.util.*;
@@ -22,11 +24,6 @@ public class MenuGui extends AbstractGui {
 
     public MenuGui(Player player) {
         this.player = player;
-    }
-
-    @Override
-    public String getType() {
-        return "followers-menu";
     }
 
     @Override
@@ -101,6 +98,87 @@ public class MenuGui extends AbstractGui {
         InventoryHandler.putInventory(player.getUniqueId(), this);
     }
 
+    @Override
+    public void onClick(InventoryClickEvent event) {
+        event.setCancelled(true);
+
+        ItemStack clickedItem = event.getCurrentItem();
+        if (clickedItem == null) return;
+
+        Player player = (Player) event.getWhoClicked();
+
+        if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "no-followers", Material.BARRIER))) return;
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "follower-toggle.enabled", Material.LIME_WOOL))) {
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+            followerUser.disableFollowerEntity();
+            recalculateContents();
+            return;
+        }
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "follower-toggle.disabled", Material.RED_WOOL))) {
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+            followerUser.respawnFollowerEntity();
+            ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
+            recalculateContents();
+            return;
+        }
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "next-page", Material.ARROW))) {
+            nextPage();
+            return;
+        }
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "previous-page", Material.ARROW))) {
+            previousPage();
+            return;
+        }
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "random.enabled", Material.CONDUIT))) {
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+            followerUser.setRandom(false);
+            recalculateContents();
+            return;
+        }
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "random.disabled", Material.CONDUIT))) {
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+            followerUser.setRandom(true);
+            followerUser.randomizeFollowerType();
+            recalculateContents();
+            return;
+        }
+        else if (clickedItem.getType() == Material.NAME_TAG && clickedItem.getItemMeta().getDisplayName().startsWith(ChatColorHandler.translateAlternateColorCodes("&eFollower Name:"))) {
+            FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player.getUniqueId()).getFollowerEntity();
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+            if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                player.playSound(player.getEyeLocation(), Sound.BLOCK_LEVER_CLICK, 0.6f, 1.0f);
+                followerEntity.setDisplayNameVisible(!followerUser.isDisplayNameEnabled());
+                recalculateContents();
+                return;
+            }
+            player.closeInventory();
+            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> {
+                TextInterface textInterface = new TextInterface();
+                textInterface.title("Enter Name:");
+                textInterface.placeholder("Enter follower name");
+                textInterface.getInput(player, (output) -> {
+                    if (output.equals("")) output = " ";
+                    String finalOutput = output;
+                    Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
+                        if (followerEntity != null) followerEntity.setDisplayName(finalOutput);
+                    });
+                });
+            }, 5L);
+            return;
+        }
+
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+        if (followerUser.isRandomType()) followerUser.setRandom(false);
+        recalculateContents();
+
+        FollowerEntity followerEntity = followerUser.getFollowerEntity();
+        String followerName = ChatColorHandler.stripColor(clickedItem.getItemMeta().getDisplayName());
+        if (followerEntity != null) followerEntity.setFollowerType(followerName);
+        else followerUser.spawnFollowerEntity();
+
+        ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
+    }
+
     public void setPage(int page) {
         this.page = page;
         recalculateContents();
@@ -117,8 +195,6 @@ public class MenuGui extends AbstractGui {
     private ItemStack getBorderItem() {
         ItemStack borderItem = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta borderMeta = borderItem.getItemMeta();
-        NamespacedKey pageNumKey = new NamespacedKey(Followers.getInstance(), "page");
-        borderMeta.getPersistentDataContainer().set(pageNumKey, PersistentDataType.INTEGER, page);
         borderMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&r"));
         borderItem.setItemMeta(borderMeta);
         return borderItem;

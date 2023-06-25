@@ -3,9 +3,12 @@ package me.dave.followers.gui;
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.Followers;
 import me.dave.followers.data.FollowerHandler;
+import me.dave.followers.exceptions.ObjectNameLockedException;
+import me.dave.followers.utils.TextInterface;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -31,11 +34,6 @@ public class BuilderGui extends AbstractGui {
         this.player = player;
         this.mode = mode;
         this.followerBuilder = new FollowerHandler.Builder();
-    }
-
-    @Override
-    public String getType() {
-        return "followers-builder";
     }
 
     @Override
@@ -95,6 +93,55 @@ public class BuilderGui extends AbstractGui {
         recalculateContents();
         player.openInventory(inventory);
         InventoryHandler.putInventory(player.getUniqueId(), this);
+    }
+
+    @Override
+    public void onClick(InventoryClickEvent event) {
+        event.setCancelled(true);
+
+        ItemStack clickedItem = event.getCurrentItem();
+        if (clickedItem == null) return;
+
+        Player player = (Player) event.getWhoClicked();
+
+        if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "name-button.default", Material.OAK_SIGN))) {
+            player.closeInventory();
+            TextInterface textInterface = new TextInterface();
+            textInterface.title("Enter Name:");
+            textInterface.placeholder("Enter follower name");
+            textInterface.getInput(player, (output) -> {
+                if (output.equals("")) {
+                    ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-no-name"));
+                    return;
+                }
+                String finalOutput = output.replaceAll("\\.", "-");
+                Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
+                    try {
+                        followerBuilder.setName(finalOutput);
+                    } catch (ObjectNameLockedException ignored) {}
+                    openInventory();
+                });
+            });
+        }
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "visibility-button.visible", Material.WHITE_STAINED_GLASS))) {
+            followerBuilder.setVisible(false);
+            recalculateContents();
+        }
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "visibility-button.invisible", Material.GLASS))) {
+            followerBuilder.setVisible(true);
+            recalculateContents();
+        }
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "complete-button", Material.LIME_WOOL))) {
+            complete();
+            return;
+        }
+        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "cancel-button", Material.RED_WOOL))) {
+            player.closeInventory();
+            InventoryHandler.removeInventory(player.getUniqueId());
+            return;
+        }
+
+        recalculateContents();
     }
 
     public void complete() {
