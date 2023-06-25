@@ -5,8 +5,6 @@ import me.dave.followers.Followers;
 import me.dave.followers.data.FollowerHandler;
 import me.dave.followers.exceptions.ObjectNameLockedException;
 import me.dave.followers.gui.BuilderGui;
-import me.dave.followers.utils.TextInterface;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
@@ -15,11 +13,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class FollowerCreator implements Listener {
@@ -43,6 +42,13 @@ public class FollowerCreator implements Listener {
             try {
                 followerBuilder.setName(armorStandName);
             } catch (ObjectNameLockedException ignored) {}
+        }
+
+        EntityEquipment armorStandEquipment = armorStand.getEquipment();
+        if (armorStandEquipment != null) {
+            for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
+                followerBuilder.setSlot(equipmentSlot, armorStandEquipment.getItem(equipmentSlot));
+            }
         }
 
         BuilderGui builderGui = new BuilderGui(player, BuilderGui.Mode.CREATE, followerBuilder);
