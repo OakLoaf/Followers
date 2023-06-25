@@ -104,7 +104,13 @@ public class BuilderGui extends AbstractGui {
 
         Player player = (Player) event.getWhoClicked();
 
-        if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "name-button.default", Material.OAK_SIGN))) {
+        ItemStack nameButtonItem = Followers.configManager.getGuiItem("builder-gui", "name-button.default", Material.OAK_SIGN);
+        ItemMeta itemMeta = nameButtonItem.getItemMeta();
+        if (followerBuilder.getName() != null) itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll("%name%", followerBuilder.getName()));
+        else itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll("%name%", ChatColorHandler.translateAlternateColorCodes("&c&oUnnamed")));
+        nameButtonItem.setItemMeta(itemMeta);
+
+        if (clickedItem.isSimilar(nameButtonItem)) {
             player.closeInventory();
             TextInterface textInterface = new TextInterface();
             textInterface.title("Enter Name:");
@@ -145,15 +151,16 @@ public class BuilderGui extends AbstractGui {
     }
 
     public void complete() {
+        if (followerBuilder.getName() == null) {
+            ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-no-name"));
+            return;
+        }
+
         player.closeInventory();
         InventoryHandler.removeInventory(player.getUniqueId());
 
         if (mode.equals(Mode.CREATE)) Followers.followerManager.createFollower(player, followerBuilder.build());
         else if (mode.equals(Mode.EDIT)) Followers.followerManager.editFollower(player, followerBuilder.build());
-    }
-
-    public FollowerHandler.Builder getBuilder() {
-        return followerBuilder;
     }
 
     private void setItem(int slot, ItemStack item) {
