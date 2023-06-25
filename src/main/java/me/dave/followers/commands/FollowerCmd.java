@@ -58,6 +58,20 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                 }
                 ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/follower edit <follower_name>"));
                 return true;
+            } else if (args[0].equalsIgnoreCase("messages")) {
+                ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
+                ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("incorrect-usage"));
+                ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("reloaded"));
+                ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-spawned"));
+                ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-no-name"));
+                ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-created"));
+                ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-deleted"));
+                ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-doesnt-exist"));
+                ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-already-exists"));
+                ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-default-skull"));
+                ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("get-follower-creator"));
+                ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("dye-wrong-material"));
+                return true;
             }
         }
         if (args.length >= 2) {
