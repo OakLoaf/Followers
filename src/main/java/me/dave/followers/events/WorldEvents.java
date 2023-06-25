@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -47,5 +48,17 @@ public class WorldEvents implements Listener {
                 }
             }
         }.runTaskTimer(Followers.getInstance(), 50, 100);
+    }
+
+    @EventHandler
+    public void onChunkUnload(ChunkUnloadEvent event) {
+        if (event.getChunk().isEntitiesLoaded()) {
+            Entity[] entities = event.getChunk().getEntities();
+            for (Entity entity : entities) {
+                if (entity.getType() != EntityType.ARMOR_STAND) continue;
+                Followers.dataManager.getActiveArmorStandsSet().remove(entity.getUniqueId());
+                if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
+            }
+        }
     }
 }
