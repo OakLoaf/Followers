@@ -174,7 +174,10 @@ public class MenuGui extends AbstractGui {
         FollowerEntity followerEntity = followerUser.getFollowerEntity();
         String followerName = ChatColorHandler.stripColor(clickedItem.getItemMeta().getDisplayName());
         if (followerEntity != null) followerEntity.setFollowerType(followerName);
-        else followerUser.spawnFollowerEntity();
+        else {
+            followerUser.setFollowerType(followerName);
+            followerUser.spawnFollowerEntity();
+        }
 
         ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
     }
