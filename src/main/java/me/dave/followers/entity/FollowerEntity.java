@@ -45,7 +45,10 @@ public class FollowerEntity {
         if (followerUser != null) followerUser.setFollowerEnabled(true);
 
         this.bodyArmorStand = summonBodyArmorStand();
-        if (this.bodyArmorStand == null) kill();
+        if (this.bodyArmorStand == null) {
+            kill();
+            return;
+        }
         if (followerUser != null) displayName(followerUser.isDisplayNameEnabled());
 
         setFollowerType(follower);
