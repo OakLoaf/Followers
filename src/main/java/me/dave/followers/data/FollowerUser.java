@@ -17,7 +17,7 @@ public class FollowerUser {
     private String username;
     private boolean isEnabled;
     private String followerType;
-    private boolean randomType = false;
+    private boolean randomType;
     private String displayName;
     private boolean nameIsOn;
     private FollowerEntity followerEntity;
