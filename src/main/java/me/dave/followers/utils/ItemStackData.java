@@ -45,11 +45,13 @@ public class ItemStackData {
                 else item = SkullCreator.getPlayerSkull(UUID.fromString(skullUUID));
             }
         }
+
         if (item.getItemMeta() instanceof LeatherArmorMeta) item = getColoredArmour(material, colour);
 
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta != null) {
             if (Bukkit.getVersion().contains("1.20") && configurationSection.contains("trim") && itemMeta instanceof ArmorMeta armorMeta) {
+                // TODO: Change over to proper API when available
                 TrimMaterial trimMaterial = Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(configurationSection.getString("trim.material", "")));
                 TrimPattern trimPattern = Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(configurationSection.getString("trim.pattern", "")));
                 if (trimMaterial != null && trimPattern != null) {
@@ -101,6 +103,7 @@ public class ItemStackData {
             if (item.getItemMeta() instanceof ArmorMeta armorMeta) {
                 ArmorTrim armorTrim = armorMeta.getTrim();
                 if (armorTrim != null) {
+                    // TODO: Change over to proper API when available
                     configurationSection.set("trim.material", armorTrim.getMaterial().getKey().toString().replace("minecraft:", "").toLowerCase());
                     configurationSection.set("trim.pattern", armorTrim.getPattern().getKey().toString().replace("minecraft:", "").toLowerCase());
                 }
