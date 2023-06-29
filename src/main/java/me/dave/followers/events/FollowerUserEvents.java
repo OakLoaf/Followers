@@ -17,7 +17,7 @@ import me.dave.followers.data.FollowerUser;
 import java.util.UUID;
 
 public class FollowerUserEvents implements Listener {
-    private final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
+    private static final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {

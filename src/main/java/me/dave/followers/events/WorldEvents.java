@@ -14,7 +14,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class WorldEvents implements Listener {
-    private final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
+    private static final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
 
     @EventHandler
     public void onEntityLoad(CreatureSpawnEvent event) {
