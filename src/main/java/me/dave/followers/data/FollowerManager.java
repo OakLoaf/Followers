@@ -112,15 +112,6 @@ public class FollowerManager {
         return followerList.keySet();
     }
 
-    public List<String> getFollowerNames(Player player) {
-        List<String> followers = new ArrayList<>();
-        for (String followerName : followerList.keySet()) {
-            if (!player.hasPermission("followers." + followerName.toLowerCase().replaceAll(" ", "_"))) continue;
-            followers.add(followerName);
-        }
-        return followers;
-    }
-
     public void clearFollowerCache() {
         followerList.clear();
     }

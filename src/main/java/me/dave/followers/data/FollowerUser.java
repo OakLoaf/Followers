@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -77,8 +78,19 @@ public class FollowerUser {
         Followers.dataManager.saveFollowerUser(this);
     }
 
+    public List<String> getOwnedFollowerNames() {
+        List<String> followers = new ArrayList<>();
+        Player player = Bukkit.getPlayer(uuid);
+        if (player == null) return followers;
+
+        for (String followerName : Followers.followerManager.getFollowerNames()) {
+            if (player.hasPermission("followers." + followerName.toLowerCase().replaceAll(" ", "_"))) followers.add(followerName);
+        }
+        return followers;
+    }
+
     public void randomizeFollowerType() {
-        List<String> followerTypes = Followers.followerManager.getFollowerNames(Bukkit.getPlayer(uuid));
+        List<String> followerTypes = getOwnedFollowerNames();
         if (followerEntity == null) return;
         followerEntity.setFollowerType(followerTypes.get(random.nextInt(followerTypes.size())));
     }
