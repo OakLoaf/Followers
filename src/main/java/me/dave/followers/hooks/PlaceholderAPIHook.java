@@ -1,4 +1,4 @@
-package me.dave.followers.apis;
+package me.dave.followers.hooks;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.dave.followers.Followers;

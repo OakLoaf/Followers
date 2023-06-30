@@ -1,8 +1,8 @@
 package me.dave.followers;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
-import me.dave.followers.apis.PlaceholderAPIHook;
-import me.dave.followers.apis.SimpleSitHook;
+import me.dave.followers.hooks.PlaceholderAPIHook;
+import me.dave.followers.hooks.SimpleSitHook;
 import me.dave.followers.events.WorldEvents;
 import me.dave.followers.item.FollowerCreator;
 import org.bukkit.*;
@@ -12,7 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import me.dave.followers.apis.GSitHook;
+import me.dave.followers.hooks.GSitHook;
 import me.dave.followers.commands.DyeCmd;
 import me.dave.followers.commands.FollowerCmd;
 import me.dave.followers.commands.GetHexArmorCmd;
@@ -20,7 +20,7 @@ import me.dave.followers.data.ConfigManager;
 import me.dave.followers.data.DataManager;
 import me.dave.followers.data.FollowerManager;
 import me.dave.followers.storage.Storage;
-import me.dave.followers.apis.EssentialsHook;
+import me.dave.followers.hooks.EssentialsHook;
 import me.dave.followers.events.GuiEvents;
 import me.dave.followers.events.FollowerUserEvents;
 

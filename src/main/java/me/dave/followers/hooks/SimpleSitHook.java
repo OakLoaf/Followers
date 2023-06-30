@@ -1,4 +1,4 @@
-package me.dave.followers.apis;
+package me.dave.followers.hooks;
 
 import me.dave.followers.Followers;
 import me.dave.followers.data.FollowerUser;

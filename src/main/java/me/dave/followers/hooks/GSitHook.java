@@ -1,4 +1,4 @@
-package me.dave.followers.apis;
+package me.dave.followers.hooks;
 
 import dev.geco.gsit.api.event.*;
 import me.dave.followers.data.FollowerUser;

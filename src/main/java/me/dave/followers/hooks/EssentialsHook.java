@@ -1,4 +1,4 @@
-package me.dave.followers.apis;
+package me.dave.followers.hooks;
 
 import com.earth2me.essentials.Essentials;
 import me.dave.followers.data.FollowerUser;
