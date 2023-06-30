@@ -14,7 +14,7 @@ public class SimpleSitHook implements Listener {
 
     @EventHandler
     public void onPlayerSit(PlayerSitEvent event) {
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(event.getPlayer().getUniqueId());
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(event.getPlayer());
         followerUser.setPose(FollowerPose.SITTING);
         FollowerEntity followerEntity = followerUser.getFollowerEntity();
         if (followerEntity == null || !followerEntity.isAlive) return;
@@ -23,7 +23,7 @@ public class SimpleSitHook implements Listener {
 
     @EventHandler
     public void onPlayerExitSeat(PlayerStopSittingEvent event) {
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(event.getPlayer().getUniqueId());
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(event.getPlayer());
         followerUser.setPose(FollowerPose.DEFAULT);
         FollowerEntity followerEntity = followerUser.getFollowerEntity();
         if (followerEntity == null || !followerEntity.isAlive) return;

@@ -10,7 +10,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
     public String onPlaceholderRequest(Player player, String params) {
         if (player == null) return "null";
 
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
         switch (params) {
             // Player placeholders
             case "enabled" -> {
@@ -20,7 +20,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
                 return followerUser.getFollowerType();
             }
             case "pose" -> {
-                return Followers.dataManager.getFollowerUser(player.getUniqueId()).getFollowerEntity().getPose().toString().toLowerCase();
+                return Followers.dataManager.getFollowerUser(player).getFollowerEntity().getPose().toString().toLowerCase();
             }
             case "nickname" -> {
                 return followerUser.getDisplayName();

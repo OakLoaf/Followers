@@ -62,9 +62,9 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                         return true;
                     }
 
-                    FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+                    FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
                     if (followerUser.getFollowerEntity() != null) {
-                        Followers.dataManager.getFollowerUser(player.getUniqueId()).disableFollowerEntity();
+                        Followers.dataManager.getFollowerUser(player).disableFollowerEntity();
                     }
                 }
                 case "edit" -> {
@@ -81,9 +81,9 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                         return true;
                     }
 
-                    FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+                    FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
                     if (followerUser.getFollowerEntity() == null) {
-                        Followers.dataManager.getFollowerUser(player.getUniqueId()).spawnFollowerEntity();
+                        Followers.dataManager.getFollowerUser(player).spawnFollowerEntity();
                         ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
                     }
                 }
@@ -177,7 +177,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     FollowerHandler followerHandler = Followers.followerManager.getFollower(followerName);
                     if (followerHandler == null) ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerName));
                     else {
-                        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+                        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
                         if (followerUser != null) {
                             followerUser.setFollowerType(followerName);
                             followerUser.spawnFollowerEntity();
@@ -218,7 +218,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     if (commandSender.hasPermission("follower.admin.edit")) tabComplete.addAll(Followers.followerManager.getFollowerNames());
                 }
                 case "set" -> {
-                    if (commandSender instanceof Player player) tabComplete.addAll(Followers.dataManager.getFollowerUser(player.getUniqueId()).getOwnedFollowerNames());
+                    if (commandSender instanceof Player player) tabComplete.addAll(Followers.dataManager.getFollowerUser(player).getOwnedFollowerNames());
                 }
             }
         }

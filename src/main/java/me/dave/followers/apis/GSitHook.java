@@ -16,7 +16,7 @@ public class GSitHook implements Listener {
     @EventHandler
     public void onPlayerSit(EntitySitEvent event) {
         if (event.getEntity() instanceof Player player) {
-            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.setPose(FollowerPose.SITTING);
             FollowerEntity followerEntity = followerUser.getFollowerEntity();
             if (followerEntity == null || !followerEntity.isAlive) return;
@@ -27,7 +27,7 @@ public class GSitHook implements Listener {
     @EventHandler
     public void onPlayerGetUpFromSeat(EntityGetUpSitEvent event) {
         if (event.getEntity() instanceof Player player) {
-            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.setPose(FollowerPose.DEFAULT);
             FollowerEntity followerEntity = followerUser.getFollowerEntity();
             if (followerEntity == null || !followerEntity.isAlive) return;
@@ -38,7 +38,7 @@ public class GSitHook implements Listener {
     @EventHandler
     public void onPlayerPose(PlayerPoseEvent event) {
         Player player = event.getPlayer();
-        FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player.getUniqueId()).getFollowerEntity();
+        FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
         if (followerEntity == null) return;
         Pose pose = event.getPoseSeat().getPose();
         if (pose == Pose.SPIN_ATTACK) {
@@ -50,7 +50,7 @@ public class GSitHook implements Listener {
     @EventHandler
     public void onPlayerUnpose(PlayerGetUpPoseEvent event) {
         Player player = event.getPlayer();
-        FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player.getUniqueId()).getFollowerEntity();
+        FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
         if (followerEntity == null) return;
         followerEntity.setPose(FollowerPose.DEFAULT);
         followerEntity.stopParticles();

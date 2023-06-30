@@ -41,15 +41,15 @@ public class FollowerEntity {
         this.isPlayerInvisible = player.isInvisible();
         this.isAlive = true;
 
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(this.player.getUniqueId());
-        if (followerUser != null) followerUser.setFollowerEnabled(true);
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(this.player);
+        followerUser.setFollowerEnabled(true);
 
         this.bodyArmorStand = summonBodyArmorStand();
         if (this.bodyArmorStand == null) {
             kill();
             return;
         }
-        if (followerUser != null) displayName(followerUser.isDisplayNameEnabled());
+        displayName(followerUser.isDisplayNameEnabled());
 
         setFollowerType(follower);
         setVisible(!player.isInvisible());
@@ -67,6 +67,10 @@ public class FollowerEntity {
 
     public FollowerHandler getType() {
         return Followers.followerManager.getFollower(followerType);
+    }
+
+    public String getDisplayName() {
+        return Followers.dataManager.getFollowerUser(player).getDisplayName();
     }
 
     public boolean isPlayerInvisible() {
@@ -88,17 +92,17 @@ public class FollowerEntity {
     public void setFollowerType(String newFollower) {
         this.followerType = newFollower;
 
-        Followers.dataManager.getFollowerUser(player.getUniqueId()).setFollowerType(newFollower);
+        Followers.dataManager.getFollowerUser(player).setFollowerType(newFollower);
         if (!player.isInvisible()) reloadInventory();
     }
 
     public void setDisplayNameVisible(boolean visible) {
-        Followers.dataManager.getFollowerUser(player.getUniqueId()).setDisplayNameEnabled(visible);
+        Followers.dataManager.getFollowerUser(player).setDisplayNameEnabled(visible);
         if (!player.isInvisible()) displayName(visible);
     }
 
     public void setDisplayName(String newName) {
-        Followers.dataManager.getFollowerUser(player.getUniqueId()).setDisplayName(newName);
+        Followers.dataManager.getFollowerUser(player).setDisplayName(newName);
         setDisplayNameVisible(true);
         if (Followers.configManager.areHitboxesEnabled()) bodyArmorStand.setCustomName(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", newName)));
         else nameArmorStand.setCustomName(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", newName)));
@@ -109,7 +113,7 @@ public class FollowerEntity {
         if (followerConfig == null) return;
 
         bodyArmorStand.setVisible(followerConfig.isVisible() && visible);
-        displayName(visible && Followers.dataManager.getFollowerUser(player.getUniqueId()).isDisplayNameEnabled());
+        displayName(visible && Followers.dataManager.getFollowerUser(player).isDisplayNameEnabled());
 
         if (visible) reloadInventory();
         else clearInventory();
@@ -125,7 +129,7 @@ public class FollowerEntity {
         Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> {
             FollowerHandler followerHandler = Followers.followerManager.getFollower(this.followerType);
             if (followerHandler == null) {
-                FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+                FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
                 if (followerUser != null) followerUser.disableFollowerEntity();
                 else kill();
                 return;
@@ -222,7 +226,7 @@ public class FollowerEntity {
                 Followers.dataManager.addActiveArmorStand(nameArmorStand.getUniqueId());
             }
 
-            String nickname = Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", Followers.dataManager.getFollowerUser(player.getUniqueId()).getDisplayName());
+            String nickname = Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", Followers.dataManager.getFollowerUser(player).getDisplayName());
             nameArmorStand.setCustomName(ChatColorHandler.translateAlternateColorCodes(nickname));
             nameArmorStand.setCustomNameVisible(true);
         }

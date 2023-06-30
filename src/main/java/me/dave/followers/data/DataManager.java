@@ -5,9 +5,9 @@ import me.dave.followers.storage.Storage;
 import me.dave.followers.storage.YmlStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import me.dave.followers.Followers;
 import me.dave.followers.entity.FollowerEntity;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -54,10 +54,8 @@ public class DataManager {
         Storage.SERVICE.submit(() -> storage.saveFollowerUser(followerUser));
     }
 
-    public FollowerUser getFollowerUser(UUID uuid) {
-        Player player = Bukkit.getPlayer(uuid);
-        if (player == null) return null;
-
+    public @NotNull FollowerUser getFollowerUser(@NotNull Player player) {
+        UUID uuid = player.getUniqueId();
         FollowerUser followerUser = uuidToFollowerUser.get(uuid);
         if (followerUser == null) followerUser = new FollowerUser(uuid, player.getName(), "none", "Unnamed", false, false, false);
         return followerUser;
@@ -75,11 +73,16 @@ public class DataManager {
         activeArmorStandsSet.remove(uuid);
     }
 
-
     public void reloadFollowerInventories() {
-        for (UUID playerUUID : uuidToFollowerUser.keySet()) {
-            FollowerEntity followerEntity = getFollowerUser(playerUUID).getFollowerEntity();
+        uuidToFollowerUser.keySet().forEach(uuid -> {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player == null) {
+                uuidToFollowerUser.remove(uuid);
+                return;
+            }
+
+            FollowerEntity followerEntity = getFollowerUser(player).getFollowerEntity();
             if (followerEntity != null) followerEntity.reloadInventory();
-        }
+        });
     }
 }

@@ -35,7 +35,7 @@ public class FollowerUserEvents implements Listener {
     @EventHandler
     public void onPlayerDisconnect(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
         Bukkit.getScheduler().runTaskLater(Followers.getInstance(), followerUser::removeFollowerEntity, 5);
         Followers.dataManager.saveFollowerUser(followerUser);
         Followers.dataManager.unloadFollowerUser(player.getUniqueId());
@@ -44,7 +44,7 @@ public class FollowerUserEvents implements Listener {
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
-        FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player.getUniqueId()).getFollowerEntity();
+        FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
         if (followerEntity == null) return;
         followerEntity.setPose(FollowerPose.DEFAULT);
     }
@@ -60,16 +60,14 @@ public class FollowerUserEvents implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
-        if (followerUser == null) return;
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
         followerUser.getFollowerEntity().kill();
     }
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
-        if (followerUser == null) return;
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
         if (followerUser.isFollowerEnabled()) Bukkit.getScheduler().runTaskLater(Followers.getInstance(), followerUser::respawnFollowerEntity, 1);
         if (followerUser.isRandomType()) followerUser.randomizeFollowerType();
     }

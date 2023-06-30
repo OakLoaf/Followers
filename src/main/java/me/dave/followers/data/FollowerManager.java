@@ -37,14 +37,11 @@ public class FollowerManager {
         for (String followerName : config.getKeys(false)) {
             loadFollower(followerName);
         }
-
-
     }
 
     public void refreshAllFollowers() {
         Bukkit.getOnlinePlayers().forEach(player -> {
-            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
-            if (followerUser == null) return;
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.refreshFollowerEntity();
         });
     }

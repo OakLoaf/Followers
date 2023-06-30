@@ -53,7 +53,7 @@ public class MenuGui extends PagedGui {
             headItem.setItemMeta(headItemMeta);
             inventory.setItem(i + 9, headItem);
         }
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
         if (!followerSet.isEmpty()) {
             ItemStack followerToggle;
             FollowerEntity followerEntity = followerUser.getFollowerEntity();
@@ -110,13 +110,13 @@ public class MenuGui extends PagedGui {
 
         if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "no-followers", Material.BARRIER))) return;
         else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "follower-toggle.enabled", Material.LIME_WOOL))) {
-            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.disableFollowerEntity();
             recalculateContents();
             return;
         }
         else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "follower-toggle.disabled", Material.RED_WOOL))) {
-            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.respawnFollowerEntity();
             ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
             recalculateContents();
@@ -131,21 +131,21 @@ public class MenuGui extends PagedGui {
             return;
         }
         else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "random.enabled", Material.CONDUIT))) {
-            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.setRandom(false);
             recalculateContents();
             return;
         }
         else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "random.disabled", Material.CONDUIT))) {
-            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.setRandom(true);
             followerUser.randomizeFollowerType();
             recalculateContents();
             return;
         }
         else if ((clickedItem.getType() == Followers.configManager.getGuiItem("menu-gui", "nickname.shown", Material.NAME_TAG).getType() || (clickedItem.getType() == Followers.configManager.getGuiItem("menu-gui", "nickname.hidden", Material.NAME_TAG).getType())) && clickedItem.getItemMeta().getDisplayName().startsWith(ChatColorHandler.translateAlternateColorCodes("&eFollower Name:"))) {
-            FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player.getUniqueId()).getFollowerEntity();
-            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+            FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                 player.playSound(player.getEyeLocation(), Sound.BLOCK_LEVER_CLICK, 0.6f, 1.0f);
                 followerEntity.setDisplayNameVisible(!followerUser.isDisplayNameEnabled());
@@ -168,7 +168,7 @@ public class MenuGui extends PagedGui {
             return;
         }
 
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player.getUniqueId());
+        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
         if (followerUser.isRandomType()) followerUser.setRandom(false);
         recalculateContents();
 
