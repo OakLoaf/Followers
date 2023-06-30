@@ -65,6 +65,10 @@ public class FollowerEntity {
         return player;
     }
 
+    public FollowerHandler getType() {
+        return Followers.followerManager.getFollower(followerType);
+    }
+
     public boolean isPlayerInvisible() {
         return isPlayerInvisible;
     }
