@@ -1,8 +1,6 @@
 package me.dave.followers.events;
 
-import me.dave.followers.gui.AbstractGui;
-import me.dave.followers.gui.BuilderGui;
-import me.dave.followers.gui.MenuGui;
+import me.dave.followers.gui.abstracts.AbstractGui;
 import me.dave.followers.gui.InventoryHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

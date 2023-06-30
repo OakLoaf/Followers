@@ -1,5 +1,7 @@
 package me.dave.followers.gui;
 
+import me.dave.followers.gui.abstracts.AbstractGui;
+
 import java.util.HashMap;
 import java.util.UUID;
 

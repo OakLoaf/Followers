@@ -4,7 +4,7 @@ import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.Followers;
 import me.dave.followers.data.FollowerHandler;
 import me.dave.followers.exceptions.ObjectNameLockedException;
-import me.dave.followers.gui.BuilderGui;
+import me.dave.followers.gui.custom.BuilderGui;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;

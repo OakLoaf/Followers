@@ -3,7 +3,7 @@ package me.dave.followers.commands;
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.data.FollowerUser;
 import me.dave.followers.exceptions.ObjectNameLockedException;
-import me.dave.followers.gui.BuilderGui;
+import me.dave.followers.gui.custom.BuilderGui;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,7 +12,7 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import me.dave.followers.item.FollowerCreator;
 import me.dave.followers.Followers;
-import me.dave.followers.gui.MenuGui;
+import me.dave.followers.gui.custom.MenuGui;
 import me.dave.followers.data.FollowerHandler;
 
 import java.util.*;
