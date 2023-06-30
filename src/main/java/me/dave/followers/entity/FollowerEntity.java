@@ -66,7 +66,7 @@ public class FollowerEntity {
     }
 
     public Location getLocation() {
-        return bodyArmorStand.getLocation();
+        return bodyArmorStand.getLocation().clone();
     }
 
     public FollowerHandler getType() {
