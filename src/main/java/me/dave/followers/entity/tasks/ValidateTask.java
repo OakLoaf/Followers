@@ -16,11 +16,11 @@ public class ValidateTask extends FollowerEntityTask {
 
     @Override
     public void run() {
-        if (followerEntity == null || followerEntity.isDying()) {
+        if (followerEntity == null || !followerEntity.isAlive()) {
             cancel();
             return;
         }
-        if (followerEntity.getBodyArmorStand() == null || !followerEntity.getBodyArmorStand().isValid() || !followerEntity.isAlive) {
+        if (followerEntity.getBodyArmorStand() == null || !followerEntity.getBodyArmorStand().isValid()) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.respawnFollowerEntity();
             cancel();

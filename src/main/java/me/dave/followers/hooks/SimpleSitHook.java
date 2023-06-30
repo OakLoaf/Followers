@@ -17,7 +17,7 @@ public class SimpleSitHook implements Listener {
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(event.getPlayer());
         followerUser.setPose(FollowerPose.SITTING);
         FollowerEntity followerEntity = followerUser.getFollowerEntity();
-        if (followerEntity == null || !followerEntity.isAlive) return;
+        if (followerEntity == null || !followerEntity.isAlive()) return;
         followerEntity.startParticles(Particle.CLOUD);
     }
 
@@ -26,7 +26,7 @@ public class SimpleSitHook implements Listener {
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(event.getPlayer());
         followerUser.setPose(FollowerPose.DEFAULT);
         FollowerEntity followerEntity = followerUser.getFollowerEntity();
-        if (followerEntity == null || !followerEntity.isAlive) return;
+        if (followerEntity == null || !followerEntity.isAlive()) return;
         followerEntity.stopParticles();
     }
 }

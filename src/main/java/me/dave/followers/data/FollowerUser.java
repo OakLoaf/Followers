@@ -161,15 +161,13 @@ public class FollowerUser {
     }
 
     public void removeFollowerEntity() {
-        if (followerEntity == null || !followerEntity.isAlive) return;
+        if (followerEntity == null || !followerEntity.isAlive()) return;
         followerEntity.kill();
         followerEntity = null;
     }
 
     public void disableFollowerEntity() {
         setFollowerEnabled(false);
-        if (followerEntity == null || !followerEntity.isAlive) return;
-        followerEntity.deactivate();
-        followerEntity = null;
+        removeFollowerEntity();
     }
 }

@@ -29,8 +29,7 @@ public class FollowerEntity {
     private String followerType;
     private boolean isPlayerInvisible;
     private FollowerPose pose;
-    public boolean isAlive;
-    private boolean dying;
+    private boolean alive;
     private MoveTask moveTask;
     private ParticleTask particleTask;
     private VisibilityTask visibilityTask;
@@ -39,7 +38,7 @@ public class FollowerEntity {
         this.player = player;
         this.followerType = follower;
         this.isPlayerInvisible = player.isInvisible();
-        this.isAlive = true;
+        this.alive = true;
 
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(this.player);
         followerUser.setFollowerEnabled(true);
@@ -75,6 +74,10 @@ public class FollowerEntity {
 
     public String getDisplayName() {
         return Followers.dataManager.getFollowerUser(player).getDisplayName();
+    }
+
+    public boolean isDisplayNameVisible() {
+        return Followers.dataManager.getFollowerUser(player).isDisplayNameEnabled();
     }
 
     public boolean isPlayerInvisible() {
@@ -242,6 +245,8 @@ public class FollowerEntity {
     }
 
     public void kill() {
+        alive = false;
+
         stopMovement();
         stopParticles();
 
@@ -252,17 +257,10 @@ public class FollowerEntity {
 
         if (nameArmorStand != null) nameArmorStand.remove();
         Followers.dataManager.removeActiveArmorStand(nameArmorStandUUID);
-
-        isAlive = false;
     }
 
-    public void deactivate() {
-        dying = true;
-        kill();
-    }
-
-    public boolean isDying() {
-        return dying;
+    public boolean isAlive() {
+        return alive;
     }
 
     //////////////////////////////

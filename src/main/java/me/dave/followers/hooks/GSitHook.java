@@ -19,7 +19,7 @@ public class GSitHook implements Listener {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.setPose(FollowerPose.SITTING);
             FollowerEntity followerEntity = followerUser.getFollowerEntity();
-            if (followerEntity == null || !followerEntity.isAlive) return;
+            if (followerEntity == null || !followerEntity.isAlive()) return;
             followerEntity.startParticles(Particle.CLOUD);
         }
     }
@@ -30,7 +30,7 @@ public class GSitHook implements Listener {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.setPose(FollowerPose.DEFAULT);
             FollowerEntity followerEntity = followerUser.getFollowerEntity();
-            if (followerEntity == null || !followerEntity.isAlive) return;
+            if (followerEntity == null || !followerEntity.isAlive()) return;
             followerEntity.stopParticles();
         }
     }
