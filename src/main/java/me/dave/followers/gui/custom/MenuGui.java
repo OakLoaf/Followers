@@ -42,6 +42,7 @@ public class MenuGui extends PagedGui {
             if (!player.hasPermission("followers." + followerName.toLowerCase().replaceAll(" ", "_"))) continue;
             followerSet.add(followerName);
         }
+
         int setStartPos = (page - 1) * 36;
         for (int i = 0; i < 36; i++, setStartPos++) {
             if (setStartPos >= followerSet.size() || followerSet.isEmpty()) break;
@@ -53,6 +54,7 @@ public class MenuGui extends PagedGui {
             headItem.setItemMeta(headItemMeta);
             inventory.setItem(i + 9, headItem);
         }
+
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
         if (!followerSet.isEmpty()) {
             ItemStack followerToggle;
