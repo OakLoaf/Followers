@@ -1,4 +1,4 @@
-package me.dave.followers.gui;
+package me.dave.followers.gui.abstracts;
 
 import org.bukkit.event.inventory.InventoryClickEvent;
 

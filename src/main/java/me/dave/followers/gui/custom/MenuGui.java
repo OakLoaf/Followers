@@ -1,8 +1,10 @@
-package me.dave.followers.gui;
+package me.dave.followers.gui.custom;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.Followers;
 import me.dave.followers.entity.FollowerEntity;
+import me.dave.followers.gui.InventoryHandler;
+import me.dave.followers.gui.abstracts.PagedGui;
 import me.dave.followers.utils.TextInterface;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -17,10 +19,9 @@ import me.dave.followers.data.FollowerUser;
 
 import java.util.*;
 
-public class MenuGui extends AbstractGui {
+public class MenuGui extends PagedGui {
     private final Inventory inventory = Bukkit.createInventory(null, 54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle()));
     private final Player player;
-    private int page = 1;
 
     public MenuGui(Player player) {
         this.player = player;
@@ -180,19 +181,6 @@ public class MenuGui extends AbstractGui {
         }
 
         ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
-    }
-
-    public void setPage(int page) {
-        this.page = page;
-        recalculateContents();
-    }
-
-    public void nextPage() {
-        setPage(++page);
-    }
-
-    public void previousPage() {
-        setPage(--page);
     }
 
     private ItemStack getBorderItem() {

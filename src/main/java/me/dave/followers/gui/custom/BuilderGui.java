@@ -1,9 +1,11 @@
-package me.dave.followers.gui;
+package me.dave.followers.gui.custom;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.Followers;
 import me.dave.followers.data.FollowerHandler;
 import me.dave.followers.exceptions.ObjectNameLockedException;
+import me.dave.followers.gui.InventoryHandler;
+import me.dave.followers.gui.abstracts.AbstractGui;
 import me.dave.followers.utils.TextInterface;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
