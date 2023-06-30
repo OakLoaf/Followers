@@ -32,12 +32,6 @@ public class BuilderGui extends AbstractGui {
         this.followerBuilder = followerBuilder;
     }
 
-    public BuilderGui(Player player, Mode mode) {
-        this.player = player;
-        this.mode = mode;
-        this.followerBuilder = new FollowerHandler.Builder();
-    }
-
     @Override
     public void recalculateContents() {
         inventory.clear();
