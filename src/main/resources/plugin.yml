@@ -18,17 +18,20 @@ commands:
     usage: /dye
 permissions:
   follower.admin.reload:
-    description: Allows you to reload the Followers plugin
+    description: Allows reloading the Followers plugin
     default: op
   follower.admin.create:
-    description: Allows you to create followers using the follower creator item
+    description: Allows access to create followers using the follower creator item
     default: op
   follower.admin.delete:
-    description: Allows you to delete followers
+    description: Allows access to delete followers
     default: op
   follower.admin.dye:
-    description: Allows you to get/dye armour
+    description: Allows access to get/dye armour with /dye
+    default: op
+  follower.admin.moderate:
+    description: Allows access to the moderation gui
     default: op
   follower.name:
-    description: Allows you to name your Follower
+    description: Allows access to naming your Follower
     default: op

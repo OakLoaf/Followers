@@ -4,6 +4,7 @@ import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.data.FollowerUser;
 import me.dave.followers.exceptions.ObjectNameLockedException;
 import me.dave.followers.gui.custom.BuilderGui;
+import me.dave.followers.gui.custom.ModerationGui;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,26 +24,17 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) {
         if (args.length == 1) {
             switch(args[0].toLowerCase()) {
-                case "reload" -> {
-                    if (!sender.hasPermission("follower.admin.reload")) {
+                case "create" -> {
+                    if (!sender.hasPermission("follower.admin.create")) {
                         ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
                         return true;
                     }
-                    Followers.configManager.reloadConfig(Followers.getInstance());
-                    Followers.followerManager.reloadFollowers();
-                    Followers.dataManager.reloadFollowerInventories();
-                    sender.sendMessage(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getLangMessage("reloaded")));
-                    return true;
-                }
-                case "create" -> {
+
                     if (!(sender instanceof Player player)) {
                         sender.sendMessage("Console cannot run this command!");
                         return true;
                     }
-                    if (!player.hasPermission("follower.admin.create")) {
-                        ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("no-permissions"));
-                        return true;
-                    }
+
                     ItemStack creator = FollowerCreator.getOrLoadCreatorItem();
                     player.getInventory().addItem(creator);
                     ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("get-follower-creator"));
@@ -53,6 +45,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                         ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
                         return true;
                     }
+
                     ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/follower delete <follower_name>"));
                     return true;
                 }
@@ -100,6 +93,32 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-default-skull"));
                     ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("get-follower-creator"));
                     ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("dye-wrong-material"));
+                    return true;
+                }
+                case "moderate" -> {
+                    if (!sender.hasPermission("follower.admin.moderate")) {
+                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
+                        return true;
+                    }
+
+                    if (!(sender instanceof Player player)) {
+                        sender.sendMessage("Console cannot run this command!");
+                        return true;
+                    }
+
+                    ModerationGui moderationGui = new ModerationGui(player);
+                    moderationGui.openInventory();
+                }
+                case "reload" -> {
+                    if (!sender.hasPermission("follower.admin.reload")) {
+                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
+                        return true;
+                    }
+
+                    Followers.configManager.reloadConfig(Followers.getInstance());
+                    Followers.followerManager.reloadFollowers();
+                    Followers.dataManager.reloadFollowerInventories();
+                    sender.sendMessage(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getLangMessage("reloaded")));
                     return true;
                 }
                 case "set" -> {
@@ -178,10 +197,8 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     if (followerHandler == null) ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerName));
                     else {
                         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
-                        if (followerUser != null) {
-                            followerUser.setFollowerType(followerName);
-                            followerUser.spawnFollowerEntity();
-                        }
+                        followerUser.setFollowerType(followerName);
+                        followerUser.spawnFollowerEntity();
                     }
                     return true;
                 }
@@ -192,6 +209,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
             sender.sendMessage("Console cannot run this command!");
             return true;
         }
+
         MenuGui menuGui = new MenuGui(player);
         menuGui.openInventory();
         return true;
@@ -208,6 +226,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
             if (commandSender.hasPermission("follower.admin.create")) tabComplete.add("create");
             if (commandSender.hasPermission("follower.admin.delete")) tabComplete.add("delete");
             if (commandSender.hasPermission("follower.admin.edit")) tabComplete.add("edit");
+            if (commandSender.hasPermission("follower.admin.moderate")) tabComplete.add("moderate");
             if (commandSender.hasPermission("follower.admin.reload")) tabComplete.add("reload");
         } else if (args.length == 2) {
             switch(args[0].toLowerCase()) {
