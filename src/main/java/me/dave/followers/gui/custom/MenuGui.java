@@ -20,7 +20,7 @@ import me.dave.followers.data.FollowerUser;
 import java.util.*;
 
 public class MenuGui extends PagedGui {
-    private final Inventory inventory = Bukkit.createInventory(null, 54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle()));
+    private final Inventory inventory = Bukkit.createInventory(null, 54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle("menu-gui")));
     private final Player player;
 
     public MenuGui(Player player) {
@@ -59,7 +59,7 @@ public class MenuGui extends PagedGui {
         if (!followerSet.isEmpty()) {
             ItemStack followerToggle;
             FollowerEntity followerEntity = followerUser.getFollowerEntity();
-            if (followerUser.isFollowerEnabled() && followerEntity != null && followerEntity.isAlive) followerToggle = Followers.configManager.getGuiItem("menu-gui", "follower-toggle.enabled", Material.LIME_WOOL);
+            if (followerUser.isFollowerEnabled() && followerEntity != null && followerEntity.isAlive()) followerToggle = Followers.configManager.getGuiItem("menu-gui", "follower-toggle.enabled", Material.LIME_WOOL);
             else followerToggle = Followers.configManager.getGuiItem("menu-gui", "follower-toggle.disabled", Material.RED_WOOL);
             inventory.setItem(49, followerToggle);
         } else {
@@ -81,8 +81,10 @@ public class MenuGui extends PagedGui {
             else followerName = Followers.configManager.getGuiItem("menu-gui", "nickname.hidden", Material.NAME_TAG);
 
             ItemMeta itemMeta = followerName.getItemMeta();
-            itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll("%nickname%", followerUser.getDisplayName()));
-            followerName.setItemMeta(itemMeta);
+            if (itemMeta != null) {
+                itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll("%nickname%", followerUser.getDisplayName()));
+                followerName.setItemMeta(itemMeta);
+            }
 
             inventory.setItem(45, followerName);
         }
@@ -169,6 +171,8 @@ public class MenuGui extends PagedGui {
             }, 5L);
             return;
         }
+
+        if (event.getSlot() < 9 || event.getSlot() > 44) return;
 
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
         if (followerUser.isRandomType()) followerUser.setRandom(false);
