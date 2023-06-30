@@ -42,7 +42,7 @@ public class ConfigManager {
     }
 
     public String getLangMessage(String messageName) {
-        return langMessages.get(messageName.toLowerCase());
+        return langMessages.getOrDefault(messageName.toLowerCase(), "");
     }
 
     public ItemStack getGuiItem(String guiType, String itemName) {
@@ -50,14 +50,23 @@ public class ConfigManager {
     }
 
     public ItemStack getGuiItem(String guiType, String itemName, Material def) {
-        if (guiType.equals("menu-gui")) guiType = "gui";
-        else guiType = "builder-gui.items";
-        ConfigurationSection itemSection = Followers.getInstance().getConfig().getConfigurationSection(guiType + "." + itemName);
+        ConfigurationSection itemSection = Followers.getInstance().getConfig().getConfigurationSection(guiType + ".items." + itemName);
         return ItemStackData.parse(itemSection, def);
     }
 
-    public String getGuiTitle() {
-        return gui.title;
+    public String getGuiTitle(String guiType) {
+        switch(guiType) {
+            case "menu-gui" -> {
+                return gui.title;
+            }
+            case "builder-gui" -> {
+                return Followers.getInstance().getConfig().getString("builder-gui.title");
+            }
+            case "moderation-gui" -> {
+                return Followers.getInstance().getConfig().getString("moderation-gui.title");
+            }
+        }
+        return null;
     }
 
     public String getGuiFollowerFormat() {

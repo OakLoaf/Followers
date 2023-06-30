@@ -30,13 +30,13 @@ database:
   user: user
   password: pass
 
-# gui: Config changes for the Followers Menu
-gui:
+# menu-gui: Config changes for the Followers Menu
+menu-gui:
   # title: The title of the Menu
-  title: "Followers"
+  title: "&#59bfffFollowers"
   # follower-format: Format of the follower names within the Menu
   follower-format: "&e%follower%"
-  # items: To customise the items within the gui checkout the gitbook ()
+  # items: For information on how to change the gui items check out the gitbook (https://dave-12.gitbook.io/follower-pets/configuring/editing-the-guis)
 
 # builder-gui: Config changes for the Follower Editor menu
 builder-gui:
