@@ -45,27 +45,27 @@ public class FollowerHandler {
     }
 
     public ItemStack getHead() {
-        return head;
+        return head.clone();
     }
 
     public ItemStack getChest() {
-        return chest;
+        return chest.clone();
     }
 
     public ItemStack getLegs() {
-        return legs;
+        return legs.clone();
     }
 
     public ItemStack getFeet() {
-        return feet;
+        return feet.clone();
     }
 
     public ItemStack getMainHand() {
-        return mainHand;
+        return mainHand.clone();
     }
 
     public ItemStack getOffHand() {
-        return offHand;
+        return offHand.clone();
     }
 
     public boolean isVisible() {
