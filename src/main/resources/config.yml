@@ -36,78 +36,16 @@ gui:
   title: "Followers"
   # follower-format: Format of the follower names within the Menu
   follower-format: "&e%follower%"
-  # no-followers: Item displayed when a player has no followers
-  no-followers:
-    name: "&cYou don't own any followers!"
-    material: "barrier"
-  # follower-toggle: Item displaying whether a user has a follower enabled or not
-  follower-toggle:
-    enabled:
-      name: "&eFollower: &aEnabled"
-      material: "lime_wool"
-    disabled:
-      name: "&eFollower: &cDisabled"
-      material: "red_wool"
-  # next-page: Item to move to the next page
-  next-page:
-    name: "&eNext Page ->"
-    material: "arrow"
-  # previous-page: Item to move to the previous page
-  previous-page:
-    name: "&e<- Previous Page"
-    material: "arrow"
-  # nickname: Item to change the nickname of a player's follower
-  nickname:
-    shown:
-      name: "&eFollower Name: &f%nickname%"
-      material: "name_tag"
-      lore:
-        - "&eShown &7&o(Shift-click to Hide)"
-    hidden:
-      name: "&eFollower Name: &f%nickname%"
-      material: "name_tag"
-      lore:
-        - "&eHidden &7&o(Shift-click to Show)"
-  # random: Item to enable the random follower setting
-  random:
-    enabled:
-      name: "&eRandom Follower: &aEnabled"
-      material: "conduit"
-    disabled:
-      name: "&eRandom Follower: &cDisabled"
-      material: "conduit"
+  # items: To customise the items within the gui checkout the gitbook ()
 
 # builder-gui: Config changes for the Follower Editor menu
 builder-gui:
-  items:
-    # name-button: Button to change a Follower's name
-    name-button:
-      default:
-        name: "&eFollower Name: &f%name%"
-        material: "oak_sign"
-        lore:
-          - "&7&oClick to change the Follower's name"
-      locked:
-        name: "&eFollower Name: &f%name%"
-        material: "oak_sign"
-        lore:
-          - "&c&oName Locked"
-    # visibility-button: Button to change a Follower's visibility
-    visibility-button:
-      visible:
-        name: "&eArmor Stand Visible: &fTrue"
-        material: "white_stained_glass"
-      invisible:
-        name: "&eArmor Stand Visible: &fFalse"
-        material: "glass"
-    # complete-button: Button to complete editing
-    complete-button:
-      name: "&aComplete Button"
-      material: "lime_wool"
-    # cancel-button: Button to cancel editing
-    cancel-button:
-      name: "&cCancel Button"
-      material: "red_wool"
+  # title: The title of the gui
+  title: "&#59bfffFollowers &7- &#f5d57fEditor 🔨"
+
+moderation-gui:
+  # title: The title of the gui
+  title: "&#59bfffFollowers &7- &#f56f42Moderation ⚔"
 
 # %command-usage% - The command being used incorrectly
 # %follower% - The selected follower
