@@ -108,6 +108,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
 
                     ModerationGui moderationGui = new ModerationGui(player);
                     moderationGui.openInventory();
+                    return true;
                 }
                 case "reload" -> {
                     if (!sender.hasPermission("follower.admin.reload")) {
