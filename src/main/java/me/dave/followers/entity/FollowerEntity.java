@@ -134,8 +134,7 @@ public class FollowerEntity {
             FollowerHandler followerHandler = Followers.followerManager.getFollower(this.followerType);
             if (followerHandler == null) {
                 FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
-                if (followerUser != null) followerUser.disableFollowerEntity();
-                else kill();
+                followerUser.disableFollowerEntity();
                 return;
             }
 

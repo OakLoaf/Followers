@@ -22,8 +22,7 @@ public class ValidateTask extends FollowerEntityTask {
         }
         if (followerEntity.getBodyArmorStand() == null || !followerEntity.getBodyArmorStand().isValid() || !followerEntity.isAlive) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
-            if (followerUser != null) followerUser.respawnFollowerEntity();
-            else followerEntity.kill();
+            followerUser.respawnFollowerEntity();
             cancel();
             return;
         }
