@@ -21,7 +21,7 @@ import java.util.UUID;
 public class ItemStackData {
 
     public static ItemStack parse(ConfigurationSection configurationSection, Material def) {
-        if (configurationSection == null) return new ItemStack(Material.AIR);
+        if (configurationSection == null) return new ItemStack(def);
 
         Material material;
         try {
