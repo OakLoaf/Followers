@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class BuilderGui extends AbstractGui {
-    private final Inventory inventory = Bukkit.createInventory(null, 54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle()));
+    private final Inventory inventory = Bukkit.createInventory(null, 54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle("builder-gui")));
     private final FollowerHandler.Builder followerBuilder;
     private final Player player;
     private final Mode mode;
