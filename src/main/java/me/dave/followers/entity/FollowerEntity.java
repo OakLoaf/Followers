@@ -65,6 +65,10 @@ public class FollowerEntity {
         return player;
     }
 
+    public Location getLocation() {
+        return bodyArmorStand.getLocation();
+    }
+
     public FollowerHandler getType() {
         return Followers.followerManager.getFollower(followerType);
     }
