@@ -176,7 +176,6 @@ public class MenuGui extends PagedGui {
 
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
         if (followerUser.isRandomType()) followerUser.setRandom(false);
-        recalculateContents();
 
         FollowerEntity followerEntity = followerUser.getFollowerEntity();
         String followerName = ChatColorHandler.stripColor(clickedItem.getItemMeta().getDisplayName());
@@ -186,6 +185,7 @@ public class MenuGui extends PagedGui {
             followerUser.spawnFollowerEntity();
         }
 
+        recalculateContents();
         ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
     }
 
