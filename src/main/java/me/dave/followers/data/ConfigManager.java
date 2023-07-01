@@ -33,7 +33,7 @@ public class ConfigManager {
         speed = config.getDouble("speed", 0.4);
         nicknameFormat = config.getString("follower-nickname-format", "%nickname%");
 
-        gui = new GuiConfig(config.getString("gui.title", "Followers"), config.getString("gui.follower-format", "&e%follower%"));
+        gui = new GuiConfig(config.getString("menu-gui.title", "Followers"), config.getString("menu-gui.follower-format", "&e%follower%"));
         database = new DatabaseConfig(config.getString("database.type"), config.getConfigurationSection("database"));
 
         for (String messageName : config.getConfigurationSection("messages").getKeys(false)) {
