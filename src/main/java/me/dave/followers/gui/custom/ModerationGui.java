@@ -49,7 +49,7 @@ public class ModerationGui extends PagedGui {
 
             String displayName = followerEntity.getDisplayName();
             if (displayName.equals("Unnamed")) displayName = "&oUnnamed";
-            followerMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&e" + displayName + " &7- " + player.getName()));
+            followerMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&e" + displayName + " &7- " + followerEntity.getPlayer().getName()));
 
             List<String> lore = new ArrayList<>();
             if (!followerEntity.isDisplayNameVisible()) lore.add("&7&o(Follower Name Hidden)");
