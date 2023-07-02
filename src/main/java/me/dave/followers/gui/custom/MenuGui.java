@@ -147,7 +147,7 @@ public class MenuGui extends PagedGui {
             recalculateContents();
             return;
         }
-        else if ((clickedItem.getType() == Followers.configManager.getGuiItem("menu-gui", "nickname.shown", Material.NAME_TAG).getType() || (clickedItem.getType() == Followers.configManager.getGuiItem("menu-gui", "nickname.hidden", Material.NAME_TAG).getType())) && clickedItem.getItemMeta().getDisplayName().startsWith(ChatColorHandler.translateAlternateColorCodes("&eFollower Name:"))) {
+        else if (event.getRawSlot() == 45 || (clickedItem.getType() == Followers.configManager.getGuiItem("menu-gui", "nickname.shown", Material.NAME_TAG).getType() || (clickedItem.getType() == Followers.configManager.getGuiItem("menu-gui", "nickname.hidden", Material.NAME_TAG).getType())) && clickedItem.getItemMeta().getDisplayName().startsWith(ChatColorHandler.translateAlternateColorCodes("&eFollower Name:"))) {
             FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
@@ -172,7 +172,7 @@ public class MenuGui extends PagedGui {
             return;
         }
 
-        if (event.getSlot() < 9 || event.getSlot() > 44) return;
+        if (event.getRawSlot() < 9 || event.getRawSlot() > 44) return;
 
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
         if (followerUser.isRandomType()) followerUser.setRandom(false);
