@@ -64,8 +64,8 @@ public class FollowerUserEvents implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
-        followerUser.getFollowerEntity().kill();
+        FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
+        if (followerEntity != null) followerEntity.kill();
     }
 
     @EventHandler
