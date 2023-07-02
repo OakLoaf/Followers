@@ -165,10 +165,7 @@ public class FollowerEntity {
     }
 
     private ArmorStand summonBodyArmorStand() {
-        Location spawnLoc = player.getLocation().add(1.5, 0, 0);
-        Vector direction = player.getLocation().getDirection().setY(0);
-        spawnLoc = spawnLoc.add(direction.rotateAroundY(0.5));
-        float offSet = direction.setY(0).angle(spawnLoc.toVector());
+        Location spawnLoc = player.getLocation().add(1.5, 0, 1.5);
 
         ArmorStand armorStand;
         if (!spawnLoc.getChunk().isLoaded()) return null;
