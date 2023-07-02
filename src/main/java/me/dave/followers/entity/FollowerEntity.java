@@ -242,22 +242,8 @@ public class FollowerEntity {
     }
 
     public boolean teleport(Location location) {
-//        return (bodyArmorStand.teleport(location) && nameArmorStand.teleport(location));
-
-        Chunk bodyChunk = bodyArmorStand.getLocation().getChunk();
-        Chunk nickNameChunk = nameArmorStand.getLocation().getChunk();
-
-        boolean success;
-
-        if (bodyChunk.isLoaded()) success = bodyArmorStand.teleport(location);
-        else if (bodyChunk.load()) success = bodyArmorStand.teleport(location);
-        else success = false;
-
-        if (nickNameChunk.isLoaded()) success = (success && nameArmorStand.teleport(location));
-        else if (bodyChunk.load()) success = (success && nameArmorStand.teleport(location));
-        else success = false;
-
-        return success;
+        if (bodyArmorStand.getLocation().getChunk().isLoaded()) return (bodyArmorStand.teleport(location) && nameArmorStand.teleport(location));
+        else return false;
     }
 
     public void kill() {

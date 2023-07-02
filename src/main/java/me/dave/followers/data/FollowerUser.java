@@ -147,11 +147,6 @@ public class FollowerUser {
         Player player = Bukkit.getPlayer(uuid);
         if (player == null || player.isDead()) return;
 
-        Chunk chunk = player.getLocation().getChunk();
-        if (!chunk.isLoaded()) {
-            if (!chunk.load()) return;
-        }
-
         followerEntity = new FollowerEntity(player, followerType);
         if (randomType) randomizeFollowerType();
     }
