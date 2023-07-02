@@ -11,15 +11,20 @@ import org.bukkit.util.Vector;
 
 import java.util.concurrent.CompletableFuture;
 
-public class MoveTask extends AbstractEntityTask {
+public class MovementTask extends AbstractTask {
     private final Player player;
     private final double speed;
     private boolean teleporting = false;
 
-    public MoveTask(FollowerEntity followerEntity) {
+    public MovementTask(FollowerEntity followerEntity) {
         super(followerEntity);
         this.player = followerEntity.getPlayer();
         this.speed = Followers.configManager.getSpeed();
+    }
+
+    @Override
+    public FollowerTaskType getType() {
+        return FollowerTaskType.MOVEMENT;
     }
 
     @Override

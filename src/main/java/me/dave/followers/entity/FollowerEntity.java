@@ -14,10 +14,12 @@ import org.bukkit.persistence.PersistentDataType;
 import me.dave.followers.data.FollowerHandler;
 import me.dave.followers.data.FollowerUser;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 public class FollowerEntity {
     private static final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
+    private final HashMap<FollowerTaskType, AbstractTask> taskMap = new HashMap<>();
     private final Player player;
     private final ArmorStand bodyArmorStand;
     private ArmorStand nameArmorStand;
@@ -26,9 +28,6 @@ public class FollowerEntity {
     private boolean isPlayerInvisible;
     private FollowerPose pose;
     private boolean alive;
-    private MoveTask moveTask;
-    private ParticleTask particleTask;
-    private VisibilityTask visibilityTask;
 
     public FollowerEntity(Player player, String follower) {
         this.player = player;
@@ -245,8 +244,7 @@ public class FollowerEntity {
     public void kill() {
         alive = false;
 
-        stopMovement();
-        stopParticles();
+        stopTasks(FollowerTaskType.MOVEMENT, FollowerTaskType.PARTICLE);
 
         if (bodyArmorStand != null) {
             bodyArmorStand.remove();
@@ -259,45 +257,6 @@ public class FollowerEntity {
 
     public boolean isAlive() {
         return alive;
-    }
-
-    //////////////////////////////
-    //     Visibility Task      //
-    //////////////////////////////
-
-    private void startVisiblityTask() {
-        stopVisiblityTask();
-        visibilityTask = new VisibilityTask(this);
-        visibilityTask.runTaskTimer(Followers.getInstance(), 0L, 20L);
-    }
-
-    private void stopVisiblityTask() {
-        if (visibilityTask != null && !visibilityTask.isCancelled()) {
-            visibilityTask.cancel();
-            visibilityTask = null;
-        }
-    }
-
-    //////////////////////////////
-    //    Movement Functions    //
-    //////////////////////////////
-
-    private void startMovement() {
-        String strUUID = bodyArmorStand.getPersistentDataContainer().get(followerKey, PersistentDataType.STRING);
-        if (strUUID == null) return;
-        Player player = Bukkit.getPlayer(UUID.fromString(strUUID));
-        if (player == null) return;
-
-        stopMovement();
-        moveTask = new MoveTask(this);
-        moveTask.runTaskTimer(Followers.getInstance(), 0L, 1L);
-    }
-
-    private void stopMovement() {
-        if (moveTask != null && !moveTask.isCancelled()) {
-            moveTask.cancel();
-            moveTask = null;
-        }
     }
 
     //////////////////////////
@@ -315,27 +274,68 @@ public class FollowerEntity {
     }
 
     //////////////////////////////
+    //     Visibility Task      //
+    //////////////////////////////
+
+    private void startVisiblityTask() {
+        stopTask(FollowerTaskType.VISIBILITY);
+        startTask(new VisibilityTask(this), 0, 20);
+    }
+
+    //////////////////////////////
+    //    Movement Functions    //
+    //////////////////////////////
+
+    private void startMovement() {
+        String strUUID = bodyArmorStand.getPersistentDataContainer().get(followerKey, PersistentDataType.STRING);
+        if (strUUID == null) return;
+        Player player = Bukkit.getPlayer(UUID.fromString(strUUID));
+        if (player == null) return;
+
+        stopTask(FollowerTaskType.MOVEMENT);
+        startTask(new MovementTask(this), 0, 1);
+    }
+
+    //////////////////////////////
     //    Particle Functions    //
     //////////////////////////////
 
     public void startParticles(Particle particle) {
-        stopParticles();
-        particleTask = new ParticleTask(this, particle);
-        particleTask.runTaskTimer(Followers.getInstance(), 0, 3);
+        stopTask(FollowerTaskType.PARTICLE);
+        startTask(new ParticleTask(this, particle), 0, 3);
     }
 
-    public void stopParticles() {
-        if (particleTask != null && !particleTask.isCancelled()) {
-            particleTask.cancel();
-            particleTask = null;
+
+    ////////////////////////
+    //    Task Handler    //
+    ////////////////////////
+
+    public void startTask(AbstractTask task, int delay, int period) {
+        stopTask(task.getType());
+
+        taskMap.put(task.getType(), task);
+        task.runTaskTimer(Followers.getInstance(), delay, period);
+    }
+
+    public void stopTask(FollowerTaskType taskType) {
+        AbstractTask task = taskMap.get(taskType);
+
+        if (task != null && !task.isCancelled()) {
+            task.cancel();
+            taskMap.remove(taskType);
         }
     }
 
-    private void startTask(AbstractEntityTask task, int delay, int period) {
-
+    public void stopTasks(FollowerTaskType... taskTypes) {
+        for (FollowerTaskType taskType : taskTypes) {
+            stopTask(taskType);
+        }
     }
 
-    private void stopTask(AbstractEntityTask task) {
-
+    public void stopTasks() {
+        taskMap.forEach((taskType, task) -> {
+            task.cancel();
+            taskMap.remove(taskType);
+        });
     }
 }

@@ -4,6 +4,7 @@ import me.dave.followers.Followers;
 import me.dave.followers.data.FollowerUser;
 import me.dave.followers.entity.FollowerEntity;
 import me.dave.followers.entity.poses.FollowerPose;
+import me.dave.followers.entity.tasks.FollowerTaskType;
 import net.apcat.simplesit.events.PlayerSitEvent;
 import net.apcat.simplesit.events.PlayerStopSittingEvent;
 import org.bukkit.Particle;
@@ -27,6 +28,6 @@ public class SimpleSitHook implements Listener {
         followerUser.setPose(FollowerPose.DEFAULT);
         FollowerEntity followerEntity = followerUser.getFollowerEntity();
         if (followerEntity == null || !followerEntity.isAlive()) return;
-        followerEntity.stopParticles();
+        followerEntity.stopTask(FollowerTaskType.PARTICLE);
     }
 }

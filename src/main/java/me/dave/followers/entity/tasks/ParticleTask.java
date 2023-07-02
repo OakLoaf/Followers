@@ -3,15 +3,20 @@ package me.dave.followers.entity.tasks;
 import me.dave.followers.entity.FollowerEntity;
 import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.scheduler.BukkitRunnable;
 
-public class ParticleTask extends BukkitRunnable {
+public class ParticleTask extends AbstractTask {
     private final ArmorStand armorStand;
     private final Particle particle;
 
-    public ParticleTask(FollowerEntity follower, Particle particle) {
-        this.armorStand = follower.getBodyArmorStand();
+    public ParticleTask(FollowerEntity followerEntity, Particle particle) {
+        super(followerEntity);
+        this.armorStand = followerEntity.getBodyArmorStand();
         this.particle = particle;
+    }
+
+    @Override
+    public FollowerTaskType getType() {
+        return FollowerTaskType.PARTICLE;
     }
 
     @Override
