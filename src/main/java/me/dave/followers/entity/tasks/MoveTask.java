@@ -9,9 +9,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
+import java.util.concurrent.CompletableFuture;
+
 public class MoveTask extends FollowerEntityTask {
     private final Player player;
     private final double speed;
+    private boolean teleporting = false;
 
     public MoveTask(FollowerEntity followerEntity) {
         super(followerEntity);
@@ -27,7 +30,11 @@ public class MoveTask extends FollowerEntityTask {
             return;
         }
         if (bodyArmorStand.getWorld() != player.getWorld()) {
-            teleportToPlayer(player, bodyArmorStand, followerEntity.getNameArmorStand());
+            // Previously used teleportToPlayer method
+            if (!teleporting) {
+                teleporting = true;
+                delayedTeleportTo(player, followerEntity, 20).thenAccept(success -> teleporting = false);
+            }
             return;
         }
 
@@ -45,11 +52,15 @@ public class MoveTask extends FollowerEntityTask {
             followerLoc.add(normalizedDifference.multiply(speed * distance));
         }
         if (difference.lengthSquared() > 1024) {
-            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> teleportToPlayer(player, bodyArmorStand, followerEntity.getNameArmorStand()), 5);
+            // Previously used teleportToPlayer method
+            if (!teleporting) {
+                teleporting = true;
+                delayedTeleportTo(player, followerEntity, 5).thenAccept(success -> teleporting = false);
+            }
             return;
         }
         followerLoc.setDirection(difference);
-        teleportArmorStands(followerLoc.add(0, getArmorStandYOffset(bodyArmorStand), 0), bodyArmorStand, followerEntity.getNameArmorStand());
+        followerEntity.teleport(player.getLocation().add(1.5, getArmorStandYOffset(bodyArmorStand), 1.5));
         if (Followers.getCurrentTick() % 2 != 0) return;
         double headPoseX = eulerToDegree(bodyArmorStand.getHeadPose().getX());
         EulerAngle newHeadPoseX = new EulerAngle(getPitch(player, bodyArmorStand), 0, 0);
@@ -60,17 +71,13 @@ public class MoveTask extends FollowerEntityTask {
         bodyArmorStand.setHeadPose(newHeadPoseX);
     }
 
-    private static void teleportToPlayer(Player player, ArmorStand bodyArmorStand, ArmorStand nameArmorStand) {
+    private static CompletableFuture<Boolean> delayedTeleportTo(Player player, FollowerEntity followerEntity, int delay) {
+        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> {
-            Location playerLoc = player.getLocation();
-            teleportArmorStands(playerLoc.add(1.5, 0, 1.5), bodyArmorStand, nameArmorStand);
-        }, 20);
-    }
-
-    private static void teleportArmorStands(Location location, ArmorStand bodyArmorStand, ArmorStand nameArmorStand) {
-        if (!bodyArmorStand.getLocation().getChunk().isLoaded()) bodyArmorStand.getLocation().getChunk().load();
-        bodyArmorStand.teleport(location);
-        if (nameArmorStand != null) nameArmorStand.teleport(location.add(0, 1, 0));
+            if (followerEntity.isAlive()) completableFuture.complete(followerEntity.teleport(player.getLocation()));
+            else completableFuture.complete(false);
+        }, delay);
+        return completableFuture;
     }
 
     private static double getArmorStandYOffset(ArmorStand armorStand) {
