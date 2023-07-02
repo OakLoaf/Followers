@@ -1,5 +1,5 @@
 name: Followers
-version: ${project.version}
+version: ${version}
 main: me.dave.followers.Followers
 api-version: 1.19
 authors: [ Dav_e_ ]

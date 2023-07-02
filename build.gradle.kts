@@ -45,6 +45,12 @@ tasks.shadowJar {
     destinationDirectory.set(file(folder))
 }
 
+// Handles version variables
 tasks.processResources {
     expand(project.properties)
+
+    inputs.property("version", rootProject.version)
+    filesMatching("plugin.yml") {
+        expand("version" to rootProject.version)
+    }
 }
