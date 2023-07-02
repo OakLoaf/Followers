@@ -6,7 +6,7 @@ import me.dave.followers.entity.FollowerEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class ValidateTask extends FollowerEntityTask {
+public class ValidateTask extends AbstractEntityTask {
     private final Player player;
 
     public ValidateTask(FollowerEntity followerEntity) {

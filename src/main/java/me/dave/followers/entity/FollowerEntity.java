@@ -3,10 +3,7 @@ package me.dave.followers.entity;
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.Followers;
 import me.dave.followers.entity.poses.FollowerPose;
-import me.dave.followers.entity.tasks.MoveTask;
-import me.dave.followers.entity.tasks.ParticleTask;
-import me.dave.followers.entity.tasks.ValidateTask;
-import me.dave.followers.entity.tasks.VisibilityTask;
+import me.dave.followers.entity.tasks.*;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -16,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import me.dave.followers.data.FollowerHandler;
 import me.dave.followers.data.FollowerUser;
-import org.bukkit.util.Vector;
 
 import java.util.UUID;
 
@@ -333,5 +329,13 @@ public class FollowerEntity {
             particleTask.cancel();
             particleTask = null;
         }
+    }
+
+    private void startTask(AbstractEntityTask task, int delay, int period) {
+
+    }
+
+    private void stopTask(AbstractEntityTask task) {
+
     }
 }
