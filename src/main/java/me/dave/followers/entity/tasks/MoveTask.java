@@ -25,10 +25,14 @@ public class MoveTask extends FollowerEntityTask {
     @Override
     public void run() {
         ArmorStand bodyArmorStand = followerEntity.getBodyArmorStand();
+        // Cancels the task if the armour stand is dead
         if (bodyArmorStand == null || !bodyArmorStand.isValid()) {
             cancel();
             return;
         }
+
+        // Teleports follower if the player has moved to another world
+        // This may be moved to ValidateTask in the future
         if (bodyArmorStand.getWorld() != player.getWorld()) {
             // Previously used teleportToPlayer method
             if (!teleporting) {
@@ -40,6 +44,18 @@ public class MoveTask extends FollowerEntityTask {
 
         Location followerLoc = bodyArmorStand.getLocation();
         Vector difference = getDifference(player, bodyArmorStand);
+
+        // Teleports follower to player if the player is too far away
+        if (difference.lengthSquared() > 1024) {
+            // Previously used teleportToPlayer method
+            if (!teleporting) {
+                teleporting = true;
+                delayedTeleportTo(player, followerEntity, 5).thenAccept(success -> teleporting = false);
+            }
+            return;
+        }
+
+        // Calculates new location and angle of follower based off of the distance to the player
         if (difference.clone().setY(0).lengthSquared() < 6.25) {
             Vector differenceY = difference.clone().setX(0).setZ(0);
             if (Followers.configManager.areHitboxesEnabled()) differenceY.setY(differenceY.getY() - 0.25);
@@ -51,17 +67,15 @@ public class MoveTask extends FollowerEntityTask {
             if (distance < 1) distance = 1;
             followerLoc.add(normalizedDifference.multiply(speed * distance));
         }
-        if (difference.lengthSquared() > 1024) {
-            // Previously used teleportToPlayer method
-            if (!teleporting) {
-                teleporting = true;
-                delayedTeleportTo(player, followerEntity, 5).thenAccept(success -> teleporting = false);
-            }
-            return;
-        }
         followerLoc.setDirection(difference);
+
+        // Teleports follower
         followerEntity.teleport(player.getLocation().add(1.5, getArmorStandYOffset(bodyArmorStand), 1.5));
+
+        // Limits following code to run once every 2 ticks
         if (Followers.getCurrentTick() % 2 != 0) return;
+
+        // Sets follower head to be looking at the player
         double headPoseX = eulerToDegree(bodyArmorStand.getHeadPose().getX());
         EulerAngle newHeadPoseX = new EulerAngle(getPitch(player, bodyArmorStand), 0, 0);
         if (headPoseX > 60 && headPoseX < 290) {
