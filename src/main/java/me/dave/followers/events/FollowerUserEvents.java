@@ -1,14 +1,18 @@
 package me.dave.followers.events;
 
 import me.dave.followers.entity.poses.FollowerPose;
+import me.dave.followers.item.FollowerCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.persistence.PersistentDataType;
 import me.dave.followers.Followers;
 import me.dave.followers.entity.FollowerEntity;
@@ -70,5 +74,15 @@ public class FollowerUserEvents implements Listener {
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
         if (followerUser.isFollowerEnabled()) Bukkit.getScheduler().runTaskLater(Followers.getInstance(), followerUser::respawnFollowerEntity, 1);
         if (followerUser.isRandomType()) followerUser.randomizeFollowerType();
+    }
+
+    @EventHandler
+    public void onTotem(EntityResurrectEvent event) {
+        EntityEquipment equipment = event.getEntity().getEquipment();
+        EquipmentSlot hand = event.getHand();
+        if (equipment == null || hand == null) return;
+        if (equipment.getItem(hand).isSimilar(FollowerCreator.getOrLoadCreatorItem())) {
+            event.setCancelled(true);
+        }
     }
 }
