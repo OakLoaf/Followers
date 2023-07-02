@@ -59,6 +59,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     if (followerUser.getFollowerEntity() != null) {
                         Followers.dataManager.getFollowerUser(player).disableFollowerEntity();
                     }
+                    return true;
                 }
                 case "edit" -> {
                     if (!sender.hasPermission("follower.admin.edit")) {
@@ -79,6 +80,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                         Followers.dataManager.getFollowerUser(player).spawnFollowerEntity();
                         ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
                     }
+                    return true;
                 }
                 case "messages" -> {
                     ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
@@ -224,6 +226,9 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
         boolean wordCompletionSuccess = false;
 
         if (args.length == 1) {
+            tabComplete.add("disable");
+            tabComplete.add("enable");
+            tabComplete.add("set");
             if (commandSender.hasPermission("follower.admin.create")) tabComplete.add("create");
             if (commandSender.hasPermission("follower.admin.delete")) tabComplete.add("delete");
             if (commandSender.hasPermission("follower.admin.edit")) tabComplete.add("edit");
