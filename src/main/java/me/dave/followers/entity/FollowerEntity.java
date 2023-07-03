@@ -26,13 +26,13 @@ public class FollowerEntity {
     private UUID nameArmorStandUUID;
     private String followerType;
     private boolean alive;
-    private boolean playerInvisible;
+    private boolean visible;
     private FollowerPose pose;
 
     public FollowerEntity(Player player, String follower) {
         this.player = player;
         this.followerType = follower;
-        this.playerInvisible = player.isInvisible();
+        this.visible = !player.isInvisible();
         this.alive = true;
 
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(this.player);
@@ -116,15 +116,12 @@ public class FollowerEntity {
         pose.pose(bodyArmorStand);
     }
 
-    public boolean isPlayerInvisible() {
-        return playerInvisible;
-    }
-
-    public void setPlayerInvisible(boolean invisible) {
-        playerInvisible = invisible;
+    public boolean isVisible() {
+        return visible;
     }
 
     public void setVisible(boolean visible) {
+        this.visible = visible;
         FollowerHandler followerConfig = Followers.followerManager.getFollower(followerType);
         if (followerConfig == null) return;
 

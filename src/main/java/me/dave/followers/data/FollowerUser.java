@@ -125,7 +125,7 @@ public class FollowerUser {
         else followerEntity.setPose(FollowerPose.DEFAULT);
     }
 
-    private boolean isVanished() {
+    public boolean isVanished() {
         Player player = getPlayer();
         for (MetadataValue meta : player.getMetadata("vanished")) {
             if (meta.asBoolean()) return true;
