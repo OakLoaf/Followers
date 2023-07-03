@@ -5,6 +5,7 @@ import me.dave.followers.entity.FollowerEntity;
 import me.dave.followers.entity.poses.FollowerPose;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.MetadataValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,11 @@ public class FollowerUser {
         this.randomType = randomFollower;
     }
 
-    public UUID getUUID() {
+    public Player getPlayer() {
+        return Bukkit.getPlayer(uuid);
+    }
+
+    public UUID getUniqueId() {
         return this.uuid;
     }
 
@@ -79,8 +84,7 @@ public class FollowerUser {
 
     public List<String> getOwnedFollowerNames() {
         List<String> followers = new ArrayList<>();
-        Player player = Bukkit.getPlayer(uuid);
-        if (player == null) return followers;
+        Player player = getPlayer();
 
         for (String followerName : Followers.followerManager.getFollowerNames()) {
             if (player.hasPermission("followers." + followerName.toLowerCase().replaceAll(" ", "_"))) followers.add(followerName);
@@ -121,6 +125,14 @@ public class FollowerUser {
         else followerEntity.setPose(FollowerPose.DEFAULT);
     }
 
+    private boolean isVanished() {
+        Player player = getPlayer();
+        for (MetadataValue meta : player.getMetadata("vanished")) {
+            if (meta.asBoolean()) return true;
+        }
+        return false;
+    }
+
     public boolean isPosing() {
         return posing;
     }
@@ -143,8 +155,8 @@ public class FollowerUser {
 
     public void spawnFollowerEntity() {
         removeFollowerEntity();
-        Player player = Bukkit.getPlayer(uuid);
-        if (player == null || player.isDead()) return;
+        Player player = getPlayer();
+        if (player.isDead()) return;
 
         followerEntity = new FollowerEntity(player, followerType);
         if (randomType) randomizeFollowerType();
