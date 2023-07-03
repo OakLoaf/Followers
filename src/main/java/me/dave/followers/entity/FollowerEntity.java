@@ -174,7 +174,10 @@ public class FollowerEntity {
     }
 
     public boolean teleport(Location location) {
-        if (bodyArmorStand.getLocation().getChunk().isLoaded()) return (bodyArmorStand.teleport(location) && nameArmorStand.teleport(location));
+        if (bodyArmorStand.getLocation().getChunk().isLoaded()) {
+            if (nameArmorStand != null) nameArmorStand.teleport(location.clone().add(0, 1, 0));
+            return bodyArmorStand.teleport(location);
+        }
         else return false;
     }
 
@@ -209,7 +212,7 @@ public class FollowerEntity {
 
     private void startVisiblityTask() {
         stopTask(FollowerTaskType.VISIBILITY);
-        startTask(new VisibilityTask(this), 0, 20);
+        startTask(new VisibilityTask(this), 5, 20);
     }
 
 

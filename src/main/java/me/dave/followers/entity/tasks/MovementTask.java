@@ -75,7 +75,7 @@ public class MovementTask extends AbstractTask {
         followerLoc.setDirection(difference);
 
         // Teleports follower
-        followerEntity.teleport(player.getLocation().add(1.5, getArmorStandYOffset(bodyArmorStand), 1.5));
+        followerEntity.teleport(followerLoc.add(0, getArmorStandYOffset(bodyArmorStand), 0));
 
         // Limits following code to run once every 2 ticks
         if (Followers.getCurrentTick() % 2 != 0) return;
