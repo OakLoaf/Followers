@@ -179,7 +179,7 @@ public class MenuGui extends PagedGui {
 
         FollowerEntity followerEntity = followerUser.getFollowerEntity();
         String followerName = ChatColorHandler.stripColor(clickedItem.getItemMeta().getDisplayName());
-        if (followerEntity != null) followerEntity.setFollowerType(followerName);
+        if (followerEntity != null) followerEntity.setType(followerName);
         else {
             followerUser.setFollowerType(followerName);
             followerUser.spawnFollowerEntity();

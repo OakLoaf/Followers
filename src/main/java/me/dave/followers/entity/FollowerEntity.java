@@ -25,14 +25,14 @@ public class FollowerEntity {
     private ArmorStand nameArmorStand;
     private UUID nameArmorStandUUID;
     private String followerType;
-    private boolean isPlayerInvisible;
-    private FollowerPose pose;
     private boolean alive;
+    private boolean playerInvisible;
+    private FollowerPose pose;
 
     public FollowerEntity(Player player, String follower) {
         this.player = player;
         this.followerType = follower;
-        this.isPlayerInvisible = player.isInvisible();
+        this.playerInvisible = player.isInvisible();
         this.alive = true;
 
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(this.player);
@@ -45,10 +45,10 @@ public class FollowerEntity {
         }
         displayName(followerUser.isDisplayNameEnabled());
 
-        setFollowerType(follower);
+        setType(follower);
         setVisible(!player.isInvisible());
 
-        new ValidateTask(this).runTaskTimer(Followers.getInstance(), 0, 1);
+        startTask(new ValidateTask(this), 0, 1);
         startVisiblityTask();
         startMovement();
 
@@ -59,30 +59,6 @@ public class FollowerEntity {
         return player;
     }
 
-    public Location getLocation() {
-        return bodyArmorStand.getLocation().clone();
-    }
-
-    public FollowerHandler getType() {
-        return Followers.followerManager.getFollower(followerType);
-    }
-
-    public String getDisplayName() {
-        return Followers.dataManager.getFollowerUser(player).getDisplayName();
-    }
-
-    public boolean isDisplayNameVisible() {
-        return Followers.dataManager.getFollowerUser(player).isDisplayNameEnabled();
-    }
-
-    public boolean isPlayerInvisible() {
-        return isPlayerInvisible;
-    }
-
-    public void setPlayerInvisible(boolean invisible) {
-        isPlayerInvisible = invisible;
-    }
-
     public ArmorStand getBodyArmorStand() {
         return bodyArmorStand;
     }
@@ -91,16 +67,27 @@ public class FollowerEntity {
         return nameArmorStand;
     }
 
-    public void setFollowerType(String newFollower) {
-        this.followerType = newFollower;
+    public Location getLocation() {
+        return bodyArmorStand.getLocation().clone();
+    }
 
-        Followers.dataManager.getFollowerUser(player).setFollowerType(newFollower);
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public FollowerHandler getType() {
+        return Followers.followerManager.getFollower(followerType);
+    }
+
+    public void setType(String followerType) {
+        this.followerType = followerType;
+
+        Followers.dataManager.getFollowerUser(player).setFollowerType(followerType);
         if (!player.isInvisible()) reloadInventory();
     }
 
-    public void setDisplayNameVisible(boolean visible) {
-        Followers.dataManager.getFollowerUser(player).setDisplayNameEnabled(visible);
-        if (!player.isInvisible()) displayName(visible);
+    public String getDisplayName() {
+        return Followers.dataManager.getFollowerUser(player).getDisplayName();
     }
 
     public void setDisplayName(String newName) {
@@ -108,6 +95,33 @@ public class FollowerEntity {
         setDisplayNameVisible(true);
         if (Followers.configManager.areHitboxesEnabled()) bodyArmorStand.setCustomName(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", newName)));
         else nameArmorStand.setCustomName(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", newName)));
+    }
+
+    public boolean isDisplayNameVisible() {
+        return Followers.dataManager.getFollowerUser(player).isDisplayNameEnabled();
+    }
+
+    public void setDisplayNameVisible(boolean visible) {
+        Followers.dataManager.getFollowerUser(player).setDisplayNameEnabled(visible);
+        if (!player.isInvisible()) displayName(visible);
+    }
+
+    public FollowerPose getPose() {
+        return pose;
+    }
+
+    public void setPose(FollowerPose pose) {
+        if (this.pose == pose) return;
+        this.pose = pose;
+        pose.pose(bodyArmorStand);
+    }
+
+    public boolean isPlayerInvisible() {
+        return playerInvisible;
+    }
+
+    public void setPlayerInvisible(boolean invisible) {
+        playerInvisible = invisible;
     }
 
     public void setVisible(boolean visible) {
@@ -121,9 +135,26 @@ public class FollowerEntity {
         else clearInventory();
     }
 
+    public void setArmorSlot(EquipmentSlot equipmentSlot, FollowerHandler followerType) {
+        EntityEquipment armorEquipment = bodyArmorStand.getEquipment();
+        if (armorEquipment == null) return;
+        ItemStack item = switch (equipmentSlot) {
+            case HEAD -> followerType.getHead();
+            case CHEST -> followerType.getChest();
+            case LEGS -> followerType.getLegs();
+            case FEET -> followerType.getFeet();
+            case HAND -> followerType.getMainHand();
+            case OFF_HAND -> followerType.getOffHand();
+        };
+        armorEquipment.setItem(equipmentSlot, item);
+    }
+
     public void clearInventory() {
+        EntityEquipment equipment = bodyArmorStand.getEquipment();
+        if (equipment == null) return;
+
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-            bodyArmorStand.getEquipment().setItem(equipmentSlot, new ItemStack(Material.AIR));
+            equipment.setItem(equipmentSlot, new ItemStack(Material.AIR));
         }
     }
 
@@ -138,102 +169,11 @@ public class FollowerEntity {
 
             if (player.isInvisible()) return;
             for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-                setFollowerArmorSlot(equipmentSlot, followerHandler);
+                setArmorSlot(equipmentSlot, followerHandler);
             }
 
             bodyArmorStand.setVisible(followerHandler.isVisible());
         }, 1);
-    }
-
-    public void setFollowerArmorSlot(EquipmentSlot equipmentSlot, FollowerHandler followerType) {
-        EntityEquipment armorEquipment = bodyArmorStand.getEquipment();
-        if (armorEquipment == null) return;
-        ItemStack item = switch (equipmentSlot) {
-            case HEAD -> followerType.getHead();
-            case CHEST -> followerType.getChest();
-            case LEGS -> followerType.getLegs();
-            case FEET -> followerType.getFeet();
-            case HAND -> followerType.getMainHand();
-            case OFF_HAND -> followerType.getOffHand();
-        };
-        armorEquipment.setItem(equipmentSlot, item);
-    }
-
-    private ArmorStand summonBodyArmorStand() {
-        Location spawnLoc = player.getLocation().add(1.5, 0, 1.5);
-
-        ArmorStand armorStand;
-        if (!spawnLoc.getChunk().isLoaded()) return null;
-        try {
-            armorStand = player.getLocation().getWorld().spawn(spawnLoc, ArmorStand.class, (as -> {
-                try {
-                    as.setBasePlate(false);
-                    as.setArms(true);
-                    as.setInvulnerable(true);
-                    as.setCanPickupItems(false);
-                    as.setSmall(true);
-                    as.setAI(false);
-                    as.setGravity(false);
-                    as.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, player.getUniqueId().toString());
-                    if (!Followers.configManager.areHitboxesEnabled()) as.setMarker(true);
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        Followers.dataManager.addActiveArmorStand(armorStand.getUniqueId());
-        return armorStand;
-    }
-
-    private ArmorStand summonNameArmorStand() {
-        ArmorStand armorStand;
-        if (!bodyArmorStand.getLocation().getChunk().isLoaded()) return null;
-        try {
-            armorStand = player.getLocation().getWorld().spawn(bodyArmorStand.getLocation().add(0, 1, 0), ArmorStand.class, (as -> {
-                try {
-                    as.setInvulnerable(true);
-                    as.setVisible(false);
-                    as.setMarker(true);
-                    as.setAI(false);
-                    as.setGravity(false);
-                    as.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, "");
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }));
-        } catch(Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        Followers.dataManager.addActiveArmorStand(armorStand.getUniqueId());
-        return armorStand;
-    }
-
-    private void displayName(boolean display) {
-        if (display) {
-            if (nameArmorStand == null) {
-                nameArmorStand = summonNameArmorStand();
-                if (nameArmorStand == null) return;
-                nameArmorStandUUID = nameArmorStand.getUniqueId();
-
-                Followers.dataManager.addActiveArmorStand(nameArmorStand.getUniqueId());
-            }
-
-            String nickname = Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", Followers.dataManager.getFollowerUser(player).getDisplayName());
-            nameArmorStand.setCustomName(ChatColorHandler.translateAlternateColorCodes(nickname));
-            nameArmorStand.setCustomNameVisible(true);
-        }
-        else {
-            if (nameArmorStand != null) nameArmorStand.remove();
-            Followers.dataManager.removeActiveArmorStand(nameArmorStandUUID);
-            nameArmorStand = null;
-            nameArmorStandUUID = null;
-        }
     }
 
     public boolean teleport(Location location) {
@@ -255,37 +195,6 @@ public class FollowerEntity {
         Followers.dataManager.removeActiveArmorStand(nameArmorStandUUID);
     }
 
-    public boolean isAlive() {
-        return alive;
-    }
-
-    //////////////////////////
-    //    Pose Functions    //
-    //////////////////////////
-
-    public FollowerPose getPose() {
-        return pose;
-    }
-
-    public void setPose(FollowerPose pose) {
-        if (this.pose == pose) return;
-        this.pose = pose;
-        pose.pose(bodyArmorStand);
-    }
-
-    //////////////////////////////
-    //     Visibility Task      //
-    //////////////////////////////
-
-    private void startVisiblityTask() {
-        stopTask(FollowerTaskType.VISIBILITY);
-        startTask(new VisibilityTask(this), 0, 20);
-    }
-
-    //////////////////////////////
-    //    Movement Functions    //
-    //////////////////////////////
-
     private void startMovement() {
         String strUUID = bodyArmorStand.getPersistentDataContainer().get(followerKey, PersistentDataType.STRING);
         if (strUUID == null) return;
@@ -296,13 +205,14 @@ public class FollowerEntity {
         startTask(new MovementTask(this), 0, 1);
     }
 
-    //////////////////////////////
-    //    Particle Functions    //
-    //////////////////////////////
-
     public void startParticles(Particle particle) {
         stopTask(FollowerTaskType.PARTICLE);
         startTask(new ParticleTask(this, particle), 0, 3);
+    }
+
+    private void startVisiblityTask() {
+        stopTask(FollowerTaskType.VISIBILITY);
+        startTask(new VisibilityTask(this), 0, 20);
     }
 
 
@@ -337,5 +247,84 @@ public class FollowerEntity {
             task.cancel();
             taskMap.remove(taskType);
         });
+    }
+
+    private void displayName(boolean display) {
+        if (display) {
+            if (nameArmorStand == null) {
+                nameArmorStand = summonNameArmorStand();
+                if (nameArmorStand == null) return;
+                nameArmorStandUUID = nameArmorStand.getUniqueId();
+
+                Followers.dataManager.addActiveArmorStand(nameArmorStand.getUniqueId());
+            }
+
+            String nickname = Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", Followers.dataManager.getFollowerUser(player).getDisplayName());
+            nameArmorStand.setCustomName(ChatColorHandler.translateAlternateColorCodes(nickname));
+            nameArmorStand.setCustomNameVisible(true);
+        }
+        else {
+            if (nameArmorStand != null) nameArmorStand.remove();
+            Followers.dataManager.removeActiveArmorStand(nameArmorStandUUID);
+            nameArmorStand = null;
+            nameArmorStandUUID = null;
+        }
+    }
+
+    private ArmorStand summonBodyArmorStand() {
+        Location location = player.getLocation().add(1.5, 0, 1.5);
+
+        ArmorStand armorStand;
+        if (!location.getChunk().isLoaded()) return null;
+        try {
+            armorStand = location.getWorld().spawn(location, ArmorStand.class, (as -> {
+                try {
+                    as.setBasePlate(false);
+                    as.setArms(true);
+                    as.setInvulnerable(true);
+                    as.setCanPickupItems(false);
+                    as.setSmall(true);
+                    as.setAI(false);
+                    as.setGravity(false);
+                    as.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, player.getUniqueId().toString());
+                    if (!Followers.configManager.areHitboxesEnabled()) as.setMarker(true);
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        Followers.dataManager.addActiveArmorStand(armorStand.getUniqueId());
+        return armorStand;
+    }
+
+    private ArmorStand summonNameArmorStand() {
+        Location location = bodyArmorStand.getLocation();
+
+        ArmorStand armorStand;
+        if (!location.getChunk().isLoaded()) return null;
+        try {
+            armorStand = location.getWorld().spawn(bodyArmorStand.getLocation().add(0, 1, 0), ArmorStand.class, (as -> {
+                try {
+                    as.setInvulnerable(true);
+                    as.setVisible(false);
+                    as.setMarker(true);
+                    as.setAI(false);
+                    as.setGravity(false);
+                    as.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, "");
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }));
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        Followers.dataManager.addActiveArmorStand(armorStand.getUniqueId());
+        return armorStand;
     }
 }
