@@ -100,7 +100,7 @@ public class MysqlStorage implements Storage {
             try (Connection conn = conn(); PreparedStatement stmt = conn.prepareStatement(
                 "REPLACE INTO follower_users(uuid, name, follower, followerDisplayName, followerNameEnabled, followerEnabled, randomFollower) VALUES(?, ?, ?, ?, ?, ?, ?);"
             )) {
-                stmt.setString(1, followerUser.getUUID().toString());
+                stmt.setString(1, followerUser.getUniqueId().toString());
                 stmt.setString(2, followerUser.getUsername());
                 stmt.setString(3, followerUser.getFollowerType());
                 stmt.setString(4, followerUser.getDisplayName());

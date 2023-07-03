@@ -23,14 +23,13 @@ public class YmlStorage implements Storage {
         if (configurationSection == null) {
             configurationSection = config.createSection(uuid.toString());
             Player player = Bukkit.getPlayer(uuid);
-            String playerName = player.getName();
-            configurationSection.set("name", playerName);
+            configurationSection.set("name", player.getName());
             configurationSection.set("follower", "none");
             configurationSection.set("followerDisplayName", "Unnamed");
             configurationSection.set("followerNameEnabled", Boolean.FALSE);
             configurationSection.set("followerEnabled", Boolean.TRUE);
             configurationSection.set("randomFollower", Boolean.FALSE);
-            FollowerUser followerUser = new FollowerUser(uuid, playerName, "none", "Unnamed", false, false, false);
+            FollowerUser followerUser = new FollowerUser(uuid, player.getName(), "none", "Unnamed", false, false, false);
             saveFollowerUser(followerUser);
             return followerUser;
         }
@@ -46,7 +45,7 @@ public class YmlStorage implements Storage {
     @Override
     public void saveFollowerUser(FollowerUser followerUser) {
         fileLock.lock();
-        ConfigurationSection configurationSection = config.createSection(followerUser.getUUID().toString());
+        ConfigurationSection configurationSection = config.createSection(followerUser.getUniqueId().toString());
         configurationSection.set("name", followerUser.getUsername());
         configurationSection.set("follower", followerUser.getFollowerType());
         configurationSection.set("followerDisplayName", followerUser.getDisplayName());
