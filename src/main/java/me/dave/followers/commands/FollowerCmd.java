@@ -142,7 +142,6 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     else {
                         Followers.dataManager.getFollowerUser(player).disableFollowerEntity();
                     }
-
                     return true;
                 }
             }
