@@ -29,6 +29,8 @@ public class MovementTask extends AbstractTask {
 
     @Override
     public void run() {
+        if (checkCancel()) return;
+
         ArmorStand bodyArmorStand = followerEntity.getBodyArmorStand();
         // Cancels the task if the armour stand is dead
         if (bodyArmorStand == null || !bodyArmorStand.isValid()) {

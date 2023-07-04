@@ -21,6 +21,8 @@ public class ParticleTask extends AbstractTask {
 
     @Override
     public void run() {
+        if (checkCancel()) return;
+
         if (armorStand == null || !armorStand.isValid()) {
             cancel();
             return;

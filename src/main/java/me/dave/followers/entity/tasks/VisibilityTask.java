@@ -20,6 +20,8 @@ public class VisibilityTask extends AbstractTask {
 
     @Override
     public void run() {
+        if (checkCancel()) return;
+
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(followerEntity.getPlayer());
         boolean visible = !player.isInvisible() && !followerUser.isVanished();
 

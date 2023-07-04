@@ -10,5 +10,11 @@ public abstract class AbstractTask extends BukkitRunnable {
         this.followerEntity = followerEntity;
     }
 
+    public boolean checkCancel() {
+        boolean shouldCancel = (followerEntity == null || !followerEntity.isAlive());
+        if (shouldCancel) cancel();
+        return shouldCancel;
+    }
+
     public abstract FollowerTaskType getType();
 }

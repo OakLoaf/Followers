@@ -21,10 +21,6 @@ public class ValidateTask extends AbstractTask {
 
     @Override
     public void run() {
-        if (followerEntity == null || !followerEntity.isAlive()) {
-            cancel();
-            return;
-        }
         if (followerEntity.getBodyArmorStand() == null || !followerEntity.getBodyArmorStand().isValid()) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.respawnFollowerEntity();

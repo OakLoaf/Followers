@@ -1,6 +1,7 @@
 package me.dave.followers.entity.tasks;
 
 public enum FollowerTaskType {
+    ALL("all"),
     MOVEMENT("movement"),
     PARTICLE("particles"),
     VALIDATE("validate"),

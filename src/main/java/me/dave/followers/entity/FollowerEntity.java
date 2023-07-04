@@ -14,6 +14,7 @@ import org.bukkit.persistence.PersistentDataType;
 import me.dave.followers.data.FollowerHandler;
 import me.dave.followers.data.FollowerUser;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -184,7 +185,7 @@ public class FollowerEntity {
     public void kill() {
         alive = false;
 
-        stopTasks(FollowerTaskType.MOVEMENT, FollowerTaskType.PARTICLE);
+        stopTasks(FollowerTaskType.ALL);
 
         if (bodyArmorStand != null) {
             bodyArmorStand.remove();
@@ -201,17 +202,14 @@ public class FollowerEntity {
         Player player = Bukkit.getPlayer(UUID.fromString(strUUID));
         if (player == null) return;
 
-        stopTask(FollowerTaskType.MOVEMENT);
         startTask(new MovementTask(this), 0, 1);
     }
 
     public void startParticles(Particle particle) {
-        stopTask(FollowerTaskType.PARTICLE);
         startTask(new ParticleTask(this, particle), 0, 3);
     }
 
     private void startVisiblityTask() {
-        stopTask(FollowerTaskType.VISIBILITY);
         startTask(new VisibilityTask(this), 5, 20);
     }
 
@@ -228,6 +226,14 @@ public class FollowerEntity {
     }
 
     public void stopTask(FollowerTaskType taskType) {
+        if (taskType.equals(FollowerTaskType.ALL)) {
+            taskMap.forEach((aTaskType, task) -> {
+                task.cancel();
+                taskMap.remove(taskType);
+            });
+            return;
+        }
+
         AbstractTask task = taskMap.get(taskType);
 
         if (task != null && !task.isCancelled()) {
@@ -240,13 +246,6 @@ public class FollowerEntity {
         for (FollowerTaskType taskType : taskTypes) {
             stopTask(taskType);
         }
-    }
-
-    public void stopTasks() {
-        taskMap.forEach((taskType, task) -> {
-            task.cancel();
-            taskMap.remove(taskType);
-        });
     }
 
     private void displayName(boolean display) {
