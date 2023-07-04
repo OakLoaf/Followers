@@ -128,6 +128,23 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/follower set <follower_name>"));
                     return true;
                 }
+                case "toggle" -> {
+                    if (!(sender instanceof Player player)) {
+                        sender.sendMessage("Console cannot run this command!");
+                        return true;
+                    }
+
+                    FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+                    if (followerUser.getFollowerEntity() == null) {
+                        Followers.dataManager.getFollowerUser(player).spawnFollowerEntity();
+                        ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
+                    }
+                    else {
+                        Followers.dataManager.getFollowerUser(player).disableFollowerEntity();
+                    }
+
+                    return true;
+                }
             }
         }
         if (args.length >= 2) {
@@ -229,6 +246,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
             tabComplete.add("disable");
             tabComplete.add("enable");
             tabComplete.add("set");
+            tabComplete.add("toggle");
             if (commandSender.hasPermission("follower.admin.create")) tabComplete.add("create");
             if (commandSender.hasPermission("follower.admin.delete")) tabComplete.add("delete");
             if (commandSender.hasPermission("follower.admin.edit")) tabComplete.add("edit");
