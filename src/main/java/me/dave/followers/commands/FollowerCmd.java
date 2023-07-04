@@ -235,7 +235,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender commandSender, Command command, String label, String[] args) {
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
 
         List<String> tabComplete = new ArrayList<>();
         List<String> wordCompletion = new ArrayList<>();
@@ -246,21 +246,21 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
             tabComplete.add("enable");
             tabComplete.add("set");
             tabComplete.add("toggle");
-            if (commandSender.hasPermission("follower.admin.create")) tabComplete.add("create");
-            if (commandSender.hasPermission("follower.admin.delete")) tabComplete.add("delete");
-            if (commandSender.hasPermission("follower.admin.edit")) tabComplete.add("edit");
-            if (commandSender.hasPermission("follower.admin.moderate")) tabComplete.add("moderate");
-            if (commandSender.hasPermission("follower.admin.reload")) tabComplete.add("reload");
+            if (sender.hasPermission("follower.admin.create")) tabComplete.add("create");
+            if (sender.hasPermission("follower.admin.delete")) tabComplete.add("delete");
+            if (sender.hasPermission("follower.admin.edit")) tabComplete.add("edit");
+            if (sender.hasPermission("follower.admin.moderate")) tabComplete.add("moderate");
+            if (sender.hasPermission("follower.admin.reload")) tabComplete.add("reload");
         } else if (args.length == 2) {
             switch(args[0].toLowerCase()) {
                 case "delete" -> {
-                    if (commandSender.hasPermission("follower.admin.delete")) tabComplete.addAll(Followers.followerManager.getFollowerNames());
+                    if (sender.hasPermission("follower.admin.delete")) tabComplete.addAll(Followers.followerManager.getFollowerNames());
                 }
                 case "edit" -> {
-                    if (commandSender.hasPermission("follower.admin.edit")) tabComplete.addAll(Followers.followerManager.getFollowerNames());
+                    if (sender.hasPermission("follower.admin.edit")) tabComplete.addAll(Followers.followerManager.getFollowerNames());
                 }
                 case "set" -> {
-                    if (commandSender instanceof Player player) tabComplete.addAll(Followers.dataManager.getFollowerUser(player).getOwnedFollowerNames());
+                    if (sender instanceof Player player) tabComplete.addAll(Followers.dataManager.getFollowerUser(player).getOwnedFollowerNames());
                 }
             }
         }
