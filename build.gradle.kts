@@ -12,7 +12,7 @@ version = "1.5.3-BETA"
 repositories {
     mavenCentral()
     mavenLocal()
-    maven { url = uri("https://papermc.io/repo/repository/maven-public/") }
+    maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
     maven { url = uri("https://oss.sonatype.org/content/groups/public/") }
     maven { url = uri("https://ci.ender.zone/plugin/repository/everything/") }
     maven { url = uri("https://repo.dmulloy2.net/repository/public/") }
@@ -42,6 +42,7 @@ tasks.shadowJar {
     configurations = listOf(project.configurations.shadow.get())
     var folder = System.getenv("pluginFolder_1-20")
     if (folder == null) folder = "/Users/davidbryce/IdeaProjects/PluginBuilds"
+    archiveFileName.set("${project.name}-${project.version}.jar")
     destinationDirectory.set(file(folder))
 }
 
