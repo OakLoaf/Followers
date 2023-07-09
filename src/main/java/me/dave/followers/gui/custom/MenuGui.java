@@ -189,6 +189,11 @@ public class MenuGui extends PagedGui {
         ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
     }
 
+    @Override
+    public Inventory getInventory() {
+        return inventory;
+    }
+
     private ItemStack getBorderItem() {
         ItemStack borderItem = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta borderMeta = borderItem.getItemMeta();

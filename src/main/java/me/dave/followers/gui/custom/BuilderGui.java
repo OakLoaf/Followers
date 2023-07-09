@@ -146,6 +146,11 @@ public class BuilderGui extends AbstractGui {
         recalculateContents();
     }
 
+    @Override
+    public Inventory getInventory() {
+        return inventory;
+    }
+
     public void complete() {
         if (followerBuilder.getName() == null) {
             ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-no-name"));

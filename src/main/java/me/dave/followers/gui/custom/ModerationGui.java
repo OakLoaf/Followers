@@ -92,6 +92,11 @@ public class ModerationGui extends PagedGui {
         return activeFollowerList;
     }
 
+    @Override
+    public Inventory getInventory() {
+        return inventory;
+    }
+
     private ItemStack getBorderItem() {
         ItemStack borderItem = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta borderMeta = borderItem.getItemMeta();
