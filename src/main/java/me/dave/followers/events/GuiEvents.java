@@ -9,8 +9,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.scheduler.BukkitRunnable;
-import me.dave.followers.Followers;
 
 import java.util.UUID;
 
@@ -46,11 +44,11 @@ public class GuiEvents implements Listener {
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-        new BukkitRunnable() {
-            public void run() {
-                UUID playerUUID = event.getPlayer().getUniqueId();
-                InventoryHandler.removeInventory(playerUUID);
-            }
-        }.runTaskLater(Followers.getInstance(), 1);
+        UUID playerUUID = event.getPlayer().getUniqueId();
+
+        AbstractGui gui = InventoryHandler.getGui(playerUUID);
+        if (gui == null || !event.getInventory().equals(gui.getInventory())) return;
+
+        InventoryHandler.removeInventory(playerUUID);
     }
 }
