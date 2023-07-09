@@ -14,7 +14,6 @@ import org.bukkit.persistence.PersistentDataType;
 import me.dave.followers.data.FollowerHandler;
 import me.dave.followers.data.FollowerUser;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
