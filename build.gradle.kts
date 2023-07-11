@@ -46,6 +46,10 @@ tasks.shadowJar {
     destinationDirectory.set(file(folder))
 }
 
+tasks.withType<JavaCompile>() {
+    options.encoding = "UTF-8"
+}
+
 // Handles version variables
 tasks.processResources {
     expand(project.properties)
