@@ -28,6 +28,9 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
             case "nickname_enabled" -> {
                 return String.valueOf(followerUser.isDisplayNameEnabled());
             }
+            case "random_enabed" -> {
+                return String.valueOf(followerUser.isRandomType());
+            }
         }
 
         return "null";
