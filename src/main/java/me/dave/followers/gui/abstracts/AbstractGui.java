@@ -3,11 +3,16 @@ package me.dave.followers.gui.abstracts;
 
 import me.dave.followers.gui.InventoryHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractGui {
     protected final Inventory inventory;
@@ -25,6 +30,11 @@ public abstract class AbstractGui {
 
     public Player getPlayer() {
         return player;
+    }
+
+    protected void setItem(int slot, ItemStack item) {
+        if (item == null) item = new ItemStack(Material.AIR);
+        inventory.setItem(slot, item);
     }
 
     public void lockSlot(int slot) {
@@ -74,12 +84,56 @@ public abstract class AbstractGui {
     public void onClick(InventoryClickEvent event) {
         int slot = event.getRawSlot();
         switch (event.getAction()) {
-            case DROP_ALL_CURSOR, DROP_ALL_SLOT, DROP_ONE_CURSOR, DROP_ONE_SLOT, COLLECT_TO_CURSOR -> event.setCancelled(true);
+            case CLONE_STACK, COLLECT_TO_CURSOR -> event.setCancelled(true);
             case MOVE_TO_OTHER_INVENTORY -> {
-                // TODO: Get list of unlocked slots and check where to put item
-                event.setCancelled(true);
+                if (event.getInventory() != inventory) {
+                    event.setCancelled(true);
+
+                    List<Integer> unlockedSlots = slotLockMap.entrySet()
+                            .stream()
+                            .filter(entry -> !entry.getValue())
+                            .map(Map.Entry::getKey)
+                            .sorted()
+                            .toList();
+
+                    ItemStack clickedItem = event.getCurrentItem();
+                    if (clickedItem != null) {
+                        int remainingToDistribute = clickedItem.getAmount();
+                        int backupDestinationSlot = -1;
+                        boolean complete = false;
+                        for (int unlockedSlot : unlockedSlots) {
+                            if (complete) break;
+
+                            ItemStack slotItem = inventory.getItem(unlockedSlot);
+                            if ((slotItem == null || slotItem.getType() == Material.AIR) && backupDestinationSlot == -1) {
+                                backupDestinationSlot = unlockedSlot;
+                                continue;
+                            }
+
+                            if (slotItem != null && slotItem.isSimilar(clickedItem)) {
+                                int spaceInStack = slotItem.getMaxStackSize() - slotItem.getAmount();
+
+                                if (spaceInStack <= remainingToDistribute) {
+                                    slotItem.setAmount(slotItem.getAmount() + remainingToDistribute);
+                                    clickedItem.setType(Material.AIR);
+                                    complete = true;
+                                }
+                                else if (spaceInStack > 0) {
+                                    remainingToDistribute -= spaceInStack;
+                                    slotItem.setAmount(slotItem.getMaxStackSize());
+                                    clickedItem.setAmount(clickedItem.getAmount() - spaceInStack);
+                                }
+                            }
+                        }
+
+                        if (!complete && backupDestinationSlot != -1) {
+                            inventory.setItem(backupDestinationSlot, clickedItem);
+                            event.getInventory().setItem(event.getSlot(), null);
+                        }
+                    }
+                }
             }
-            case PLACE_ALL, PLACE_ONE, PLACE_SOME, PICKUP_ALL, PICKUP_HALF, PICKUP_SOME, PICKUP_ONE, SWAP_WITH_CURSOR -> {
+            case DROP_ALL_SLOT, DROP_ONE_SLOT, PLACE_ALL, PLACE_SOME, PLACE_ONE, PICKUP_ALL, PICKUP_HALF, PICKUP_SOME, PICKUP_ONE, SWAP_WITH_CURSOR  -> {
                 if (isSlotLocked(slot)) {
                     event.setCancelled(true);
                 }

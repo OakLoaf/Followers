@@ -40,7 +40,7 @@ public class GuiEvents implements Listener {
         if (gui == null) return;
 
         Inventory clickedInventory = event.getClickedInventory();
-        if (clickedInventory == null || !clickedInventory.equals(gui.getInventory())) return;
+        if (clickedInventory == null || !player.getOpenInventory().getTopInventory().equals(gui.getInventory())) return;
 
         gui.onClick(event);
     }
@@ -51,7 +51,7 @@ public class GuiEvents implements Listener {
         UUID playerUUID = player.getUniqueId();
 
         AbstractGui gui = InventoryHandler.getGui(playerUUID);
-        if (gui == null || !event.getInventory().equals(gui.getInventory())) return;
+        if (gui == null || !player.getOpenInventory().getTopInventory().equals(gui.getInventory())) return;
 
         gui.onDrag(event);
     }

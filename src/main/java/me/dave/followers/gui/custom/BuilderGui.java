@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -86,10 +87,47 @@ public class BuilderGui extends AbstractGui {
     @Override
     public void onClick(InventoryClickEvent event) {
         super.onClick(event);
-//        event.setCancelled(true);
+        if (event.isCancelled()) return;
 
         ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null) return;
+
+        switch(event.getAction()) {
+            case PLACE_ALL, PLACE_SOME, PLACE_ONE -> {
+                switch (event.getRawSlot()) {
+                    case 11 -> followerBuilder.setSlot(EquipmentSlot.HEAD, clickedItem);
+                    case 20 -> followerBuilder.setSlot(EquipmentSlot.CHEST, clickedItem);
+                    case 29 -> followerBuilder.setSlot(EquipmentSlot.LEGS, clickedItem);
+                    case 38 -> followerBuilder.setSlot(EquipmentSlot.FEET, clickedItem);
+                    case 19 -> followerBuilder.setSlot(EquipmentSlot.HAND, clickedItem);
+                    case 21 -> followerBuilder.setSlot(EquipmentSlot.OFF_HAND, clickedItem);
+                }
+            }
+            case PICKUP_ALL, PICKUP_HALF, PICKUP_SOME, PICKUP_ONE, DROP_ALL_SLOT, DROP_ONE_SLOT -> {
+                switch (event.getRawSlot()) {
+                    case 11 -> followerBuilder.setSlot(EquipmentSlot.HEAD, new ItemStack(Material.AIR));
+                    case 20 -> followerBuilder.setSlot(EquipmentSlot.CHEST, new ItemStack(Material.AIR));
+                    case 29 -> followerBuilder.setSlot(EquipmentSlot.LEGS, new ItemStack(Material.AIR));
+                    case 38 -> followerBuilder.setSlot(EquipmentSlot.FEET, new ItemStack(Material.AIR));
+                    case 19 -> followerBuilder.setSlot(EquipmentSlot.HAND, new ItemStack(Material.AIR));
+                    case 21 -> followerBuilder.setSlot(EquipmentSlot.OFF_HAND, new ItemStack(Material.AIR));
+                }
+            }
+            case SWAP_WITH_CURSOR -> {
+                ItemStack cursorItem = event.getCursor() == null ? new ItemStack(Material.AIR) : event.getCursor();
+
+                switch (event.getRawSlot()) {
+                    case 11 -> followerBuilder.setSlot(EquipmentSlot.HEAD, cursorItem);
+                    case 20 -> followerBuilder.setSlot(EquipmentSlot.CHEST, cursorItem);
+                    case 29 -> followerBuilder.setSlot(EquipmentSlot.LEGS, cursorItem);
+                    case 38 -> followerBuilder.setSlot(EquipmentSlot.FEET, cursorItem);
+                    case 19 -> followerBuilder.setSlot(EquipmentSlot.HAND, cursorItem);
+                    case 21 -> followerBuilder.setSlot(EquipmentSlot.OFF_HAND, cursorItem);
+                }
+            }
+            case COLLECT_TO_CURSOR, MOVE_TO_OTHER_INVENTORY -> {}
+            case NOTHING, UNKNOWN, DROP_ALL_CURSOR, DROP_ONE_CURSOR, CLONE_STACK, HOTBAR_SWAP, HOTBAR_MOVE_AND_READD -> {}
+        }
 
         Player player = (Player) event.getWhoClicked();
 
@@ -146,15 +184,9 @@ public class BuilderGui extends AbstractGui {
         }
 
         player.closeInventory();
-        InventoryHandler.removeInventory(player.getUniqueId());
 
         if (mode.equals(Mode.CREATE)) Followers.followerManager.createFollower(player, followerBuilder.build());
         else if (mode.equals(Mode.EDIT)) Followers.followerManager.editFollower(player, followerBuilder.build());
-    }
-
-    private void setItem(int slot, ItemStack item) {
-        if (item == null) item = new ItemStack(Material.AIR);
-        inventory.setItem(slot, item);
     }
 
     private ItemStack getBorderItem() {

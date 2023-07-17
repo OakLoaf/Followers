@@ -60,7 +60,6 @@ public class ModerationGui extends PagedGui {
 
     @Override
     public void onClick(InventoryClickEvent event) {
-        super.onClick(event);
         event.setCancelled(true);
     }
 
