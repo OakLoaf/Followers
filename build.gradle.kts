@@ -40,10 +40,9 @@ java {
 tasks.shadowJar {
     minimize()
     configurations = listOf(project.configurations.shadow.get())
-    var folder = System.getenv("pluginFolder_1-20")
-    if (folder == null) folder = "/Users/davidbryce/IdeaProjects/PluginBuilds"
+    val folder = System.getenv("pluginFolder_1-20")
+    if (folder != null) destinationDirectory.set(file(folder))
     archiveFileName.set("${project.name}-${project.version}.jar")
-    destinationDirectory.set(file(folder))
 }
 
 tasks.withType<JavaCompile>() {
