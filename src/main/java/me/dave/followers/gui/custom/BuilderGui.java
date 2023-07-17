@@ -15,12 +15,17 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class BuilderGui extends AbstractGui {
+    private static final Map<Integer, EquipmentSlot> slotToEquipmentSlot = Map.ofEntries(
+        Map.entry(11, EquipmentSlot.HEAD),
+        Map.entry(20, EquipmentSlot.CHEST),
+        Map.entry(29, EquipmentSlot.LEGS),
+        Map.entry(38, EquipmentSlot.FEET),
+        Map.entry(19, EquipmentSlot.HAND),
+        Map.entry(21, EquipmentSlot.OFF_HAND)
+    );
     private final FollowerHandler.Builder followerBuilder;
     private final Mode mode;
 
@@ -41,19 +46,7 @@ public class BuilderGui extends AbstractGui {
             inventory.setItem(i, borderItem);
         }
 
-        // Head Item
-        setItem(11, followerBuilder.getHead());
-        // Chest Item
-        setItem(20, followerBuilder.getChest());
-        // Leggings Item
-        setItem(29, followerBuilder.getLegs());
-        // Boots Item
-        setItem(38, followerBuilder.getFeet());
-        // Main Hand Item
-        setItem(19, followerBuilder.getMainHand());
-        // Off-Hand Item
-        setItem(21, followerBuilder.getOffHand());
-
+        slotToEquipmentSlot.forEach((slot, equipmentSlot) -> setItem(slot, followerBuilder.getSlot(equipmentSlot)));
 
         List<ItemStack> buttons = new ArrayList<>();
 
@@ -87,46 +80,36 @@ public class BuilderGui extends AbstractGui {
     @Override
     public void onClick(InventoryClickEvent event) {
         super.onClick(event);
-        if (event.isCancelled()) return;
+
+        if (!event.getClickedInventory().equals(inventory)) return;
 
         ItemStack clickedItem = event.getCurrentItem();
-        if (clickedItem == null) return;
+        ItemStack cursorItem = event.getCursor();
+        if (clickedItem == null && cursorItem == null) return;
 
+        int slot = event.getRawSlot();
         switch(event.getAction()) {
             case PLACE_ALL, PLACE_SOME, PLACE_ONE -> {
-                switch (event.getRawSlot()) {
-                    case 11 -> followerBuilder.setSlot(EquipmentSlot.HEAD, clickedItem);
-                    case 20 -> followerBuilder.setSlot(EquipmentSlot.CHEST, clickedItem);
-                    case 29 -> followerBuilder.setSlot(EquipmentSlot.LEGS, clickedItem);
-                    case 38 -> followerBuilder.setSlot(EquipmentSlot.FEET, clickedItem);
-                    case 19 -> followerBuilder.setSlot(EquipmentSlot.HAND, clickedItem);
-                    case 21 -> followerBuilder.setSlot(EquipmentSlot.OFF_HAND, clickedItem);
+                if (slotToEquipmentSlot.containsKey(slot)) {
+                    event.setCancelled(true);
+                    followerBuilder.setSlot(slotToEquipmentSlot.get(slot), cursorItem);
                 }
             }
-            case PICKUP_ALL, PICKUP_HALF, PICKUP_SOME, PICKUP_ONE, DROP_ALL_SLOT, DROP_ONE_SLOT -> {
-                switch (event.getRawSlot()) {
-                    case 11 -> followerBuilder.setSlot(EquipmentSlot.HEAD, new ItemStack(Material.AIR));
-                    case 20 -> followerBuilder.setSlot(EquipmentSlot.CHEST, new ItemStack(Material.AIR));
-                    case 29 -> followerBuilder.setSlot(EquipmentSlot.LEGS, new ItemStack(Material.AIR));
-                    case 38 -> followerBuilder.setSlot(EquipmentSlot.FEET, new ItemStack(Material.AIR));
-                    case 19 -> followerBuilder.setSlot(EquipmentSlot.HAND, new ItemStack(Material.AIR));
-                    case 21 -> followerBuilder.setSlot(EquipmentSlot.OFF_HAND, new ItemStack(Material.AIR));
+            case PICKUP_ALL, PICKUP_HALF, PICKUP_SOME, PICKUP_ONE -> {
+                if (slotToEquipmentSlot.containsKey(slot)) {
+                    event.setCancelled(true);
+                    followerBuilder.setSlot(slotToEquipmentSlot.get(slot), null);
+                    player.setItemOnCursor(clickedItem);
                 }
             }
             case SWAP_WITH_CURSOR -> {
-                ItemStack cursorItem = event.getCursor() == null ? new ItemStack(Material.AIR) : event.getCursor();
-
-                switch (event.getRawSlot()) {
-                    case 11 -> followerBuilder.setSlot(EquipmentSlot.HEAD, cursorItem);
-                    case 20 -> followerBuilder.setSlot(EquipmentSlot.CHEST, cursorItem);
-                    case 29 -> followerBuilder.setSlot(EquipmentSlot.LEGS, cursorItem);
-                    case 38 -> followerBuilder.setSlot(EquipmentSlot.FEET, cursorItem);
-                    case 19 -> followerBuilder.setSlot(EquipmentSlot.HAND, cursorItem);
-                    case 21 -> followerBuilder.setSlot(EquipmentSlot.OFF_HAND, cursorItem);
+                if (slotToEquipmentSlot.containsKey(slot)) {
+                    event.setCancelled(true);
+                    followerBuilder.setSlot(slotToEquipmentSlot.get(slot), cursorItem);
+                    player.setItemOnCursor(clickedItem);
                 }
             }
-            case COLLECT_TO_CURSOR, MOVE_TO_OTHER_INVENTORY -> {}
-            case NOTHING, UNKNOWN, DROP_ALL_CURSOR, DROP_ONE_CURSOR, CLONE_STACK, HOTBAR_SWAP, HOTBAR_MOVE_AND_READD -> {}
+            case NOTHING, UNKNOWN, DROP_ALL_SLOT, DROP_ONE_SLOT, DROP_ALL_CURSOR, DROP_ONE_CURSOR, CLONE_STACK, HOTBAR_SWAP, HOTBAR_MOVE_AND_READD, COLLECT_TO_CURSOR, MOVE_TO_OTHER_INVENTORY -> {}
         }
 
         Player player = (Player) event.getWhoClicked();
@@ -136,6 +119,11 @@ public class BuilderGui extends AbstractGui {
         if (followerBuilder.getName() != null) itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll("%name%", followerBuilder.getName()));
         else itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll("%name%", ChatColorHandler.translateAlternateColorCodes("&c&oUnnamed")));
         nameButtonItem.setItemMeta(itemMeta);
+
+        if (clickedItem == null) {
+            recalculateContents();
+            return;
+        }
 
         if (clickedItem.isSimilar(nameButtonItem)) {
             player.closeInventory();
