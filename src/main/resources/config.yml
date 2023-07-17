@@ -30,18 +30,88 @@ database:
   user: user
   password: pass
 
-# menu-gui: Config changes for the Followers Menu
+# gui: Config changes for the Followers Menu
 menu-gui:
   # title: The title of the Menu
-  title: "&#59bfffFollowers"
+  title: "&9Followers"
   # follower-format: Format of the follower names within the Menu
   follower-format: "&e%follower%"
-  # items: For information on how to change the gui items check out the gitbook (https://dave-12.gitbook.io/follower-pets/configuring/editing-the-guis)
+  items:
+    # no-followers: Item displayed when a player has no followers
+    no-followers:
+      name: "This is a new test name"
+      material: "red_wool"
+    # follower-toggle: Item displaying whether a user has a follower enabled or not
+    follower-toggle:
+      enabled:
+        name: "&eFollower: &aEnabled"
+        material: "lime_wool"
+      disabled:
+        name: "&eFollower: &cDisabled"
+        material: "red_wool"
+    # next-page: Item to move to the next page
+    next-page:
+      name: "&eNext Page ->"
+      material: "arrow"
+    # previous-page: Item to move to the previous page
+    previous-page:
+      name: "&e<- Previous Page"
+      material: "arrow"
+    # nickname: Item to change the nickname of a player's follower
+    nickname:
+      shown:
+        name: "&eFollower Name: &f%nickname%"
+        material: "red_wool"
+        lore:
+          - "&eShown &7&o(Shift-click to Hide)"
+      hidden:
+        name: "&eFollower Name: &f%nickname%"
+        material: "orange_wool"
+        lore:
+          - "&eHidden &7&o(Shift-click to Show)"
+    # random: Item to enable the random follower setting
+    random:
+      enabled:
+        name: "&eRandom Follower: &aEnabled"
+        material: "conduit"
+      disabled:
+        name: "&eRandom Follower: &cDisabled"
+        material: "conduit"
 
 # builder-gui: Config changes for the Follower Editor menu
 builder-gui:
   # title: The title of the gui
   title: "&#59bfffFollowers &7- &#f5d57fEditor 🔨"
+  # items: Items within the gui
+  items:
+    # name-button: Button to change a Follower's name
+    name-button:
+      default:
+        name: "&eFollower Name: &f%name%"
+        material: "oak_sign"
+        lore:
+          - "&7&oClick to change the Follower's name"
+      locked:
+        name: "&eFollower Name: &f%name%"
+        material: "oak_sign"
+        lore:
+          - "&c&oName Locked"
+    # visibility-button: Button to change a Follower's visibility
+    visibility-button:
+      visible:
+        name: "&eArmor Stand Visible: &fTrue"
+        material: "white_stained_glass"
+      invisible:
+        name: "&eArmor Stand Visible: &fFalse"
+        material: "glass"
+    # complete-button: Button to complete editing
+    complete-button:
+      name: "&aComplete Button"
+      material: "lime_wool"
+    # cancel-button: Button to cancel editing
+    cancel-button:
+      name: "&cCancel Button"
+      material: "red_wool"
 
 moderation-gui:
   # title: The title of the gui
@@ -56,6 +126,7 @@ messages:
   follower-spawned: "&#b7faa2Follower spawned"
   follower-no-name: "&#ff6969You did not enter a name for the follower"
   follower-created: "&#b7faa2A Follower with the name &#66b04f%follower% &#b7faa2has been added &#66b04f⬆"
+  follower-edited: "&#b7faa2The Follower &#66b04f%follower% &#b7faa2has been edited &#66b04f⬆"
   follower-deleted: "&#ff6969The Follower &#d13636%follower% &#ff6969has been deleted &#d13636🗑"
   follower-doesnt-exist: "&#ff6969The Follower &#d13636%follower% &#ff6969does not exist"
   follower-already-exists: "&#ff6969A Follower already exists with this name"
