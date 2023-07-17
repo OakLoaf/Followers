@@ -40,7 +40,7 @@ menu-gui:
     # no-followers: Item displayed when a player has no followers
     no-followers:
       name: "This is a new test name"
-      material: "red_wool"
+      material: "barrier"
     # follower-toggle: Item displaying whether a user has a follower enabled or not
     follower-toggle:
       enabled:
@@ -61,12 +61,12 @@ menu-gui:
     nickname:
       shown:
         name: "&eFollower Name: &f%nickname%"
-        material: "red_wool"
+        material: "name_tag"
         lore:
           - "&eShown &7&o(Shift-click to Hide)"
       hidden:
         name: "&eFollower Name: &f%nickname%"
-        material: "orange_wool"
+        material: "name_tag"
         lore:
           - "&eHidden &7&o(Shift-click to Show)"
     # random: Item to enable the random follower setting
