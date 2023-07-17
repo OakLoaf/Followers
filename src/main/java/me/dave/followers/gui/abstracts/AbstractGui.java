@@ -82,11 +82,14 @@ public abstract class AbstractGui {
     }
 
     public void onClick(InventoryClickEvent event) {
+        Inventory clickedInventory = event.getClickedInventory();
+        if (clickedInventory == null) return;
+
         int slot = event.getRawSlot();
         switch (event.getAction()) {
-            case CLONE_STACK, COLLECT_TO_CURSOR -> event.setCancelled(true);
+            case COLLECT_TO_CURSOR -> event.setCancelled(true);
             case MOVE_TO_OTHER_INVENTORY -> {
-                if (event.getInventory() != inventory) {
+                if (!clickedInventory.equals(inventory)) {
                     event.setCancelled(true);
 
                     List<Integer> unlockedSlots = slotLockMap.entrySet()
@@ -133,8 +136,8 @@ public abstract class AbstractGui {
                     }
                 }
             }
-            case DROP_ALL_SLOT, DROP_ONE_SLOT, PLACE_ALL, PLACE_SOME, PLACE_ONE, PICKUP_ALL, PICKUP_HALF, PICKUP_SOME, PICKUP_ONE, SWAP_WITH_CURSOR  -> {
-                if (isSlotLocked(slot)) {
+            case DROP_ALL_SLOT, DROP_ONE_SLOT, PLACE_ALL, PLACE_SOME, PLACE_ONE, PICKUP_ALL, PICKUP_HALF, PICKUP_SOME, PICKUP_ONE, SWAP_WITH_CURSOR, CLONE_STACK  -> {
+                if (clickedInventory.equals(inventory) && isSlotLocked(slot)) {
                     event.setCancelled(true);
                 }
             }
