@@ -11,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -21,15 +20,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class BuilderGui extends AbstractGui {
-    private final Inventory inventory = Bukkit.createInventory(null, 54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle("builder-gui")));
     private final FollowerHandler.Builder followerBuilder;
-    private final Player player;
     private final Mode mode;
 
     public BuilderGui(Player player, Mode mode, FollowerHandler.Builder followerBuilder) {
-        this.player = player;
+        super(54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle("builder-gui")), player);
         this.mode = mode;
         this.followerBuilder = followerBuilder;
+
+        this.unlockSlots(11, 19, 20, 21, 29, 38);
     }
 
     @Override
@@ -85,15 +84,9 @@ public class BuilderGui extends AbstractGui {
     }
 
     @Override
-    public void openInventory() {
-        recalculateContents();
-        player.openInventory(inventory);
-        InventoryHandler.putInventory(player.getUniqueId(), this);
-    }
-
-    @Override
     public void onClick(InventoryClickEvent event) {
-        event.setCancelled(true);
+        super.onClick(event);
+//        event.setCancelled(true);
 
         ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null) return;
@@ -144,11 +137,6 @@ public class BuilderGui extends AbstractGui {
         }
 
         recalculateContents();
-    }
-
-    @Override
-    public Inventory getInventory() {
-        return inventory;
     }
 
     public void complete() {

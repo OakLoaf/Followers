@@ -4,14 +4,12 @@ import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.Followers;
 import me.dave.followers.data.FollowerUser;
 import me.dave.followers.entity.FollowerEntity;
-import me.dave.followers.gui.InventoryHandler;
 import me.dave.followers.gui.abstracts.PagedGui;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -19,11 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModerationGui extends PagedGui {
-    private final Inventory inventory = Bukkit.createInventory(null, 54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle("moderation-gui")));
-    private final Player player;
 
     public ModerationGui(Player player) {
-        this.player = player;
+        super(54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle("moderation-gui")), player);
     }
 
     @Override
@@ -63,14 +59,8 @@ public class ModerationGui extends PagedGui {
     }
 
     @Override
-    public void openInventory() {
-        recalculateContents();
-        player.openInventory(inventory);
-        InventoryHandler.putInventory(player.getUniqueId(), this);
-    }
-
-    @Override
     public void onClick(InventoryClickEvent event) {
+        super.onClick(event);
         event.setCancelled(true);
     }
 
@@ -79,22 +69,13 @@ public class ModerationGui extends PagedGui {
 
         Bukkit.getOnlinePlayers().forEach(player -> {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
-//            if (!followerUser.isDisplayNameEnabled()) return;
             FollowerEntity followerEntity = followerUser.getFollowerEntity();
             if (followerEntity == null || !followerEntity.isAlive()) return;
-
-//            String displayName = followerEntity.getDisplayName();
-//            if (displayName.equals("Unnamed")) return;
 
             activeFollowerList.add(followerEntity);
         });
 
         return activeFollowerList;
-    }
-
-    @Override
-    public Inventory getInventory() {
-        return inventory;
     }
 
     private ItemStack getBorderItem() {

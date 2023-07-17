@@ -3,7 +3,6 @@ package me.dave.followers.gui.custom;
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.Followers;
 import me.dave.followers.entity.FollowerEntity;
-import me.dave.followers.gui.InventoryHandler;
 import me.dave.followers.gui.abstracts.PagedGui;
 import me.dave.followers.utils.TextInterface;
 import org.bukkit.Bukkit;
@@ -12,7 +11,6 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import me.dave.followers.data.FollowerUser;
@@ -20,11 +18,9 @@ import me.dave.followers.data.FollowerUser;
 import java.util.*;
 
 public class MenuGui extends PagedGui {
-    private final Inventory inventory = Bukkit.createInventory(null, 54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle("menu-gui")));
-    private final Player player;
 
     public MenuGui(Player player) {
-        this.player = player;
+        super(54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle("menu-gui")), player);
     }
 
     @Override
@@ -97,14 +93,8 @@ public class MenuGui extends PagedGui {
     }
 
     @Override
-    public void openInventory() {
-        recalculateContents();
-        player.openInventory(inventory);
-        InventoryHandler.putInventory(player.getUniqueId(), this);
-    }
-
-    @Override
     public void onClick(InventoryClickEvent event) {
+        super.onClick(event);
         event.setCancelled(true);
 
         ItemStack clickedItem = event.getCurrentItem();
@@ -187,11 +177,6 @@ public class MenuGui extends PagedGui {
 
         recalculateContents();
         ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
-    }
-
-    @Override
-    public Inventory getInventory() {
-        return inventory;
     }
 
     private ItemStack getBorderItem() {

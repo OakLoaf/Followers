@@ -5,9 +5,7 @@ import me.dave.followers.gui.InventoryHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 
 import java.util.UUID;
@@ -15,11 +13,30 @@ import java.util.UUID;
 public class GuiEvents implements Listener {
 
     @EventHandler
-    public void onItemClick(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        UUID playerUUID = player.getUniqueId();
+    public void onInventoryOpen(InventoryOpenEvent event) {
+        Player player = (Player) event.getPlayer();
 
-        AbstractGui gui = InventoryHandler.getGui(playerUUID);
+        AbstractGui gui = InventoryHandler.getGui(player.getUniqueId());
+        if (gui == null || !event.getInventory().equals(gui.getInventory())) return;
+
+        gui.onOpen(event);
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        Player player = (Player) event.getPlayer();
+
+        AbstractGui gui = InventoryHandler.getGui(player.getUniqueId());
+        if (gui == null || !event.getInventory().equals(gui.getInventory())) return;
+
+        gui.onClose(event);
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+
+        AbstractGui gui = InventoryHandler.getGui(player.getUniqueId());
         if (gui == null) return;
 
         Inventory clickedInventory = event.getClickedInventory();
@@ -29,26 +46,13 @@ public class GuiEvents implements Listener {
     }
 
     @EventHandler
-    public void onItemDrag(InventoryDragEvent event) {
+    public void onInventoryDrag(InventoryDragEvent event) {
         Player player = (Player) event.getWhoClicked();
         UUID playerUUID = player.getUniqueId();
 
         AbstractGui gui = InventoryHandler.getGui(playerUUID);
-        if (gui == null) return;
-
-        Inventory clickedInventory = event.getInventory();
-        if (!clickedInventory.equals(gui.getInventory())) return;
-
-        event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onInventoryClose(InventoryCloseEvent event) {
-        UUID playerUUID = event.getPlayer().getUniqueId();
-
-        AbstractGui gui = InventoryHandler.getGui(playerUUID);
         if (gui == null || !event.getInventory().equals(gui.getInventory())) return;
 
-        InventoryHandler.removeInventory(playerUUID);
+        gui.onDrag(event);
     }
 }
