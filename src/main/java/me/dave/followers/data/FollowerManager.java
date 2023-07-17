@@ -68,7 +68,8 @@ public class FollowerManager {
 
         configurationSection.set("visible", followerHandler.isVisible());
 
-        ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-created").replaceAll("%follower%", followerName));
+        if (!replace) ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-created").replaceAll("%follower%", followerName));
+        else ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-edited").replaceAll("%follower%", followerName));
         saveFollowers();
         loadFollower(followerName, followerHandler);
         Followers.followerManager.refreshAllFollowers();
