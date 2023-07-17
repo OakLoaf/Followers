@@ -7,6 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class FollowerHandler {
     private final String name;
@@ -115,31 +116,24 @@ public class FollowerHandler {
             return this;
         }
 
-        public ItemStack getHead() {
-            return head;
+        public ItemStack getSlot(@NotNull EquipmentSlot slot) {
+            ItemStack output = null;
+            switch(slot) {
+                case HEAD -> output = this.head;
+                case CHEST -> output = this.chest;
+                case LEGS -> output = this.legs;
+                case FEET -> output = this.feet;
+                case HAND -> output = this.mainHand;
+                case OFF_HAND -> output = this.offHand;
+            }
+            return output;
         }
 
-        public ItemStack getChest() {
-            return chest;
-        }
+        public Builder setSlot(EquipmentSlot slot, @Nullable ItemStack item) {
+            if (item == null) item = new ItemStack(Material.AIR);
+            item = item.clone();
+            item.setAmount(1);
 
-        public ItemStack getLegs() {
-            return legs;
-        }
-
-        public ItemStack getFeet() {
-            return feet;
-        }
-
-        public ItemStack getMainHand() {
-            return mainHand;
-        }
-
-        public ItemStack getOffHand() {
-            return offHand;
-        }
-
-        public Builder setSlot(EquipmentSlot slot, @NotNull ItemStack item) {
             switch(slot) {
                 case HEAD -> this.head = item;
                 case CHEST -> this.chest = item;
