@@ -10,7 +10,9 @@ import me.dave.followers.utils.TextInterface;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -79,6 +81,11 @@ public class BuilderGui extends AbstractGui {
 
     @Override
     public void onClick(InventoryClickEvent event) {
+        if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+            event.setCancelled(true);
+            return;
+        }
+
         super.onClick(event);
 
         if (!event.getClickedInventory().equals(inventory)) return;
@@ -89,24 +96,21 @@ public class BuilderGui extends AbstractGui {
 
         int slot = event.getRawSlot();
         switch(event.getAction()) {
-            case PLACE_ALL, PLACE_SOME, PLACE_ONE -> {
+            case PLACE_ALL -> {
                 if (slotToEquipmentSlot.containsKey(slot)) {
                     event.setCancelled(true);
                     followerBuilder.setSlot(slotToEquipmentSlot.get(slot), cursorItem);
                 }
             }
-            case PICKUP_ALL, PICKUP_HALF, PICKUP_SOME, PICKUP_ONE -> {
+            case PICKUP_ALL, SWAP_WITH_CURSOR -> {
                 if (slotToEquipmentSlot.containsKey(slot)) {
                     event.setCancelled(true);
                     followerBuilder.setSlot(slotToEquipmentSlot.get(slot), null);
-                    player.setItemOnCursor(clickedItem);
                 }
             }
-            case SWAP_WITH_CURSOR -> {
+            case PLACE_SOME, PLACE_ONE, PICKUP_HALF, PICKUP_SOME, PICKUP_ONE -> {
                 if (slotToEquipmentSlot.containsKey(slot)) {
                     event.setCancelled(true);
-                    followerBuilder.setSlot(slotToEquipmentSlot.get(slot), cursorItem);
-                    player.setItemOnCursor(clickedItem);
                 }
             }
             case NOTHING, UNKNOWN, DROP_ALL_SLOT, DROP_ONE_SLOT, DROP_ALL_CURSOR, DROP_ONE_CURSOR, CLONE_STACK, HOTBAR_SWAP, HOTBAR_MOVE_AND_READD, COLLECT_TO_CURSOR, MOVE_TO_OTHER_INVENTORY -> {}
@@ -146,11 +150,9 @@ public class BuilderGui extends AbstractGui {
         }
         else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "visibility-button.visible", Material.WHITE_STAINED_GLASS))) {
             followerBuilder.setVisible(false);
-            recalculateContents();
         }
         else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "visibility-button.invisible", Material.GLASS))) {
             followerBuilder.setVisible(true);
-            recalculateContents();
         }
         else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "complete-button", Material.LIME_WOOL))) {
             complete();
@@ -163,6 +165,16 @@ public class BuilderGui extends AbstractGui {
         }
 
         recalculateContents();
+    }
+
+    @Override
+    public void onDrag(InventoryDragEvent event) {
+        for (int slot : event.getRawSlots()) {
+            if (slot <= 53) {
+                event.setCancelled(true);
+                return;
+            }
+        }
     }
 
     public void complete() {
