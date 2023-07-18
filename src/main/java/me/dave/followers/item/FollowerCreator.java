@@ -11,8 +11,10 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
@@ -53,6 +55,24 @@ public class FollowerCreator implements Listener {
 
         BuilderGui builderGui = new BuilderGui(player, BuilderGui.Mode.CREATE, followerBuilder);
         builderGui.openInventory();
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if (player.isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
+            ItemStack heldItem = player.getInventory().getItemInMainHand();
+            if (!heldItem.isSimilar(creatorItem)) return;
+            event.setCancelled(true);
+
+            if (!player.hasPermission("follower.admin.create")) {
+                ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("no-permissions"));
+                return;
+            }
+
+            BuilderGui builderGui = new BuilderGui(player, BuilderGui.Mode.CREATE, new FollowerHandler.Builder());
+            builderGui.openInventory();
+        }
     }
 
     @EventHandler
