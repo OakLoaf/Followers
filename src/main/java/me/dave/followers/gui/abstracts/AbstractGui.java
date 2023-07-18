@@ -87,11 +87,17 @@ public abstract class AbstractGui {
 
         int slot = event.getRawSlot();
         switch (event.getAction()) {
-            case COLLECT_TO_CURSOR -> event.setCancelled(true);
-            case MOVE_TO_OTHER_INVENTORY -> {
-                if (!clickedInventory.equals(inventory)) {
+            case COLLECT_TO_CURSOR -> {
+                event.setCancelled(true);
+            }
+            case DROP_ALL_SLOT, DROP_ONE_SLOT, PLACE_ALL, PLACE_SOME, PLACE_ONE, PICKUP_ALL, PICKUP_HALF, PICKUP_SOME, PICKUP_ONE, SWAP_WITH_CURSOR, CLONE_STACK  -> {
+                if (clickedInventory.equals(inventory) && isSlotLocked(slot)) {
                     event.setCancelled(true);
-
+                }
+            }
+            case MOVE_TO_OTHER_INVENTORY -> {
+                event.setCancelled(true);
+                if (!clickedInventory.equals(inventory)) {
                     List<Integer> unlockedSlots = slotLockMap.entrySet()
                             .stream()
                             .filter(entry -> !entry.getValue())
@@ -136,16 +142,15 @@ public abstract class AbstractGui {
                     }
                 }
             }
-            case DROP_ALL_SLOT, DROP_ONE_SLOT, PLACE_ALL, PLACE_SOME, PLACE_ONE, PICKUP_ALL, PICKUP_HALF, PICKUP_SOME, PICKUP_ONE, SWAP_WITH_CURSOR, CLONE_STACK  -> {
-                if (clickedInventory.equals(inventory) && isSlotLocked(slot)) {
-                    event.setCancelled(true);
-                }
-            }
-
         }
     }
 
     public void onDrag(InventoryDragEvent event) {
-        event.setCancelled(true);
+        for (int slot : event.getRawSlots()) {
+            if (slot <= 53 && isSlotLocked(slot)) {
+                event.setCancelled(true);
+                return;
+            }
+        }
     }
 }
