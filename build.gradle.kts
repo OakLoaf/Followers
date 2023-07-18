@@ -29,7 +29,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.2")
     compileOnly(files("libs/SimpleSit.jar"))
     shadow("mysql:mysql-connector-java:8.0.25")
-    shadow("com.github.CoolDCB:ChatColorHandler:v1.2.5")
+    shadow("com.github.CoolDCB:ChatColorHandler:v1.3.3")
 }
 
 java {
