@@ -17,7 +17,7 @@ public class FollowerUser {
     private static final Random random = new Random();
     private final UUID uuid;
     private String username;
-    private boolean isEnabled;
+    private boolean enabled;
     private String followerType;
     private boolean randomType;
     private String displayName;
@@ -25,11 +25,12 @@ public class FollowerUser {
     private FollowerEntity followerEntity;
     private boolean afk = false;
     private boolean posing = false;
+    private boolean hidden = false;
 
-    public FollowerUser(UUID uuid, String username, String followerType, String followerDisplayName, boolean followerNameEnabled, boolean followerIsEnabled, boolean randomFollower) {
+    public FollowerUser(UUID uuid, String username, String followerType, String followerDisplayName, boolean followerNameEnabled, boolean followerEnabled, boolean randomFollower) {
         this.uuid = uuid;
         this.username = username;
-        this.isEnabled = followerIsEnabled;
+        this.enabled = followerEnabled;
         this.followerType = followerType;
         this.displayName = followerDisplayName;
         this.nameIsOn = followerNameEnabled;
@@ -62,7 +63,7 @@ public class FollowerUser {
     }
 
     public boolean isFollowerEnabled() {
-        return this.isEnabled;
+        return this.enabled;
     }
 
     public boolean isRandomType() {
@@ -112,7 +113,7 @@ public class FollowerUser {
     }
 
     public void setFollowerEnabled(boolean followerIsEnabled) {
-        this.isEnabled = followerIsEnabled;
+        this.enabled = followerIsEnabled;
         Followers.dataManager.saveFollowerUser(this);
     }
 
@@ -150,6 +151,24 @@ public class FollowerUser {
         else if (!afk) followerEntity.setPose(FollowerPose.DEFAULT);
     }
 
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hide) {
+        if (this.hidden == hide) return;
+
+        if (hide) {
+            if (followerEntity != null) followerEntity.kill();
+        }
+        else if (enabled) {
+            spawnFollowerEntity();
+        }
+
+        this.hidden = hide;
+    }
+
+    // TODO: turn FollowerEntity a non-nullable object
     public FollowerEntity getFollowerEntity() {
         return followerEntity;
     }
