@@ -129,6 +129,8 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     followerUser.randomizeFollowerType();
 
                     if (!isRandom) ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
+
+                    return true;
                 }
                 case "reload" -> {
                     if (!sender.hasPermission("follower.admin.reload")) {
