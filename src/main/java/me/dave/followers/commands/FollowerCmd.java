@@ -234,6 +234,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     if (followerHandler == null) ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerName));
                     else {
                         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+                        if (followerUser.isRandomType()) followerUser.setRandom(false);
                         followerUser.setFollowerType(followerName);
                         followerUser.spawnFollowerEntity();
                     }
@@ -264,6 +265,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
             tabComplete.add("enable");
             tabComplete.add("set");
             tabComplete.add("toggle");
+            if (sender.hasPermission("follower.random")) tabComplete.add("randomize");
             if (sender.hasPermission("follower.admin.create")) tabComplete.add("create");
             if (sender.hasPermission("follower.admin.delete")) tabComplete.add("delete");
             if (sender.hasPermission("follower.admin.edit")) tabComplete.add("edit");
