@@ -112,6 +112,24 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     moderationGui.openInventory();
                     return true;
                 }
+                case "randomize" -> {
+                    if (!(sender instanceof Player player)) {
+                        sender.sendMessage("Console cannot run this command!");
+                        return true;
+                    }
+
+                    if (!sender.hasPermission("follower.random")) {
+                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
+                        return true;
+                    }
+
+                    FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+                    boolean isRandom = followerUser.isRandomType();
+                    followerUser.setRandom(!isRandom);
+                    followerUser.randomizeFollowerType();
+
+                    if (!isRandom) ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
+                }
                 case "reload" -> {
                     if (!sender.hasPermission("follower.admin.reload")) {
                         ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
