@@ -28,9 +28,7 @@ public class MovementTask extends AbstractTask {
     }
 
     @Override
-    public void run() {
-        if (checkCancel()) return;
-
+    public void tick() {
         ArmorStand bodyArmorStand = followerEntity.getBodyArmorStand();
         // Cancels the task if the armour stand is dead
         if (bodyArmorStand == null || !bodyArmorStand.isValid()) {
@@ -90,6 +88,16 @@ public class MovementTask extends AbstractTask {
             else newHeadPoseX.setX(290D);
         }
         bodyArmorStand.setHeadPose(newHeadPoseX);
+    }
+
+    @Override
+    public int getDelay() {
+        return 0;
+    }
+
+    @Override
+    public int getPeriod() {
+        return 1;
     }
 
     private static CompletableFuture<Boolean> delayedTeleportTo(Player player, FollowerEntity followerEntity, int delay) {

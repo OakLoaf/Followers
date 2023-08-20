@@ -20,13 +20,21 @@ public class ParticleTask extends AbstractTask {
     }
 
     @Override
-    public void run() {
-        if (checkCancel()) return;
-
+    public void tick() {
         if (armorStand == null || !armorStand.isValid()) {
             cancel();
             return;
         }
         armorStand.getWorld().spawnParticle(particle, armorStand.getLocation().add(0, -0.15, 0), 1, 0, 0, 0, 0);
+    }
+
+    @Override
+    public int getDelay() {
+        return 0;
+    }
+
+    @Override
+    public int getPeriod() {
+        return 3;
     }
 }

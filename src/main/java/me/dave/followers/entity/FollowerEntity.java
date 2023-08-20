@@ -2,6 +2,7 @@ package me.dave.followers.entity;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.Followers;
+import me.dave.followers.api.events.FollowerTickEvent;
 import me.dave.followers.entity.poses.FollowerPose;
 import me.dave.followers.entity.tasks.*;
 import org.bukkit.*;
@@ -13,16 +14,24 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import me.dave.followers.data.FollowerHandler;
 import me.dave.followers.data.FollowerUser;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 public class FollowerEntity {
     private static final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
-    private final HashMap<FollowerTaskType, AbstractTask> taskMap = new HashMap<>();
+    private final HashMap<FollowerTaskType, AbstractTask> tasks = new HashMap<>();
+    private final BukkitRunnable ticker = new BukkitRunnable() {
+        @Override
+        public void run() {
+            tick();
+        }
+    };
     private final Player player;
     private final ArmorStand bodyArmorStand;
     private ArmorStand nameArmorStand;
+    private int ticksAlive;
     private UUID nameArmorStandUUID;
     private String followerType;
     private boolean alive;
@@ -34,6 +43,7 @@ public class FollowerEntity {
         this.followerType = follower;
         this.visible = !player.isInvisible();
         this.alive = true;
+        this.ticksAlive = 0;
 
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(this.player);
         followerUser.setFollowerEnabled(true);
@@ -48,11 +58,13 @@ public class FollowerEntity {
         setType(follower);
         setVisible(!player.isInvisible());
 
-        startTask(new ValidateTask(this), 0, 1);
+        startTask(new ValidateTask(this));
         startVisiblityTask();
         startMovement();
 
         Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::reloadInventory, 5);
+
+        ticker.runTaskTimer(Followers.getInstance(), 0, 1);
     }
 
     public Player getPlayer() {
@@ -184,6 +196,7 @@ public class FollowerEntity {
     public void kill() {
         alive = false;
 
+        ticker.cancel();
         stopTasks(FollowerTaskType.ALL);
 
         if (bodyArmorStand != null) {
@@ -201,15 +214,15 @@ public class FollowerEntity {
         Player player = Bukkit.getPlayer(UUID.fromString(strUUID));
         if (player == null) return;
 
-        startTask(new MovementTask(this), 0, 1);
+        startTask(new MovementTask(this));
     }
 
     public void startParticles(Particle particle) {
-        startTask(new ParticleTask(this, particle), 0, 3);
+        startTask(new ParticleTask(this, particle));
     }
 
     private void startVisiblityTask() {
-        startTask(new VisibilityTask(this), 5, 20);
+        startTask(new VisibilityTask(this));
     }
 
 
@@ -217,27 +230,44 @@ public class FollowerEntity {
     //    Task Handler    //
     ////////////////////////
 
-    public void startTask(AbstractTask task, int delay, int period) {
+    public int getTicksAlive() {
+        return ticksAlive;
+    }
+
+    public void tick() {
+        ticksAlive++;
+
+        if (!Followers.getInstance().callEvent(new FollowerTickEvent(this))) {
+            return;
+        }
+
+        tasks.values().forEach(task -> {
+            if (ticksAlive >= task.getStartTick() && ticksAlive % task.getPeriod() == 0) {
+                task.tick();
+            }
+        });
+    }
+
+    public void startTask(AbstractTask task) {
         stopTask(task.getType());
 
-        taskMap.put(task.getType(), task);
-        task.runTaskTimer(Followers.getInstance(), delay, period);
+        tasks.put(task.getType(), task);
     }
 
     public void stopTask(FollowerTaskType taskType) {
         if (taskType.equals(FollowerTaskType.ALL)) {
-            taskMap.forEach((aTaskType, task) -> {
+            tasks.forEach((aTaskType, task) -> {
                 task.cancel();
-                taskMap.remove(taskType);
+                tasks.remove(taskType);
             });
             return;
         }
 
-        AbstractTask task = taskMap.get(taskType);
+        AbstractTask task = tasks.get(taskType);
 
         if (task != null && !task.isCancelled()) {
             task.cancel();
-            taskMap.remove(taskType);
+            tasks.remove(taskType);
         }
     }
 

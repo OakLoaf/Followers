@@ -23,13 +23,21 @@ public class VisibilityTask extends AbstractTask {
     }
 
     @Override
-    public void run() {
-        if (checkCancel()) return;
-
+    public void tick() {
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
         boolean visible = !player.isInvisible() && !followerUser.isVanished();
 
         if (this.visible != visible) Bukkit.getPluginManager().callEvent(new PlayerVisiblityChangeEvent(player, this.visible, visible));
         this.visible = visible;
+    }
+
+    @Override
+    public int getDelay() {
+        return 5;
+    }
+
+    @Override
+    public int getPeriod() {
+        return 20;
     }
 }

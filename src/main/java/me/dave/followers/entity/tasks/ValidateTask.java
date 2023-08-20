@@ -20,7 +20,7 @@ public class ValidateTask extends AbstractTask {
     }
 
     @Override
-    public void run() {
+    public void tick() {
         if (followerEntity.getBodyArmorStand() == null || !followerEntity.getBodyArmorStand().isValid()) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.respawnFollowerEntity();
@@ -28,5 +28,15 @@ public class ValidateTask extends AbstractTask {
             return;
         }
         if (!player.isOnline()) Bukkit.getScheduler().runTaskLater(Followers.getInstance(), followerEntity::kill, 5);
+    }
+
+    @Override
+    public int getDelay() {
+        return 0;
+    }
+
+    @Override
+    public int getPeriod() {
+        return 1;
     }
 }
