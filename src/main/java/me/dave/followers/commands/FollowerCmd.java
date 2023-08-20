@@ -1,6 +1,7 @@
 package me.dave.followers.commands;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
+import me.dave.followers.api.events.FollowersReloadEvent;
 import me.dave.followers.data.FollowerUser;
 import me.dave.followers.exceptions.ObjectNameLockedException;
 import me.dave.followers.gui.custom.BuilderGui;
@@ -143,6 +144,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     Followers.configManager.reloadConfig(Followers.getInstance());
                     Followers.followerManager.reloadFollowers();
                     Followers.dataManager.reloadFollowerInventories();
+                    Followers.getInstance().callEvent(new FollowersReloadEvent());
                     sender.sendMessage(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getLangMessage("reloaded")));
                     return true;
                 }
