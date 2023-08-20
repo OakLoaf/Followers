@@ -6,6 +6,8 @@ import me.dave.followers.events.WorldEvents;
 import me.dave.followers.item.FollowerCreator;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
 
 import org.bukkit.persistence.PersistentDataType;
@@ -104,6 +106,15 @@ public final class Followers extends JavaPlugin {
     @Override
     public void onDisable() {
         Storage.SERVICE.shutdownNow();
+    }
+
+    public boolean callEvent(Event event) {
+        getServer().getPluginManager().callEvent(event);
+        if (event instanceof Cancellable cancellable) {
+            return !cancellable.isCancelled();
+        } else {
+            return true;
+        }
     }
 
     public static Followers getInstance() {
