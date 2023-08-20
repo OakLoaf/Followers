@@ -94,7 +94,7 @@ public class FollowerEntity {
     }
 
     public void setType(String followerType) {
-        if (Followers.getInstance().callEvent(new FollowerEntityChangeTypeEvent(this, this.followerType, followerType))) {
+        if (!Followers.getInstance().callEvent(new FollowerEntityChangeTypeEvent(this, this.followerType, followerType))) {
             return;
         }
 
