@@ -3,7 +3,6 @@ package me.dave.followers.hooks;
 import dev.geco.gsit.api.event.*;
 import me.dave.followers.data.FollowerUser;
 import me.dave.followers.entity.poses.FollowerPose;
-import me.dave.followers.entity.tasks.FollowerTaskType;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
@@ -32,7 +31,7 @@ public class GSitHook implements Listener {
             followerUser.setPose(FollowerPose.DEFAULT);
             FollowerEntity followerEntity = followerUser.getFollowerEntity();
             if (followerEntity == null || !followerEntity.isAlive()) return;
-            followerEntity.stopTask(FollowerTaskType.PARTICLE);
+            followerEntity.stopTask("particle");
         }
     }
 
@@ -54,6 +53,6 @@ public class GSitHook implements Listener {
         FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
         if (followerEntity == null) return;
         followerEntity.setPose(FollowerPose.DEFAULT);
-        followerEntity.stopTask(FollowerTaskType.PARTICLE);
+        followerEntity.stopTask("particle");
     }
 }

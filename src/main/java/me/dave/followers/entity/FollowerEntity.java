@@ -2,6 +2,7 @@ package me.dave.followers.entity;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.Followers;
+import me.dave.followers.api.events.FollowerEntityChangeTypeEvent;
 import me.dave.followers.api.events.FollowerEntityTickEvent;
 import me.dave.followers.entity.poses.FollowerPose;
 import me.dave.followers.entity.tasks.*;
@@ -93,6 +94,10 @@ public class FollowerEntity {
     }
 
     public void setType(String followerType) {
+        if (Followers.getInstance().callEvent(new FollowerEntityChangeTypeEvent(this, this.followerType, followerType))) {
+            return;
+        }
+
         this.followerType = followerType;
 
         Followers.dataManager.getFollowerUser(player).setFollowerType(followerType);
