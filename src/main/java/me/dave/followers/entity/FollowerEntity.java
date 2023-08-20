@@ -16,6 +16,7 @@ import me.dave.followers.data.FollowerHandler;
 import me.dave.followers.data.FollowerUser;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -58,7 +59,7 @@ public class FollowerEntity {
         setType(follower);
         setVisible(!player.isInvisible());
 
-        startTask(new ValidateTask(this));
+        startTask(FollowerTasks.getTask("validate", this));
         startVisiblityTask();
         startMovement();
 
@@ -214,15 +215,19 @@ public class FollowerEntity {
         Player player = Bukkit.getPlayer(UUID.fromString(strUUID));
         if (player == null) return;
 
-        startTask(new MovementTask(this));
+        startTask(FollowerTasks.getTask("movement", this));
     }
 
     public void startParticles(Particle particle) {
-        startTask(new ParticleTask(this, particle));
+        try {
+            startTask(FollowerTasks.getClass("particle").getConstructor(FollowerEntity.class, Particle.class).newInstance(this, particle));
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 
     private void startVisiblityTask() {
-        startTask(new VisibilityTask(this));
+        startTask(FollowerTasks.getTask("visibility", this));
     }
 
 
