@@ -21,7 +21,7 @@ import java.util.UUID;
 
 public class FollowerEntity {
     private static final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
-    private final HashMap<FollowerTaskType, AbstractTask> tasks = new HashMap<>();
+    private final HashMap<String, AbstractTask> tasks = new HashMap<>();
     private final BukkitRunnable ticker = new BukkitRunnable() {
         @Override
         public void run() {
@@ -197,7 +197,7 @@ public class FollowerEntity {
         alive = false;
 
         ticker.cancel();
-        stopTasks(FollowerTaskType.ALL);
+        stopTasks("all");
 
         if (bodyArmorStand != null) {
             bodyArmorStand.remove();
@@ -249,13 +249,13 @@ public class FollowerEntity {
     }
 
     public void startTask(AbstractTask task) {
-        stopTask(task.getType());
+        stopTask(task.getIdentifier());
 
-        tasks.put(task.getType(), task);
+        tasks.put(task.getIdentifier(), task);
     }
 
-    public void stopTask(FollowerTaskType taskType) {
-        if (taskType.equals(FollowerTaskType.ALL)) {
+    public void stopTask(String taskType) {
+        if (taskType.equals("all")) {
             tasks.forEach((aTaskType, task) -> {
                 task.cancel();
                 tasks.remove(taskType);
@@ -271,8 +271,8 @@ public class FollowerEntity {
         }
     }
 
-    public void stopTasks(FollowerTaskType... taskTypes) {
-        for (FollowerTaskType taskType : taskTypes) {
+    public void stopTasks(String... taskTypes) {
+        for (String taskType : taskTypes) {
             stopTask(taskType);
         }
     }

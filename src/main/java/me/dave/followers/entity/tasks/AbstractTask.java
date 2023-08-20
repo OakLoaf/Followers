@@ -14,7 +14,7 @@ public abstract class AbstractTask {
 
     public abstract void tick();
 
-    public abstract FollowerTaskType getType();
+    public abstract String getIdentifier();
 
     public abstract int getDelay();
 
@@ -26,7 +26,7 @@ public abstract class AbstractTask {
 
     public void cancel() {
         cancelled = true;
-        followerEntity.stopTask(getType());
+        followerEntity.stopTask(getIdentifier());
     }
 
     public boolean isCancelled() {

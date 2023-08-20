@@ -15,17 +15,17 @@ public class ParticleTask extends AbstractTask {
     }
 
     @Override
-    public FollowerTaskType getType() {
-        return FollowerTaskType.PARTICLE;
-    }
-
-    @Override
     public void tick() {
         if (armorStand == null || !armorStand.isValid()) {
             cancel();
             return;
         }
         armorStand.getWorld().spawnParticle(particle, armorStand.getLocation().add(0, -0.15, 0), 1, 0, 0, 0, 0);
+    }
+
+    @Override
+    public String getIdentifier() {
+        return "particle";
     }
 
     @Override

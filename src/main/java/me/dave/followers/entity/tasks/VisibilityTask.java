@@ -18,17 +18,17 @@ public class VisibilityTask extends AbstractTask {
     }
 
     @Override
-    public FollowerTaskType getType() {
-        return FollowerTaskType.VISIBILITY;
-    }
-
-    @Override
     public void tick() {
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
         boolean visible = !player.isInvisible() && !followerUser.isVanished();
 
         if (this.visible != visible) Bukkit.getPluginManager().callEvent(new PlayerVisiblityChangeEvent(player, this.visible, visible));
         this.visible = visible;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return "visibility";
     }
 
     @Override

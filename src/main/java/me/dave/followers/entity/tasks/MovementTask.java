@@ -23,11 +23,6 @@ public class MovementTask extends AbstractTask {
     }
 
     @Override
-    public FollowerTaskType getType() {
-        return FollowerTaskType.MOVEMENT;
-    }
-
-    @Override
     public void tick() {
         ArmorStand bodyArmorStand = followerEntity.getBodyArmorStand();
         // Cancels the task if the armour stand is dead
@@ -88,6 +83,11 @@ public class MovementTask extends AbstractTask {
             else newHeadPoseX.setX(290D);
         }
         bodyArmorStand.setHeadPose(newHeadPoseX);
+    }
+
+    @Override
+    public String getIdentifier() {
+        return "movement";
     }
 
     @Override
