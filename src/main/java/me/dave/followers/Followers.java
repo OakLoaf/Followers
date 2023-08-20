@@ -1,6 +1,5 @@
 package me.dave.followers;
 
-import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.hooks.PlaceholderAPIHook;
 import me.dave.followers.hooks.SimpleSitHook;
 import me.dave.followers.events.WorldEvents;
@@ -40,7 +39,7 @@ public final class Followers extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
-        ChatColorHandler.enableMiniMessage(true);
+
         setThreadIOName();
         configManager = new ConfigManager();
         dataManager = new DataManager();
