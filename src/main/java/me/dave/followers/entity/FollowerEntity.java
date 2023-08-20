@@ -2,7 +2,7 @@ package me.dave.followers.entity;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.Followers;
-import me.dave.followers.api.events.FollowerTickEvent;
+import me.dave.followers.api.events.FollowerEntityTickEvent;
 import me.dave.followers.entity.poses.FollowerPose;
 import me.dave.followers.entity.tasks.*;
 import org.bukkit.*;
@@ -237,7 +237,7 @@ public class FollowerEntity {
     public void tick() {
         ticksAlive++;
 
-        if (!Followers.getInstance().callEvent(new FollowerTickEvent(this))) {
+        if (!Followers.getInstance().callEvent(new FollowerEntityTickEvent(this))) {
             return;
         }
 
