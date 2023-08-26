@@ -64,12 +64,16 @@ public class YmlStorage implements Storage {
     @Override
     public boolean init() {
         File dataFile = new File(Followers.getInstance().getDataFolder(),"data.yml");
+
         try {
-            if (dataFile.createNewFile()) Followers.getInstance().getLogger().info("File Created: data.yml");
+            if (dataFile.createNewFile()) {
+                Followers.getInstance().getLogger().info("File Created: data.yml");
+            }
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
+
         this.dataFile = dataFile;
         config = YamlConfiguration.loadConfiguration(dataFile);
         return true;

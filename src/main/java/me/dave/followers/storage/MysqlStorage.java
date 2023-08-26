@@ -45,7 +45,10 @@ public class MysqlStorage implements Storage {
         }
         String[] queries = setup.split(";");
         for (String query : queries) {
-            if (query.isEmpty()) continue;
+            if (query.isEmpty()) {
+                continue;
+            }
+
             try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
                 stmt.execute();
             } catch (SQLException e) {

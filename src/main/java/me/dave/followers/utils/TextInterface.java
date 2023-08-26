@@ -36,11 +36,13 @@ public class TextInterface {
     }
 
     public void getInput(Player player, Consumer<String> response) {
-        if (title == null) throw new IllegalStateException("Title is null! You must set a title to use this class");
+        if (title == null) {
+            throw new IllegalStateException("Title is null! You must set a title to use this class");
+        }
+
         if (Followers.hasFloodgate() && FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
             formFactory.form(player, response, title, inputName, placeholder);
-        }
-        else {
+        } else {
             SignMenuFactory.Menu menu = signFactory.newMenu(Arrays.asList("", "^^^^^^^^^^^", title, ""));
             menu.reopenIfFail(true).response((ignored, output) -> {response.accept(output[0]); return true;});
             menu.open(player);

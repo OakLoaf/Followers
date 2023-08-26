@@ -36,16 +36,25 @@ public class MenuGui extends PagedGui {
 
         List<String> followerSet = new ArrayList<>();
         for (String followerName : Followers.followerManager.getFollowerNames()) {
-            if (!player.hasPermission("followers." + followerName.toLowerCase().replaceAll(" ", "_"))) continue;
+            if (!player.hasPermission("followers." + followerName.toLowerCase().replaceAll(" ", "_"))) {
+                continue;
+            }
+
             followerSet.add(followerName);
         }
 
         int setStartPos = (page - 1) * 36;
         for (int i = 0; i < 36; i++, setStartPos++) {
-            if (setStartPos >= followerSet.size() || followerSet.isEmpty()) break;
+            if (setStartPos >= followerSet.size() || followerSet.isEmpty()) {
+                break;
+            }
+
             String followerName = followerSet.get(setStartPos);
             ItemStack headItem = Followers.followerManager.getFollower(followerName).getHead();
-            if (headItem == null || headItem.getType() == Material.AIR) headItem = new ItemStack(Material.ARMOR_STAND);
+            if (headItem == null || headItem.getType() == Material.AIR) {
+                headItem = new ItemStack(Material.ARMOR_STAND);
+            }
+
             ItemMeta headItemMeta = headItem.getItemMeta();
             headItemMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiFollowerFormat().replaceAll("%follower%", followerName)));
             headItem.setItemMeta(headItemMeta);
@@ -56,8 +65,12 @@ public class MenuGui extends PagedGui {
         if (!followerSet.isEmpty()) {
             ItemStack followerToggle;
             FollowerEntity followerEntity = followerUser.getFollowerEntity();
-            if (followerUser.isFollowerEnabled() && followerEntity != null && followerEntity.isAlive()) followerToggle = Followers.configManager.getGuiItem("menu-gui", "follower-toggle.enabled", Material.LIME_WOOL);
-            else followerToggle = Followers.configManager.getGuiItem("menu-gui", "follower-toggle.disabled", Material.RED_WOOL);
+            if (followerUser.isFollowerEnabled() && followerEntity != null && followerEntity.isAlive()) {
+                followerToggle = Followers.configManager.getGuiItem("menu-gui", "follower-toggle.enabled", Material.LIME_WOOL);
+            } else {
+                followerToggle = Followers.configManager.getGuiItem("menu-gui", "follower-toggle.disabled", Material.RED_WOOL);
+            }
+
             inventory.setItem(49, followerToggle);
         } else {
             ItemStack noFollowers = Followers.configManager.getGuiItem("menu-gui", "no-followers", Material.BARRIER);
@@ -68,14 +81,19 @@ public class MenuGui extends PagedGui {
             ItemStack nextPage = Followers.configManager.getGuiItem("menu-gui", "next-page", Material.ARROW);
             inventory.setItem(50, nextPage);
         }
+
         if (page > 1) {
             ItemStack previousPage = Followers.configManager.getGuiItem("menu-gui", "previous-page", Material.ARROW);
             inventory.setItem(48, previousPage);
         }
+
         if (player.hasPermission("follower.name")) {
             ItemStack followerName;
-            if (followerUser.isDisplayNameEnabled()) followerName = Followers.configManager.getGuiItem("menu-gui", "nickname.shown", Material.NAME_TAG);
-            else followerName = Followers.configManager.getGuiItem("menu-gui", "nickname.hidden", Material.NAME_TAG);
+            if (followerUser.isDisplayNameEnabled()) {
+                followerName = Followers.configManager.getGuiItem("menu-gui", "nickname.shown", Material.NAME_TAG);
+            } else {
+                followerName = Followers.configManager.getGuiItem("menu-gui", "nickname.hidden", Material.NAME_TAG);
+            }
 
             ItemMeta itemMeta = followerName.getItemMeta();
             if (itemMeta != null) {
@@ -87,8 +105,12 @@ public class MenuGui extends PagedGui {
         }
         if (player.hasPermission("follower.random")) {
             ItemStack followerName;
-            if (followerUser.isRandomType()) followerName = Followers.configManager.getGuiItem("menu-gui", "random.enabled", Material.CONDUIT);
-            else followerName = Followers.configManager.getGuiItem("menu-gui", "random.disabled", Material.CONDUIT);
+            if (followerUser.isRandomType()) {
+                followerName = Followers.configManager.getGuiItem("menu-gui", "random.enabled", Material.CONDUIT);
+            } else {
+                followerName = Followers.configManager.getGuiItem("menu-gui", "random.disabled", Material.CONDUIT);
+            }
+
             inventory.setItem(46, followerName);
         }
     }
@@ -99,46 +121,43 @@ public class MenuGui extends PagedGui {
         event.setCancelled(true);
 
         ItemStack clickedItem = event.getCurrentItem();
-        if (clickedItem == null) return;
+        if (clickedItem == null) {
+            return;
+        }
 
         Player player = (Player) event.getWhoClicked();
 
-        if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "no-followers", Material.BARRIER))) return;
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "follower-toggle.enabled", Material.LIME_WOOL))) {
+        if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "no-followers", Material.BARRIER))) {
+            return;
+        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "follower-toggle.enabled", Material.LIME_WOOL))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.disableFollowerEntity();
             recalculateContents();
             return;
-        }
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "follower-toggle.disabled", Material.RED_WOOL))) {
+        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "follower-toggle.disabled", Material.RED_WOOL))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.respawnFollowerEntity();
             ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
             recalculateContents();
             return;
-        }
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "next-page", Material.ARROW))) {
+        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "next-page", Material.ARROW))) {
             nextPage();
             return;
-        }
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "previous-page", Material.ARROW))) {
+        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "previous-page", Material.ARROW))) {
             previousPage();
             return;
-        }
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "random.enabled", Material.CONDUIT))) {
+        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "random.enabled", Material.CONDUIT))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.setRandom(false);
             recalculateContents();
             return;
-        }
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "random.disabled", Material.CONDUIT))) {
+        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "random.disabled", Material.CONDUIT))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.setRandom(true);
             followerUser.randomizeFollowerType();
             recalculateContents();
             return;
-        }
-        else if (event.getRawSlot() == 45 || (clickedItem.getType() == Followers.configManager.getGuiItem("menu-gui", "nickname.shown", Material.NAME_TAG).getType() || (clickedItem.getType() == Followers.configManager.getGuiItem("menu-gui", "nickname.hidden", Material.NAME_TAG).getType())) && clickedItem.getItemMeta().getDisplayName().startsWith(ChatColorHandler.translateAlternateColorCodes("&eFollower Name:"))) {
+        } else if (event.getRawSlot() == 45 || (clickedItem.getType() == Followers.configManager.getGuiItem("menu-gui", "nickname.shown", Material.NAME_TAG).getType() || (clickedItem.getType() == Followers.configManager.getGuiItem("menu-gui", "nickname.hidden", Material.NAME_TAG).getType())) && clickedItem.getItemMeta().getDisplayName().startsWith(ChatColorHandler.translateAlternateColorCodes("&eFollower Name:"))) {
             FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
@@ -163,15 +182,20 @@ public class MenuGui extends PagedGui {
             return;
         }
 
-        if (event.getRawSlot() < 9 || event.getRawSlot() > 44) return;
+        if (event.getRawSlot() < 9 || event.getRawSlot() > 44) {
+            return;
+        }
 
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
-        if (followerUser.isRandomType()) followerUser.setRandom(false);
+        if (followerUser.isRandomType()) {
+            followerUser.setRandom(false);
+        }
 
         FollowerEntity followerEntity = followerUser.getFollowerEntity();
         String followerName = ChatColorHandler.stripColor(clickedItem.getItemMeta().getDisplayName());
-        if (followerEntity != null) followerEntity.setType(followerName);
-        else {
+        if (followerEntity != null) {
+            followerEntity.setType(followerName);
+        } else {
             followerUser.setFollowerType(followerName);
             followerUser.spawnFollowerEntity();
         }

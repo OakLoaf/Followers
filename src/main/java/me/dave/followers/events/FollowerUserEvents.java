@@ -1,7 +1,7 @@
 package me.dave.followers.events;
 
 import me.dave.followers.entity.poses.FollowerPose;
-import me.dave.followers.events.custom.PlayerVisiblityChangeEvent;
+import me.dave.followers.api.events.PlayerVisiblityChangeEvent;
 import me.dave.followers.item.FollowerCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -50,7 +50,10 @@ public class FollowerUserEvents implements Listener {
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
         FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
-        if (followerEntity == null) return;
+        if (followerEntity == null) {
+            return;
+        }
+
         followerEntity.setPose(FollowerPose.DEFAULT);
     }
 
@@ -70,7 +73,9 @@ public class FollowerUserEvents implements Listener {
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
         if (followerUser.isHidden()) {
             boolean visible = !player.isInvisible() && !followerUser.isVanished();
-            if (visible) followerUser.setHidden(false);
+            if (visible) {
+                followerUser.setHidden(false);
+            }
         }
     }
 
@@ -85,22 +90,32 @@ public class FollowerUserEvents implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
         FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
-        if (followerEntity != null) followerEntity.kill();
+        if (followerEntity != null) {
+            followerEntity.kill();
+        }
     }
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
-        if (followerUser.isFollowerEnabled()) Bukkit.getScheduler().runTaskLater(Followers.getInstance(), followerUser::respawnFollowerEntity, 1);
-        if (followerUser.isRandomType()) followerUser.randomizeFollowerType();
+        if (followerUser.isFollowerEnabled()) {
+            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), followerUser::respawnFollowerEntity, 1);
+        }
+
+        if (followerUser.isRandomType()) {
+            followerUser.randomizeFollowerType();
+        }
     }
 
     @EventHandler
     public void onTotem(EntityResurrectEvent event) {
         EntityEquipment equipment = event.getEntity().getEquipment();
         EquipmentSlot hand = event.getHand();
-        if (equipment == null || hand == null) return;
+        if (equipment == null || hand == null) {
+            return;
+        }
+
         if (equipment.getItem(hand).isSimilar(FollowerCreator.getOrLoadCreatorItem())) {
             event.setCancelled(true);
         }

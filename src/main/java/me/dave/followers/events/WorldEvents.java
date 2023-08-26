@@ -20,9 +20,17 @@ public class WorldEvents implements Listener {
     public void onEntityLoad(CreatureSpawnEvent event) {
         Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> {
             Entity entity = event.getEntity();
-            if (entity.getType() != EntityType.ARMOR_STAND) return;
-            if (Followers.dataManager.getActiveArmorStandsSet().contains(entity.getUniqueId())) return;
-            if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
+            if (entity.getType() != EntityType.ARMOR_STAND) {
+                return;
+            }
+
+            if (Followers.dataManager.getActiveArmorStandsSet().contains(entity.getUniqueId())) {
+                return;
+            }
+
+            if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) {
+                entity.remove();
+            }
         }, 1);
     }
 
@@ -40,9 +48,17 @@ public class WorldEvents implements Listener {
                 if (event.getChunk().isEntitiesLoaded()) {
                     Entity[] entities = event.getChunk().getEntities();
                     for (Entity entity : entities) {
-                        if (entity.getType() != EntityType.ARMOR_STAND) continue;
-                        if (Followers.dataManager.getActiveArmorStandsSet().contains(entity.getUniqueId())) continue;
-                        if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
+                        if (entity.getType() != EntityType.ARMOR_STAND) {
+                            continue;
+                        }
+
+                        if (Followers.dataManager.getActiveArmorStandsSet().contains(entity.getUniqueId())) {
+                            continue;
+                        }
+
+                        if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) {
+                            entity.remove();
+                        }
                     }
                     cancel();
                 }
@@ -55,9 +71,14 @@ public class WorldEvents implements Listener {
         if (event.getChunk().isEntitiesLoaded()) {
             Entity[] entities = event.getChunk().getEntities();
             for (Entity entity : entities) {
-                if (entity.getType() != EntityType.ARMOR_STAND) continue;
+                if (entity.getType() != EntityType.ARMOR_STAND) {
+                    continue;
+                }
+
                 Followers.dataManager.getActiveArmorStandsSet().remove(entity.getUniqueId());
-                if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) entity.remove();
+                if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) {
+                    entity.remove();
+                }
             }
         }
     }

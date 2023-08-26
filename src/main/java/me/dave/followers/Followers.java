@@ -90,8 +90,9 @@ public final class Followers extends JavaPlugin {
                 for (World world : Bukkit.getWorlds()) {
                     for (Chunk chunk : world.getLoadedChunks()) {
                         for (Entity entity : chunk.getEntities()) {
-                            if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING))
+                            if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) {
                                 entity.remove();
+                            }
                         }
                     }
                 }

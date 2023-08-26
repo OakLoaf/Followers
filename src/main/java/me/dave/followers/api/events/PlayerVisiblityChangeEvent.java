@@ -1,4 +1,4 @@
-package me.dave.followers.events.custom;
+package me.dave.followers.api.events;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;

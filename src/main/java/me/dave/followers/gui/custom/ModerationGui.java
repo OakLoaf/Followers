@@ -28,27 +28,39 @@ public class ModerationGui extends PagedGui {
 
         ItemStack borderItem = getBorderItem();
         for (int i = 0; i < 18; i++) {
-            if (i <= 8) inventory.setItem(i, borderItem);
-            else inventory.setItem(i + 36, borderItem);
+            if (i <= 8) {
+                inventory.setItem(i, borderItem);
+            } else {
+                inventory.setItem(i + 36, borderItem);
+            }
         }
 
         List<FollowerEntity> namedFollowerEntities = getActiveFollowers();
 
         int setStartPos = (page - 1) * 36;
         for (int i = 0; i < 36; i++, setStartPos++) {
-            if (setStartPos >= namedFollowerEntities.size() || namedFollowerEntities.isEmpty()) break;
+            if (setStartPos >= namedFollowerEntities.size() || namedFollowerEntities.isEmpty()) {
+                break;
+            }
 
             FollowerEntity followerEntity = namedFollowerEntities.get(setStartPos);
             ItemStack followerItem = followerEntity.getType().getHead();
-            if (followerItem == null || followerItem.getType() == Material.AIR) followerItem = new ItemStack(Material.ARMOR_STAND);
+            if (followerItem == null || followerItem.getType() == Material.AIR) {
+                followerItem = new ItemStack(Material.ARMOR_STAND);
+            }
+
             ItemMeta followerMeta = followerItem.getItemMeta();
 
             String displayName = followerEntity.getDisplayName();
-            if (displayName.equals("Unnamed")) displayName = "&oUnnamed";
+            if (displayName.equals("Unnamed")) {
+                displayName = "&oUnnamed";
+            }
             followerMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&e" + displayName + " &7- " + followerEntity.getPlayer().getName()));
 
             List<String> lore = new ArrayList<>();
-            if (!followerEntity.isDisplayNameVisible()) lore.add("&7&o(Follower Name Hidden)");
+            if (!followerEntity.isDisplayNameVisible()) {
+                lore.add("&7&o(Follower Name Hidden)");
+            }
             Location followerLocation = followerEntity.getLocation();
             lore.add("&7&o" + followerLocation.getBlockX() + ", " + followerLocation.getBlockY() + ", " + followerLocation.getBlockZ());
             followerMeta.setLore(ChatColorHandler.translateAlternateColorCodes(lore));
@@ -69,7 +81,9 @@ public class ModerationGui extends PagedGui {
         Bukkit.getOnlinePlayers().forEach(player -> {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             FollowerEntity followerEntity = followerUser.getFollowerEntity();
-            if (followerEntity == null || !followerEntity.isAlive()) return;
+            if (followerEntity == null || !followerEntity.isAlive()) {
+                return;
+            }
 
             activeFollowerList.add(followerEntity);
         });

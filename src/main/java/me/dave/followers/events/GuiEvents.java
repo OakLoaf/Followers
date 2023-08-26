@@ -17,7 +17,9 @@ public class GuiEvents implements Listener {
         Player player = (Player) event.getPlayer();
 
         AbstractGui gui = InventoryHandler.getGui(player.getUniqueId());
-        if (gui == null || !event.getInventory().equals(gui.getInventory())) return;
+        if (gui == null || !event.getInventory().equals(gui.getInventory())) {
+            return;
+        }
 
         gui.onOpen(event);
     }
@@ -27,7 +29,9 @@ public class GuiEvents implements Listener {
         Player player = (Player) event.getPlayer();
 
         AbstractGui gui = InventoryHandler.getGui(player.getUniqueId());
-        if (gui == null || !event.getInventory().equals(gui.getInventory())) return;
+        if (gui == null || !event.getInventory().equals(gui.getInventory())) {
+            return;
+        }
 
         gui.onClose(event);
     }
@@ -37,10 +41,14 @@ public class GuiEvents implements Listener {
         Player player = (Player) event.getWhoClicked();
 
         AbstractGui gui = InventoryHandler.getGui(player.getUniqueId());
-        if (gui == null) return;
+        if (gui == null) {
+            return;
+        }
 
         Inventory clickedInventory = event.getClickedInventory();
-        if (clickedInventory == null || !player.getOpenInventory().getTopInventory().equals(gui.getInventory())) return;
+        if (clickedInventory == null || !player.getOpenInventory().getTopInventory().equals(gui.getInventory())) {
+            return;
+        }
 
         gui.onClick(event);
     }
@@ -51,7 +59,9 @@ public class GuiEvents implements Listener {
         UUID playerUUID = player.getUniqueId();
 
         AbstractGui gui = InventoryHandler.getGui(playerUUID);
-        if (gui == null || !player.getOpenInventory().getTopInventory().equals(gui.getInventory())) return;
+        if (gui == null || !player.getOpenInventory().getTopInventory().equals(gui.getInventory())) {
+            return;
+        }
 
         gui.onDrag(event);
     }

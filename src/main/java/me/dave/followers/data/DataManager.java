@@ -57,7 +57,9 @@ public class DataManager {
     public @NotNull FollowerUser getFollowerUser(@NotNull Player player) {
         UUID uuid = player.getUniqueId();
         FollowerUser followerUser = uuidToFollowerUser.get(uuid);
-        if (followerUser == null) followerUser = new FollowerUser(uuid, player.getName(), "none", "Unnamed", false, false, false);
+        if (followerUser == null) {
+            followerUser = new FollowerUser(uuid, player.getName(), "none", "Unnamed", false, false, false);
+        }
         return followerUser;
     }
 
@@ -82,7 +84,9 @@ public class DataManager {
             }
 
             FollowerEntity followerEntity = getFollowerUser(player).getFollowerEntity();
-            if (followerEntity != null) followerEntity.reloadInventory();
+            if (followerEntity != null) {
+                followerEntity.reloadInventory();
+            }
         });
     }
 }

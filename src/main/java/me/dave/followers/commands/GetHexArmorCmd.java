@@ -74,8 +74,11 @@ public class GetHexArmorCmd implements CommandExecutor, TabCompleter {
                 wordCompletionSuccess = true;
             }
         }
-        if (wordCompletionSuccess) return wordCompletion;
-        return tabComplete;
+        if (wordCompletionSuccess) {
+            return wordCompletion;
+        } else {
+            return tabComplete;
+        }
     }
 
     private Color getRGBFromHex(String hexColour) {

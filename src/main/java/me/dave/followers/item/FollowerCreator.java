@@ -30,14 +30,20 @@ public class FollowerCreator implements Listener {
     public void onPlayerInteract(PlayerInteractAtEntityEvent event) {
         Player player = event.getPlayer();
         ItemStack heldItem = player.getInventory().getItemInMainHand();
-        if (!(event.getRightClicked() instanceof ArmorStand armorStand)) return;
-        if (!heldItem.isSimilar(creatorItem)) return;
+        if (!(event.getRightClicked() instanceof ArmorStand armorStand) || !heldItem.isSimilar(creatorItem)) {
+            return;
+        }
+
         event.setCancelled(true);
         if (!player.hasPermission("follower.admin.create")) {
             ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("no-permissions"));
             return;
         }
-        if (Followers.dataManager.getActiveArmorStandsSet().contains(armorStand.getUniqueId())) return;
+
+        if (Followers.dataManager.getActiveArmorStandsSet().contains(armorStand.getUniqueId())) {
+            return;
+        }
+
         String armorStandName = armorStand.getCustomName();
         FollowerHandler.Builder followerBuilder = new FollowerHandler.Builder();
         if (armorStandName != null) {
@@ -62,7 +68,10 @@ public class FollowerCreator implements Listener {
         Player player = event.getPlayer();
         if (player.isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
             ItemStack heldItem = player.getInventory().getItemInMainHand();
-            if (!heldItem.isSimilar(creatorItem)) return;
+            if (!heldItem.isSimilar(creatorItem)) {
+                return;
+            }
+
             event.setCancelled(true);
 
             if (!player.hasPermission("follower.admin.create")) {
@@ -78,12 +87,17 @@ public class FollowerCreator implements Listener {
     @EventHandler
     public void onPlayerManipulateArmorStand(PlayerArmorStandManipulateEvent event) {
         ItemStack item = event.getPlayerItem();
-        if (!item.isSimilar(creatorItem)) return;
+        if (!item.isSimilar(creatorItem)) {
+            return;
+        }
+
         event.setCancelled(true);
     }
 
     public static ItemStack getOrLoadCreatorItem() {
-        if (creatorItem != null) return creatorItem;
+        if (creatorItem != null) {
+            return creatorItem;
+        }
 
         ItemStack item = new ItemStack(Material.TOTEM_OF_UNDYING);
         ItemMeta creatorMeta = item.getItemMeta();

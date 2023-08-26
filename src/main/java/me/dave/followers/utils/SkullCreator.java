@@ -86,10 +86,11 @@ public class SkullCreator {
         try {
             id = new UUID(b64.substring(b64.length() - 20).hashCode(), b64.substring(b64.length() - 10).hashCode());
         } catch (StringIndexOutOfBoundsException ex) {
-            if (b64.length() == 0)
+            if (b64.length() == 0) {
                 Followers.getInstance().getLogger().warning("Missing base64 texture found - check your config");
-            else
+            } else {
                 Followers.getInstance().getLogger().warning("Invalid base64 texture (" + b64 + ") found - check your config");
+            }
         }
         GameProfile profile = new GameProfile(id, "Player");
         profile.getProperties().put("textures", new Property("textures", b64));

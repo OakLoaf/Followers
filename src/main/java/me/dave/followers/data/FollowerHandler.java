@@ -111,7 +111,10 @@ public class FollowerHandler {
         }
 
         public Builder setName(String name) throws ObjectNameLockedException {
-            if (nameLocked) throw new ObjectNameLockedException("Object is name locked, name cannot be changed");
+            if (nameLocked) {
+                throw new ObjectNameLockedException("Object is name locked, name cannot be changed");
+            }
+
             this.name = name;
             return this;
         }
@@ -130,7 +133,9 @@ public class FollowerHandler {
         }
 
         public Builder setSlot(EquipmentSlot slot, @Nullable ItemStack item) {
-            if (item == null) item = new ItemStack(Material.AIR);
+            if (item == null) {
+                item = new ItemStack(Material.AIR);
+            }
             item = item.clone();
             item.setAmount(1);
 

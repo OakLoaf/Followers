@@ -42,11 +42,28 @@ public class PoseData {
     }
 
     public void pose(ArmorStand armorStand) {
-        if (headPose != null) armorStand.setHeadPose(headPose);
-        if (bodyPose != null) armorStand.setBodyPose(bodyPose);
-        if (leftArmPose != null) armorStand.setLeftArmPose(leftArmPose);
-        if (rightArmPose != null) armorStand.setRightArmPose(rightArmPose);
-        if (leftLegPose != null) armorStand.setLeftLegPose(leftLegPose);
-        if (rightLegPose != null) armorStand.setRightLegPose(rightLegPose);
+        if (headPose != null) {
+            armorStand.setHeadPose(headPose);
+        }
+
+        if (bodyPose != null) {
+            armorStand.setBodyPose(bodyPose);
+        }
+
+        if (leftArmPose != null) {
+            armorStand.setLeftArmPose(leftArmPose);
+        }
+
+        if (rightArmPose != null) {
+            armorStand.setRightArmPose(rightArmPose);
+        }
+
+        if (leftLegPose != null) {
+            armorStand.setLeftLegPose(leftLegPose);
+        }
+
+        if (rightLegPose != null) {
+            armorStand.setRightLegPose(rightLegPose);
+        }
     }
 }

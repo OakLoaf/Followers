@@ -28,7 +28,9 @@ public class EssentialsHook implements Listener {
         Player player = iUser.getBase();
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
         FollowerEntity followerEntity = followerUser.getFollowerEntity();
-        if (followerEntity == null) return;
+        if (followerEntity == null) {
+            return;
+        }
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -37,7 +39,9 @@ public class EssentialsHook implements Listener {
                     followerEntity.setPose(FollowerPose.SITTING);
                 } else {
                     followerUser.setAfk(false);
-                    if (!followerUser.isPosing()) followerUser.setPose(FollowerPose.DEFAULT);
+                    if (!followerUser.isPosing()) {
+                        followerUser.setPose(FollowerPose.DEFAULT);
+                    }
                 }
             }
         }.runTaskLater(Followers.getInstance(), 1);
@@ -45,7 +49,10 @@ public class EssentialsHook implements Listener {
 
     public boolean isVanished(UUID uuid) {
         IUser user = essentials.getUser(uuid);
-        if (user == null) return false;
-        return user.isVanished();
+        if (user == null) {
+            return false;
+        } else {
+            return user.isVanished();
+        }
     }
 }

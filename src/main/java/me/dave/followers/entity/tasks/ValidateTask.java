@@ -22,7 +22,10 @@ public class ValidateTask extends AbstractTask {
             cancel();
             return;
         }
-        if (!player.isOnline()) Bukkit.getScheduler().runTaskLater(Followers.getInstance(), followerEntity::kill, 5);
+
+        if (!player.isOnline()) {
+            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), followerEntity::kill, 5);
+        }
     }
 
     @Override

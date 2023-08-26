@@ -32,7 +32,10 @@ public abstract class AbstractGui {
     }
 
     protected void setItem(int slot, ItemStack item) {
-        if (item == null) item = new ItemStack(Material.AIR);
+        if (item == null) {
+            item = new ItemStack(Material.AIR);
+        }
+
         inventory.setItem(slot, item);
     }
 
@@ -82,7 +85,9 @@ public abstract class AbstractGui {
 
     public void onClick(InventoryClickEvent event) {
         Inventory clickedInventory = event.getClickedInventory();
-        if (clickedInventory == null) return;
+        if (clickedInventory == null) {
+            return;
+        }
 
         int slot = event.getRawSlot();
         switch (event.getAction()) {
@@ -110,7 +115,9 @@ public abstract class AbstractGui {
                         int backupDestinationSlot = -1;
                         boolean complete = false;
                         for (int unlockedSlot : unlockedSlots) {
-                            if (complete) break;
+                            if (complete) {
+                                break;
+                            }
 
                             ItemStack slotItem = inventory.getItem(unlockedSlot);
                             if ((slotItem == null || slotItem.getType() == Material.AIR) && backupDestinationSlot == -1) {
@@ -125,8 +132,7 @@ public abstract class AbstractGui {
                                     slotItem.setAmount(slotItem.getAmount() + remainingToDistribute);
                                     clickedItem.setType(Material.AIR);
                                     complete = true;
-                                }
-                                else if (spaceInStack > 0) {
+                                } else if (spaceInStack > 0) {
                                     remainingToDistribute -= spaceInStack;
                                     slotItem.setAmount(slotItem.getMaxStackSize());
                                     clickedItem.setAmount(clickedItem.getAmount() - spaceInStack);

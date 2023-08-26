@@ -53,23 +53,34 @@ public class BuilderGui extends AbstractGui {
         List<ItemStack> buttons = new ArrayList<>();
 
         ItemStack nameButtonItem;
-        if (!followerBuilder.isNameLocked()) nameButtonItem = Followers.configManager.getGuiItem("builder-gui", "name-button.default", Material.OAK_SIGN);
-        else nameButtonItem = Followers.configManager.getGuiItem("builder-gui", "name-button.locked", Material.OAK_SIGN);
+        if (!followerBuilder.isNameLocked()) {
+            nameButtonItem = Followers.configManager.getGuiItem("builder-gui", "name-button.default", Material.OAK_SIGN);
+        } else {
+            nameButtonItem = Followers.configManager.getGuiItem("builder-gui", "name-button.locked", Material.OAK_SIGN);
+        }
 
         ItemMeta itemMeta = nameButtonItem.getItemMeta();
-        if (followerBuilder.getName() != null) itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll("%name%", followerBuilder.getName()));
-        else itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll("%name%", ChatColorHandler.translateAlternateColorCodes("&c&oUnnamed")));
+        if (followerBuilder.getName() != null) {
+            itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll("%name%", followerBuilder.getName()));
+        } else {
+            itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll("%name%", ChatColorHandler.translateAlternateColorCodes("&c&oUnnamed")));
+        }
         nameButtonItem.setItemMeta(itemMeta);
         buttons.add(nameButtonItem);
 
 
-        if (followerBuilder.isVisible()) buttons.add(Followers.configManager.getGuiItem("builder-gui", "visibility-button.visible", Material.WHITE_STAINED_GLASS));
-        else buttons.add(Followers.configManager.getGuiItem("builder-gui", "visibility-button.invisible", Material.GLASS));
+        if (followerBuilder.isVisible()) {
+            buttons.add(Followers.configManager.getGuiItem("builder-gui", "visibility-button.visible", Material.WHITE_STAINED_GLASS));
+        } else {
+            buttons.add(Followers.configManager.getGuiItem("builder-gui", "visibility-button.invisible", Material.GLASS));
+        }
 
         // Button Section
         List<Integer> buttonSlots = new LinkedList<>(Arrays.asList(14, 15, 16, 23, 24, 25));
         buttons.forEach(button -> {
-            if (buttonSlots.isEmpty()) return;
+            if (buttonSlots.isEmpty()) {
+                return;
+            }
             inventory.setItem(buttonSlots.remove(0), button);
         });
 
@@ -88,11 +99,15 @@ public class BuilderGui extends AbstractGui {
 
         super.onClick(event);
 
-        if (!event.getClickedInventory().equals(inventory)) return;
+        if (!event.getClickedInventory().equals(inventory)) {
+            return;
+        }
 
         ItemStack clickedItem = event.getCurrentItem();
         ItemStack cursorItem = event.getCursor();
-        if (clickedItem == null && cursorItem == null) return;
+        if (clickedItem == null && cursorItem == null) {
+            return;
+        }
 
         int slot = event.getRawSlot();
         switch(event.getAction()) {
@@ -120,8 +135,12 @@ public class BuilderGui extends AbstractGui {
 
         ItemStack nameButtonItem = Followers.configManager.getGuiItem("builder-gui", "name-button.default", Material.OAK_SIGN);
         ItemMeta itemMeta = nameButtonItem.getItemMeta();
-        if (followerBuilder.getName() != null) itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll("%name%", followerBuilder.getName()));
-        else itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll("%name%", ChatColorHandler.translateAlternateColorCodes("&c&oUnnamed")));
+        if (followerBuilder.getName() != null) {
+            itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll("%name%", followerBuilder.getName()));
+        } else {
+            itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll("%name%", ChatColorHandler.translateAlternateColorCodes("&c&oUnnamed")));
+        }
+
         nameButtonItem.setItemMeta(itemMeta);
 
         if (clickedItem == null) {
@@ -144,21 +163,18 @@ public class BuilderGui extends AbstractGui {
                     try {
                         followerBuilder.setName(finalOutput);
                     } catch (ObjectNameLockedException ignored) {}
+
                     openInventory();
                 });
             });
-        }
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "visibility-button.visible", Material.WHITE_STAINED_GLASS))) {
+        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "visibility-button.visible", Material.WHITE_STAINED_GLASS))) {
             followerBuilder.setVisible(false);
-        }
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "visibility-button.invisible", Material.GLASS))) {
+        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "visibility-button.invisible", Material.GLASS))) {
             followerBuilder.setVisible(true);
-        }
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "complete-button", Material.LIME_WOOL))) {
+        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "complete-button", Material.LIME_WOOL))) {
             complete();
             return;
-        }
-        else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "cancel-button", Material.RED_WOOL))) {
+        } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "cancel-button", Material.RED_WOOL))) {
             player.closeInventory();
             InventoryHandler.removeInventory(player.getUniqueId());
             return;
@@ -185,8 +201,11 @@ public class BuilderGui extends AbstractGui {
 
         player.closeInventory();
 
-        if (mode.equals(Mode.CREATE)) Followers.followerManager.createFollower(player, followerBuilder.build());
-        else if (mode.equals(Mode.EDIT)) Followers.followerManager.editFollower(player, followerBuilder.build());
+        if (mode.equals(Mode.CREATE)) {
+            Followers.followerManager.createFollower(player, followerBuilder.build());
+        } else if (mode.equals(Mode.EDIT)) {
+            Followers.followerManager.editFollower(player, followerBuilder.build());
+        }
     }
 
     private ItemStack getBorderItem() {

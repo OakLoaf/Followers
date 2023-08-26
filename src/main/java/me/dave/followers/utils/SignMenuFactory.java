@@ -51,6 +51,7 @@ public final class SignMenuFactory {
                 if (!success && menu.reopenIfFail && !menu.forceClose) {
                     Bukkit.getScheduler().runTaskLater(plugin, () -> menu.open(player), 2L);
                 }
+
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if (player.isOnline()) {
                         player.sendBlockChange(menu.location, menu.location.getBlock().getBlockData());

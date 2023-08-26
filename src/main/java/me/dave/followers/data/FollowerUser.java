@@ -88,17 +88,23 @@ public class FollowerUser {
     public List<String> getOwnedFollowerNames() {
         List<String> followers = new ArrayList<>();
         Player player = getPlayer();
-        if (player == null) return followers;
+        if (player == null) {
+            return followers;
+        }
 
         for (String followerName : Followers.followerManager.getFollowerNames()) {
-            if (player.hasPermission("followers." + followerName.toLowerCase().replaceAll(" ", "_"))) followers.add(followerName);
+            if (player.hasPermission("followers." + followerName.toLowerCase().replaceAll(" ", "_"))) {
+                followers.add(followerName);
+            }
         }
         return followers;
     }
 
     public void randomizeFollowerType() {
         List<String> followerTypes = getOwnedFollowerNames();
-        if (followerEntity == null) return;
+        if (followerEntity == null) {
+            return;
+        }
         followerEntity.setType(followerTypes.get(random.nextInt(followerTypes.size())));
     }
 
@@ -131,11 +137,16 @@ public class FollowerUser {
 
     public boolean isVanished() {
         Player player = getPlayer();
-        if (player == null) return false;
+        if (player == null) {
+            return false;
+        }
 
         for (MetadataValue meta : player.getMetadata("vanished")) {
-            if (meta.asBoolean()) return true;
+            if (meta.asBoolean()) {
+                return true;
+            }
         }
+
         return false;
     }
 
@@ -146,9 +157,15 @@ public class FollowerUser {
     public void setPose(FollowerPose pose) {
         this.posing = (pose != null && !pose.equals(FollowerPose.DEFAULT));
 
-        if (followerEntity == null) return;
-        if (posing) followerEntity.setPose(pose);
-        else if (!afk) followerEntity.setPose(FollowerPose.DEFAULT);
+        if (followerEntity == null) {
+            return;
+        }
+
+        if (posing) {
+            followerEntity.setPose(pose);
+        } else if (!afk) {
+            followerEntity.setPose(FollowerPose.DEFAULT);
+        }
     }
 
     public boolean isHidden() {
@@ -156,12 +173,15 @@ public class FollowerUser {
     }
 
     public void setHidden(boolean hide) {
-        if (this.hidden == hide) return;
+        if (this.hidden == hide) {
+            return;
+        }
 
         if (hide) {
-            if (followerEntity != null) followerEntity.kill();
-        }
-        else if (enabled) {
+            if (followerEntity != null) {
+                followerEntity.kill();
+            }
+        } else if (enabled) {
             spawnFollowerEntity();
         }
 
@@ -174,16 +194,22 @@ public class FollowerUser {
     }
 
     public void refreshFollowerEntity() {
-        if (followerEntity != null) followerEntity.reloadInventory();
+        if (followerEntity != null) {
+            followerEntity.reloadInventory();
+        }
     }
 
     public void spawnFollowerEntity() {
         removeFollowerEntity();
         Player player = getPlayer();
-        if (player == null || player.isDead()) return;
+        if (player == null || player.isDead()) {
+            return;
+        }
 
         followerEntity = new FollowerEntity(player, followerType);
-        if (randomType) randomizeFollowerType();
+        if (randomType) {
+            randomizeFollowerType();
+        }
     }
 
     public void respawnFollowerEntity() {
@@ -191,7 +217,10 @@ public class FollowerUser {
     }
 
     public void removeFollowerEntity() {
-        if (followerEntity == null || !followerEntity.isAlive()) return;
+        if (followerEntity == null || !followerEntity.isAlive()) {
+            return;
+        }
+        
         followerEntity.kill();
         followerEntity = null;
     }

@@ -8,7 +8,9 @@ import org.bukkit.entity.Player;
 public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     public String onPlaceholderRequest(Player player, String params) {
-        if (player == null) return "null";
+        if (player == null) {
+            return "null";
+        }
 
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
         switch (params) {

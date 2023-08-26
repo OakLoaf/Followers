@@ -58,13 +58,21 @@ public class MovementTask extends AbstractTask {
         // Calculates new location and angle of follower based off of the distance to the player
         if (difference.clone().setY(0).lengthSquared() < 6.25) {
             Vector differenceY = difference.clone().setX(0).setZ(0);
-            if (Followers.configManager.areHitboxesEnabled()) differenceY.setY(differenceY.getY() - 0.25);
-            else differenceY.setY(differenceY.getY() - 0.7);
+
+            if (Followers.configManager.areHitboxesEnabled()) {
+                differenceY.setY(differenceY.getY() - 0.25);
+            } else {
+                differenceY.setY(differenceY.getY() - 0.7);
+            }
+
             followerLoc.add(differenceY.multiply(speed));
         } else {
             Vector normalizedDifference = difference.clone().normalize();
             double distance = difference.length() - 5;
-            if (distance < 1) distance = 1;
+            if (distance < 1) {
+                distance = 1;
+            }
+
             followerLoc.add(normalizedDifference.multiply(speed * distance));
         }
         followerLoc.setDirection(difference);
@@ -73,14 +81,19 @@ public class MovementTask extends AbstractTask {
         followerEntity.teleport(followerLoc.add(0, getArmorStandYOffset(bodyArmorStand), 0));
 
         // Limits following code to run once every 2 ticks
-        if (Followers.getCurrentTick() % 2 != 0) return;
+        if (Followers.getCurrentTick() % 2 != 0) {
+            return;
+        }
 
         // Sets follower head to be looking at the player
         double headPoseX = eulerToDegree(bodyArmorStand.getHeadPose().getX());
         EulerAngle newHeadPoseX = new EulerAngle(getPitch(player, bodyArmorStand), 0, 0);
         if (headPoseX > 60 && headPoseX < 290) {
-            if (headPoseX <= 175) newHeadPoseX.setX(60D);
-            else newHeadPoseX.setX(290D);
+            if (headPoseX <= 175) {
+                newHeadPoseX.setX(60D);
+            } else {
+                newHeadPoseX.setX(290D);
+            }
         }
         bodyArmorStand.setHeadPose(newHeadPoseX);
     }
@@ -103,8 +116,11 @@ public class MovementTask extends AbstractTask {
     private static CompletableFuture<Boolean> delayedTeleportTo(Player player, FollowerEntity followerEntity, int delay) {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> {
-            if (followerEntity.isAlive()) completableFuture.complete(followerEntity.teleport(player.getLocation()));
-            else completableFuture.complete(false);
+            if (followerEntity.isAlive()) {
+                completableFuture.complete(followerEntity.teleport(player.getLocation()));
+            } else {
+                completableFuture.complete(false);
+            }
         }, delay);
         return completableFuture;
     }
@@ -115,8 +131,11 @@ public class MovementTask extends AbstractTask {
 
     private static double getPitch(Player player, ArmorStand armorStand) {
         Vector difference = (player.getEyeLocation().subtract(0,0.9, 0)).subtract(armorStand.getEyeLocation()).toVector();
-        if (difference.getX() == 0.0D && difference.getZ() == 0.0D) return (float)(difference.getY() > 0.0D ? -90 : 90);
-        else return Math.atan(-difference.getY() / Math.sqrt((difference.getX()*difference.getX()) + (difference.getZ()*difference.getZ())));
+        if (difference.getX() == 0.0D && difference.getZ() == 0.0D) {
+            return (float)(difference.getY() > 0.0D ? -90 : 90);
+        } else {
+            return Math.atan(-difference.getY() / Math.sqrt((difference.getX()*difference.getX()) + (difference.getZ()*difference.getZ())));
+        }
     }
 
     private static Vector getDifference(Player player, ArmorStand armorStand) {

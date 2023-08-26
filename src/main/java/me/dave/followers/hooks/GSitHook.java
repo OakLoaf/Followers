@@ -19,7 +19,10 @@ public class GSitHook implements Listener {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.setPose(FollowerPose.SITTING);
             FollowerEntity followerEntity = followerUser.getFollowerEntity();
-            if (followerEntity == null || !followerEntity.isAlive()) return;
+            if (followerEntity == null || !followerEntity.isAlive()) {
+                return;
+            }
+
             followerEntity.startParticles(Particle.CLOUD);
         }
     }
@@ -30,7 +33,10 @@ public class GSitHook implements Listener {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.setPose(FollowerPose.DEFAULT);
             FollowerEntity followerEntity = followerUser.getFollowerEntity();
-            if (followerEntity == null || !followerEntity.isAlive()) return;
+            if (followerEntity == null || !followerEntity.isAlive()) {
+                return;
+            }
+
             followerEntity.stopTask("particle");
         }
     }
@@ -39,7 +45,10 @@ public class GSitHook implements Listener {
     public void onPlayerPose(PlayerPoseEvent event) {
         Player player = event.getPlayer();
         FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
-        if (followerEntity == null) return;
+        if (followerEntity == null) {
+            return;
+        }
+
         Pose pose = event.getPoseSeat().getPose();
         if (pose == Pose.SPIN_ATTACK) {
             followerEntity.setPose(FollowerPose.SPINNING);
@@ -51,7 +60,10 @@ public class GSitHook implements Listener {
     public void onPlayerUnpose(PlayerGetUpPoseEvent event) {
         Player player = event.getPlayer();
         FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
-        if (followerEntity == null) return;
+        if (followerEntity == null) {
+            return;
+        }
+        
         followerEntity.setPose(FollowerPose.DEFAULT);
         followerEntity.stopTask("particle");
     }
