@@ -87,7 +87,7 @@ public final class Followers extends JavaPlugin {
                 getCommand("gethexarmor").setExecutor(new GetHexArmorCmd());
                 getCommand("dye").setExecutor(new DyeCmd());
 
-                for (World world : Bukkit.getWorlds()) {
+                Bukkit.getWorlds().forEach(world -> {
                     for (Chunk chunk : world.getLoadedChunks()) {
                         for (Entity entity : chunk.getEntities()) {
                             if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) {
@@ -95,7 +95,7 @@ public final class Followers extends JavaPlugin {
                             }
                         }
                     }
-                }
+                });
             } else {
                 Followers.getInstance().getLogger().severe("Could not initialise the data. Aborting further plugin setup.");
             }
