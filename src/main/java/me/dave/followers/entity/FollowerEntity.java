@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class FollowerEntity {
-    private static final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
     private final HashMap<String, AbstractTask> tasks = new HashMap<>();
     private final BukkitRunnable ticker = new BukkitRunnable() {
         @Override
@@ -247,7 +246,7 @@ public class FollowerEntity {
     }
 
     private void startMovement() {
-        String strUUID = bodyArmorStand.getPersistentDataContainer().get(followerKey, PersistentDataType.STRING);
+        String strUUID = bodyArmorStand.getPersistentDataContainer().get(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING);
         if (strUUID == null) {
             return;
         }
@@ -371,7 +370,7 @@ public class FollowerEntity {
                     as.setAI(false);
                     as.setGravity(false);
                     as.setMetadata("keep", new FixedMetadataValue(Followers.getInstance(), null));
-                    as.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, player.getUniqueId().toString());
+                    as.getPersistentDataContainer().set(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING, player.getUniqueId().toString());
                     if (!Followers.configManager.areHitboxesEnabled()) {
                         as.setMarker(true);
                     }
@@ -405,7 +404,7 @@ public class FollowerEntity {
                     as.setAI(false);
                     as.setGravity(false);
                     as.setMetadata("keep", new FixedMetadataValue(Followers.getInstance(), "keep"));
-                    as.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, "");
+                    as.getPersistentDataContainer().set(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING, "");
                 } catch(Exception e) {
                     e.printStackTrace();
                 }

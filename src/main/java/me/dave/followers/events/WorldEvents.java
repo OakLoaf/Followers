@@ -2,7 +2,6 @@ package me.dave.followers.events;
 
 import me.dave.followers.Followers;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -15,7 +14,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class WorldEvents implements Listener {
-    private static final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityLoad(CreatureSpawnEvent event) {
@@ -32,13 +30,13 @@ public class WorldEvents implements Listener {
                 return;
             }
 
-            if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) {
+            if (entity.getPersistentDataContainer().has(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING)) {
                 entity.remove();
             }
         }, 1);
     }
 
-    @EventHandler
+                    @EventHandler
     public void onChunkLoad(ChunkLoadEvent event) {
         int[] entityLoadAttempt = new int[1];
         new BukkitRunnable() {
@@ -60,7 +58,7 @@ public class WorldEvents implements Listener {
                             continue;
                         }
 
-                        if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) {
+                        if (entity.getPersistentDataContainer().has(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING)) {
                             entity.remove();
                         }
                     }
@@ -80,7 +78,7 @@ public class WorldEvents implements Listener {
                 }
 
                 Followers.dataManager.getActiveArmorStandsSet().remove(entity.getUniqueId());
-                if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) {
+                if (entity.getPersistentDataContainer().has(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING)) {
                     entity.remove();
                 }
             }
