@@ -213,7 +213,8 @@ public class FollowerUser {
     }
 
     public void respawnFollowerEntity() {
-        spawnFollowerEntity();
+        removeFollowerEntity();
+        Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::spawnFollowerEntity, 5);
     }
 
     public void removeFollowerEntity() {
