@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.persistence.PersistentDataType;
 import me.dave.followers.data.FollowerHandler;
 import me.dave.followers.data.FollowerUser;
@@ -66,7 +67,7 @@ public class FollowerEntity {
 
         Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::reloadInventory, 5);
 
-        ticker.runTaskTimer(Followers.getInstance(), 0, 1);
+        ticker.runTaskTimer(Followers.getInstance(), 2, 1);
     }
 
     public Player getPlayer() {
@@ -369,6 +370,7 @@ public class FollowerEntity {
                     as.setSmall(true);
                     as.setAI(false);
                     as.setGravity(false);
+                    as.setMetadata("keep", new FixedMetadataValue(Followers.getInstance(), null));
                     as.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, player.getUniqueId().toString());
                     if (!Followers.configManager.areHitboxesEnabled()) {
                         as.setMarker(true);
@@ -402,6 +404,7 @@ public class FollowerEntity {
                     as.setMarker(true);
                     as.setAI(false);
                     as.setGravity(false);
+                    as.setMetadata("keep", new FixedMetadataValue(Followers.getInstance(), "keep"));
                     as.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, "");
                 } catch(Exception e) {
                     e.printStackTrace();
