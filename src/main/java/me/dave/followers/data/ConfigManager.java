@@ -13,6 +13,8 @@ public class ConfigManager {
     private double speed;
     private boolean areHitboxesEnabled;
     private String nicknameFormat;
+    private boolean forceSpawn;
+    private int maxRespawnAttempts;
     private GuiConfig gui;
     private DatabaseConfig database;
     private final HashMap<String, String> langMessages = new HashMap<>();
@@ -32,6 +34,8 @@ public class ConfigManager {
         areHitboxesEnabled = config.getBoolean("hitboxesEnabled");
         speed = config.getDouble("speed", 0.4);
         nicknameFormat = config.getString("follower-nickname-format", "%nickname%");
+        forceSpawn = config.getBoolean("force-spawn");
+        maxRespawnAttempts = config.getInt("max-respawn-attempts", 3);
 
         gui = new GuiConfig(config.getString("menu-gui.title", "Followers"), config.getString("menu-gui.follower-format", "&e%follower%"));
         database = new DatabaseConfig(config.getString("database.type"), config.getConfigurationSection("database"));
@@ -91,6 +95,14 @@ public class ConfigManager {
 
     public String getFollowerNicknameFormat() {
         return nicknameFormat;
+    }
+
+    public boolean shouldForceSpawn() {
+        return forceSpawn;
+    }
+
+    public int getMaxRespawnAttempts() {
+        return maxRespawnAttempts;
     }
 
 

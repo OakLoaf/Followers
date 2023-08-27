@@ -18,6 +18,8 @@ speed: 0.4
 follower-nickname-format: "%nickname%"
 # force-spawn: Spawn the Follower even if another plugin cancels the event
 force-spawn: true
+# max-respawn-attempts: The maximum number of times the plugin will try to respawn the pet before giving up
+max-respawn-attempts: 3
 
 # Data storage
 database:
