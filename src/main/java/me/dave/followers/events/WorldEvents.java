@@ -6,6 +6,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -16,7 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class WorldEvents implements Listener {
     private static final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityLoad(CreatureSpawnEvent event) {
         Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> {
             Entity entity = event.getEntity();
@@ -25,6 +26,9 @@ public class WorldEvents implements Listener {
             }
 
             if (Followers.dataManager.getActiveArmorStandsSet().contains(entity.getUniqueId())) {
+                if (event.isCancelled() && Followers.configManager.shouldForceSpawn()) {
+                    event.setCancelled(false);
+                }
                 return;
             }
 
