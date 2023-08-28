@@ -24,6 +24,7 @@ import java.util.UUID;
 
 public class FollowerEntity {
     private final HashMap<String, AbstractTask> tasks = new HashMap<>();
+    // TODO: Replace with single runnable ticking all followers
     private final BukkitRunnable ticker = new BukkitRunnable() {
         @Override
         public void run() {
