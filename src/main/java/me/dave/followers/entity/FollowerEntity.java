@@ -375,6 +375,8 @@ public class FollowerEntity {
                     if (!Followers.configManager.areHitboxesEnabled()) {
                         as.setMarker(true);
                     }
+
+                    Followers.dataManager.addActiveArmorStand(as.getUniqueId());
                 } catch(Exception e) {
                     e.printStackTrace();
                 }
@@ -384,7 +386,6 @@ public class FollowerEntity {
             return null;
         }
 
-        Followers.dataManager.addActiveArmorStand(armorStand.getUniqueId());
         return armorStand;
     }
 
@@ -406,6 +407,8 @@ public class FollowerEntity {
                     as.setGravity(false);
                     as.setMetadata("keep", new FixedMetadataValue(Followers.getInstance(), "keep"));
                     as.getPersistentDataContainer().set(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING, "");
+
+                    Followers.dataManager.addActiveArmorStand(as.getUniqueId());
                 } catch(Exception e) {
                     e.printStackTrace();
                 }
@@ -415,7 +418,6 @@ public class FollowerEntity {
             return null;
         }
 
-        Followers.dataManager.addActiveArmorStand(armorStand.getUniqueId());
         return armorStand;
     }
 }
