@@ -17,6 +17,7 @@ import org.bukkit.persistence.PersistentDataType;
 import me.dave.followers.data.FollowerHandler;
 import me.dave.followers.data.FollowerUser;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -293,6 +294,11 @@ public class FollowerEntity {
                 task.tick();
             }
         });
+    }
+
+    @Nullable
+    public AbstractTask getTask(String id) {
+        return tasks.get(id);
     }
 
     public void startTask(AbstractTask task) {
