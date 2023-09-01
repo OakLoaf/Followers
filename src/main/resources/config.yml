@@ -18,6 +18,8 @@ speed: 0.4
 follower-nickname-format: "%nickname%"
 # force-spawn: Spawn the Follower even if another plugin cancels the event
 force-spawn: true
+# max-respawn-attempts: The maximum number of times the plugin will try to respawn the pet before giving up
+max-respawn-attempts: 3
 
 # Data storage
 database:
@@ -37,6 +39,10 @@ menu-gui:
   # follower-format: Format of the follower names within the Menu
   follower-format: "&e%follower%"
   items:
+    # border-item: Border item type
+    border:
+      name: "&r"
+      material: "gray_stained_glass_pane"
     # no-followers: Item displayed when a player has no followers
     no-followers:
       name: "This is a new test name"
@@ -84,6 +90,10 @@ builder-gui:
   title: "&#59bfffFollowers &7- &#f5d57fEditor 🔨"
   # items: Items within the gui
   items:
+    # border-item: Border item type
+    border:
+      name: "&r"
+      material: "gray_stained_glass_pane"
     # name-button: Button to change a Follower's name
     name-button:
       default:
@@ -116,6 +126,12 @@ builder-gui:
 moderation-gui:
   # title: The title of the gui
   title: "&#59bfffFollowers &7- &#f56f42Moderation ⚔"
+  # items: Items within the gui
+  items:
+    # border-item: Border item type
+    border:
+      name: "&r"
+      material: "gray_stained_glass_pane"
 
 # %command-usage% - The command being used incorrectly
 # %follower% - The selected follower

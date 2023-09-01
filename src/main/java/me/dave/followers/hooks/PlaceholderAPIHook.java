@@ -9,7 +9,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     public String onPlaceholderRequest(Player player, String params) {
         if (player == null) {
-            return "null";
+            return null;
         }
 
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);

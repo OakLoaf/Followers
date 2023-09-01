@@ -43,7 +43,7 @@ public class BuilderGui extends AbstractGui {
     public void recalculateContents() {
         inventory.clear();
 
-        ItemStack borderItem = getBorderItem();
+        ItemStack borderItem = Followers.configManager.getGuiItem("builder-gui", "border", Material.GRAY_STAINED_GLASS_PANE);
         for (int i = 0; i < 54; i++) {
             inventory.setItem(i, borderItem);
         }

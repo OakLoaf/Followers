@@ -4,7 +4,6 @@ import me.dave.followers.entity.poses.FollowerPose;
 import me.dave.followers.api.events.PlayerVisiblityChangeEvent;
 import me.dave.followers.item.FollowerCreator;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,7 +21,6 @@ import me.dave.followers.data.FollowerUser;
 import java.util.UUID;
 
 public class FollowerUserEvents implements Listener {
-    private static final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -60,7 +58,7 @@ public class FollowerUserEvents implements Listener {
     @EventHandler
     public void onPlayerInteractWithEntity(PlayerInteractAtEntityEvent event) {
         Entity entity = event.getRightClicked();
-        if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) {
+        if (entity.getPersistentDataContainer().has(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING)) {
             event.setCancelled(true);
         }
     }

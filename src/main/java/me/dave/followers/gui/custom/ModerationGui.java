@@ -26,7 +26,7 @@ public class ModerationGui extends PagedGui {
     public void recalculateContents() {
         inventory.clear();
 
-        ItemStack borderItem = getBorderItem();
+        ItemStack borderItem = Followers.configManager.getGuiItem("moderation-gui", "border", Material.GRAY_STAINED_GLASS_PANE);
         for (int i = 0; i < 18; i++) {
             if (i <= 8) {
                 inventory.setItem(i, borderItem);
@@ -89,13 +89,5 @@ public class ModerationGui extends PagedGui {
         });
 
         return activeFollowerList;
-    }
-
-    private ItemStack getBorderItem() {
-        ItemStack borderItem = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemMeta borderMeta = borderItem.getItemMeta();
-        borderMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&r"));
-        borderItem.setItemMeta(borderMeta);
-        return borderItem;
     }
 }

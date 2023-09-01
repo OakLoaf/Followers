@@ -27,12 +27,11 @@ public class MenuGui extends PagedGui {
     public void recalculateContents() {
         inventory.clear();
 
-        // TODO: Make customizable
-//        ItemStack borderItem = getBorderItem();
-//        for (int i = 0; i < 18; i++) {
-//            if (i <= 8) inventory.setItem(i, borderItem);
-//            else inventory.setItem(i + 36, borderItem);
-//        }
+        ItemStack borderItem = Followers.configManager.getGuiItem("menu-gui", "border", Material.GRAY_STAINED_GLASS_PANE);
+        for (int i = 0; i < 18; i++) {
+            if (i <= 8) inventory.setItem(i, borderItem);
+            else inventory.setItem(i + 36, borderItem);
+        }
 
         List<String> followerSet = new ArrayList<>();
         for (String followerName : Followers.followerManager.getFollowerNames()) {

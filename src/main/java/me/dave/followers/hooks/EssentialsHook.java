@@ -9,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitRunnable;
 import me.dave.followers.Followers;
 import me.dave.followers.entity.FollowerEntity;
 
@@ -31,20 +30,18 @@ public class EssentialsHook implements Listener {
         if (followerEntity == null) {
             return;
         }
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (iUser.isAfk()) {
-                    followerUser.setAfk(true);
-                    followerEntity.setPose(FollowerPose.SITTING);
-                } else {
-                    followerUser.setAfk(false);
-                    if (!followerUser.isPosing()) {
-                        followerUser.setPose(FollowerPose.DEFAULT);
-                    }
+
+        Bukkit.getScheduler().runTaskLater(Followers.getInstance(), (task) -> {
+            if (iUser.isAfk()) {
+                followerUser.setAfk(true);
+                followerEntity.setPose(FollowerPose.SITTING);
+            } else {
+                followerUser.setAfk(false);
+                if (!followerUser.isPosing()) {
+                    followerUser.setPose(FollowerPose.DEFAULT);
                 }
             }
-        }.runTaskLater(Followers.getInstance(), 1);
+        }, 1);
     }
 
     public boolean isVanished(UUID uuid) {

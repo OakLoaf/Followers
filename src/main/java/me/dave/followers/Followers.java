@@ -1,7 +1,6 @@
 package me.dave.followers;
 
-import me.dave.followers.hooks.PlaceholderAPIHook;
-import me.dave.followers.hooks.SimpleSitHook;
+import me.dave.followers.hooks.*;
 import me.dave.followers.events.WorldEvents;
 import me.dave.followers.item.FollowerCreator;
 import org.bukkit.*;
@@ -13,7 +12,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import me.dave.followers.hooks.GSitHook;
 import me.dave.followers.commands.DyeCmd;
 import me.dave.followers.commands.FollowerCmd;
 import me.dave.followers.commands.GetHexArmorCmd;
@@ -21,16 +19,15 @@ import me.dave.followers.data.ConfigManager;
 import me.dave.followers.data.DataManager;
 import me.dave.followers.data.FollowerManager;
 import me.dave.followers.storage.Storage;
-import me.dave.followers.hooks.EssentialsHook;
 import me.dave.followers.events.GuiEvents;
 import me.dave.followers.events.FollowerUserEvents;
 
 public final class Followers extends JavaPlugin {
     private static Followers plugin;
+    private static NamespacedKey followerKey;
     public static DataManager dataManager;
     public static ConfigManager configManager;
     public static FollowerManager followerManager;
-    private final NamespacedKey followerKey = new NamespacedKey(this, "Follower");
     private static int tickCount;
     private static boolean hasFloodgate = false;
 
@@ -41,6 +38,7 @@ public final class Followers extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
+        followerKey = new NamespacedKey(this, "Follower");
 
         setThreadIOName();
         configManager = new ConfigManager();
@@ -107,6 +105,10 @@ public final class Followers extends JavaPlugin {
     @Override
     public void onDisable() {
         Storage.SERVICE.shutdownNow();
+    }
+
+    public NamespacedKey getFollowerKey() {
+        return followerKey;
     }
 
     public boolean callEvent(Event event) {

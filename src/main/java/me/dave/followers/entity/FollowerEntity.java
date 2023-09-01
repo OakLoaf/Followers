@@ -12,18 +12,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.persistence.PersistentDataType;
 import me.dave.followers.data.FollowerHandler;
 import me.dave.followers.data.FollowerUser;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.UUID;
 
 public class FollowerEntity {
-    private static final NamespacedKey followerKey = new NamespacedKey(Followers.getInstance(), "Follower");
     private final HashMap<String, AbstractTask> tasks = new HashMap<>();
+    // TODO: Replace with single runnable ticking all followers
     private final BukkitRunnable ticker = new BukkitRunnable() {
         @Override
         public void run() {
@@ -66,7 +68,7 @@ public class FollowerEntity {
 
         Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::reloadInventory, 5);
 
-        ticker.runTaskTimer(Followers.getInstance(), 0, 1);
+        ticker.runTaskTimer(Followers.getInstance(), 2, 1);
     }
 
     public Player getPlayer() {
@@ -246,7 +248,7 @@ public class FollowerEntity {
     }
 
     private void startMovement() {
-        String strUUID = bodyArmorStand.getPersistentDataContainer().get(followerKey, PersistentDataType.STRING);
+        String strUUID = bodyArmorStand.getPersistentDataContainer().get(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING);
         if (strUUID == null) {
             return;
         }
@@ -292,6 +294,11 @@ public class FollowerEntity {
                 task.tick();
             }
         });
+    }
+
+    @Nullable
+    public AbstractTask getTask(String id) {
+        return tasks.get(id);
     }
 
     public void startTask(AbstractTask task) {
@@ -369,10 +376,13 @@ public class FollowerEntity {
                     as.setSmall(true);
                     as.setAI(false);
                     as.setGravity(false);
-                    as.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, player.getUniqueId().toString());
+                    as.setMetadata("keep", new FixedMetadataValue(Followers.getInstance(), null));
+                    as.getPersistentDataContainer().set(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING, player.getUniqueId().toString());
                     if (!Followers.configManager.areHitboxesEnabled()) {
                         as.setMarker(true);
                     }
+
+                    Followers.dataManager.addActiveArmorStand(as.getUniqueId());
                 } catch(Exception e) {
                     e.printStackTrace();
                 }
@@ -382,7 +392,6 @@ public class FollowerEntity {
             return null;
         }
 
-        Followers.dataManager.addActiveArmorStand(armorStand.getUniqueId());
         return armorStand;
     }
 
@@ -402,7 +411,10 @@ public class FollowerEntity {
                     as.setMarker(true);
                     as.setAI(false);
                     as.setGravity(false);
-                    as.getPersistentDataContainer().set(followerKey, PersistentDataType.STRING, "");
+                    as.setMetadata("keep", new FixedMetadataValue(Followers.getInstance(), "keep"));
+                    as.getPersistentDataContainer().set(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING, "");
+
+                    Followers.dataManager.addActiveArmorStand(as.getUniqueId());
                 } catch(Exception e) {
                     e.printStackTrace();
                 }
@@ -412,7 +424,6 @@ public class FollowerEntity {
             return null;
         }
 
-        Followers.dataManager.addActiveArmorStand(armorStand.getUniqueId());
         return armorStand;
     }
 }
