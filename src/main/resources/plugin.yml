@@ -1,7 +1,7 @@
 name: Followers
 version: ${version}
 main: me.dave.followers.Followers
-api-version: 1.19
+api-version: 1.16
 authors: [ Dav_e_ ]
 depend: [ ProtocolLib ]
 softdepend: [ Essentials, GSit, PlaceholderAPI, floodgate ]
