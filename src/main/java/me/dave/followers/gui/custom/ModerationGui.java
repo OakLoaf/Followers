@@ -5,7 +5,6 @@ import me.dave.followers.Followers;
 import me.dave.followers.data.FollowerUser;
 import me.dave.followers.entity.FollowerEntity;
 import me.dave.followers.gui.abstracts.PagedGui;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -76,18 +75,9 @@ public class ModerationGui extends PagedGui {
     }
 
     private List<FollowerEntity> getActiveFollowers() {
-        List<FollowerEntity> activeFollowerList = new ArrayList<>();
-
-        Bukkit.getOnlinePlayers().forEach(player -> {
-            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
-            FollowerEntity followerEntity = followerUser.getFollowerEntity();
-            if (followerEntity == null || !followerEntity.isAlive()) {
-                return;
-            }
-
-            activeFollowerList.add(followerEntity);
-        });
-
-        return activeFollowerList;
+        return Followers.dataManager.getOnlineFollowerUsers().stream()
+                .map(FollowerUser::getFollowerEntity)
+                .filter(followerEntity -> followerEntity != null && followerEntity.isAlive())
+                .toList();
     }
 }
