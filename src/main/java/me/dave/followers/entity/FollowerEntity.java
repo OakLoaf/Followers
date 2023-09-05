@@ -20,11 +20,11 @@ import me.dave.followers.data.FollowerUser;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FollowerEntity {
-    private final HashMap<String, AbstractTask> tasks = new HashMap<>();
+    private final ConcurrentHashMap<String, FollowerTask> tasks = new ConcurrentHashMap<>();
     private final Player player;
     private ArmorStand bodyEntity;
     private ArmorStand nametagEntity;
@@ -65,7 +65,7 @@ public class FollowerEntity {
 
     @Nullable
     public Location getLocation() {
-        return bodyEntity != null ? bodyEntity.getLocation() : null;
+        return bodyEntity != null ? bodyEntity.getLocation().clone() : null;
     }
 
     public boolean isAlive() {
@@ -230,8 +230,8 @@ public class FollowerEntity {
             setType(followerType);
             setVisible(!player.isInvisible());
 
-            startTask(FollowerTasks.getTask("validate", this));
-            startTask(FollowerTasks.getTask("visibility", this));
+            startTask(FollowerTasks.getTask(FollowerTask.VALIDATE, this));
+            startTask(FollowerTasks.getTask(FollowerTask.VISIBILITY, this));
             startMovement();
 
             this.alive = true;
@@ -246,7 +246,7 @@ public class FollowerEntity {
     }
 
     public boolean teleport(Location location) {
-        if (isBodyEntityValid()) {
+        if (!isBodyEntityValid()) {
             return false;
         }
 
@@ -264,7 +264,7 @@ public class FollowerEntity {
     public void kill() {
         alive = false;
 
-        stopTasks("all");
+        stopTasks(FollowerTask.MOVEMENT, FollowerTask.PARTICLE, FollowerTask.VALIDATE);
 
         if (bodyEntity != null) {
             bodyEntity.remove();
@@ -285,7 +285,7 @@ public class FollowerEntity {
             if (strUUID != null) {
                 Player player = Bukkit.getPlayer(UUID.fromString(strUUID));
                 if (player != null) {
-                    startTask(FollowerTasks.getTask("movement", this));
+                    startTask(FollowerTasks.getTask(FollowerTask.MOVEMENT, this));
                 }
             }
         }
@@ -294,7 +294,7 @@ public class FollowerEntity {
     public void startParticles(Particle particle) {
         if (isBodyEntityValid()) {
             try {
-                startTask(FollowerTasks.getClass("particle").getConstructor(FollowerEntity.class, Particle.class).newInstance(this, particle));
+                startTask(FollowerTasks.getClass(FollowerTask.PARTICLE).getConstructor(FollowerEntity.class, Particle.class).newInstance(this, particle));
             } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
                 e.printStackTrace();
             }
@@ -323,11 +323,11 @@ public class FollowerEntity {
     }
 
     @Nullable
-    public AbstractTask getTask(String id) {
+    public FollowerTask getTask(String id) {
         return tasks.get(id);
     }
 
-    public void startTask(AbstractTask task) {
+    public void startTask(FollowerTask task) {
         stopTask(task.getIdentifier());
 
         tasks.put(task.getIdentifier(), task);
@@ -342,7 +342,7 @@ public class FollowerEntity {
             return;
         }
 
-        AbstractTask task = tasks.get(taskType);
+        FollowerTask task = tasks.get(taskType);
 
         if (task != null && !task.isCancelled()) {
             task.cancel();
