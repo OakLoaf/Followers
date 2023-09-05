@@ -188,7 +188,7 @@ public class FollowerUser {
         this.hidden = hide;
     }
 
-    // TODO: turn FollowerEntity a non-nullable object
+    // TODO: turn FollowerEntity into a non-nullable object
     public FollowerEntity getFollowerEntity() {
         return followerEntity;
     }
