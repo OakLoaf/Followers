@@ -1,5 +1,6 @@
 package me.dave.followers;
 
+import me.dave.followers.events.FollowerEntityEvents;
 import me.dave.followers.hooks.*;
 import me.dave.followers.events.WorldEvents;
 import me.dave.followers.item.FollowerCreator;
@@ -48,6 +49,7 @@ public final class Followers extends JavaPlugin {
                 followerManager = new FollowerManager();
 
                 Listener[] listeners = new Listener[]{
+                        new FollowerEntityEvents(),
                         new FollowerUserEvents(),
                         new GuiEvents(),
                         new WorldEvents(),
