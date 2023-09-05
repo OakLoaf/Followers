@@ -1,4 +1,4 @@
-package me.dave.followers.events;
+package me.dave.followers.listener;
 
 import me.dave.followers.gui.abstracts.AbstractGui;
 import me.dave.followers.gui.InventoryHandler;
@@ -10,7 +10,7 @@ import org.bukkit.inventory.Inventory;
 
 import java.util.UUID;
 
-public class GuiEvents implements Listener {
+public class InventoryListener implements Listener {
 
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {

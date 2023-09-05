@@ -1,4 +1,4 @@
-package me.dave.followers.events;
+package me.dave.followers.listener;
 
 import me.dave.followers.Followers;
 import org.bukkit.Bukkit;
@@ -12,7 +12,7 @@ import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.persistence.PersistentDataType;
 
-public class WorldEvents implements Listener {
+public class WorldListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityLoad(CreatureSpawnEvent event) {

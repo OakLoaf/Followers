@@ -1,4 +1,4 @@
-package me.dave.followers.events;
+package me.dave.followers.listener;
 
 import me.dave.followers.Followers;
 import me.dave.followers.api.events.FollowerEntitySpawnEvent;
@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class FollowerEntityEvents implements Listener {
+public class FollowerEntityListener implements Listener {
 
     @EventHandler
     public void onFollowerSpawn(FollowerEntitySpawnEvent event) {

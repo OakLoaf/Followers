@@ -1,4 +1,4 @@
-package me.dave.followers.events;
+package me.dave.followers.listener;
 
 import me.dave.followers.entity.poses.FollowerPose;
 import me.dave.followers.item.FollowerCreator;
@@ -19,7 +19,7 @@ import me.dave.followers.data.FollowerUser;
 
 import java.util.UUID;
 
-public class FollowerUserEvents implements Listener {
+public class FollowerUserListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {

@@ -1,8 +1,8 @@
 package me.dave.followers;
 
-import me.dave.followers.events.FollowerEntityEvents;
+import me.dave.followers.listener.FollowerEntityListener;
 import me.dave.followers.hooks.*;
-import me.dave.followers.events.WorldEvents;
+import me.dave.followers.listener.WorldListener;
 import me.dave.followers.item.FollowerCreator;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -20,8 +20,8 @@ import me.dave.followers.data.ConfigManager;
 import me.dave.followers.data.DataManager;
 import me.dave.followers.data.FollowerManager;
 import me.dave.followers.storage.Storage;
-import me.dave.followers.events.GuiEvents;
-import me.dave.followers.events.FollowerUserEvents;
+import me.dave.followers.listener.InventoryListener;
+import me.dave.followers.listener.FollowerUserListener;
 
 public final class Followers extends JavaPlugin {
     private static Followers plugin;
@@ -49,10 +49,10 @@ public final class Followers extends JavaPlugin {
                 followerManager = new FollowerManager();
 
                 Listener[] listeners = new Listener[]{
-                        new FollowerEntityEvents(),
-                        new FollowerUserEvents(),
-                        new GuiEvents(),
-                        new WorldEvents(),
+                        new FollowerEntityListener(),
+                        new FollowerUserListener(),
+                        new InventoryListener(),
+                        new WorldListener(),
                         new FollowerCreator()
                 };
                 registerEvents(listeners);
