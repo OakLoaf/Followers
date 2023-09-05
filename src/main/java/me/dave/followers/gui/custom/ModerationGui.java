@@ -34,7 +34,7 @@ public class ModerationGui extends PagedGui {
             }
         }
 
-        List<FollowerEntity> namedFollowerEntities = getActiveFollowers();
+        List<FollowerEntity> namedFollowerEntities = Followers.dataManager.getActiveFollowerEntities();
 
         int setStartPos = (page - 1) * 36;
         for (int i = 0; i < 36; i++, setStartPos++) {
@@ -72,12 +72,5 @@ public class ModerationGui extends PagedGui {
     @Override
     public void onClick(InventoryClickEvent event) {
         event.setCancelled(true);
-    }
-
-    private List<FollowerEntity> getActiveFollowers() {
-        return Followers.dataManager.getOnlineFollowerUsers().stream()
-                .map(FollowerUser::getFollowerEntity)
-                .filter(followerEntity -> followerEntity != null && followerEntity.isAlive())
-                .toList();
     }
 }
