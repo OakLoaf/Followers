@@ -27,8 +27,7 @@ public class FollowerTasks {
         try {
             return tasks.get(id).getConstructor(FollowerEntity.class).newInstance(followerEntity);
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 }

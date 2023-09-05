@@ -27,7 +27,7 @@ public class EssentialsHook implements Listener {
         Player player = iUser.getBase();
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
         FollowerEntity followerEntity = followerUser.getFollowerEntity();
-        if (followerEntity == null) {
+        if (followerEntity == null || !followerEntity.isAlive()) {
             return;
         }
 

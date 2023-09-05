@@ -47,7 +47,7 @@ public class FollowerUserListener implements Listener {
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
         FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
-        if (followerEntity == null) {
+        if (followerEntity == null || !followerEntity.isAlive()) {
             return;
         }
 

@@ -3,6 +3,7 @@ package me.dave.followers.hooks;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.dave.followers.Followers;
 import me.dave.followers.data.FollowerUser;
+import me.dave.followers.entity.FollowerEntity;
 import org.bukkit.entity.Player;
 
 public class PlaceholderAPIHook extends PlaceholderExpansion {
@@ -22,7 +23,13 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
                 return followerUser.getFollowerType();
             }
             case "pose" -> {
-                return Followers.dataManager.getFollowerUser(player).getFollowerEntity().getPose().toString().toLowerCase();
+                FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
+
+                if (followerEntity != null) {
+                    return followerEntity.getPose().toString().toLowerCase();
+                } else {
+                    return "default";
+                }
             }
             case "nickname" -> {
                 return followerUser.getDisplayName();

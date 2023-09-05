@@ -157,11 +157,13 @@ public class MenuGui extends PagedGui {
             recalculateContents();
             return;
         } else if (event.getRawSlot() == 45 || (clickedItem.getType() == Followers.configManager.getGuiItem("menu-gui", "nickname.shown", Material.NAME_TAG).getType() || (clickedItem.getType() == Followers.configManager.getGuiItem("menu-gui", "nickname.hidden", Material.NAME_TAG).getType())) && clickedItem.getItemMeta().getDisplayName().startsWith(ChatColorHandler.translateAlternateColorCodes("&eFollower Name:"))) {
-            FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+            FollowerEntity followerEntity = followerUser.getFollowerEntity();
             if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                 player.playSound(player.getEyeLocation(), Sound.BLOCK_LEVER_CLICK, 0.6f, 1.0f);
-                followerEntity.setDisplayNameVisible(!followerUser.isDisplayNameEnabled());
+                if (followerEntity != null) {
+                    followerEntity.showDisplayName(!followerUser.isDisplayNameEnabled());
+                }
                 recalculateContents();
                 return;
             }
@@ -174,7 +176,9 @@ public class MenuGui extends PagedGui {
                     if (output.equals("")) output = " ";
                     String finalOutput = output;
                     Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
-                        if (followerEntity != null) followerEntity.setDisplayName(finalOutput);
+                        if (followerEntity != null) {
+                            followerEntity.setDisplayName(finalOutput);
+                        }
                     });
                 });
             }, 5L);

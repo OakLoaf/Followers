@@ -45,7 +45,7 @@ public class GSitHook implements Listener {
     public void onPlayerPose(PlayerPoseEvent event) {
         Player player = event.getPlayer();
         FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
-        if (followerEntity == null) {
+        if (followerEntity == null || !followerEntity.isAlive()) {
             return;
         }
 
@@ -60,7 +60,7 @@ public class GSitHook implements Listener {
     public void onPlayerUnpose(PlayerGetUpPoseEvent event) {
         Player player = event.getPlayer();
         FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
-        if (followerEntity == null) {
+        if (followerEntity == null || !followerEntity.isAlive()) {
             return;
         }
         

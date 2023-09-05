@@ -3,6 +3,7 @@ package me.dave.followers.commands;
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.api.events.FollowersReloadEvent;
 import me.dave.followers.data.FollowerUser;
+import me.dave.followers.entity.FollowerEntity;
 import me.dave.followers.exceptions.ObjectNameLockedException;
 import me.dave.followers.export.GeyserSkullExporter;
 import me.dave.followers.gui.custom.BuilderGui;
@@ -58,7 +59,8 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     }
 
                     FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
-                    if (followerUser.getFollowerEntity() != null) {
+                    FollowerEntity followerEntity = followerUser.getFollowerEntity();
+                    if (followerEntity != null) {
                         Followers.dataManager.getFollowerUser(player).disableFollowerEntity();
                     }
                     return true;
@@ -78,7 +80,8 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     }
 
                     FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
-                    if (followerUser.getFollowerEntity() == null) {
+                    FollowerEntity followerEntity = followerUser.getFollowerEntity();
+                    if (followerEntity == null || !followerEntity.isAlive()) {
                         Followers.dataManager.getFollowerUser(player).spawnFollowerEntity();
                         ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
                     }
@@ -169,7 +172,8 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     }
 
                     FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
-                    if (followerUser.getFollowerEntity() == null) {
+                    FollowerEntity followerEntity = followerUser.getFollowerEntity();
+                    if (followerEntity == null || !followerEntity.isAlive()) {
                         Followers.dataManager.getFollowerUser(player).spawnFollowerEntity();
                         ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
                     }

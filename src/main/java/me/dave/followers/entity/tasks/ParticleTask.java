@@ -10,16 +10,17 @@ public class ParticleTask extends AbstractTask {
 
     public ParticleTask(FollowerEntity followerEntity, Particle particle) {
         super(followerEntity);
-        this.armorStand = followerEntity.getBodyArmorStand();
+        this.armorStand = followerEntity.getBodyEntity();
         this.particle = particle;
     }
 
     @Override
     public void tick() {
-        if (armorStand == null || !armorStand.isValid()) {
+        if (!followerEntity.isBodyEntityValid()) {
             cancel();
             return;
         }
+
         armorStand.getWorld().spawnParticle(particle, armorStand.getLocation().add(0, -0.15, 0), 1, 0, 0, 0, 0);
     }
 

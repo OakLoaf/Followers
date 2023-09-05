@@ -20,7 +20,7 @@ public class ValidateTask extends AbstractTask {
 
     @Override
     public void tick() {
-        if (followerEntity.getBodyArmorStand() == null || !followerEntity.getBodyArmorStand().isValid()) {
+        if (!followerEntity.isBodyEntityValid()) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             UUID uuid = player.getUniqueId();
 

@@ -17,6 +17,11 @@ public class VisibilityTask extends AbstractTask {
 
     @Override
     public void tick() {
+        if (!followerEntity.isBodyEntityValid()) {
+            cancel();
+            return;
+        }
+
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
         boolean visible = !player.isInvisible() && !followerUser.isVanished();
 

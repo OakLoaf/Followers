@@ -24,12 +24,13 @@ public class MovementTask extends AbstractTask {
 
     @Override
     public void tick() {
-        ArmorStand bodyArmorStand = followerEntity.getBodyArmorStand();
         // Cancels the task if the armour stand is dead
-        if (bodyArmorStand == null || !bodyArmorStand.isValid()) {
+        if (!followerEntity.isBodyEntityValid()) {
             cancel();
             return;
         }
+
+        ArmorStand bodyArmorStand = followerEntity.getBodyEntity();
 
         // Teleports follower if the player has moved to another world
         // This may be moved to ValidateTask in the future
