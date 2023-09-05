@@ -5,12 +5,13 @@ import me.dave.followers.utils.SkullCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 
 public class GeyserSkullExporter {
 
-    public void startExport() {
+    public void startExport() throws IOException {
         Followers.getInstance().saveResource("export/custom-skulls.yml", true);
 
         File exportFile = new File(Followers.getInstance().getDataFolder(), "export/custom-skulls.yml");
@@ -35,6 +36,8 @@ public class GeyserSkullExporter {
             });
         });
 
-        customSkullsConfig.set("player-profiles", textures);
+        customSkullsConfig.set("player-profiles", textures.stream().toList());
+
+        customSkullsConfig.save(exportFile);
     }
 }
