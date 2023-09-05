@@ -2,12 +2,17 @@ package me.dave.followers.entity.tasks;
 
 import me.dave.followers.entity.FollowerEntity;
 
-public abstract class AbstractTask {
+public abstract class FollowerTask {
+    public static final String MOVEMENT = "movement";
+    public static final String PARTICLE = "particle";
+    public static final String VALIDATE = "validate";
+    public static final String VISIBILITY = "visibility";
+
     protected final FollowerEntity followerEntity;
     private final int startTick;
     private boolean cancelled = false;
 
-    public AbstractTask(FollowerEntity followerEntity) {
+    public FollowerTask(FollowerEntity followerEntity) {
         this.followerEntity = followerEntity;
         this.startTick = followerEntity.getTicksAlive() + getDelay();
     }

@@ -5,31 +5,21 @@ import me.dave.followers.data.FollowerUser;
 import me.dave.followers.entity.FollowerEntity;
 import org.bukkit.entity.Player;
 
-public class VisibilityTask extends AbstractTask {
+public class VisibilityTask extends FollowerTask {
     private final Player player;
-    private boolean visible;
 
     public VisibilityTask(FollowerEntity followerEntity) {
         super(followerEntity);
         this.player = followerEntity.getPlayer();
-        this.visible = !player.isInvisible() && !Followers.dataManager.getFollowerUser(player).isVanished();
     }
 
     @Override
     public void tick() {
-        if (!followerEntity.isBodyEntityValid()) {
-            cancel();
-            return;
-        }
-
+        // TODO: Resolve task not respawning follower when removing invisibility
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
-        boolean visible = !player.isInvisible() && !followerUser.isVanished();
 
-        if (this.visible != visible) {
-            followerUser.setHidden(!visible);
-        }
-
-        this.visible = visible;
+        boolean hidden = player.isInvisible() || followerUser.isVanished();
+        followerUser.setHidden(hidden);
     }
 
     @Override
