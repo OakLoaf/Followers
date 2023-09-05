@@ -1,7 +1,6 @@
 package me.dave.followers.events;
 
 import me.dave.followers.entity.poses.FollowerPose;
-import me.dave.followers.api.events.PlayerVisiblityChangeEvent;
 import me.dave.followers.item.FollowerCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -62,27 +61,6 @@ public class FollowerUserEvents implements Listener {
             event.setCancelled(true);
         }
     }
-
-
-    // TODO: replace with proper handling within FollowerEntity class
-//    @EventHandler
-//    public void onPlayerMove(PlayerMoveEvent event) {
-//        Player player = event.getPlayer();
-//        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
-//        if (followerUser.isHidden()) {
-//            boolean visible = !player.isInvisible() && !followerUser.isVanished();
-//            if (visible) {
-//                followerUser.setHidden(false);
-//            }
-//        }
-//    }
-
-    // TODO: replace with proper handling within FollowerEntity class
-//    @EventHandler
-//    public void onPlayerVisibilityChange(PlayerVisiblityChangeEvent event) {
-//        FollowerUser followerUser = Followers.dataManager.getFollowerUser(event.getPlayer());
-//        followerUser.setHidden(!event.getNewVisibility());
-//    }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
