@@ -2,7 +2,6 @@ package me.dave.followers.gui.custom;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.Followers;
-import me.dave.followers.data.FollowerUser;
 import me.dave.followers.entity.FollowerEntity;
 import me.dave.followers.gui.abstracts.PagedGui;
 import org.bukkit.Location;
