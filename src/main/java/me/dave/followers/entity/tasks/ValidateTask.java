@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class ValidateTask extends AbstractTask {
+public class ValidateTask extends FollowerTask {
     private static final HashMap<UUID, Integer> attemptsMap = new HashMap<>();
     private final Player player;
 
@@ -20,6 +20,11 @@ public class ValidateTask extends AbstractTask {
 
     @Override
     public void tick() {
+        if (!followerEntity.isAlive()) {
+            cancel();
+            return;
+        }
+
         if (!followerEntity.isBodyEntityValid()) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             UUID uuid = player.getUniqueId();
