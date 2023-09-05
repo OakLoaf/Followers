@@ -178,11 +178,13 @@ public class FollowerUser {
         }
 
         if (hide) {
-            if (followerEntity != null) {
+            if (followerEntity != null && followerEntity.isAlive()) {
                 followerEntity.kill();
             }
         } else if (enabled) {
-            spawnFollowerEntity();
+            if (followerEntity == null || !followerEntity.isAlive()) {
+                spawnFollowerEntity();
+            }
         }
 
         this.hidden = hide;
@@ -218,12 +220,10 @@ public class FollowerUser {
     }
 
     public void removeFollowerEntity() {
-        if (followerEntity == null || !followerEntity.isAlive()) {
-            return;
+        if (followerEntity != null) {
+            followerEntity.kill();
+            followerEntity = null;
         }
-        
-        followerEntity.kill();
-        followerEntity = null;
     }
 
     public void disableFollowerEntity() {
