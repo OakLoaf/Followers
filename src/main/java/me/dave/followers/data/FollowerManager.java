@@ -40,10 +40,7 @@ public class FollowerManager {
     }
 
     public void refreshAllFollowers() {
-        Bukkit.getOnlinePlayers().forEach(player -> {
-            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
-            followerUser.refreshFollowerEntity();
-        });
+        Followers.dataManager.getOnlineFollowerUsers().forEach(FollowerUser::refreshFollowerEntity);
     }
 
     public void createFollower(Player player, FollowerHandler followerHandler) {
