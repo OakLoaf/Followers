@@ -202,12 +202,4 @@ public class MenuGui extends PagedGui {
         recalculateContents();
         ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
     }
-
-    private ItemStack getBorderItem() {
-        ItemStack borderItem = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemMeta borderMeta = borderItem.getItemMeta();
-        borderMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&r"));
-        borderItem.setItemMeta(borderMeta);
-        return borderItem;
-    }
 }
