@@ -3,6 +3,7 @@ package me.dave.followers.entity;
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.Followers;
 import me.dave.followers.api.events.FollowerEntityChangeTypeEvent;
+import me.dave.followers.api.events.FollowerEntitySpawnEvent;
 import me.dave.followers.api.events.FollowerEntityTickEvent;
 import me.dave.followers.entity.poses.FollowerPose;
 import me.dave.followers.entity.tasks.*;
@@ -33,7 +34,7 @@ public class FollowerEntity {
         }
     };
     private final Player player;
-    private final ArmorStand bodyArmorStand;
+    private ArmorStand bodyArmorStand;
     private ArmorStand nameArmorStand;
     private int ticksAlive;
     private UUID nameArmorStandUUID;
@@ -51,13 +52,6 @@ public class FollowerEntity {
 
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(this.player);
         followerUser.setFollowerEnabled(true);
-
-        this.bodyArmorStand = summonBodyArmorStand();
-        if (this.bodyArmorStand == null) {
-            kill();
-            return;
-        }
-        displayName(followerUser.isDisplayNameEnabled());
 
         setType(follower);
         setVisible(!player.isInvisible());
@@ -215,6 +209,23 @@ public class FollowerEntity {
 
             bodyArmorStand.setVisible(followerHandler.isVisible());
         }, 1);
+    }
+
+    public boolean spawn() {
+        if (Followers.getInstance().callEvent(new FollowerEntitySpawnEvent(this))) {
+            this.bodyArmorStand = summonBodyArmorStand();
+            if (this.bodyArmorStand == null) {
+                kill();
+                return false;
+            }
+
+            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+            displayName(followerUser.isDisplayNameEnabled());
+            return true;
+        } else {
+            kill();
+            return false;
+        }
     }
 
     public boolean teleport(Location location) {

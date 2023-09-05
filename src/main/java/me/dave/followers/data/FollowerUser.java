@@ -207,7 +207,7 @@ public class FollowerUser {
         }
 
         followerEntity = new FollowerEntity(player, followerType);
-        if (randomType) {
+        if (followerEntity.spawn() && randomType) {
             randomizeFollowerType();
         }
     }
