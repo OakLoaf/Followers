@@ -4,7 +4,7 @@ import me.dave.followers.entity.FollowerEntity;
 import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 
-public class ParticleTask extends AbstractTask {
+public class ParticleTask extends FollowerTask {
     private final ArmorStand armorStand;
     private final Particle particle;
 

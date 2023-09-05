@@ -11,7 +11,7 @@ import org.bukkit.util.Vector;
 
 import java.util.concurrent.CompletableFuture;
 
-public class MovementTask extends AbstractTask {
+public class MovementTask extends FollowerTask {
     private final Player player;
     private final double speed;
     private boolean teleporting = false;
@@ -116,13 +116,7 @@ public class MovementTask extends AbstractTask {
 
     private static CompletableFuture<Boolean> delayedTeleportTo(Player player, FollowerEntity followerEntity, int delay) {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
-        Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> {
-            if (followerEntity.isAlive()) {
-                completableFuture.complete(followerEntity.teleport(player.getLocation()));
-            } else {
-                completableFuture.complete(false);
-            }
-        }, delay);
+        Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> completableFuture.complete(followerEntity.teleport(player.getLocation())), delay);
         return completableFuture;
     }
 
