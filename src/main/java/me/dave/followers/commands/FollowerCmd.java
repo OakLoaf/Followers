@@ -4,6 +4,7 @@ import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.api.events.FollowersReloadEvent;
 import me.dave.followers.data.FollowerUser;
 import me.dave.followers.exceptions.ObjectNameLockedException;
+import me.dave.followers.export.GeyserSkullExporter;
 import me.dave.followers.gui.custom.BuilderGui;
 import me.dave.followers.gui.custom.ModerationGui;
 import org.bukkit.command.Command;
@@ -81,6 +82,15 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                         Followers.dataManager.getFollowerUser(player).spawnFollowerEntity();
                         ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
                     }
+                    return true;
+                }
+                case "export" -> {
+                    if (!sender.hasPermission("follower.admin.export")) {
+                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
+                        return true;
+                    }
+
+                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/follower export <export_type>"));
                     return true;
                 }
                 case "messages" -> {
@@ -225,6 +235,25 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     }
                     return true;
                 }
+                case "export" -> {
+                    if (args[1].equalsIgnoreCase("geysermc")) {
+                        try {
+                            new GeyserSkullExporter().startExport();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            // TODO: Make message configurable
+                            ChatColorHandler.sendMessage(sender, "Export failed");
+                            return true;
+                        }
+
+                        // TODO: Make message configurable
+                        ChatColorHandler.sendMessage(sender, "Successfully exported file to 'export/custom-skulls.yml'");
+                    } else {
+                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/follower export <export_type>"));
+                    }
+
+                    return true;
+                }
                 case "randomize" -> {
                     if (!(sender instanceof Player player)) {
                         sender.sendMessage("Console cannot run this command!");
@@ -300,6 +329,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
             if (sender.hasPermission("follower.admin.create")) tabComplete.add("create");
             if (sender.hasPermission("follower.admin.delete")) tabComplete.add("delete");
             if (sender.hasPermission("follower.admin.edit")) tabComplete.add("edit");
+            if (sender.hasPermission("follower.admin.export")) tabComplete.add("export");
             if (sender.hasPermission("follower.admin.moderate")) tabComplete.add("moderate");
             if (sender.hasPermission("follower.admin.reload")) tabComplete.add("reload");
         } else if (args.length == 2) {
@@ -312,6 +342,11 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                 case "edit" -> {
                     if (sender.hasPermission("follower.admin.edit")) {
                         tabComplete.addAll(Followers.followerManager.getFollowerNames());
+                    }
+                }
+                case "export" -> {
+                    if (sender.hasPermission("follower.admin.export")) {
+                        tabComplete.add("GeyserMC");
                     }
                 }
                 case "randomize" -> {
