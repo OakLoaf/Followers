@@ -9,6 +9,7 @@ import me.dave.followers.Followers;
 import me.dave.followers.entity.FollowerEntity;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
@@ -61,6 +62,10 @@ public class DataManager {
             followerUser = new FollowerUser(uuid, player.getName(), "none", "Unnamed", false, false, false);
         }
         return followerUser;
+    }
+
+    public Collection<FollowerUser> getOnlineFollowerUsers() {
+        return uuidToFollowerUser.values();
     }
 
     public HashSet<UUID> getActiveArmorStandsSet() {
