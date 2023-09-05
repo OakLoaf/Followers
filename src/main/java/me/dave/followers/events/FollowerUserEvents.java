@@ -65,24 +65,24 @@ public class FollowerUserEvents implements Listener {
 
 
     // TODO: replace with proper handling within FollowerEntity class
-    @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
-        if (followerUser.isHidden()) {
-            boolean visible = !player.isInvisible() && !followerUser.isVanished();
-            if (visible) {
-                followerUser.setHidden(false);
-            }
-        }
-    }
+//    @EventHandler
+//    public void onPlayerMove(PlayerMoveEvent event) {
+//        Player player = event.getPlayer();
+//        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+//        if (followerUser.isHidden()) {
+//            boolean visible = !player.isInvisible() && !followerUser.isVanished();
+//            if (visible) {
+//                followerUser.setHidden(false);
+//            }
+//        }
+//    }
 
     // TODO: replace with proper handling within FollowerEntity class
-    @EventHandler
-    public void onPlayerVisibilityChange(PlayerVisiblityChangeEvent event) {
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(event.getPlayer());
-        followerUser.setHidden(!event.getNewVisibility());
-    }
+//    @EventHandler
+//    public void onPlayerVisibilityChange(PlayerVisiblityChangeEvent event) {
+//        FollowerUser followerUser = Followers.dataManager.getFollowerUser(event.getPlayer());
+//        followerUser.setHidden(!event.getNewVisibility());
+//    }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
