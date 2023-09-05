@@ -9,10 +9,7 @@ import me.dave.followers.Followers;
 import me.dave.followers.entity.FollowerEntity;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
@@ -66,6 +63,13 @@ public class DataManager {
 
     public Collection<FollowerUser> getOnlineFollowerUsers() {
         return uuidToFollowerUser.values();
+    }
+
+    public List<FollowerEntity> getActiveFollowerEntities() {
+        return Followers.dataManager.getOnlineFollowerUsers().stream()
+                .map(FollowerUser::getFollowerEntity)
+                .filter(followerEntity -> followerEntity != null && followerEntity.isAlive())
+                .toList();
     }
 
     public HashSet<UUID> getActiveArmorStandsSet() {
