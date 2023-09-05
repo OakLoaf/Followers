@@ -17,7 +17,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.persistence.PersistentDataType;
 import me.dave.followers.data.FollowerHandler;
 import me.dave.followers.data.FollowerUser;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
@@ -26,13 +25,6 @@ import java.util.UUID;
 
 public class FollowerEntity {
     private final HashMap<String, AbstractTask> tasks = new HashMap<>();
-    // TODO: Replace with single runnable ticking all followers
-    private final BukkitRunnable ticker = new BukkitRunnable() {
-        @Override
-        public void run() {
-            tick();
-        }
-    };
     private final Player player;
     private ArmorStand bodyArmorStand;
     private ArmorStand nameArmorStand;
@@ -61,8 +53,6 @@ public class FollowerEntity {
         startMovement();
 
         Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::reloadInventory, 5);
-
-        ticker.runTaskTimer(Followers.getInstance(), 2, 1);
     }
 
     public Player getPlayer() {
@@ -243,7 +233,6 @@ public class FollowerEntity {
     public void kill() {
         alive = false;
 
-        ticker.cancel();
         stopTasks("all");
 
         if (bodyArmorStand != null) {

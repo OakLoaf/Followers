@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import me.dave.followers.Followers;
 import me.dave.followers.entity.FollowerEntity;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -16,6 +17,18 @@ import static java.util.Objects.requireNonNull;
 
 public class DataManager {
     private Storage storage;
+    private final BukkitRunnable followerTicker = new BukkitRunnable() {
+        @Override
+        public void run() {
+            getActiveFollowerEntities().forEach(followerEntity -> {
+                try {
+                    followerEntity.tick();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    };
     private final HashMap<UUID, FollowerUser> uuidToFollowerUser = new HashMap<>();
     private final HashSet<UUID> activeArmorStandsSet = new HashSet<>();
 
@@ -31,6 +44,7 @@ public class DataManager {
             }
             final boolean init = storage.init();
             Bukkit.getScheduler().runTask(Followers.getInstance(), () -> onComplete.accept(init));
+            followerTicker.runTaskTimer(Followers.getInstance(), 0, 1);
         });
     }
 
