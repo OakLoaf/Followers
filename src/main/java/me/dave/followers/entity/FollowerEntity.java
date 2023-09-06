@@ -407,6 +407,8 @@ public class FollowerEntity {
                         as.setMarker(true);
                     }
 
+                    // TODO: Add equipment
+
                     Followers.dataManager.addActiveArmorStand(as.getUniqueId());
                 } catch(Exception e) {
                     e.printStackTrace();
