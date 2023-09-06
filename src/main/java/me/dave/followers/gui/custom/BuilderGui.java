@@ -208,14 +208,6 @@ public class BuilderGui extends AbstractGui {
         }
     }
 
-    private ItemStack getBorderItem() {
-        ItemStack borderItem = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemMeta borderMeta = borderItem.getItemMeta();
-        borderMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("&r"));
-        borderItem.setItemMeta(borderMeta);
-        return borderItem;
-    }
-
     public enum Mode {
         CREATE,
         EDIT
