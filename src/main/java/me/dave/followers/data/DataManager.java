@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import me.dave.followers.Followers;
 import me.dave.followers.entity.FollowerEntity;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -66,11 +65,19 @@ public class DataManager {
         return uuidToFollowerUser.values();
     }
 
-    public List<FollowerEntity> getActiveFollowerEntities() {
-        return Followers.dataManager.getOnlineFollowerUsers().stream()
-                .map(FollowerUser::getFollowerEntity)
-                .filter(followerEntity -> followerEntity != null && followerEntity.isAlive())
-                .toList();
+    public List<FollowerEntity> getAllFollowerEntities() {
+        List<FollowerEntity> followerEntities = new ArrayList<>();
+
+        // Gets all available FollowerEntities - done via a forEach loop in preference to a stream for minor performance improvements
+        Followers.dataManager.getOnlineFollowerUsers().forEach(followerUser -> {
+            FollowerEntity followerEntity = followerUser.getFollowerEntity();
+
+            if (followerEntity != null) {
+                followerEntities.add(followerEntity);
+            }
+        });
+
+        return followerEntities;
     }
 
     public HashSet<UUID> getActiveArmorStandsSet() {
