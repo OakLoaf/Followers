@@ -1,5 +1,6 @@
 package me.dave.followers.entity.tasks;
 
+import me.dave.followers.Followers;
 import me.dave.followers.entity.FollowerEntity;
 
 public abstract class FollowerTask {
@@ -9,7 +10,7 @@ public abstract class FollowerTask {
 
     public FollowerTask(FollowerEntity followerEntity) {
         this.followerEntity = followerEntity;
-        this.startTick = followerEntity.getTicksAlive() + getDelay();
+        this.startTick = Followers.getCurrentTick() + getDelay();
     }
 
     public abstract void tick();

@@ -33,7 +33,7 @@ public class ModerationGui extends PagedGui {
             }
         }
 
-        List<FollowerEntity> namedFollowerEntities = Followers.dataManager.getActiveFollowerEntities();
+        List<FollowerEntity> namedFollowerEntities = Followers.dataManager.getAllFollowerEntities();
 
         int setStartPos = (page - 1) * 36;
         for (int i = 0; i < 36; i++, setStartPos++) {

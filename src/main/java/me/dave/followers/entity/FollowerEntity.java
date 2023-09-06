@@ -28,7 +28,6 @@ public class FollowerEntity {
     private final Player player;
     private ArmorStand bodyEntity;
     private ArmorStand nametagEntity;
-    private int ticksAlive;
     private UUID nameArmorStandUUID;
     private String followerType;
     private boolean alive;
@@ -40,7 +39,6 @@ public class FollowerEntity {
         this.followerType = followerType;
         this.visible = !player.isInvisible();
         this.alive = false;
-        this.ticksAlive = 0;
     }
 
     public Player getPlayer() {
@@ -218,11 +216,17 @@ public class FollowerEntity {
         if (Followers.getInstance().callEvent(new FollowerEntitySpawnEvent(this))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
 
+            if (isBodyEntityValid()) {
+                bodyEntity.remove();
+            }
+
             this.bodyEntity = summonBodyEntity();
             if (!isBodyEntityValid()) {
                 kill();
                 return false;
             }
+
+            this.alive = true;
 
             displayName(followerUser.isDisplayNameEnabled());
 
@@ -233,9 +237,6 @@ public class FollowerEntity {
             startTask(FollowerTasks.getTask(ValidateTask.ID, this));
             startTask(FollowerTasks.getTask(VisibilityTask.ID, this));
             startMovement();
-
-            this.alive = true;
-            this.ticksAlive = 0;
 
             Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::reloadInventory, 5);
             return true;
@@ -306,17 +307,17 @@ public class FollowerEntity {
     //    Task Handler    //
     ////////////////////////
 
-    public int getTicksAlive() {
-        return ticksAlive;
-    }
-
     public void tick() {
-        ticksAlive++;
+        int currTick = Followers.getCurrentTick();
 
         if (Followers.getInstance().callEvent(new FollowerEntityTickEvent(this))) {
             tasks.values().forEach(task -> {
-                if (ticksAlive >= task.getStartTick() && ticksAlive % task.getPeriod() == 0) {
-                    task.tick();
+                if (currTick >= task.getStartTick() && currTick % task.getPeriod() == 0) {
+                    try {
+                        task.tick();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         }
