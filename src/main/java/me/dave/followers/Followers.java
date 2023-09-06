@@ -101,7 +101,19 @@ public final class Followers extends JavaPlugin {
             }
         });
 
-        Bukkit.getScheduler().runTaskTimer(plugin, () -> tickCount++, 1, 1);
+        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            tickCount++;
+
+            if (dataManager != null) {
+                dataManager.getActiveFollowerEntities().forEach(followerEntity -> {
+                    try {
+                        followerEntity.tick();
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        }, 1, 1);
     }
 
     @Override
