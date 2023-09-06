@@ -3,11 +3,6 @@ package me.dave.followers.entity.tasks;
 import me.dave.followers.entity.FollowerEntity;
 
 public abstract class FollowerTask {
-    public static final String MOVEMENT = "movement";
-    public static final String PARTICLE = "particle";
-    public static final String VALIDATE = "validate";
-    public static final String VISIBILITY = "visibility";
-
     protected final FollowerEntity followerEntity;
     private final int startTick;
     private boolean cancelled = false;

@@ -6,6 +6,7 @@ import me.dave.followers.entity.FollowerEntity;
 import org.bukkit.entity.Player;
 
 public class VisibilityTask extends FollowerTask {
+    public static final String ID = "visibility";
     private final Player player;
 
     public VisibilityTask(FollowerEntity followerEntity) {
@@ -24,7 +25,7 @@ public class VisibilityTask extends FollowerTask {
 
     @Override
     public String getIdentifier() {
-        return "visibility";
+        return ID;
     }
 
     @Override

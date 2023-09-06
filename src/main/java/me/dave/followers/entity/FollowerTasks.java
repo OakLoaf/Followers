@@ -9,10 +9,10 @@ public class FollowerTasks {
     private static final HashMap<String, Class<? extends FollowerTask>> tasks = new HashMap<>();
 
     static {
-        register("movement", MovementTask.class);
-        register("particle", ParticleTask.class);
-        register("validate", ValidateTask.class);
-        register("visibility", VisibilityTask.class);
+        register(MovementTask.ID, MovementTask.class);
+        register(ParticleTask.ID, ParticleTask.class);
+        register(ValidateTask.ID, ValidateTask.class);
+        register(VisibilityTask.ID, VisibilityTask.class);
     }
 
     public static void register(String identifier, Class<? extends FollowerTask> task) {

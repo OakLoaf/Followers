@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 
 public class ParticleTask extends FollowerTask {
+    public static final String ID = "particle";
     private final ArmorStand armorStand;
     private final Particle particle;
 
@@ -26,7 +27,7 @@ public class ParticleTask extends FollowerTask {
 
     @Override
     public String getIdentifier() {
-        return "particle";
+        return ID;
     }
 
     @Override

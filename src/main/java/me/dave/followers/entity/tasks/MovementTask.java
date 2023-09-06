@@ -12,6 +12,7 @@ import org.bukkit.util.Vector;
 import java.util.concurrent.CompletableFuture;
 
 public class MovementTask extends FollowerTask {
+    public static final String ID = "movement";
     private final Player player;
     private final double speed;
     private boolean teleporting = false;
