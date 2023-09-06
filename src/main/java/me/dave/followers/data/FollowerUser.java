@@ -208,7 +208,10 @@ public class FollowerUser {
             return;
         }
 
-        followerEntity = new FollowerEntity(player, followerType);
+        if (followerEntity == null) {
+            followerEntity = new FollowerEntity(player, followerType);
+        }
+
         if (followerEntity.spawn() && randomType) {
             randomizeFollowerType();
         }
@@ -222,7 +225,6 @@ public class FollowerUser {
     public void removeFollowerEntity() {
         if (followerEntity != null) {
             followerEntity.kill();
-            followerEntity = null;
         }
     }
 
