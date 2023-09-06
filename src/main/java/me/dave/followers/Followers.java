@@ -22,6 +22,7 @@ import me.dave.followers.data.FollowerManager;
 import me.dave.followers.storage.Storage;
 import me.dave.followers.listener.InventoryListener;
 import me.dave.followers.listener.FollowerUserListener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public final class Followers extends JavaPlugin {
     private static Followers plugin;
@@ -30,7 +31,27 @@ public final class Followers extends JavaPlugin {
     public static ConfigManager configManager;
     public static FollowerManager followerManager;
     private static int tickCount;
+    private static final BukkitRunnable ticker;
     private static boolean hasFloodgate = false;
+
+    static {
+        ticker = new BukkitRunnable() {
+            @Override
+            public void run() {
+                tickCount++;
+
+                if (dataManager != null) {
+                    dataManager.getAllFollowerEntities().forEach(followerEntity -> {
+                        try {
+                            followerEntity.tick();
+                        } catch(Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+            }
+        };
+    }
 
     private void setThreadIOName() {
         Storage.SERVICE.submit(() -> Thread.currentThread().setName("Followers IO Thread"));
@@ -101,23 +122,12 @@ public final class Followers extends JavaPlugin {
             }
         });
 
-        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            tickCount++;
-
-            if (dataManager != null) {
-                dataManager.getActiveFollowerEntities().forEach(followerEntity -> {
-                    try {
-                        followerEntity.tick();
-                    } catch(Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-            }
-        }, 1, 1);
+        ticker.runTaskTimer(plugin, 1, 1);
     }
 
     @Override
     public void onDisable() {
+        ticker.cancel();
         Storage.SERVICE.shutdownNow();
     }
 
