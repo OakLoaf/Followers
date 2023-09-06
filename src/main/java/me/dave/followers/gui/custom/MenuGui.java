@@ -135,7 +135,7 @@ public class MenuGui extends PagedGui {
             return;
         } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "follower-toggle.disabled", Material.RED_WOOL))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
-            followerUser.respawnFollowerEntity();
+            followerUser.spawnFollowerEntity();
             ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
             recalculateContents();
             return;
