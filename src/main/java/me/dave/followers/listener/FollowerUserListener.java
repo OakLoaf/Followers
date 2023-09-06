@@ -76,7 +76,7 @@ public class FollowerUserListener implements Listener {
         Player player = event.getPlayer();
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
         if (followerUser.isFollowerEnabled()) {
-            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), followerUser::respawnFollowerEntity, 1);
+            followerUser.respawnFollowerEntity();
         }
 
         if (followerUser.isRandomType()) {
