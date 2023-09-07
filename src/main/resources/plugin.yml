@@ -3,8 +3,14 @@ version: ${version}
 main: me.dave.followers.Followers
 api-version: 1.16
 authors: [ Dav_e_ ]
-depend: [ ProtocolLib ]
-softdepend: [ Essentials, GSit, PlaceholderAPI, floodgate ]
+depend:
+  - ProtocolLib
+softdepend:
+  - Essentials
+  - floodgate
+  - GSit
+  - PlaceholderAPI
+  - SimpleSit
 commands:
   followers:
     description: Opens Follower GUI
