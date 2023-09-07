@@ -245,13 +245,14 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                             new GeyserSkullExporter().startExport();
                         } catch (Exception e) {
                             e.printStackTrace();
+
                             // TODO: Make message configurable
-                            ChatColorHandler.sendMessage(sender, "Export failed");
+                            ChatColorHandler.sendMessage(sender, "&#ff6969Export failed");
                             return true;
                         }
 
                         // TODO: Make message configurable
-                        ChatColorHandler.sendMessage(sender, "Successfully exported file to 'export/custom-skulls.yml'");
+                        ChatColorHandler.sendMessage(sender, "&#b7faa2Successfully exported file to &#66b04f'export/custom-skulls.yml'");
                     } else {
                         ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/follower export <export_type>"));
                     }
