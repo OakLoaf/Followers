@@ -16,7 +16,6 @@ public class VisibilityTask extends FollowerTask {
 
     @Override
     public void tick() {
-        // TODO: Resolve task not respawning follower when removing invisibility
         FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
 
         boolean hidden = player.isInvisible() || followerUser.isVanished();

@@ -407,7 +407,6 @@ public class FollowerEntity {
                     if (!Followers.configManager.areHitboxesEnabled()) {
                         as.setMarker(true);
                     }
-
                     // TODO: Add equipment
 
                     Followers.dataManager.addActiveArmorStand(as.getUniqueId());
