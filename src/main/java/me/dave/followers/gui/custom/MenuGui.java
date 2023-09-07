@@ -168,20 +168,23 @@ public class MenuGui extends PagedGui {
                 return;
             }
             player.closeInventory();
-            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> {
-                TextInterface textInterface = new TextInterface();
-                textInterface.title("Enter Name:");
-                textInterface.placeholder("Enter follower name");
-                textInterface.getInput(player, (output) -> {
-                    if (output.equals("")) output = " ";
-                    String finalOutput = output;
-                    Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
-                        if (followerEntity != null) {
-                            followerEntity.setDisplayName(finalOutput);
-                        }
-                    });
+
+            TextInterface textInterface = new TextInterface();
+            textInterface.title("Enter Name:");
+            textInterface.placeholder("Enter follower name");
+            textInterface.getInput(player, (output) -> {
+                if (output.isBlank()) {
+                    output = "Unnamed";
+                }
+
+                String finalOutput = output;
+                Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
+                    if (followerEntity != null) {
+                        followerEntity.setDisplayName(finalOutput);
+                    }
                 });
-            }, 5L);
+            });
+
             return;
         }
 

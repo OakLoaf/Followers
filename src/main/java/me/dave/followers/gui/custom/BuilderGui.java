@@ -150,14 +150,16 @@ public class BuilderGui extends AbstractGui {
 
         if (clickedItem.isSimilar(nameButtonItem)) {
             player.closeInventory();
+
             TextInterface textInterface = new TextInterface();
             textInterface.title("Enter Name:");
             textInterface.placeholder("Enter follower name");
             textInterface.getInput(player, (output) -> {
-                if (output.equals("")) {
+                if (output.isBlank()) {
                     ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-no-name"));
                     return;
                 }
+
                 String finalOutput = output.replaceAll("\\.", "-");
                 Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
                     try {
