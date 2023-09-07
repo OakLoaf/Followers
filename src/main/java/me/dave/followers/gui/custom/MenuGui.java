@@ -172,18 +172,21 @@ public class MenuGui extends PagedGui {
             TextInterface textInterface = new TextInterface();
             textInterface.title("Enter Name:");
             textInterface.placeholder("Enter follower name");
-            textInterface.getInput(player, (output) -> {
-                if (output.isBlank()) {
-                    output = "Unnamed";
-                }
 
-                String finalOutput = output;
-                Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
-                    if (followerEntity != null) {
-                        followerEntity.setDisplayName(finalOutput);
+            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> {
+                textInterface.getInput(player, (output) -> {
+                    if (output.isBlank()) {
+                        output = "Unnamed";
                     }
+
+                    String finalOutput = output;
+                    Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
+                        if (followerEntity != null) {
+                            followerEntity.setDisplayName(finalOutput);
+                        }
+                    });
                 });
-            });
+            }, 1);
 
             return;
         }

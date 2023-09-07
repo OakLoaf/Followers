@@ -154,21 +154,24 @@ public class BuilderGui extends AbstractGui {
             TextInterface textInterface = new TextInterface();
             textInterface.title("Enter Name:");
             textInterface.placeholder("Enter follower name");
-            textInterface.getInput(player, (output) -> {
-                if (output.isBlank()) {
-                    ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-no-name"));
-                    return;
-                }
 
-                String finalOutput = output.replaceAll("\\.", "-");
-                Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
-                    try {
-                        followerBuilder.setName(finalOutput);
-                    } catch (ObjectNameLockedException ignored) {}
+            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> {
+                textInterface.getInput(player, (output) -> {
+                    if (output.isBlank()) {
+                        ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-no-name"));
+                        return;
+                    }
 
-                    openInventory();
+                    String finalOutput = output.replaceAll("\\.", "-");
+                    Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
+                        try {
+                            followerBuilder.setName(finalOutput);
+                        } catch (ObjectNameLockedException ignored) {}
+
+                        openInventory();
+                    });
                 });
-            });
+            }, 1);
         } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "visibility-button.visible", Material.WHITE_STAINED_GLASS))) {
             followerBuilder.setVisible(false);
         } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("builder-gui", "visibility-button.invisible", Material.GLASS))) {
