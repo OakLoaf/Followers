@@ -345,8 +345,11 @@ public class FollowerEntity {
 
         FollowerTask task = tasks.get(taskType);
 
-        if (task != null && !task.isCancelled()) {
-            task.cancel();
+        if (task != null) {
+            if (!task.isCancelled()) {
+                task.cancel();
+            }
+
             tasks.remove(taskType);
         }
     }
