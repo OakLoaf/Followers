@@ -52,7 +52,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/follower delete <follower_name>"));
                     return true;
                 }
-                case "disable" -> {
+                case "disable", "hide" -> {
                     if (!(sender instanceof Player player)) {
                         sender.sendMessage("Console cannot run this command!");
                         return true;
@@ -73,7 +73,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/follower edit <follower_name>"));
                     return true;
                 }
-                case "enable" -> {
+                case "enable", "show" -> {
                     if (!(sender instanceof Player player)) {
                         sender.sendMessage("Console cannot run this command!");
                         return true;
@@ -334,8 +334,8 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
         boolean wordCompletionSuccess = false;
 
         if (args.length == 1) {
-            tabComplete.add("disable");
-            tabComplete.add("enable");
+            tabComplete.add("hide");
+            tabComplete.add("show");
             tabComplete.add("set");
             tabComplete.add("toggle");
             if (sender.hasPermission("follower.random")) tabComplete.add("randomize");
