@@ -18,13 +18,14 @@ import me.dave.followers.item.FollowerCreator;
 import me.dave.followers.Followers;
 import me.dave.followers.gui.custom.MenuGui;
 import me.dave.followers.data.FollowerHandler;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class FollowerCmd implements CommandExecutor, TabCompleter {
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
         if (args.length == 1) {
             switch(args[0].toLowerCase()) {
                 case "create" -> {
@@ -184,7 +185,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                 }
             }
         }
-        if (args.length >= 2) {
+        else if (args.length >= 2) {
             switch(args[0].toLowerCase()) {
                 case "delete" -> {
                     if (!sender.hasPermission("follower.admin.delete")) {
@@ -327,7 +328,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
 
         List<String> tabComplete = new ArrayList<>();
         List<String> wordCompletion = new ArrayList<>();
