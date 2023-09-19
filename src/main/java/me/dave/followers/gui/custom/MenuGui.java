@@ -181,6 +181,8 @@ public class MenuGui extends PagedGui {
 
                     String finalOutput = output;
                     Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
+                        followerUser.setDisplayName(finalOutput);
+
                         if (followerEntity != null) {
                             followerEntity.setDisplayName(finalOutput);
                         }

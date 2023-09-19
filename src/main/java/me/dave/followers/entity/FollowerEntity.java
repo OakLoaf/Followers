@@ -94,7 +94,6 @@ public class FollowerEntity {
     }
 
     public void setDisplayName(String newName) {
-        Followers.dataManager.getFollowerUser(player).setDisplayName(newName);
         showDisplayName(true);
 
         if (Followers.configManager.areHitboxesEnabled()) {
