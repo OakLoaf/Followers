@@ -131,6 +131,7 @@ public class MenuGui extends PagedGui {
         } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "follower-toggle.enabled", Material.LIME_WOOL))) {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.disableFollowerEntity();
+            ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-despawned"));
             recalculateContents();
             return;
         } else if (clickedItem.isSimilar(Followers.configManager.getGuiItem("menu-gui", "follower-toggle.disabled", Material.RED_WOOL))) {
@@ -154,6 +155,7 @@ public class MenuGui extends PagedGui {
             FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
             followerUser.setRandom(true);
             followerUser.randomizeFollowerType();
+            ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-changed").replaceAll("%follower%", "random"));
             recalculateContents();
             return;
         } else if (event.getRawSlot() == 45 || (clickedItem.getType() == Followers.configManager.getGuiItem("menu-gui", "nickname.shown", Material.NAME_TAG).getType() || (clickedItem.getType() == Followers.configManager.getGuiItem("menu-gui", "nickname.hidden", Material.NAME_TAG).getType())) && clickedItem.getItemMeta().getDisplayName().startsWith(ChatColorHandler.translateAlternateColorCodes("&eFollower Name:"))) {
@@ -186,6 +188,7 @@ public class MenuGui extends PagedGui {
                         if (followerEntity != null) {
                             followerEntity.setDisplayName(finalOutput);
                         }
+                        ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-name-changed").replaceAll("%nickname%", finalOutput));
                     });
                 });
             }, 1);
@@ -209,9 +212,10 @@ public class MenuGui extends PagedGui {
         } else {
             followerUser.setFollowerType(followerName);
             followerUser.spawnFollowerEntity();
+            ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
         }
 
+        ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-changed").replaceAll("%follower%", followerName));
         recalculateContents();
-        ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
     }
 }
