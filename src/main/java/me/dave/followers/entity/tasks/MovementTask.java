@@ -39,7 +39,13 @@ public class MovementTask extends FollowerTask {
             // Previously used teleportToPlayer method
             if (!teleporting) {
                 teleporting = true;
-                delayedTeleportTo(player, followerEntity, 20).thenAccept(success -> teleporting = false);
+                delayedTeleportTo(player, followerEntity, 20).thenAccept(success -> {
+                    if (!success) {
+                        Followers.dataManager.getFollowerUser(player).respawnFollowerEntity();
+                    }
+
+                    teleporting = false;
+                });
             }
             return;
         }
@@ -52,7 +58,13 @@ public class MovementTask extends FollowerTask {
             // Previously used teleportToPlayer method
             if (!teleporting) {
                 teleporting = true;
-                delayedTeleportTo(player, followerEntity, 5).thenAccept(success -> teleporting = false);
+                delayedTeleportTo(player, followerEntity, 5).thenAccept(success -> {
+                    if (!success) {
+                        Followers.dataManager.getFollowerUser(player).respawnFollowerEntity();
+                    }
+
+                    teleporting = false;
+                });
             }
             return;
         }
