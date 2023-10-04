@@ -211,6 +211,10 @@ public class MenuGui extends PagedGui {
             followerEntity.setType(followerName);
         } else {
             followerUser.setFollowerType(followerName);
+            if (followerEntity != null) {
+                followerEntity.setType(followerName);
+            }
+
             followerUser.spawnFollowerEntity();
             ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
         }
