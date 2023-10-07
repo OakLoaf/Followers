@@ -92,7 +92,10 @@ public class MovementTask extends FollowerTask {
         followerLoc.setDirection(difference);
 
         // Teleports follower
-        followerEntity.teleport(followerLoc.add(0, getArmorStandYOffset(bodyArmorStand), 0));
+        boolean tpSuccess = followerEntity.teleport(followerLoc.add(0, getArmorStandYOffset(bodyArmorStand), 0));
+        if (!tpSuccess) {
+            Followers.dataManager.getFollowerUser(player).respawnFollowerEntity();
+        }
 
         // Limits following code to run once every 2 ticks
         if (Followers.getCurrentTick() % 2 != 0) {
