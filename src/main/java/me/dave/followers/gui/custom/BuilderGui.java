@@ -32,7 +32,7 @@ public class BuilderGui extends AbstractGui {
     private final Mode mode;
 
     public BuilderGui(Player player, Mode mode, FollowerHandler.Builder followerBuilder) {
-        super(54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle("builder-gui")), player);
+        super(54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle("builder-gui"), player), player);
         this.mode = mode;
         this.followerBuilder = followerBuilder;
 

@@ -177,7 +177,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     Followers.followerManager.reloadFollowers();
                     Followers.dataManager.reloadFollowerInventories();
                     Followers.getInstance().callEvent(new FollowersReloadEvent());
-                    sender.sendMessage(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getLangMessage("reloaded")));
+                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("reloaded"));
                     return true;
                 }
                 case "rename" -> {

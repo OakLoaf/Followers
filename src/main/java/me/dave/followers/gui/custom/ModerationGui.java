@@ -17,7 +17,7 @@ import java.util.List;
 public class ModerationGui extends PagedGui {
 
     public ModerationGui(Player player) {
-        super(54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle("moderation-gui")), player);
+        super(54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle("moderation-gui"), player), player);
     }
 
     @Override

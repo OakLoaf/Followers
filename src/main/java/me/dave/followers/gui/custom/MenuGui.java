@@ -20,7 +20,7 @@ import java.util.*;
 public class MenuGui extends PagedGui {
 
     public MenuGui(Player player) {
-        super(54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle("menu-gui")), player);
+        super(54, ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiTitle("menu-gui"), player), player);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class MenuGui extends PagedGui {
             }
 
             ItemMeta headItemMeta = headItem.getItemMeta();
-            headItemMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiFollowerFormat().replaceAll("%follower%", followerName)));
+            headItemMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getGuiFollowerFormat().replaceAll("%follower%", followerName), player));
             headItem.setItemMeta(headItemMeta);
             inventory.setItem(i + 9, headItem);
         }
