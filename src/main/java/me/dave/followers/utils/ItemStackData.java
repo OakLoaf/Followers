@@ -1,6 +1,7 @@
 package me.dave.followers.utils;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
+import me.dave.followers.Followers;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
@@ -40,11 +41,11 @@ public class ItemStackData {
             if (skullType.equalsIgnoreCase("custom")) {
                 String skullTexture = configurationSection.getString("texture");
                 if (skullTexture != null) {
-                    item = SkullCreator.getCustomSkull(skullTexture);
+                    item = Followers.getSkullCreator().getCustomSkull(skullTexture);
                 }
             } else {
                 String skullUUID = configurationSection.getString("uuid");
-                item = skullUUID == null || skullUUID.equalsIgnoreCase("error") ? new ItemStack(Material.PLAYER_HEAD) : SkullCreator.getPlayerSkull(UUID.fromString(skullUUID));
+                item = skullUUID == null || skullUUID.equalsIgnoreCase("error") ? new ItemStack(Material.PLAYER_HEAD) : Followers.getSkullCreator().getPlayerSkull(UUID.fromString(skullUUID));
             }
         }
 
@@ -103,7 +104,7 @@ public class ItemStackData {
 
         if (material == Material.PLAYER_HEAD) {
             configurationSection.set("skullType", "custom");
-            String textureStr = SkullCreator.getB64(item);
+            String textureStr = Followers.getSkullCreator().getB64(item);
             configurationSection.set("texture", textureStr);
             return;
         } else if (item.getItemMeta() instanceof LeatherArmorMeta armorMeta) {

@@ -4,6 +4,9 @@ import me.dave.followers.listener.FollowerEntityListener;
 import me.dave.followers.hooks.*;
 import me.dave.followers.listener.WorldListener;
 import me.dave.followers.item.FollowerCreator;
+import me.dave.followers.utils.skullcreator.LegacySkullCreator;
+import me.dave.followers.utils.skullcreator.NewSkullCreator;
+import me.dave.followers.utils.skullcreator.SkullCreator;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Cancellable;
@@ -25,6 +28,8 @@ import me.dave.followers.listener.FollowerUserListener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public final class Followers extends JavaPlugin {
+    private static SkullCreator skullCreator;
+
     private static Followers plugin;
     private static NamespacedKey followerKey;
     public static DataManager dataManager;
@@ -35,6 +40,17 @@ public final class Followers extends JavaPlugin {
     private static boolean hasFloodgate = false;
 
     static {
+        try {
+            String version = Bukkit.getBukkitVersion();
+            if (version.contains("1.16") || version.contains("1.17") || version.contains("1.18")) {
+                skullCreator = new LegacySkullCreator();
+            } else {
+                skullCreator = new NewSkullCreator();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         ticker = new BukkitRunnable() {
             @Override
             public void run() {
@@ -142,6 +158,10 @@ public final class Followers extends JavaPlugin {
         } else {
             return true;
         }
+    }
+
+    public static SkullCreator getSkullCreator() {
+        return skullCreator;
     }
 
     public static Followers getInstance() {
