@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiPredicate;
-import java.util.stream.Collectors;
 
 public final class SignMenuFactory {
     private final Map<Player, SignMenuFactory.Menu> inputs;
