@@ -86,14 +86,16 @@ public class FollowerUserListener implements Listener {
 
     @EventHandler
     public void onTotem(EntityResurrectEvent event) {
-        EntityEquipment equipment = event.getEntity().getEquipment();
-        EquipmentSlot hand = event.getHand();
-        if (equipment == null || hand == null) {
-            return;
-        }
+        try {
+            EntityEquipment equipment = event.getEntity().getEquipment();
+            EquipmentSlot hand = event.getHand();
+            if (equipment == null || hand == null) {
+                return;
+            }
 
-        if (equipment.getItem(hand).isSimilar(FollowerCreator.getOrLoadCreatorItem())) {
-            event.setCancelled(true);
-        }
+            if (equipment.getItem(hand).isSimilar(FollowerCreator.getOrLoadCreatorItem())) {
+                event.setCancelled(true);
+            }
+        } catch (NoSuchMethodError ignored) {}
     }
 }
