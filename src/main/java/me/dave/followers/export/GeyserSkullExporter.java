@@ -1,7 +1,6 @@
 package me.dave.followers.export;
 
 import me.dave.followers.Followers;
-import me.dave.followers.utils.SkullCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -21,12 +20,12 @@ public class GeyserSkullExporter {
 
         Followers.followerManager.getFollowers().values().forEach(followerHandler -> {
             List<String> followerTextures = List.of(
-                    SkullCreator.getB64(followerHandler.getHead()),
-                    SkullCreator.getB64(followerHandler.getChest()),
-                    SkullCreator.getB64(followerHandler.getLegs()),
-                    SkullCreator.getB64(followerHandler.getFeet()),
-                    SkullCreator.getB64(followerHandler.getMainHand()),
-                    SkullCreator.getB64(followerHandler.getOffHand())
+                    Followers.getSkullCreator().getB64(followerHandler.getHead()),
+                    Followers.getSkullCreator().getB64(followerHandler.getChest()),
+                    Followers.getSkullCreator().getB64(followerHandler.getLegs()),
+                    Followers.getSkullCreator().getB64(followerHandler.getFeet()),
+                    Followers.getSkullCreator().getB64(followerHandler.getMainHand()),
+                    Followers.getSkullCreator().getB64(followerHandler.getOffHand())
             );
 
             followerTextures.forEach(texture -> {
