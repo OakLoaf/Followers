@@ -102,7 +102,7 @@ public class NewSkullCreator implements SkullCreator {
     }
 
     private String getBase64FromUrl(URL url) {
-        byte[] urlBytes = ("{textures:{skin:{url:" + url.toString() + "}}}").getBytes();
+        byte[] urlBytes = ("{textures:{skin:{url:\"" + url.toString() + "\"}}}").getBytes();
         return new String(Base64.getEncoder().encode(urlBytes));
     }
 }
