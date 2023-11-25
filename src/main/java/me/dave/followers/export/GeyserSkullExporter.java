@@ -2,6 +2,8 @@ package me.dave.followers.export;
 
 import me.dave.followers.Followers;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,12 +22,12 @@ public class GeyserSkullExporter {
 
         Followers.followerManager.getFollowers().values().forEach(followerHandler -> {
             List<String> followerTextures = List.of(
-                    Followers.getSkullCreator().getB64(followerHandler.getHead()),
-                    Followers.getSkullCreator().getB64(followerHandler.getChest()),
-                    Followers.getSkullCreator().getB64(followerHandler.getLegs()),
-                    Followers.getSkullCreator().getB64(followerHandler.getFeet()),
-                    Followers.getSkullCreator().getB64(followerHandler.getMainHand()),
-                    Followers.getSkullCreator().getB64(followerHandler.getOffHand())
+                    getNonNullB64(followerHandler.getHead()),
+                    getNonNullB64(followerHandler.getChest()),
+                    getNonNullB64(followerHandler.getLegs()),
+                    getNonNullB64(followerHandler.getFeet()),
+                    getNonNullB64(followerHandler.getMainHand()),
+                    getNonNullB64(followerHandler.getOffHand())
             );
 
             followerTextures.forEach(texture -> {
@@ -38,5 +40,11 @@ public class GeyserSkullExporter {
         customSkullsConfig.set("player-profiles", textures.stream().toList());
 
         customSkullsConfig.save(exportFile);
+    }
+
+    @NotNull
+    private String getNonNullB64(ItemStack itemStack) {
+        String b64 = Followers.getSkullCreator().getB64(itemStack);
+        return b64 != null ? b64 : "";
     }
 }
