@@ -9,6 +9,3 @@ CREATE TABLE IF NOT EXISTS follower_users
     randomFollower BOOLEAN DEFAULT false,
     PRIMARY KEY (uuid)
 );
-
-ALTER TABLE follower_users
-ADD COLUMN IF NOT EXISTS randomFollower BOOLEAN DEFAULT false;
