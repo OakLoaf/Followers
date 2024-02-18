@@ -102,6 +102,11 @@ public class ItemStackData {
             configurationSection.set("enchanted", "True");
         }
 
+        ItemMeta itemMeta = item.getItemMeta();
+        if (itemMeta != null && itemMeta.hasCustomModelData()) {
+            configurationSection.set("customModelData", itemMeta.getCustomModelData());
+        }
+
         if (material == Material.PLAYER_HEAD) {
             configurationSection.set("skullType", "custom");
             String textureStr = Followers.getSkullCreator().getB64(item);
