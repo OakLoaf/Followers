@@ -405,6 +405,7 @@ public class FollowerEntity {
                     as.setAI(false);
                     as.setGravity(false);
                     as.setMetadata("keep", new FixedMetadataValue(Followers.getInstance(), null));
+                    as.setPersistent(false);
                     as.getPersistentDataContainer().set(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING, player.getUniqueId().toString());
                     if (!Followers.configManager.areHitboxesEnabled()) {
                         as.setMarker(true);
@@ -446,6 +447,7 @@ public class FollowerEntity {
                     as.setAI(false);
                     as.setGravity(false);
                     as.setMetadata("keep", new FixedMetadataValue(Followers.getInstance(), "keep"));
+                    as.setPersistent(false);
                     as.getPersistentDataContainer().set(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING, "");
 
                     Followers.dataManager.addActiveArmorStand(as.getUniqueId());
