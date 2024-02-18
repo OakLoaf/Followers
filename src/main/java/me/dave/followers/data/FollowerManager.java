@@ -2,7 +2,6 @@ package me.dave.followers.data;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
 import me.dave.followers.utils.ItemStackData;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
