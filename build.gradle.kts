@@ -15,9 +15,10 @@ repositories {
     maven(url="https://hub.spigotmc.org/nexus/content/repositories/snapshots/") // Spigot
     maven(url="https://ci.ender.zone/plugin/repository/everything/") // Essentials
     maven(url="https://repo.opencollab.dev/main/") // Floodgate
+    maven(url="https://repo.lushplugins.org/snapshots/") // LushLib
     maven(url="https://repo.dmulloy2.net/repository/public/") // ProtocolLib
     maven(url="https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI
-    maven(url="https://jitpack.io") // ChatColorHandler
+    maven(url="https://jitpack.io") //GSit
 }
 
 dependencies {
@@ -34,7 +35,7 @@ dependencies {
 
     // Libraries
     implementation("mysql:mysql-connector-java:8.0.25")
-    implementation("com.github.CoolDCB:ChatColorHandler:v2.1.3")
+    implementation("org.lushplugins:LushLib:0.6.0")
 }
 
 java {
@@ -48,7 +49,7 @@ tasks {
 
     shadowJar {
         relocate("com.mysql", "org.lushplugins.followers.libraries.mysql")
-        relocate("me.dave.chatcolorhandler", "org.lushplugins.followers.libraries.chatcolor")
+        relocate("org.lushplugins.lushlib", "org.lushplugins.followers.libraries.lushlib")
 
         minimize()
 

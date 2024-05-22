@@ -9,14 +9,29 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.lushplugins.lushlib.hook.Hook;
+import org.lushplugins.lushlib.listener.EventListener;
 
-public class GSitHook implements Listener {
+public class GSitHook extends Hook implements EventListener {
+
+    public GSitHook() {
+        super("GSit");
+    }
+
+    @Override
+    protected void onEnable() {
+        this.registerListeners();
+    }
+
+    @Override
+    protected void onDisable() {
+        this.unregisterListeners();
+    }
 
     @EventHandler
     public void onPlayerSit(EntitySitEvent event) {
         if (event.getEntity() instanceof Player player) {
-            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+            FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
             followerUser.setPose(FollowerPose.SITTING);
             FollowerEntity followerEntity = followerUser.getFollowerEntity();
             if (followerEntity == null || !followerEntity.isAlive()) {
@@ -30,7 +45,7 @@ public class GSitHook implements Listener {
     @EventHandler
     public void onPlayerGetUpFromSeat(EntityGetUpSitEvent event) {
         if (event.getEntity() instanceof Player player) {
-            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+            FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
             followerUser.setPose(FollowerPose.DEFAULT);
             FollowerEntity followerEntity = followerUser.getFollowerEntity();
             if (followerEntity == null || !followerEntity.isAlive()) {
@@ -44,7 +59,7 @@ public class GSitHook implements Listener {
     @EventHandler
     public void onPlayerPose(PlayerPoseEvent event) {
         Player player = event.getPlayer();
-        FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
+        FollowerEntity followerEntity = Followers.getInstance().getDataManager().getFollowerUser(player).getFollowerEntity();
         if (followerEntity == null || !followerEntity.isAlive()) {
             return;
         }
@@ -59,7 +74,7 @@ public class GSitHook implements Listener {
     @EventHandler
     public void onPlayerEndPose(PlayerGetUpPoseEvent event) {
         Player player = event.getPlayer();
-        FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
+        FollowerEntity followerEntity = Followers.getInstance().getDataManager().getFollowerUser(player).getFollowerEntity();
         if (followerEntity == null || !followerEntity.isAlive()) {
             return;
         }

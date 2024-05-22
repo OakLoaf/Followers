@@ -22,7 +22,7 @@ public class DataManager {
     // Safe to use bukkit api in callback.
     public void initAsync(Consumer<Boolean> onComplete) {
         Storage.SERVICE.submit(() -> {
-            String databaseType = Followers.configManager.getDatabaseType();
+            String databaseType = Followers.getInstance().getConfigManager().getDatabaseType();
             final String errStr = "Could not read database type! Check config";
             if (requireNonNull(databaseType, errStr).equalsIgnoreCase("mysql")) {
                 storage = new MysqlStorage();
@@ -69,7 +69,7 @@ public class DataManager {
         List<FollowerEntity> followerEntities = new ArrayList<>();
 
         // Gets all available FollowerEntities - done via a forEach loop in preference to a stream for minor performance improvements
-        Followers.dataManager.getOnlineFollowerUsers().forEach(followerUser -> {
+        Followers.getInstance().getDataManager().getOnlineFollowerUsers().forEach(followerUser -> {
             FollowerEntity followerEntity = followerUser.getFollowerEntity();
 
             if (followerEntity != null) {

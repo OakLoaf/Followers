@@ -16,7 +16,7 @@ public class VisibilityTask extends FollowerTask {
 
     @Override
     public void tick() {
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+        FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
 
         boolean hidden = player.isInvisible() || followerUser.isVanished();
         followerUser.setHidden(hidden);

@@ -1,6 +1,5 @@
 package org.lushplugins.followers.item;
 
-import me.dave.chatcolorhandler.ChatColorHandler;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerHandler;
 import org.lushplugins.followers.exceptions.ObjectNameLockedException;
@@ -10,7 +9,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
@@ -20,10 +18,13 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.lushplugins.followers.utils.SimpleItemStack;
+import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
+import org.lushplugins.lushlib.listener.EventListener;
 
 import java.util.Arrays;
 
-public class FollowerCreator implements Listener {
+public class FollowerCreator implements EventListener {
     private static final ItemStack creatorItem = getOrLoadCreatorItem();
 
     @EventHandler
@@ -36,11 +37,11 @@ public class FollowerCreator implements Listener {
 
         event.setCancelled(true);
         if (!player.hasPermission("follower.admin.create")) {
-            ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("no-permissions"));
+            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
             return;
         }
 
-        if (Followers.dataManager.getActiveArmorStandsSet().contains(armorStand.getUniqueId())) {
+        if (Followers.getInstance().getDataManager().getActiveArmorStandsSet().contains(armorStand.getUniqueId())) {
             return;
         }
 
@@ -55,7 +56,7 @@ public class FollowerCreator implements Listener {
         EntityEquipment armorStandEquipment = armorStand.getEquipment();
         if (armorStandEquipment != null) {
             for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-                followerBuilder.setSlot(equipmentSlot, armorStandEquipment.getItem(equipmentSlot));
+                followerBuilder.setSlot(equipmentSlot, new SimpleItemStack(armorStandEquipment.getItem(equipmentSlot)));
             }
         }
 
@@ -75,7 +76,7 @@ public class FollowerCreator implements Listener {
             event.setCancelled(true);
 
             if (!player.hasPermission("follower.admin.create")) {
-                ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("no-permissions"));
+                ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
                 return;
             }
 
@@ -101,8 +102,8 @@ public class FollowerCreator implements Listener {
 
         ItemStack item = new ItemStack(Material.TOTEM_OF_UNDYING);
         ItemMeta creatorMeta = item.getItemMeta();
-        creatorMeta.setDisplayName(ChatColorHandler.translateAlternateColorCodes("<gradient:#FBDA00:#EEFDEA>Follower Creator"));
-        creatorMeta.setLore(ChatColorHandler.translateAlternateColorCodes(Arrays.asList("&7Right Click an Armor Stand", "&7to turn it into a new Follower!")));
+        creatorMeta.setDisplayName(ChatColorHandler.translate("<gradient:#FBDA00:#EEFDEA>Follower Creator"));
+        creatorMeta.setLore(ChatColorHandler.translate(Arrays.asList("&7Right Click an Armor Stand", "&7to turn it into a new Follower!")));
         creatorMeta.addEnchant(Enchantment.DURABILITY, 1, false);
         creatorMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         item.setItemMeta(creatorMeta);

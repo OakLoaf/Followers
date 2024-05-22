@@ -10,7 +10,7 @@ public abstract class FollowerTask {
 
     public FollowerTask(FollowerEntity followerEntity) {
         this.followerEntity = followerEntity;
-        this.startTick = Followers.getCurrentTick() + getDelay();
+        this.startTick = Followers.getInstance().getCurrentTick() + getDelay();
     }
 
     public abstract void tick();

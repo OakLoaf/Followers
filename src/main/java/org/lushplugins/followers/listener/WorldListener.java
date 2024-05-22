@@ -6,13 +6,13 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.persistence.PersistentDataType;
+import org.lushplugins.lushlib.listener.EventListener;
 
-public class WorldListener implements Listener {
+public class WorldListener implements EventListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityLoad(CreatureSpawnEvent event) {
@@ -21,9 +21,9 @@ public class WorldListener implements Listener {
             return;
         }
 
-        if (Followers.dataManager.getActiveArmorStandsSet().contains(entity.getUniqueId())) {
+        if (Followers.getInstance().getDataManager().getActiveArmorStandsSet().contains(entity.getUniqueId())) {
             // Ran if the entity is an active FollowerEntity
-            if (event.isCancelled() && Followers.configManager.shouldForceSpawn()) {
+            if (event.isCancelled() && Followers.getInstance().getConfigManager().shouldForceSpawn()) {
                 event.setCancelled(false);
             }
         } else if (entity.getPersistentDataContainer().has(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING)) {
@@ -48,7 +48,7 @@ public class WorldListener implements Listener {
                         continue;
                     }
 
-                    if (Followers.dataManager.getActiveArmorStandsSet().contains(entity.getUniqueId())) {
+                    if (Followers.getInstance().getDataManager().getActiveArmorStandsSet().contains(entity.getUniqueId())) {
                         continue;
                     }
 
@@ -70,7 +70,7 @@ public class WorldListener implements Listener {
                     continue;
                 }
 
-                Followers.dataManager.removeActiveArmorStand(entity.getUniqueId());
+                Followers.getInstance().getDataManager().removeActiveArmorStand(entity.getUniqueId());
                 if (entity.getPersistentDataContainer().has(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING)) {
                     entity.remove();
                 }

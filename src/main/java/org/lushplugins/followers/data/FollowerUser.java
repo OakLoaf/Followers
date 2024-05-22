@@ -72,17 +72,17 @@ public class FollowerUser {
 
     public void setUsername(String username) {
         this.username = username;
-        Followers.dataManager.saveFollowerUser(this);
+        Followers.getInstance().getDataManager().saveFollowerUser(this);
     }
 
     public void setFollowerType(String followerType) {
         this.followerType = followerType;
-        Followers.dataManager.saveFollowerUser(this);
+        Followers.getInstance().getDataManager().saveFollowerUser(this);
     }
 
     public void setRandom(boolean randomize) {
         this.randomType = randomize;
-        Followers.dataManager.saveFollowerUser(this);
+        Followers.getInstance().getDataManager().saveFollowerUser(this);
     }
 
     public List<String> getOwnedFollowerNames() {
@@ -92,7 +92,7 @@ public class FollowerUser {
             return followers;
         }
 
-        for (String followerName : Followers.followerManager.getFollowerNames()) {
+        for (String followerName : Followers.getInstance().getFollowerManager().getFollowerNames()) {
             if (player.hasPermission("followers." + followerName.toLowerCase().replaceAll(" ", "_"))) {
                 followers.add(followerName);
             }
@@ -110,17 +110,17 @@ public class FollowerUser {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
-        Followers.dataManager.saveFollowerUser(this);
+        Followers.getInstance().getDataManager().saveFollowerUser(this);
     }
 
     public void setDisplayNameEnabled(boolean nameIsEnabled) {
         this.nameIsOn = nameIsEnabled;
-        Followers.dataManager.saveFollowerUser(this);
+        Followers.getInstance().getDataManager().saveFollowerUser(this);
     }
 
     public void setFollowerEnabled(boolean followerIsEnabled) {
         this.enabled = followerIsEnabled;
-        Followers.dataManager.saveFollowerUser(this);
+        Followers.getInstance().getDataManager().saveFollowerUser(this);
     }
 
     public boolean isAfk() {

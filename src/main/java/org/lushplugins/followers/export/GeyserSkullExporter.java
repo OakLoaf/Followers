@@ -2,7 +2,6 @@ package org.lushplugins.followers.export;
 
 import org.lushplugins.followers.Followers;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -20,14 +19,14 @@ public class GeyserSkullExporter {
 
         HashSet<String> textures = new HashSet<>();
 
-        Followers.followerManager.getFollowers().values().forEach(followerHandler -> {
+        Followers.getInstance().getFollowerManager().getFollowers().values().forEach(followerHandler -> {
             List<String> followerTextures = List.of(
-                    getNonNullB64(followerHandler.getHead()),
-                    getNonNullB64(followerHandler.getChest()),
-                    getNonNullB64(followerHandler.getLegs()),
-                    getNonNullB64(followerHandler.getFeet()),
-                    getNonNullB64(followerHandler.getMainHand()),
-                    getNonNullB64(followerHandler.getOffHand())
+                    getNonNullString(followerHandler.getHead().getSkullTexture()),
+                    getNonNullString(followerHandler.getChest().getSkullTexture()),
+                    getNonNullString(followerHandler.getLegs().getSkullTexture()),
+                    getNonNullString(followerHandler.getFeet().getSkullTexture()),
+                    getNonNullString(followerHandler.getMainHand().getSkullTexture()),
+                    getNonNullString(followerHandler.getOffHand().getSkullTexture())
             );
 
             followerTextures.forEach(texture -> {
@@ -43,8 +42,7 @@ public class GeyserSkullExporter {
     }
 
     @NotNull
-    private String getNonNullB64(ItemStack itemStack) {
-        String b64 = Followers.getSkullCreator().getB64(itemStack);
-        return b64 != null ? b64 : "";
+    private String getNonNullString(String string) {
+        return string != null ? string : "";
     }
 }

@@ -1,11 +1,10 @@
 package org.lushplugins.followers.data;
 
-import me.dave.chatcolorhandler.ChatColorHandler;
-import org.lushplugins.followers.utils.ItemStackData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.lushplugins.followers.Followers;
+import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +38,7 @@ public class FollowerManager {
     }
 
     public void refreshAllFollowers() {
-        Followers.dataManager.getOnlineFollowerUsers().forEach(FollowerUser::refreshFollowerEntity);
+        Followers.getInstance().getDataManager().getOnlineFollowerUsers().forEach(FollowerUser::refreshFollowerEntity);
     }
 
     public void createFollower(Player player, FollowerHandler followerHandler) {
@@ -50,28 +49,28 @@ public class FollowerManager {
         String followerName = followerHandler.getName();
         ConfigurationSection configurationSection = config.getConfigurationSection(followerName);
         if (!replace && configurationSection != null) {
-            ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-already-exists"));
+            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-already-exists"));
             return;
         }
 
         configurationSection = config.createSection(followerName);
-        ItemStackData.save(followerHandler.getHead(), configurationSection, "head");
-        ItemStackData.save(followerHandler.getChest(), configurationSection, "chest");
-        ItemStackData.save(followerHandler.getLegs(), configurationSection, "legs");
-        ItemStackData.save(followerHandler.getFeet(), configurationSection, "feet");
-        ItemStackData.save(followerHandler.getMainHand(), configurationSection, "mainHand");
-        ItemStackData.save(followerHandler.getOffHand(), configurationSection, "offHand");
+        followerHandler.getHead().save(configurationSection, "head");
+        followerHandler.getChest().save(configurationSection, "chest");
+        followerHandler.getLegs().save(configurationSection, "legs");
+        followerHandler.getFeet().save(configurationSection, "feet");
+        followerHandler.getMainHand().save(configurationSection, "mainHand");
+        followerHandler.getOffHand().save(configurationSection, "offHand");
 
         configurationSection.set("visible", followerHandler.isVisible());
 
         if (!replace) {
-            ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-created").replaceAll("%follower%", followerName));
+            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-created").replaceAll("%follower%", followerName));
         } else {
-            ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-edited").replaceAll("%follower%", followerName));
+            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-edited").replaceAll("%follower%", followerName));
         }
         saveFollowers();
         loadFollower(followerName, followerHandler);
-        Followers.followerManager.refreshAllFollowers();
+        Followers.getInstance().getFollowerManager().refreshAllFollowers();
     }
 
     public void editFollower(Player player, FollowerHandler followerHandler) {

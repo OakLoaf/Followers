@@ -8,29 +8,46 @@ import net.apcat.simplesit.events.PlayerSitEvent;
 import net.apcat.simplesit.events.PlayerStopSittingEvent;
 import org.bukkit.Particle;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.lushplugins.lushlib.hook.Hook;
+import org.lushplugins.lushlib.listener.EventListener;
 
-public class SimpleSitHook implements Listener {
+public class SimpleSitHook extends Hook implements EventListener {
+
+    public SimpleSitHook() {
+        super("SimpleSit");
+    }
+
+    @Override
+    protected void onEnable() {
+        this.registerListeners();
+    }
+
+    @Override
+    protected void onDisable() {
+        this.unregisterListeners();
+    }
 
     @EventHandler
     public void onPlayerSit(PlayerSitEvent event) {
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(event.getPlayer());
+        FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(event.getPlayer());
         followerUser.setPose(FollowerPose.SITTING);
         FollowerEntity followerEntity = followerUser.getFollowerEntity();
         if (followerEntity == null || !followerEntity.isAlive()) {
             return;
         }
+
         followerEntity.startParticles(Particle.CLOUD);
     }
 
     @EventHandler
     public void onPlayerExitSeat(PlayerStopSittingEvent event) {
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(event.getPlayer());
+        FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(event.getPlayer());
         followerUser.setPose(FollowerPose.DEFAULT);
         FollowerEntity followerEntity = followerUser.getFollowerEntity();
         if (followerEntity == null || !followerEntity.isAlive()) {
             return;
         }
+
         followerEntity.stopTask("particle");
     }
 }

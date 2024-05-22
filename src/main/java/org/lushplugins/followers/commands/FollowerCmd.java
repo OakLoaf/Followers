@@ -1,6 +1,5 @@
 package org.lushplugins.followers.commands;
 
-import me.dave.chatcolorhandler.ChatColorHandler;
 import org.lushplugins.followers.api.events.FollowersReloadEvent;
 import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.entity.FollowerEntity;
@@ -19,6 +18,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 
 import java.util.*;
 
@@ -30,7 +30,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
             switch(args[0].toLowerCase()) {
                 case "create" -> {
                     if (!sender.hasPermission("follower.admin.create")) {
-                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
+                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
                         return true;
                     }
 
@@ -41,16 +41,16 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
 
                     ItemStack creator = FollowerCreator.getOrLoadCreatorItem();
                     player.getInventory().addItem(creator);
-                    ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("get-follower-creator"));
+                    ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("get-follower-creator"));
                     return true;
                 }
                 case "delete" -> {
                     if (!sender.hasPermission("follower.admin.delete")) {
-                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
+                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
                         return true;
                     }
 
-                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/followers delete <follower_name>"));
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/followers delete <follower_name>"));
                     return true;
                 }
                 case "disable", "hide" -> {
@@ -59,7 +59,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                         return true;
                     }
 
-                    FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+                    FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
                     FollowerEntity followerEntity = followerUser.getFollowerEntity();
                     if (followerEntity != null) {
                         followerUser.disableFollowerEntity();
@@ -73,7 +73,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                         return true;
                     }
 
-                    FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+                    FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
                     FollowerEntity followerEntity = followerUser.getFollowerEntity();
                     if (followerEntity != null) {
                         boolean newStatus = !followerUser.isDisplayNameEnabled();
@@ -85,10 +85,10 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                 }
                 case "edit" -> {
                     if (!sender.hasPermission("follower.admin.edit")) {
-                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
+                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
                         return true;
                     }
-                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/followers edit <follower_name>"));
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/followers edit <follower_name>"));
                     return true;
                 }
                 case "enable", "show" -> {
@@ -97,42 +97,42 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                         return true;
                     }
 
-                    FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+                    FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
                     FollowerEntity followerEntity = followerUser.getFollowerEntity();
                     if (followerEntity == null || !followerEntity.isAlive()) {
-                        Followers.dataManager.getFollowerUser(player).spawnFollowerEntity();
-                        ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
+                        Followers.getInstance().getDataManager().getFollowerUser(player).spawnFollowerEntity();
+                        ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
                     }
 
                     return true;
                 }
                 case "export" -> {
                     if (!sender.hasPermission("follower.admin.export")) {
-                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
+                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
                         return true;
                     }
 
-                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/followers export <export_type>"));
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/followers export <export_type>"));
                     return true;
                 }
                 case "messages" -> {
-                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
-                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("incorrect-usage"));
-                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("reloaded"));
-                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-spawned"));
-                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-no-name"));
-                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-created"));
-                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-deleted"));
-                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-doesnt-exist"));
-                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-already-exists"));
-                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-default-skull"));
-                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("get-follower-creator"));
-                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("dye-wrong-material"));
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage"));
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("reloaded"));
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-no-name"));
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-created"));
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-deleted"));
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-doesnt-exist"));
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-already-exists"));
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-default-skull"));
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("get-follower-creator"));
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("dye-wrong-material"));
                     return true;
                 }
                 case "moderate" -> {
                     if (!sender.hasPermission("follower.admin.moderate")) {
-                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
+                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
                         return true;
                     }
 
@@ -152,32 +152,32 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     }
 
                     if (!sender.hasPermission("follower.random")) {
-                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
+                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
                         return true;
                     }
 
-                    FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+                    FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
                     boolean isRandom = followerUser.isRandomType();
                     followerUser.setRandom(!isRandom);
 
                     if (!isRandom) {
                         followerUser.randomizeFollowerType();
-                        ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
+                        ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
                     }
 
                     return true;
                 }
                 case "reload" -> {
                     if (!sender.hasPermission("follower.admin.reload")) {
-                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
+                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
                         return true;
                     }
 
-                    Followers.configManager.reloadConfig(Followers.getInstance());
-                    Followers.followerManager.reloadFollowers();
-                    Followers.dataManager.reloadFollowerInventories();
+                    Followers.getInstance().getConfigManager().reloadConfig(Followers.getInstance());
+                    Followers.getInstance().getFollowerManager().reloadFollowers();
+                    Followers.getInstance().getDataManager().reloadFollowerInventories();
                     Followers.getInstance().callEvent(new FollowersReloadEvent());
-                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("reloaded"));
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("reloaded"));
                     return true;
                 }
                 case "rename" -> {
@@ -187,11 +187,11 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     }
 
                     if (!sender.hasPermission("follower.name")) {
-                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
+                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
                         return true;
                     }
 
-                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/followers rename <name>"));
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/followers rename <name>"));
                     return true;
                 }
                 case "set" -> {
@@ -200,7 +200,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                         return true;
                     }
 
-                    ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/followers set <follower_name>"));
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/followers set <follower_name>"));
                     return true;
                 }
                 case "toggle" -> {
@@ -209,14 +209,14 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                         return true;
                     }
 
-                    FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+                    FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
                     FollowerEntity followerEntity = followerUser.getFollowerEntity();
                     if (followerEntity == null || !followerEntity.isAlive()) {
-                        Followers.dataManager.getFollowerUser(player).spawnFollowerEntity();
-                        ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
+                        Followers.getInstance().getDataManager().getFollowerUser(player).spawnFollowerEntity();
+                        ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
                     }
                     else {
-                        Followers.dataManager.getFollowerUser(player).disableFollowerEntity();
+                        Followers.getInstance().getDataManager().getFollowerUser(player).disableFollowerEntity();
                     }
                     return true;
                 }
@@ -226,7 +226,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
             switch(args[0].toLowerCase()) {
                 case "delete" -> {
                     if (!sender.hasPermission("follower.admin.delete")) {
-                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
+                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
                         return true;
                     }
 
@@ -237,13 +237,13 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     }
 
                     String followerNameFinal = followerName.substring(0, followerName.length() - 1);
-                    FollowerHandler follower = Followers.followerManager.getFollower(followerNameFinal);
+                    FollowerHandler follower = Followers.getInstance().getFollowerManager().getFollower(followerNameFinal);
                     if (follower == null) {
-                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerNameFinal));
+                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerNameFinal));
                     } else {
-                        Followers.followerManager.removeFollower(followerNameFinal);
-                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-deleted").replaceAll("%follower%", followerNameFinal));
-                        Followers.followerManager.refreshAllFollowers();
+                        Followers.getInstance().getFollowerManager().removeFollower(followerNameFinal);
+                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-deleted").replaceAll("%follower%", followerNameFinal));
+                        Followers.getInstance().getFollowerManager().refreshAllFollowers();
                     }
 
                     return true;
@@ -256,7 +256,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
 
                     boolean newStatus = Boolean.parseBoolean(args[1]);
 
-                    FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+                    FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
                     FollowerEntity followerEntity = followerUser.getFollowerEntity();
                     if (followerEntity != null) {
                         followerUser.setDisplayNameEnabled(newStatus);
@@ -272,7 +272,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     }
 
                     if (!sender.hasPermission("follower.admin.edit")) {
-                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
+                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
                         return true;
                     }
 
@@ -283,9 +283,9 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     }
                     String followerName = followerNameBuilder.substring(0, followerNameBuilder.length() - 1);
 
-                    FollowerHandler followerHandler = Followers.followerManager.getFollower(followerName);
+                    FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerName);
                     if (followerHandler == null) {
-                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerName));
+                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerName));
                     } else {
                         FollowerHandler.Builder followerBuilder = new FollowerHandler.Builder(followerHandler);
                         try {
@@ -303,16 +303,13 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                             new GeyserSkullExporter().startExport();
                         } catch (Exception e) {
                             e.printStackTrace();
-
-                            // TODO: Make message configurable
                             ChatColorHandler.sendMessage(sender, "&#ff6969Export failed");
                             return true;
                         }
 
-                        // TODO: Make message configurable
                         ChatColorHandler.sendMessage(sender, "&#b7faa2Successfully exported file to &#66b04f'export/custom-skulls.yml'");
                     } else {
-                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/followers export <export_type>"));
+                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/followers export <export_type>"));
                     }
 
                     return true;
@@ -324,17 +321,17 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     }
 
                     if (!sender.hasPermission("follower.random")) {
-                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
+                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
                         return true;
                     }
 
-                    FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+                    FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
                     boolean isRandom = Boolean.parseBoolean(args[1]);
                     followerUser.setRandom(isRandom);
 
                     if (!isRandom) {
                         followerUser.randomizeFollowerType();
-                        ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("follower-spawned"));
+                        ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
                     }
 
                     return true;
@@ -346,11 +343,11 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     }
 
                     if (!sender.hasPermission("follower.name")) {
-                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("no-permissions"));
+                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
                         return true;
                     }
 
-                    FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+                    FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
                     FollowerEntity followerEntity = followerUser.getFollowerEntity();
                     String newName = args[1];
 
@@ -374,11 +371,11 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                     }
                     String followerName = followerNameBuilder.substring(0, followerNameBuilder.length() - 1);
 
-                    FollowerHandler followerHandler = Followers.followerManager.getFollower(followerName);
+                    FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerName);
                     if (followerHandler == null) {
-                        ChatColorHandler.sendMessage(sender, Followers.configManager.getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerName));
+                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerName));
                     } else {
-                        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+                        FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
                         if (followerUser.isRandomType()) {
                             followerUser.setRandom(false);
                         }
@@ -447,7 +444,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
             switch(args[0].toLowerCase()) {
                 case "delete" -> {
                     if (sender.hasPermission("follower.admin.delete")) {
-                        tabComplete.addAll(Followers.followerManager.getFollowerNames());
+                        tabComplete.addAll(Followers.getInstance().getFollowerManager().getFollowerNames());
                     }
                 }
                 case "display-name" -> {
@@ -458,7 +455,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                 }
                 case "edit" -> {
                     if (sender.hasPermission("follower.admin.edit")) {
-                        tabComplete.addAll(Followers.followerManager.getFollowerNames());
+                        tabComplete.addAll(Followers.getInstance().getFollowerManager().getFollowerNames());
                     }
                 }
                 case "export" -> {
@@ -479,7 +476,7 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
                 }
                 case "set" -> {
                     if (sender instanceof Player player) {
-                        tabComplete.addAll(Followers.dataManager.getFollowerUser(player).getOwnedFollowerNames());
+                        tabComplete.addAll(Followers.getInstance().getDataManager().getFollowerUser(player).getOwnedFollowerNames());
                     }
                 }
             }

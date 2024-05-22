@@ -18,7 +18,7 @@ public class TextInterface {
     public TextInterface title(String title) {
         this.title = title;
 
-        if (Followers.hasFloodgate()) {
+        if (Followers.getInstance().hasFloodgate()) {
             formFactory = new FloodgateFormFactory();
         }
 
@@ -40,7 +40,7 @@ public class TextInterface {
             throw new IllegalStateException("Title is null! You must set a title to use this class");
         }
 
-        if (Followers.hasFloodgate() && FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
+        if (Followers.getInstance().hasFloodgate() && FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
             formFactory.form(player, response, title, inputName, placeholder);
         } else {
             SignMenuFactory.Menu menu = signFactory.newMenu(Arrays.asList("", "^^^^^^^^^^^", title, ""));

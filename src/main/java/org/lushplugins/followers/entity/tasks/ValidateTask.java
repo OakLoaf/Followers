@@ -27,11 +27,11 @@ public class ValidateTask extends FollowerTask {
         }
 
         if (!followerEntity.isBodyEntityValid()) {
-            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+            FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
             UUID uuid = player.getUniqueId();
 
             int attempts = attemptsMap.getOrDefault(uuid, 0);
-            if (attempts >= Followers.configManager.getMaxRespawnAttempts()) {
+            if (attempts >= Followers.getInstance().getConfigManager().getMaxRespawnAttempts()) {
                 attemptsMap.remove(uuid);
                 followerUser.removeFollowerEntity();
             } else {

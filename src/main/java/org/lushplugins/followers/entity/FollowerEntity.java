@@ -1,6 +1,5 @@
 package org.lushplugins.followers.entity;
 
-import me.dave.chatcolorhandler.ChatColorHandler;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.api.events.FollowerEntityChangeTypeEvent;
 import org.lushplugins.followers.api.events.FollowerEntitySpawnEvent;
@@ -18,6 +17,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.lushplugins.followers.data.FollowerUser;
 import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.entity.tasks.*;
+import org.lushplugins.followers.utils.SimpleItemStack;
+import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
@@ -75,14 +76,14 @@ public class FollowerEntity {
     }
 
     public FollowerHandler getType() {
-        return Followers.followerManager.getFollower(followerType);
+        return Followers.getInstance().getFollowerManager().getFollower(followerType);
     }
 
     public void setType(String followerType) {
         if (Followers.getInstance().callEvent(new FollowerEntityChangeTypeEvent(this, this.followerType, followerType))) {
             this.followerType = followerType;
 
-            Followers.dataManager.getFollowerUser(player).setFollowerType(followerType);
+            Followers.getInstance().getDataManager().getFollowerUser(player).setFollowerType(followerType);
             if (!player.isInvisible()) {
                 reloadInventory();
             }
@@ -90,29 +91,29 @@ public class FollowerEntity {
     }
 
     public String getDisplayName() {
-        return Followers.dataManager.getFollowerUser(player).getDisplayName();
+        return Followers.getInstance().getDataManager().getFollowerUser(player).getDisplayName();
     }
 
     public void setDisplayName(String newName) {
         showDisplayName(true);
 
-        if (Followers.configManager.areHitboxesEnabled()) {
+        if (Followers.getInstance().getConfigManager().areHitboxesEnabled()) {
             if (isBodyEntityValid()) {
-                bodyEntity.setCustomName(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", newName)));
+                bodyEntity.setCustomName(ChatColorHandler.translate(Followers.getInstance().getConfigManager().getFollowerNicknameFormat().replaceAll("%nickname%", newName)));
             }
         } else {
             if (isNametagEntityValid()) {
-                nametagEntity.setCustomName(ChatColorHandler.translateAlternateColorCodes(Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", newName)));
+                nametagEntity.setCustomName(ChatColorHandler.translate(Followers.getInstance().getConfigManager().getFollowerNicknameFormat().replaceAll("%nickname%", newName)));
             }
         }
     }
 
     public boolean isDisplayNameVisible() {
-        return Followers.dataManager.getFollowerUser(player).isDisplayNameEnabled();
+        return Followers.getInstance().getDataManager().getFollowerUser(player).isDisplayNameEnabled();
     }
 
     public void showDisplayName(boolean visible) {
-        Followers.dataManager.getFollowerUser(player).setDisplayNameEnabled(visible);
+        Followers.getInstance().getDataManager().getFollowerUser(player).setDisplayNameEnabled(visible);
         if (!player.isInvisible()) {
             displayName(visible);
         }
@@ -140,7 +141,7 @@ public class FollowerEntity {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
-        FollowerHandler followerConfig = Followers.followerManager.getFollower(followerType);
+        FollowerHandler followerConfig = Followers.getInstance().getFollowerManager().getFollower(followerType);
         if (followerConfig == null) {
             return;
         }
@@ -149,7 +150,7 @@ public class FollowerEntity {
             bodyEntity.setVisible(followerConfig.isVisible() && visible);
         }
 
-        displayName(visible && Followers.dataManager.getFollowerUser(player).isDisplayNameEnabled());
+        displayName(visible && Followers.getInstance().getDataManager().getFollowerUser(player).isDisplayNameEnabled());
 
         if (visible) {
             reloadInventory();
@@ -163,7 +164,7 @@ public class FollowerEntity {
             EntityEquipment equipment = bodyEntity.getEquipment();
 
             if (equipment != null) {
-                ItemStack item = switch (equipmentSlot) {
+                SimpleItemStack simpleItemStack = switch (equipmentSlot) {
                     case HEAD -> followerType.getHead();
                     case CHEST -> followerType.getChest();
                     case LEGS -> followerType.getLegs();
@@ -172,7 +173,7 @@ public class FollowerEntity {
                     case OFF_HAND -> followerType.getOffHand();
                 };
 
-                equipment.setItem(equipmentSlot, item);
+                equipment.setItem(equipmentSlot, simpleItemStack.asItemStack());
             }
         }
     }
@@ -191,9 +192,9 @@ public class FollowerEntity {
     }
 
     public void reloadInventory() {
-        FollowerHandler followerHandler = Followers.followerManager.getFollower(this.followerType);
+        FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(this.followerType);
         if (followerHandler == null) {
-            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+            FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
             followerUser.disableFollowerEntity();
             return;
         }
@@ -213,7 +214,7 @@ public class FollowerEntity {
 
     public boolean spawn() {
         if (Followers.getInstance().callEvent(new FollowerEntitySpawnEvent(this))) {
-            FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+            FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
 
             if (isBodyEntityValid()) {
                 bodyEntity.remove();
@@ -268,14 +269,14 @@ public class FollowerEntity {
 
         if (bodyEntity != null) {
             bodyEntity.remove();
-            Followers.dataManager.removeActiveArmorStand(bodyEntity.getUniqueId());
+            Followers.getInstance().getDataManager().removeActiveArmorStand(bodyEntity.getUniqueId());
         }
 
         if (nametagEntity != null) {
             nametagEntity.remove();
         }
 
-        Followers.dataManager.removeActiveArmorStand(nameArmorStandUUID);
+        Followers.getInstance().getDataManager().removeActiveArmorStand(nameArmorStandUUID);
     }
 
     private void startMovement() {
@@ -307,7 +308,7 @@ public class FollowerEntity {
     ////////////////////////
 
     public void tick() {
-        int currTick = Followers.getCurrentTick();
+        int currTick = Followers.getInstance().getCurrentTick();
 
         if (Followers.getInstance().callEvent(new FollowerEntityTickEvent(this))) {
             tasks.values().forEach(task -> {
@@ -370,8 +371,8 @@ public class FollowerEntity {
                 nameArmorStandUUID = nametagEntity.getUniqueId();
             }
 
-            String nickname = Followers.configManager.getFollowerNicknameFormat().replaceAll("%nickname%", Followers.dataManager.getFollowerUser(player).getDisplayName());
-            nametagEntity.setCustomName(ChatColorHandler.translateAlternateColorCodes(nickname));
+            String nickname = Followers.getInstance().getConfigManager().getFollowerNicknameFormat().replaceAll("%nickname%", Followers.getInstance().getDataManager().getFollowerUser(player).getDisplayName());
+            nametagEntity.setCustomName(ChatColorHandler.translate(nickname));
             nametagEntity.setCustomNameVisible(true);
         }
         else {
@@ -379,7 +380,7 @@ public class FollowerEntity {
                 nametagEntity.remove();
             }
 
-            Followers.dataManager.removeActiveArmorStand(nameArmorStandUUID);
+            Followers.getInstance().getDataManager().removeActiveArmorStand(nameArmorStandUUID);
             nametagEntity = null;
             nameArmorStandUUID = null;
         }
@@ -407,12 +408,12 @@ public class FollowerEntity {
                     as.setMetadata("keep", new FixedMetadataValue(Followers.getInstance(), null));
                     as.setPersistent(false);
                     as.getPersistentDataContainer().set(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING, player.getUniqueId().toString());
-                    if (!Followers.configManager.areHitboxesEnabled()) {
+                    if (!Followers.getInstance().getConfigManager().areHitboxesEnabled()) {
                         as.setMarker(true);
                     }
                     // TODO: Add equipment
 
-                    Followers.dataManager.addActiveArmorStand(as.getUniqueId());
+                    Followers.getInstance().getDataManager().addActiveArmorStand(as.getUniqueId());
                 } catch(Exception e) {
                     e.printStackTrace();
                 }
@@ -450,7 +451,7 @@ public class FollowerEntity {
                     as.setPersistent(false);
                     as.getPersistentDataContainer().set(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING, "");
 
-                    Followers.dataManager.addActiveArmorStand(as.getUniqueId());
+                    Followers.getInstance().getDataManager().addActiveArmorStand(as.getUniqueId());
                 } catch(Exception e) {
                     e.printStackTrace();
                 }

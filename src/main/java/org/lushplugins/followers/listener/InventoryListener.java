@@ -4,13 +4,13 @@ import org.lushplugins.followers.gui.abstracts.AbstractGui;
 import org.lushplugins.followers.gui.InventoryHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
+import org.lushplugins.lushlib.listener.EventListener;
 
 import java.util.UUID;
 
-public class InventoryListener implements Listener {
+public class InventoryListener implements EventListener {
 
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {

@@ -1,11 +1,11 @@
 package org.lushplugins.followers.data;
 
-import org.lushplugins.followers.utils.ItemStackData;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.lushplugins.followers.Followers;
 import org.bukkit.inventory.ItemStack;
+import org.lushplugins.followers.utils.SimpleItemStack;
 
 import java.util.HashMap;
 
@@ -55,7 +55,8 @@ public class ConfigManager {
 
     public ItemStack getGuiItem(String guiType, String itemName, Material def) {
         ConfigurationSection itemSection = Followers.getInstance().getConfig().getConfigurationSection(guiType + ".items." + itemName);
-        return ItemStackData.parse(itemSection, def);
+        SimpleItemStack simpleItemStack = new SimpleItemStack(itemSection);
+        return simpleItemStack.hasType() ? simpleItemStack.asItemStack() : new ItemStack(def);
     }
 
     public String getGuiTitle(String guiType) {

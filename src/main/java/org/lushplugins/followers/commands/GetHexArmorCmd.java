@@ -1,6 +1,5 @@
 package org.lushplugins.followers.commands;
 
-import me.dave.chatcolorhandler.ChatColorHandler;
 import org.lushplugins.followers.Followers;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -13,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.jetbrains.annotations.NotNull;
+import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,23 +26,23 @@ public class GetHexArmorCmd implements CommandExecutor, TabCompleter {
             return true;
         }
         if (!player.hasPermission("follower.admin.dye")) {
-            ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("no-permissions"));
+            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
             return true;
         }
         if (args.length != 2) {
-            ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/gethexarmor <material> <hexcolor>"));
+            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/gethexarmor <material> <hexcolor>"));
             return true;
         }
         Material material = Material.getMaterial(args[0].toUpperCase());
         String color = args[1].replace("#", "");
         if (material == null || (color.length() != 6 && !(color.length() == 7 && color.startsWith("#")))) {
-            ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/gethexarmor <material> <hexcolor>"));
+            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/gethexarmor <material> <hexcolor>"));
             return true;
         }
         ItemStack item = new ItemStack(material);
         ItemMeta itemMeta = item.getItemMeta();
         if (!(itemMeta instanceof LeatherArmorMeta armorMeta)) {
-            ChatColorHandler.sendMessage(player, Followers.configManager.getLangMessage("dye-wrong-material"));
+            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("dye-wrong-material"));
             return true;
         }
         armorMeta.setColor(getRGBFromHex(color));

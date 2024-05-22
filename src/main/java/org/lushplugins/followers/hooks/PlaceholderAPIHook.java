@@ -5,66 +5,89 @@ import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.entity.FollowerEntity;
 import org.bukkit.entity.Player;
+import org.lushplugins.lushlib.hook.Hook;
 
-public class PlaceholderAPIHook extends PlaceholderExpansion {
+public class PlaceholderAPIHook extends Hook {
+    private Expansion expansion;
 
-    public String onPlaceholderRequest(Player player, String params) {
-        if (player == null) {
-            return null;
+    public PlaceholderAPIHook() {
+        super("PlaceholderAPI");
+    }
+
+    @Override
+    protected void onEnable() {
+        expansion = new Expansion();
+        expansion.register();
+    }
+
+    @Override
+    protected void onDisable() {
+        if (expansion != null) {
+            expansion.unregister();
+            expansion = null;
         }
+    }
 
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
-        switch (params) {
-            // Player placeholders
-            case "enabled" -> {
-                return String.valueOf(followerUser.isFollowerEnabled());
-            }
-            case "name" -> {
-                return followerUser.getFollowerType();
-            }
-            case "pose" -> {
-                FollowerEntity followerEntity = Followers.dataManager.getFollowerUser(player).getFollowerEntity();
+    private static class Expansion extends PlaceholderExpansion {
 
-                if (followerEntity != null) {
-                    return followerEntity.getPose().toString().toLowerCase();
-                } else {
-                    return "default";
+        public String onPlaceholderRequest(Player player, String params) {
+            if (player == null) {
+                return null;
+            }
+
+            FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
+            switch (params) {
+                // Player placeholders
+                case "enabled" -> {
+                    return String.valueOf(followerUser.isFollowerEnabled());
+                }
+                case "name" -> {
+                    return followerUser.getFollowerType();
+                }
+                case "pose" -> {
+                    FollowerEntity followerEntity = Followers.getInstance().getDataManager().getFollowerUser(player).getFollowerEntity();
+
+                    if (followerEntity != null) {
+                        return followerEntity.getPose().toString().toLowerCase();
+                    } else {
+                        return "default";
+                    }
+                }
+                case "nickname" -> {
+                    return followerUser.getDisplayName();
+                }
+                case "nickname_enabled" -> {
+                    return String.valueOf(followerUser.isDisplayNameEnabled());
+                }
+                case "random_enabled" -> {
+                    return String.valueOf(followerUser.isRandomType());
+                }
+                case "total" -> {
+                    return String.valueOf(followerUser.getOwnedFollowerNames().size());
                 }
             }
-            case "nickname" -> {
-                return followerUser.getDisplayName();
-            }
-            case "nickname_enabled" -> {
-                return String.valueOf(followerUser.isDisplayNameEnabled());
-            }
-            case "random_enabled" -> {
-                return String.valueOf(followerUser.isRandomType());
-            }
-            case "total" -> {
-                return String.valueOf(followerUser.getOwnedFollowerNames().size());
-            }
+
+            return "null";
         }
 
-        return "null";
-    }
+        public boolean persist() {
+            return true;
+        }
 
-    public boolean persist() {
-        return true;
-    }
+        public boolean canRegister() {
+            return true;
+        }
 
-    public boolean canRegister() {
-        return true;
-    }
+        public String getIdentifier() {
+            return "followers";
+        }
 
-    public String getIdentifier() {
-        return "followers";
-    }
+        public String getAuthor() {
+            return Followers.getInstance().getDescription().getAuthors().toString();
+        }
 
-    public String getAuthor() {
-        return Followers.getInstance().getDescription().getAuthors().toString();
-    }
-
-    public String getVersion() {
-        return Followers.getInstance().getDescription().getVersion();
+        public String getVersion() {
+            return Followers.getInstance().getDescription().getVersion();
+        }
     }
 }

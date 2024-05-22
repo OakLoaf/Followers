@@ -10,22 +10,35 @@ import net.ess3.api.events.AfkStatusChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.lushplugins.lushlib.hook.Hook;
+import org.lushplugins.lushlib.listener.EventListener;
 
 import java.util.UUID;
 
-public class EssentialsHook implements Listener {
-    private final Essentials essentials;
+public class EssentialsHook extends Hook implements EventListener {
+    private Essentials essentials;
 
     public EssentialsHook() {
+        super("Essentials");
+    }
+
+    @Override
+    protected void onEnable() {
         essentials = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
+        this.registerListeners();
+    }
+
+    @Override
+    protected void onDisable() {
+        this.unregisterListeners();
+        essentials = null;
     }
 
     @EventHandler
     public void onAFK(AfkStatusChangeEvent event) {
         IUser iUser = event.getAffected();
         Player player = iUser.getBase();
-        FollowerUser followerUser = Followers.dataManager.getFollowerUser(player);
+        FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
         FollowerEntity followerEntity = followerUser.getFollowerEntity();
         if (followerEntity == null || !followerEntity.isAlive()) {
             return;

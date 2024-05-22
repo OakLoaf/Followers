@@ -20,7 +20,7 @@ public class MovementTask extends FollowerTask {
     public MovementTask(FollowerEntity followerEntity) {
         super(followerEntity);
         this.player = followerEntity.getPlayer();
-        this.speed = Followers.configManager.getSpeed();
+        this.speed = Followers.getInstance().getConfigManager().getSpeed();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class MovementTask extends FollowerTask {
                 teleporting = true;
                 delayedTeleportTo(player, followerEntity, 20).thenAccept(success -> {
                     if (!success) {
-                        Followers.dataManager.getFollowerUser(player).respawnFollowerEntity();
+                        Followers.getInstance().getDataManager().getFollowerUser(player).respawnFollowerEntity();
                     }
 
                     teleporting = false;
@@ -60,7 +60,7 @@ public class MovementTask extends FollowerTask {
                 teleporting = true;
                 delayedTeleportTo(player, followerEntity, 5).thenAccept(success -> {
                     if (!success) {
-                        Followers.dataManager.getFollowerUser(player).respawnFollowerEntity();
+                        Followers.getInstance().getDataManager().getFollowerUser(player).respawnFollowerEntity();
                     }
 
                     teleporting = false;
@@ -73,7 +73,7 @@ public class MovementTask extends FollowerTask {
         if (difference.clone().setY(0).lengthSquared() < 6.25) {
             Vector differenceY = difference.clone().setX(0).setZ(0);
 
-            if (Followers.configManager.areHitboxesEnabled()) {
+            if (Followers.getInstance().getConfigManager().areHitboxesEnabled()) {
                 differenceY.setY(differenceY.getY() - 0.25);
             } else {
                 differenceY.setY(differenceY.getY() - 0.7);
@@ -94,11 +94,11 @@ public class MovementTask extends FollowerTask {
         // Teleports follower
         boolean tpSuccess = followerEntity.teleport(followerLoc.add(0, getArmorStandYOffset(bodyArmorStand), 0));
         if (!tpSuccess) {
-            Followers.dataManager.getFollowerUser(player).respawnFollowerEntity();
+            Followers.getInstance().getDataManager().getFollowerUser(player).respawnFollowerEntity();
         }
 
         // Limits following code to run once every 2 ticks
-        if (Followers.getCurrentTick() % 2 != 0) {
+        if (Followers.getInstance().getCurrentTick() % 2 != 0) {
             return;
         }
 
@@ -137,7 +137,7 @@ public class MovementTask extends FollowerTask {
     }
 
     private static double getArmorStandYOffset(ArmorStand armorStand) {
-        return (Math.PI / 60) * Math.sin(((double) 1/30) * Math.PI * (Followers.getCurrentTick() + armorStand.getEntityId()));
+        return (Math.PI / 60) * Math.sin(((double) 1/30) * Math.PI * (Followers.getInstance().getCurrentTick() + armorStand.getEntityId()));
     }
 
     private static double getPitch(Player player, ArmorStand armorStand) {

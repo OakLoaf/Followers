@@ -2,12 +2,12 @@ package org.lushplugins.followers.storage;
 
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 import com.mysql.cj.jdbc.MysqlDataSource;
-import me.dave.chatcolorhandler.ChatColorHandler;
 import org.lushplugins.followers.data.DataManager;
 import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.Followers;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 
 import javax.sql.DataSource;
 import java.io.BufferedReader;
@@ -28,7 +28,7 @@ public class MysqlStorage implements Storage {
 
     @Override
     public boolean init() {
-        ConfigurationSection databaseSection = Followers.configManager.getDatabaseSection();
+        ConfigurationSection databaseSection = Followers.getInstance().getConfigManager().getDatabaseSection();
         String dbName = databaseSection.getString("name");
         String dbHost = databaseSection.getString("host");
         int dbPort = databaseSection.getInt("port");
@@ -56,7 +56,7 @@ public class MysqlStorage implements Storage {
                 return false;
             }
         }
-        Followers.getInstance().getLogger().info(ChatColorHandler.translateAlternateColorCodes("&2Database setup complete."));
+        Followers.getInstance().getLogger().info(ChatColorHandler.translate("&2Database setup complete."));
         return true;
     }
 
