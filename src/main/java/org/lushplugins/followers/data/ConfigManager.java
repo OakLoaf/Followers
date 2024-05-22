@@ -45,6 +45,10 @@ public class ConfigManager {
         }
     }
 
+    public HashMap<String, String> getLangMessages() {
+        return langMessages;
+    }
+
     public String getLangMessage(String messageName) {
         return langMessages.getOrDefault(messageName.toLowerCase(), "");
     }

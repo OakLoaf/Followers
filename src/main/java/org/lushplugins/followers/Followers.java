@@ -59,9 +59,9 @@ public final class Followers extends SpigotPlugin {
                 addHook("PlaceholderAPI", () -> registerHook(new PlaceholderAPIHook()));
                 addHook("SimpleSit", () -> registerHook(new SimpleSitHook()));
 
-                getCommand("followers").setExecutor(new FollowerCmd());
-                getCommand("gethexarmor").setExecutor(new GetHexArmorCmd());
-                getCommand("dye").setExecutor(new DyeCmd());
+                registerCommand(new FollowerCmd());
+                registerCommand(new GetHexArmorCmd());
+                registerCommand(new DyeCmd());
 
                 Bukkit.getWorlds().forEach(world -> {
                     for (Chunk chunk : world.getLoadedChunks()) {

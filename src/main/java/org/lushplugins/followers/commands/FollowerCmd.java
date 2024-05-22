@@ -1,5 +1,6 @@
 package org.lushplugins.followers.commands;
 
+import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.api.events.FollowersReloadEvent;
 import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.entity.FollowerEntity;
@@ -11,388 +12,40 @@ import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerHandler;
 import org.lushplugins.followers.gui.custom.MenuGui;
 import org.lushplugins.followers.item.FollowerCreator;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.lushplugins.lushlib.command.Command;
+import org.lushplugins.lushlib.command.SubCommand;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 
 import java.util.*;
 
-public class FollowerCmd implements CommandExecutor, TabCompleter {
+public class FollowerCmd extends Command {
+
+    public FollowerCmd() {
+        super("followers");
+        addSubCommand(new CreateCmd());
+        addSubCommand(new DeleteCmd());
+        addSubCommand(new HideCmd("hide"));
+        addSubCommand(new HideCmd("disable"));
+        addSubCommand(new DisplayNameCmd());
+        addSubCommand(new EditCmd());
+        addSubCommand(new ShowCmd("show"));
+        addSubCommand(new ShowCmd("enable"));
+        addSubCommand(new ExportCmd());
+        addSubCommand(new MessageCmd());
+        addSubCommand(new ModerateCmd());
+        addSubCommand(new RandomiseCmd());
+        addSubCommand(new ReloadCmd());
+        addSubCommand(new RenameCmd());
+        addSubCommand(new SetCmd());
+        addSubCommand(new ToggleCmd());
+    }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
-        if (args.length == 1) {
-            switch(args[0].toLowerCase()) {
-                case "create" -> {
-                    if (!sender.hasPermission("follower.admin.create")) {
-                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
-                        return true;
-                    }
-
-                    if (!(sender instanceof Player player)) {
-                        sender.sendMessage("Console cannot run this command!");
-                        return true;
-                    }
-
-                    ItemStack creator = FollowerCreator.getOrLoadCreatorItem();
-                    player.getInventory().addItem(creator);
-                    ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("get-follower-creator"));
-                    return true;
-                }
-                case "delete" -> {
-                    if (!sender.hasPermission("follower.admin.delete")) {
-                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
-                        return true;
-                    }
-
-                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/followers delete <follower_name>"));
-                    return true;
-                }
-                case "disable", "hide" -> {
-                    if (!(sender instanceof Player player)) {
-                        sender.sendMessage("Console cannot run this command!");
-                        return true;
-                    }
-
-                    FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-                    FollowerEntity followerEntity = followerUser.getFollowerEntity();
-                    if (followerEntity != null) {
-                        followerUser.disableFollowerEntity();
-                    }
-
-                    return true;
-                }
-                case "display-name" -> {
-                    if (!(sender instanceof Player player)) {
-                        sender.sendMessage("Console cannot run this command!");
-                        return true;
-                    }
-
-                    FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-                    FollowerEntity followerEntity = followerUser.getFollowerEntity();
-                    if (followerEntity != null) {
-                        boolean newStatus = !followerUser.isDisplayNameEnabled();
-                        followerUser.setDisplayNameEnabled(newStatus);
-                        followerEntity.showDisplayName(newStatus);
-                    }
-
-                    return true;
-                }
-                case "edit" -> {
-                    if (!sender.hasPermission("follower.admin.edit")) {
-                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
-                        return true;
-                    }
-                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/followers edit <follower_name>"));
-                    return true;
-                }
-                case "enable", "show" -> {
-                    if (!(sender instanceof Player player)) {
-                        sender.sendMessage("Console cannot run this command!");
-                        return true;
-                    }
-
-                    FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-                    FollowerEntity followerEntity = followerUser.getFollowerEntity();
-                    if (followerEntity == null || !followerEntity.isAlive()) {
-                        Followers.getInstance().getDataManager().getFollowerUser(player).spawnFollowerEntity();
-                        ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
-                    }
-
-                    return true;
-                }
-                case "export" -> {
-                    if (!sender.hasPermission("follower.admin.export")) {
-                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
-                        return true;
-                    }
-
-                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/followers export <export_type>"));
-                    return true;
-                }
-                case "messages" -> {
-                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
-                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage"));
-                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("reloaded"));
-                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
-                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-no-name"));
-                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-created"));
-                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-deleted"));
-                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-doesnt-exist"));
-                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-already-exists"));
-                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-default-skull"));
-                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("get-follower-creator"));
-                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("dye-wrong-material"));
-                    return true;
-                }
-                case "moderate" -> {
-                    if (!sender.hasPermission("follower.admin.moderate")) {
-                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
-                        return true;
-                    }
-
-                    if (!(sender instanceof Player player)) {
-                        sender.sendMessage("Console cannot run this command!");
-                        return true;
-                    }
-
-                    ModerationGui moderationGui = new ModerationGui(player);
-                    moderationGui.openInventory();
-                    return true;
-                }
-                case "randomize" -> {
-                    if (!(sender instanceof Player player)) {
-                        sender.sendMessage("Console cannot run this command!");
-                        return true;
-                    }
-
-                    if (!sender.hasPermission("follower.random")) {
-                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
-                        return true;
-                    }
-
-                    FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-                    boolean isRandom = followerUser.isRandomType();
-                    followerUser.setRandom(!isRandom);
-
-                    if (!isRandom) {
-                        followerUser.randomizeFollowerType();
-                        ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
-                    }
-
-                    return true;
-                }
-                case "reload" -> {
-                    if (!sender.hasPermission("follower.admin.reload")) {
-                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
-                        return true;
-                    }
-
-                    Followers.getInstance().getConfigManager().reloadConfig(Followers.getInstance());
-                    Followers.getInstance().getFollowerManager().reloadFollowers();
-                    Followers.getInstance().getDataManager().reloadFollowerInventories();
-                    Followers.getInstance().callEvent(new FollowersReloadEvent());
-                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("reloaded"));
-                    return true;
-                }
-                case "rename" -> {
-                    if (!(sender instanceof Player)) {
-                        sender.sendMessage("Console cannot run this command!");
-                        return true;
-                    }
-
-                    if (!sender.hasPermission("follower.name")) {
-                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
-                        return true;
-                    }
-
-                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/followers rename <name>"));
-                    return true;
-                }
-                case "set" -> {
-                    if (!(sender instanceof Player)) {
-                        sender.sendMessage("Console cannot run this command!");
-                        return true;
-                    }
-
-                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/followers set <follower_name>"));
-                    return true;
-                }
-                case "toggle" -> {
-                    if (!(sender instanceof Player player)) {
-                        sender.sendMessage("Console cannot run this command!");
-                        return true;
-                    }
-
-                    FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-                    FollowerEntity followerEntity = followerUser.getFollowerEntity();
-                    if (followerEntity == null || !followerEntity.isAlive()) {
-                        Followers.getInstance().getDataManager().getFollowerUser(player).spawnFollowerEntity();
-                        ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
-                    }
-                    else {
-                        Followers.getInstance().getDataManager().getFollowerUser(player).disableFollowerEntity();
-                    }
-                    return true;
-                }
-            }
-        }
-        else if (args.length >= 2) {
-            switch(args[0].toLowerCase()) {
-                case "delete" -> {
-                    if (!sender.hasPermission("follower.admin.delete")) {
-                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
-                        return true;
-                    }
-
-                    String[] temp = Arrays.copyOfRange(args, 1, args.length);
-                    StringBuilder followerName = new StringBuilder();
-                    for (String currString : temp) {
-                        followerName.append(currString).append(" ");
-                    }
-
-                    String followerNameFinal = followerName.substring(0, followerName.length() - 1);
-                    FollowerHandler follower = Followers.getInstance().getFollowerManager().getFollower(followerNameFinal);
-                    if (follower == null) {
-                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerNameFinal));
-                    } else {
-                        Followers.getInstance().getFollowerManager().removeFollower(followerNameFinal);
-                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-deleted").replaceAll("%follower%", followerNameFinal));
-                        Followers.getInstance().getFollowerManager().refreshAllFollowers();
-                    }
-
-                    return true;
-                }
-                case "display-name" -> {
-                    if (!(sender instanceof Player player)) {
-                        sender.sendMessage("Console cannot run this command!");
-                        return true;
-                    }
-
-                    boolean newStatus = Boolean.parseBoolean(args[1]);
-
-                    FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-                    FollowerEntity followerEntity = followerUser.getFollowerEntity();
-                    if (followerEntity != null) {
-                        followerUser.setDisplayNameEnabled(newStatus);
-                        followerEntity.showDisplayName(newStatus);
-                    }
-
-                    return true;
-                }
-                case "edit" -> {
-                    if (!(sender instanceof Player player)) {
-                        sender.sendMessage("Console cannot run this command!");
-                        return true;
-                    }
-
-                    if (!sender.hasPermission("follower.admin.edit")) {
-                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
-                        return true;
-                    }
-
-                    String[] temp = Arrays.copyOfRange(args, 1, args.length);
-                    StringBuilder followerNameBuilder = new StringBuilder();
-                    for (String currString : temp) {
-                        followerNameBuilder.append(currString).append(" ");
-                    }
-                    String followerName = followerNameBuilder.substring(0, followerNameBuilder.length() - 1);
-
-                    FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerName);
-                    if (followerHandler == null) {
-                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerName));
-                    } else {
-                        FollowerHandler.Builder followerBuilder = new FollowerHandler.Builder(followerHandler);
-                        try {
-                            followerBuilder.setName(followerName);
-                        } catch (ObjectNameLockedException ignored) {}
-
-                        BuilderGui builderGui = new BuilderGui(player, BuilderGui.Mode.EDIT, followerBuilder.setNameLocked(true));
-                        builderGui.openInventory();
-                    }
-                    return true;
-                }
-                case "export" -> {
-                    if (args[1].equalsIgnoreCase("geysermc")) {
-                        try {
-                            new GeyserSkullExporter().startExport();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            ChatColorHandler.sendMessage(sender, "&#ff6969Export failed");
-                            return true;
-                        }
-
-                        ChatColorHandler.sendMessage(sender, "&#b7faa2Successfully exported file to &#66b04f'export/custom-skulls.yml'");
-                    } else {
-                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/followers export <export_type>"));
-                    }
-
-                    return true;
-                }
-                case "randomize" -> {
-                    if (!(sender instanceof Player player)) {
-                        sender.sendMessage("Console cannot run this command!");
-                        return true;
-                    }
-
-                    if (!sender.hasPermission("follower.random")) {
-                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
-                        return true;
-                    }
-
-                    FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-                    boolean isRandom = Boolean.parseBoolean(args[1]);
-                    followerUser.setRandom(isRandom);
-
-                    if (!isRandom) {
-                        followerUser.randomizeFollowerType();
-                        ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
-                    }
-
-                    return true;
-                }
-                case "rename" -> {
-                    if (!(sender instanceof Player player)) {
-                        sender.sendMessage("Console cannot run this command!");
-                        return true;
-                    }
-
-                    if (!sender.hasPermission("follower.name")) {
-                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
-                        return true;
-                    }
-
-                    FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-                    FollowerEntity followerEntity = followerUser.getFollowerEntity();
-                    String newName = args[1];
-
-                    followerUser.setDisplayName(newName);
-                    if (followerEntity != null) {
-                        followerEntity.setDisplayName(newName);
-                    }
-
-                    return true;
-                }
-                case "set" -> {
-                    if (!(sender instanceof Player player)) {
-                        sender.sendMessage("Console cannot run this command!");
-                        return true;
-                    }
-
-                    String[] temp = Arrays.copyOfRange(args, 1, args.length);
-                    StringBuilder followerNameBuilder = new StringBuilder();
-                    for (String currString : temp) {
-                        followerNameBuilder.append(currString).append(" ");
-                    }
-                    String followerName = followerNameBuilder.substring(0, followerNameBuilder.length() - 1);
-
-                    FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerName);
-                    if (followerHandler == null) {
-                        ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerName));
-                    } else {
-                        FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-                        if (followerUser.isRandomType()) {
-                            followerUser.setRandom(false);
-                        }
-
-                        FollowerEntity followerEntity = followerUser.getFollowerEntity();
-                        if (followerEntity != null && followerEntity.isAlive()) {
-                            followerEntity.setType(followerName);
-                        } else {
-                            followerUser.setFollowerType(followerName);
-                            followerUser.spawnFollowerEntity();
-                        }
-                    }
-                    return true;
-                }
-            }
-        }
-
+    public boolean execute(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage("Console cannot run this command!");
             return true;
@@ -403,96 +56,426 @@ public class FollowerCmd implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+    public static class CreateCmd extends SubCommand {
 
-        List<String> tabComplete = new ArrayList<>();
-        List<String> wordCompletion = new ArrayList<>();
-        boolean wordCompletionSuccess = false;
-
-        if (args.length == 1) {
-            tabComplete.add("hide");
-            tabComplete.add("show");
-            tabComplete.add("set");
-            tabComplete.add("toggle");
-            if (sender.hasPermission("follower.name")) {
-                tabComplete.add("display-name");
-                tabComplete.add("rename");
-            }
-            if (sender.hasPermission("follower.random")) {
-                tabComplete.add("randomize");
-            }
-            if (sender.hasPermission("follower.admin.create")) {
-                tabComplete.add("create");
-            }
-            if (sender.hasPermission("follower.admin.delete")) {
-                tabComplete.add("delete");
-            }
-            if (sender.hasPermission("follower.admin.edit")) {
-                tabComplete.add("edit");
-            }
-            if (sender.hasPermission("follower.admin.export")) {
-                tabComplete.add("export");
-            }
-            if (sender.hasPermission("follower.admin.moderate")) {
-                tabComplete.add("moderate");
-            }
-            if (sender.hasPermission("follower.admin.reload")) {
-                tabComplete.add("reload");
-            }
-        } else if (args.length == 2) {
-            switch(args[0].toLowerCase()) {
-                case "delete" -> {
-                    if (sender.hasPermission("follower.admin.delete")) {
-                        tabComplete.addAll(Followers.getInstance().getFollowerManager().getFollowerNames());
-                    }
-                }
-                case "display-name" -> {
-                    if (sender.hasPermission("follower.name")) {
-                        tabComplete.add("true");
-                        tabComplete.add("false");
-                    }
-                }
-                case "edit" -> {
-                    if (sender.hasPermission("follower.admin.edit")) {
-                        tabComplete.addAll(Followers.getInstance().getFollowerManager().getFollowerNames());
-                    }
-                }
-                case "export" -> {
-                    if (sender.hasPermission("follower.admin.export")) {
-                        tabComplete.add("GeyserMC");
-                    }
-                }
-                case "randomize" -> {
-                    if (sender.hasPermission("follower.random")) {
-                        tabComplete.add("true");
-                        tabComplete.add("false");
-                    }
-                }
-                case "rename" -> {
-                    if (sender.hasPermission("follower.name")) {
-                        tabComplete.add("<name>");
-                    }
-                }
-                case "set" -> {
-                    if (sender instanceof Player player) {
-                        tabComplete.addAll(Followers.getInstance().getDataManager().getFollowerUser(player).getOwnedFollowerNames());
-                    }
-                }
-            }
+        public CreateCmd() {
+            super("create");
+            addRequiredPermission("follower.admin.create");
         }
 
-        for (String currTab : tabComplete) {
-            int currArg = args.length - 1;
-            if (currTab.startsWith(args[currArg])) {
-                wordCompletion.add(currTab);
-                wordCompletionSuccess = true;
+        @Override
+        public boolean execute(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage("Console cannot run this command!");
+                return true;
             }
+
+            ItemStack creator = FollowerCreator.getOrLoadCreatorItem();
+            player.getInventory().addItem(creator);
+            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("get-follower-creator"));
+            return true;
         }
-        if (wordCompletionSuccess) {
-            return wordCompletion;
-        } else {
-            return tabComplete;
+    }
+
+    public static class DeleteCmd extends SubCommand {
+
+        public DeleteCmd() {
+            super("delete");
+            addRequiredPermission("follower.admin.delete");
+        }
+
+        @Override
+        public boolean execute(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            if (args.length == 0) {
+                ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage")
+                    .replaceAll("%command-usage%", "/followers delete <follower_name>"));
+            } else {
+                String followerName = String.join(" ", args);
+                FollowerHandler follower = Followers.getInstance().getFollowerManager().getFollower(followerName);
+                if (follower == null) {
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-doesnt-exist")
+                        .replaceAll("%follower%", followerName));
+                } else {
+                    Followers.getInstance().getFollowerManager().removeFollower(followerName);
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-deleted")
+                        .replaceAll("%follower%", followerName));
+                    Followers.getInstance().getFollowerManager().refreshAllFollowers();
+                }
+            }
+
+            return true;
+        }
+
+        @Override
+        public @Nullable List<String> tabComplete(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            return args.length == 0 ? new ArrayList<>(Followers.getInstance().getFollowerManager().getFollowerNames()) : null;
+        }
+    }
+
+    public static class HideCmd extends SubCommand {
+
+        public HideCmd(String name) {
+            super(name);
+        }
+
+        @Override
+        public boolean execute(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage("Console cannot run this command!");
+                return true;
+            }
+
+            FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
+            FollowerEntity followerEntity = followerUser.getFollowerEntity();
+            if (followerEntity != null) {
+                followerUser.disableFollowerEntity();
+            }
+
+            return true;
+        }
+    }
+
+    public static class DisplayNameCmd extends SubCommand {
+
+        public DisplayNameCmd() {
+            super("display-name");
+        }
+
+        @Override
+        public boolean execute(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage("Console cannot run this command!");
+                return true;
+            }
+
+            if (args.length == 0) {
+                FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
+                FollowerEntity followerEntity = followerUser.getFollowerEntity();
+                if (followerEntity != null) {
+                    boolean newStatus = !followerUser.isDisplayNameEnabled();
+                    followerUser.setDisplayNameEnabled(newStatus);
+                    followerEntity.showDisplayName(newStatus);
+                }
+            } else {
+                boolean newStatus = Boolean.parseBoolean(args[0]);
+
+                FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
+                FollowerEntity followerEntity = followerUser.getFollowerEntity();
+                if (followerEntity != null) {
+                    followerUser.setDisplayNameEnabled(newStatus);
+                    followerEntity.showDisplayName(newStatus);
+                }
+            }
+
+            return true;
+        }
+
+        @Override
+        public @Nullable List<String> tabComplete(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            return args.length == 0 ? List.of("true", "false") : null;
+        }
+    }
+
+    public static class EditCmd extends SubCommand {
+
+        public EditCmd() {
+            super("edit");
+            addRequiredPermission("follower.admin.edit");
+        }
+
+        @Override
+        public boolean execute(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage("Console cannot run this command!");
+                return true;
+            }
+
+            if (args.length == 0) {
+                ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage")
+                    .replaceAll("%command-usage%", "/followers delete <follower_name>"));
+            } else {
+                String followerName = String.join(" ", args);
+                FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerName);
+                if (followerHandler == null) {
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerName));
+                } else {
+                    FollowerHandler.Builder followerBuilder = new FollowerHandler.Builder(followerHandler);
+                    try {
+                        followerBuilder.setName(followerName);
+                    } catch (ObjectNameLockedException ignored) {}
+
+                    BuilderGui builderGui = new BuilderGui(player, BuilderGui.Mode.EDIT, followerBuilder.setNameLocked(true));
+                    builderGui.openInventory();
+                }
+            }
+
+            return true;
+        }
+
+        @Override
+        public @Nullable List<String> tabComplete(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            return args.length == 0 ? new ArrayList<>(Followers.getInstance().getFollowerManager().getFollowerNames()) : null;
+        }
+    }
+
+    public static class ShowCmd extends SubCommand {
+
+        public ShowCmd(String name) {
+            super(name);
+        }
+
+        @Override
+        public boolean execute(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage("Console cannot run this command!");
+                return true;
+            }
+
+            FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
+            FollowerEntity followerEntity = followerUser.getFollowerEntity();
+            if (followerEntity == null || !followerEntity.isAlive()) {
+                Followers.getInstance().getDataManager().getFollowerUser(player).spawnFollowerEntity();
+                ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
+            }
+
+            return true;
+        }
+    }
+
+    public static class ExportCmd extends SubCommand {
+
+        public ExportCmd() {
+            super("export");
+            addRequiredPermission("follower.admin.export");
+        }
+
+        @Override
+        public boolean execute(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            if (args.length == 0) {
+                ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage")
+                    .replaceAll("%command-usage%", "/followers export <export_type>"));
+            } else {
+                if (args[0].equalsIgnoreCase("geysermc")) {
+                    try {
+                        new GeyserSkullExporter().startExport();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        ChatColorHandler.sendMessage(sender, "&#ff6969Export failed");
+                        return true;
+                    }
+
+                    ChatColorHandler.sendMessage(sender, "&#b7faa2Successfully exported file to &#66b04f'export/custom-skulls.yml'");
+                } else {
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage").replaceAll("%command-usage%", "/followers export <export_type>"));
+                }
+            }
+
+            return true;
+        }
+
+        @Override
+        public @Nullable List<String> tabComplete(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            return args.length == 0 ? List.of("GeyserMC") : null;
+        }
+    }
+
+    public static class MessageCmd extends SubCommand {
+
+        public MessageCmd() {
+            super("message");
+        }
+
+        @Override
+        public boolean execute(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            Followers.getInstance().getConfigManager().getLangMessages().forEach((messageName, message) -> ChatColorHandler.sendMessage(sender, message));
+            return true;
+        }
+    }
+
+    public static class ModerateCmd extends SubCommand {
+
+        public ModerateCmd() {
+            super("moderate");
+            addRequiredPermission("follower.admin.moderate");
+        }
+
+        @Override
+        public boolean execute(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage("Console cannot run this command!");
+                return true;
+            }
+
+            ModerationGui moderationGui = new ModerationGui(player);
+            moderationGui.openInventory();
+            return true;
+        }
+    }
+
+    public static class RandomiseCmd extends SubCommand {
+
+        public RandomiseCmd() {
+            super("randomise");
+            addRequiredPermission("follower.random");
+        }
+
+        @Override
+        public boolean execute(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage("Console cannot run this command!");
+                return true;
+            }
+
+            FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
+            boolean isRandom = args.length == 0 ? !followerUser.isRandomType() : Boolean.parseBoolean(args[1]);
+            followerUser.setRandom(isRandom);
+            if (!isRandom) {
+                followerUser.randomizeFollowerType();
+                ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
+            }
+
+            return true;
+        }
+
+        @Override
+        public @Nullable List<String> tabComplete(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            return args.length == 0 ? List.of("true", "false") : null;
+        }
+    }
+
+    public static class ReloadCmd extends SubCommand {
+
+        public ReloadCmd() {
+            super("reload");
+            addRequiredPermission("follower.admin.reload");
+        }
+
+        @Override
+        public boolean execute(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            Followers.getInstance().getConfigManager().reloadConfig(Followers.getInstance());
+            Followers.getInstance().getFollowerManager().reloadFollowers();
+            Followers.getInstance().getDataManager().reloadFollowerInventories();
+            Followers.getInstance().callEvent(new FollowersReloadEvent());
+            ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("reloaded"));
+            return true;
+        }
+    }
+
+    public static class RenameCmd extends SubCommand {
+
+        public RenameCmd() {
+            super("rename");
+            addRequiredPermission("follower.name");
+        }
+
+        @Override
+        public boolean execute(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage("Console cannot run this command!");
+                return true;
+            }
+
+            if (args.length == 0) {
+                ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage")
+                    .replaceAll("%command-usage%", "/followers rename <name>"));
+            } else {
+                FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
+                FollowerEntity followerEntity = followerUser.getFollowerEntity();
+                String newName = args[1];
+
+                followerUser.setDisplayName(newName);
+                if (followerEntity != null) {
+                    followerEntity.setDisplayName(newName);
+                }
+            }
+
+            return true;
+        }
+
+        @Override
+        public @Nullable List<String> tabComplete(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            return args.length == 0 ? List.of("<name>") : null;
+        }
+    }
+
+    public static class SetCmd extends SubCommand {
+
+        public SetCmd() {
+            super("set");
+        }
+
+        @Override
+        public boolean execute(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage("Console cannot run this command!");
+                return true;
+            }
+
+            if (args.length == 0) {
+                ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage")
+                    .replaceAll("%command-usage%", "/followers set <follower_name>"));
+            } else {
+                StringBuilder followerNameBuilder = new StringBuilder();
+                for (String currString : args) {
+                    followerNameBuilder.append(currString).append(" ");
+                }
+                String followerName = followerNameBuilder.substring(0, followerNameBuilder.length() - 1);
+
+                FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerName);
+                if (followerHandler == null) {
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerName));
+                } else {
+                    FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
+                    if (followerUser.isRandomType()) {
+                        followerUser.setRandom(false);
+                    }
+
+                    FollowerEntity followerEntity = followerUser.getFollowerEntity();
+                    if (followerEntity != null && followerEntity.isAlive()) {
+                        followerEntity.setType(followerName);
+                    } else {
+                        followerUser.setFollowerType(followerName);
+                        followerUser.spawnFollowerEntity();
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        @Override
+        public @Nullable List<String> tabComplete(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            if (!(sender instanceof Player player)) {
+                return null;
+            }
+
+            return args.length == 0 ? new ArrayList<>(Followers.getInstance().getDataManager().getFollowerUser(player).getOwnedFollowerNames()) : null;
+        }
+    }
+
+    public static class ToggleCmd extends SubCommand {
+
+        public ToggleCmd() {
+            super("toggle");
+        }
+
+        @Override
+        public boolean execute(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage("Console cannot run this command!");
+                return true;
+            }
+
+            FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
+            FollowerEntity followerEntity = followerUser.getFollowerEntity();
+            if (followerEntity == null || !followerEntity.isAlive()) {
+                Followers.getInstance().getDataManager().getFollowerUser(player).spawnFollowerEntity();
+                ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
+            } else {
+                Followers.getInstance().getDataManager().getFollowerUser(player).disableFollowerEntity();
+            }
+
+            return true;
         }
     }
 }
