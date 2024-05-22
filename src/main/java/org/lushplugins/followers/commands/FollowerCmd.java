@@ -108,7 +108,7 @@ public class FollowerCmd extends Command {
 
         @Override
         public @Nullable List<String> tabComplete(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
-            return args.length == 0 ? new ArrayList<>(Followers.getInstance().getFollowerManager().getFollowerNames()) : null;
+            return args.length == 1 ? new ArrayList<>(Followers.getInstance().getFollowerManager().getFollowerNames()) : null;
         }
     }
 
@@ -172,7 +172,7 @@ public class FollowerCmd extends Command {
 
         @Override
         public @Nullable List<String> tabComplete(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
-            return args.length == 0 ? List.of("true", "false") : null;
+            return args.length == 1 ? List.of("true", "false") : null;
         }
     }
 
@@ -214,7 +214,7 @@ public class FollowerCmd extends Command {
 
         @Override
         public @Nullable List<String> tabComplete(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
-            return args.length == 0 ? new ArrayList<>(Followers.getInstance().getFollowerManager().getFollowerNames()) : null;
+            return args.length == 1 ? new ArrayList<>(Followers.getInstance().getFollowerManager().getFollowerNames()) : null;
         }
     }
 
@@ -275,7 +275,7 @@ public class FollowerCmd extends Command {
 
         @Override
         public @Nullable List<String> tabComplete(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
-            return args.length == 0 ? List.of("GeyserMC") : null;
+            return args.length == 1 ? List.of("GeyserMC") : null;
         }
     }
 
@@ -339,7 +339,7 @@ public class FollowerCmd extends Command {
 
         @Override
         public @Nullable List<String> tabComplete(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
-            return args.length == 0 ? List.of("true", "false") : null;
+            return args.length == 1 ? List.of("true", "false") : null;
         }
     }
 
@@ -394,7 +394,7 @@ public class FollowerCmd extends Command {
 
         @Override
         public @Nullable List<String> tabComplete(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
-            return args.length == 0 ? List.of("<name>") : null;
+            return args.length == 1 ? List.of("<name>") : null;
         }
     }
 
@@ -449,7 +449,7 @@ public class FollowerCmd extends Command {
                 return null;
             }
 
-            return args.length == 0 ? new ArrayList<>(Followers.getInstance().getDataManager().getFollowerUser(player).getOwnedFollowerNames()) : null;
+            return args.length == 1 ? new ArrayList<>(Followers.getInstance().getDataManager().getFollowerUser(player).getOwnedFollowerNames()) : null;
         }
     }
 

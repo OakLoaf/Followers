@@ -60,7 +60,7 @@ public class GetHexArmorCmd extends Command {
 
     @Override
     public @Nullable List<String> tabComplete(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args, @NotNull String[] fullArgs) {
-        return sender.hasPermission("follower.admin.gethexarmor") && args.length == 1 ? List.of("leather_helmet", "leather_chestplate", "leather_leggings", "leather_boots", "leather_horse_armor") : null;
+        return args.length == 1 && sender.hasPermission("follower.admin.gethexarmor") ? List.of("leather_helmet", "leather_chestplate", "leather_leggings", "leather_boots", "leather_horse_armor") : null;
     }
 
     private Color getRGBFromHex(String hexColour) {
