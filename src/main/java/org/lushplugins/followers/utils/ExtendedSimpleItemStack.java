@@ -101,6 +101,7 @@ public class ExtendedSimpleItemStack extends org.lushplugins.lushlib.utils.Simpl
                 }
             }
         }
+        itemStack.setItemMeta(itemMeta);
 
         return itemStack;
     }
