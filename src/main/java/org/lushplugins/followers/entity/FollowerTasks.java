@@ -1,7 +1,5 @@
 package org.lushplugins.followers.entity;
 
-import me.dave.followers.entity.tasks.*;
-import me.lushplugins.followers.entity.tasks.*;
 import org.lushplugins.followers.entity.tasks.*;
 
 import java.lang.reflect.InvocationTargetException;
