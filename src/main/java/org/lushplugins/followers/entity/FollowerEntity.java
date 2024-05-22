@@ -175,7 +175,9 @@ public class FollowerEntity {
                     default -> simpleItemStack = null; // Should never happen
                 }
 
-                equipment.setItem(equipmentSlot, simpleItemStack.asItemStack());
+                if (simpleItemStack != null) {
+                    equipment.setItem(equipmentSlot, simpleItemStack.asItemStack());
+                }
             }
         }
     }
