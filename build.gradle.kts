@@ -35,7 +35,7 @@ dependencies {
     // Libraries
     implementation("com.github.retrooper.packetevents:spigot:2.3.0")
     implementation("mysql:mysql-connector-java:8.0.25")
-    implementation("org.lushplugins:LushLib:0.6.0")
+    implementation("org.lushplugins:LushLib:0.6.1")
 }
 
 java {

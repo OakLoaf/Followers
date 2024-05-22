@@ -5,7 +5,7 @@ import org.lushplugins.followers.data.FollowerHandler;
 import org.lushplugins.followers.exceptions.ObjectNameLockedException;
 import org.lushplugins.followers.gui.InventoryHandler;
 import org.lushplugins.followers.gui.abstracts.AbstractGui;
-import org.lushplugins.followers.utils.SimpleItemStack;
+import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.followers.utils.TextInterface;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -115,7 +115,7 @@ public class BuilderGui extends AbstractGui {
             case PLACE_ALL -> {
                 if (slotToEquipmentSlot.containsKey(slot)) {
                     event.setCancelled(true);
-                    followerBuilder.setSlot(slotToEquipmentSlot.get(slot), new SimpleItemStack(cursorItem));
+                    followerBuilder.setSlot(slotToEquipmentSlot.get(slot), new ExtendedSimpleItemStack(cursorItem));
                 }
             }
             case PICKUP_ALL, SWAP_WITH_CURSOR -> {

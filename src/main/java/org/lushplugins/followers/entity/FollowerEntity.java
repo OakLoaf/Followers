@@ -17,7 +17,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.lushplugins.followers.data.FollowerUser;
 import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.entity.tasks.*;
-import org.lushplugins.followers.utils.SimpleItemStack;
+import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 
 import java.lang.reflect.InvocationTargetException;
@@ -164,14 +164,16 @@ public class FollowerEntity {
             EntityEquipment equipment = bodyEntity.getEquipment();
 
             if (equipment != null) {
-                SimpleItemStack simpleItemStack = switch (equipmentSlot) {
-                    case HEAD -> followerType.getHead();
-                    case CHEST -> followerType.getChest();
-                    case LEGS -> followerType.getLegs();
-                    case FEET -> followerType.getFeet();
-                    case HAND -> followerType.getMainHand();
-                    case OFF_HAND -> followerType.getOffHand();
-                };
+                ExtendedSimpleItemStack simpleItemStack;
+                switch (equipmentSlot) {
+                    case HEAD -> simpleItemStack = followerType.getHead();
+                    case CHEST -> simpleItemStack = followerType.getChest();
+                    case LEGS -> simpleItemStack = followerType.getLegs();
+                    case FEET -> simpleItemStack = followerType.getFeet();
+                    case HAND -> simpleItemStack = followerType.getMainHand();
+                    case OFF_HAND -> simpleItemStack = followerType.getOffHand();
+                    default -> simpleItemStack = null; // Should never happen
+                }
 
                 equipment.setItem(equipmentSlot, simpleItemStack.asItemStack());
             }

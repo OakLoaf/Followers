@@ -6,30 +6,30 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lushplugins.followers.utils.SimpleItemStack;
+import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 
 public class FollowerHandler {
     private final String name;
-    private final SimpleItemStack head;
-    private final SimpleItemStack chest;
-    private final SimpleItemStack legs;
-    private final SimpleItemStack feet;
-    private final SimpleItemStack mainHand;
-    private final SimpleItemStack offHand;
+    private final ExtendedSimpleItemStack head;
+    private final ExtendedSimpleItemStack chest;
+    private final ExtendedSimpleItemStack legs;
+    private final ExtendedSimpleItemStack feet;
+    private final ExtendedSimpleItemStack mainHand;
+    private final ExtendedSimpleItemStack offHand;
     private final boolean isVisible;
 
     public FollowerHandler(ConfigurationSection configurationSection) {
         this.name = configurationSection.getName();
-        this.head = configurationSection.contains("head") ? new SimpleItemStack(configurationSection.getConfigurationSection("head")) : new SimpleItemStack(Material.AIR);
-        this.chest = configurationSection.contains("chest") ? new SimpleItemStack(configurationSection.getConfigurationSection("chest")) : new SimpleItemStack(Material.AIR);
-        this.legs = configurationSection.contains("legs") ? new SimpleItemStack(configurationSection.getConfigurationSection("legs")) : new SimpleItemStack(Material.AIR);
-        this.feet = configurationSection.contains("feet") ? new SimpleItemStack(configurationSection.getConfigurationSection("feet")) : new SimpleItemStack(Material.AIR);
-        this.mainHand = configurationSection.contains("mainHand") ? new SimpleItemStack(configurationSection.getConfigurationSection("mainHand")) : new SimpleItemStack(Material.AIR);
-        this.offHand = configurationSection.contains("offHand") ? new SimpleItemStack(configurationSection.getConfigurationSection("offHand")) : new SimpleItemStack(Material.AIR);
+        this.head = configurationSection.contains("head") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("head")) : new ExtendedSimpleItemStack(Material.AIR);
+        this.chest = configurationSection.contains("chest") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("chest")) : new ExtendedSimpleItemStack(Material.AIR);
+        this.legs = configurationSection.contains("legs") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("legs")) : new ExtendedSimpleItemStack(Material.AIR);
+        this.feet = configurationSection.contains("feet") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("feet")) : new ExtendedSimpleItemStack(Material.AIR);
+        this.mainHand = configurationSection.contains("mainHand") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("mainHand")) : new ExtendedSimpleItemStack(Material.AIR);
+        this.offHand = configurationSection.contains("offHand") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("offHand")) : new ExtendedSimpleItemStack(Material.AIR);
         this.isVisible = configurationSection.getBoolean("visible", true);
     }
 
-    private FollowerHandler(String name, SimpleItemStack head, SimpleItemStack chest, SimpleItemStack legs, SimpleItemStack feet, SimpleItemStack mainHand, SimpleItemStack offHand, boolean visible) {
+    private FollowerHandler(String name, ExtendedSimpleItemStack head, ExtendedSimpleItemStack chest, ExtendedSimpleItemStack legs, ExtendedSimpleItemStack feet, ExtendedSimpleItemStack mainHand, ExtendedSimpleItemStack offHand, boolean visible) {
         this.name = name;
         this.head = head;
         this.chest = chest;
@@ -44,27 +44,27 @@ public class FollowerHandler {
         return name;
     }
 
-    public SimpleItemStack getHead() {
+    public ExtendedSimpleItemStack getHead() {
         return head.clone();
     }
 
-    public SimpleItemStack getChest() {
+    public ExtendedSimpleItemStack getChest() {
         return chest.clone();
     }
 
-    public SimpleItemStack getLegs() {
+    public ExtendedSimpleItemStack getLegs() {
         return legs.clone();
     }
 
-    public SimpleItemStack getFeet() {
+    public ExtendedSimpleItemStack getFeet() {
         return feet.clone();
     }
 
-    public SimpleItemStack getMainHand() {
+    public ExtendedSimpleItemStack getMainHand() {
         return mainHand.clone();
     }
 
-    public SimpleItemStack getOffHand() {
+    public ExtendedSimpleItemStack getOffHand() {
         return offHand.clone();
     }
 
@@ -76,21 +76,21 @@ public class FollowerHandler {
     public static class Builder {
         private boolean nameLocked = false;
         private String name;
-        private SimpleItemStack head;
-        private SimpleItemStack chest;
-        private SimpleItemStack legs;
-        private SimpleItemStack feet;
-        private SimpleItemStack mainHand;
-        private SimpleItemStack offHand;
+        private ExtendedSimpleItemStack head;
+        private ExtendedSimpleItemStack chest;
+        private ExtendedSimpleItemStack legs;
+        private ExtendedSimpleItemStack feet;
+        private ExtendedSimpleItemStack mainHand;
+        private ExtendedSimpleItemStack offHand;
         private boolean visible;
 
         public Builder() {
-            this.head = new SimpleItemStack(Material.AIR);
-            this.chest = new SimpleItemStack(Material.AIR);
-            this.legs = new SimpleItemStack(Material.AIR);
-            this.feet = new SimpleItemStack(Material.AIR);
-            this.mainHand = new SimpleItemStack(Material.AIR);
-            this.offHand = new SimpleItemStack(Material.AIR);
+            this.head = new ExtendedSimpleItemStack(Material.AIR);
+            this.chest = new ExtendedSimpleItemStack(Material.AIR);
+            this.legs = new ExtendedSimpleItemStack(Material.AIR);
+            this.feet = new ExtendedSimpleItemStack(Material.AIR);
+            this.mainHand = new ExtendedSimpleItemStack(Material.AIR);
+            this.offHand = new ExtendedSimpleItemStack(Material.AIR);
             this.visible = true;
         }
 
@@ -118,8 +118,8 @@ public class FollowerHandler {
             return this;
         }
 
-        public SimpleItemStack getSlot(@NotNull EquipmentSlot slot) {
-            SimpleItemStack output = null;
+        public ExtendedSimpleItemStack getSlot(@NotNull EquipmentSlot slot) {
+            ExtendedSimpleItemStack output = null;
             switch(slot) {
                 case HEAD -> output = this.head;
                 case CHEST -> output = this.chest;
@@ -131,9 +131,9 @@ public class FollowerHandler {
             return output;
         }
 
-        public Builder setSlot(EquipmentSlot slot, @Nullable SimpleItemStack item) {
+        public Builder setSlot(EquipmentSlot slot, @Nullable ExtendedSimpleItemStack item) {
             if (item == null) {
-                item = new SimpleItemStack(Material.AIR);
+                item = new ExtendedSimpleItemStack(Material.AIR);
             }
             item = item.clone();
             item.setAmount(1);

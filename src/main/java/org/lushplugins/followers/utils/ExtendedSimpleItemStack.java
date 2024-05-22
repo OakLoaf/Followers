@@ -16,15 +16,15 @@ import org.lushplugins.lushlib.utils.SkullCreator;
 
 import java.util.UUID;
 
-public class SimpleItemStack extends org.lushplugins.lushlib.utils.SimpleItemStack implements Cloneable {
+public class ExtendedSimpleItemStack extends org.lushplugins.lushlib.utils.SimpleItemStack implements Cloneable {
     private Color dyeColor;
     private ArmorTrim armorTrim;
 
-    public SimpleItemStack(Material material) {
+    public ExtendedSimpleItemStack(Material material) {
         super(material);
     }
 
-    public SimpleItemStack(ItemStack itemStack) {
+    public ExtendedSimpleItemStack(ItemStack itemStack) {
         super(itemStack);
 
         if (itemStack.getItemMeta() instanceof ArmorMeta armorMeta) {
@@ -38,7 +38,7 @@ public class SimpleItemStack extends org.lushplugins.lushlib.utils.SimpleItemSta
         }
     }
 
-    public SimpleItemStack(ConfigurationSection configurationSection) {
+    public ExtendedSimpleItemStack(ConfigurationSection configurationSection) {
         super(configurationSection);
 
         if (configurationSection.contains("name")) {
@@ -128,8 +128,8 @@ public class SimpleItemStack extends org.lushplugins.lushlib.utils.SimpleItemSta
     }
 
     @Override
-    public SimpleItemStack clone() {
-        SimpleItemStack clone = (SimpleItemStack) super.clone();
+    public ExtendedSimpleItemStack clone() {
+        ExtendedSimpleItemStack clone = (ExtendedSimpleItemStack) super.clone();
         clone.setDyeColor(dyeColor);
         clone.setArmorTrim(armorTrim);
 

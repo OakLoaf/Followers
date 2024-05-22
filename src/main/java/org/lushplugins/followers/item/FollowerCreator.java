@@ -18,7 +18,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.lushplugins.followers.utils.SimpleItemStack;
+import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 import org.lushplugins.lushlib.listener.EventListener;
 
@@ -56,7 +56,7 @@ public class FollowerCreator implements EventListener {
         EntityEquipment armorStandEquipment = armorStand.getEquipment();
         if (armorStandEquipment != null) {
             for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-                followerBuilder.setSlot(equipmentSlot, new SimpleItemStack(armorStandEquipment.getItem(equipmentSlot)));
+                followerBuilder.setSlot(equipmentSlot, new ExtendedSimpleItemStack(armorStandEquipment.getItem(equipmentSlot)));
             }
         }
 
