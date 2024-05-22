@@ -1,8 +1,9 @@
 name: Followers
 version: ${version}
-main: me.dave.followers.Followers
+main: org.lushplugins.followers.Followers
 api-version: 1.16
-authors: [ Dav_e_ ]
+authors:
+  - OakLoaf
 depend:
   - ProtocolLib
 softdepend:
@@ -15,29 +16,11 @@ commands:
   followers:
     description: Opens Follower GUI
     usage: /followers
-    aliases: ["pets"]
+    aliases:
+      - "pets"
   gethexarmor:
     description: Gives the user a colored piece of leather armor based on a hex value
     usage: /gethexarmor
   dye:
     description: Dyes a user's leather item
     usage: /dye
-permissions:
-  follower.admin.reload:
-    description: Allows reloading the Followers plugin
-    default: op
-  follower.admin.create:
-    description: Allows access to create followers using the follower creator item
-    default: op
-  follower.admin.delete:
-    description: Allows access to delete followers
-    default: op
-  follower.admin.dye:
-    description: Allows access to get/dye armour with /dye
-    default: op
-  follower.admin.moderate:
-    description: Allows access to the moderation gui
-    default: op
-  follower.name:
-    description: Allows access to naming your Follower
-    default: op

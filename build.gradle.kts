@@ -5,7 +5,7 @@ plugins {
 }
 
 
-group = "me.dave"
+group = "org.lushplugins"
 version = "1.6.6-BETA"
 
 repositories {
@@ -47,8 +47,8 @@ tasks {
     }
 
     shadowJar {
-        relocate("com.mysql", "me.dave.followers.libraries.mysql")
-        relocate("me.dave.chatcolorhandler", "me.dave.followers.libraries.chatcolor")
+        relocate("com.mysql", "org.lushplugins.followers.libraries.mysql")
+        relocate("me.dave.chatcolorhandler", "org.lushplugins.followers.libraries.chatcolor")
 
         minimize()
 
