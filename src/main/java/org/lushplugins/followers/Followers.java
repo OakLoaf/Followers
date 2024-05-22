@@ -21,6 +21,7 @@ import org.lushplugins.followers.commands.GetHexArmorCmd;
 import org.lushplugins.followers.storage.Storage;
 import org.lushplugins.followers.listener.InventoryListener;
 import org.lushplugins.followers.listener.FollowerUserListener;
+import org.lushplugins.lushlib.LushLib;
 import org.lushplugins.lushlib.hook.Hook;
 import org.lushplugins.lushlib.plugin.SpigotPlugin;
 
@@ -34,6 +35,11 @@ public final class Followers extends SpigotPlugin {
     private BukkitTask heartbeat;
     private int tickCount;
     private boolean hasFloodgate = false;
+
+    @Override
+    public void onLoad() {
+        LushLib.getInstance().enable(this);
+    }
 
     @Override
     public void onEnable() {

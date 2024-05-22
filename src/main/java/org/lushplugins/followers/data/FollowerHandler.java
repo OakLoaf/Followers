@@ -20,12 +20,12 @@ public class FollowerHandler {
 
     public FollowerHandler(ConfigurationSection configurationSection) {
         this.name = configurationSection.getName();
-        this.head = new SimpleItemStack(configurationSection.getConfigurationSection("head"));
-        this.chest = new SimpleItemStack(configurationSection.getConfigurationSection("chest"));
-        this.legs = new SimpleItemStack(configurationSection.getConfigurationSection("legs"));
-        this.feet = new SimpleItemStack(configurationSection.getConfigurationSection("feet"));
-        this.mainHand =new SimpleItemStack(configurationSection.getConfigurationSection("mainHand"));
-        this.offHand = new SimpleItemStack(configurationSection.getConfigurationSection("offHand"));
+        this.head = configurationSection.contains("head") ? new SimpleItemStack(configurationSection.getConfigurationSection("head")) : new SimpleItemStack(Material.AIR);
+        this.chest = configurationSection.contains("chest") ? new SimpleItemStack(configurationSection.getConfigurationSection("chest")) : new SimpleItemStack(Material.AIR);
+        this.legs = configurationSection.contains("legs") ? new SimpleItemStack(configurationSection.getConfigurationSection("legs")) : new SimpleItemStack(Material.AIR);
+        this.feet = configurationSection.contains("feet") ? new SimpleItemStack(configurationSection.getConfigurationSection("feet")) : new SimpleItemStack(Material.AIR);
+        this.mainHand = configurationSection.contains("mainHand") ? new SimpleItemStack(configurationSection.getConfigurationSection("mainHand")) : new SimpleItemStack(Material.AIR);
+        this.offHand = configurationSection.contains("offHand") ? new SimpleItemStack(configurationSection.getConfigurationSection("offHand")) : new SimpleItemStack(Material.AIR);
         this.isVisible = configurationSection.getBoolean("visible", true);
     }
 
