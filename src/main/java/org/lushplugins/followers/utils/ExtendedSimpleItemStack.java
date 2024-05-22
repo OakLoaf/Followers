@@ -95,10 +95,10 @@ public class ExtendedSimpleItemStack extends org.lushplugins.lushlib.utils.Simpl
         if (itemMeta != null) {
             if (itemMeta instanceof ArmorMeta armorMeta) {
                 armorMeta.setTrim(armorTrim);
+            }
 
-                if (itemMeta instanceof LeatherArmorMeta leatherArmorMeta) {
-                    leatherArmorMeta.setColor(dyeColor);
-                }
+            if (itemMeta instanceof LeatherArmorMeta leatherArmorMeta) {
+                leatherArmorMeta.setColor(dyeColor);
             }
         }
         itemStack.setItemMeta(itemMeta);
