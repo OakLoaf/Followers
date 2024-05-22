@@ -1,5 +1,7 @@
 package org.lushplugins.followers;
 
+import com.github.retrooper.packetevents.PacketEvents;
+import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import org.bukkit.scheduler.BukkitTask;
 import org.lushplugins.followers.hooks.EssentialsHook;
 import org.lushplugins.followers.hooks.GSitHook;
@@ -39,6 +41,14 @@ public final class Followers extends SpigotPlugin {
     @Override
     public void onLoad() {
         LushLib.getInstance().enable(this);
+
+        PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
+        PacketEvents.getAPI().getSettings()
+            .reEncodeByDefault(false)
+            .checkForUpdates(false)
+            .bStats(false);
+
+        PacketEvents.getAPI().load();
     }
 
     @Override
@@ -80,6 +90,7 @@ public final class Followers extends SpigotPlugin {
                 });
 
                 getHooks().forEach(Hook::enable);
+                PacketEvents.getAPI().init();
             } else {
                 Followers.getInstance().getLogger().severe("Could not initialise the data. Aborting further plugin setup.");
             }
@@ -102,11 +113,12 @@ public final class Followers extends SpigotPlugin {
 
     @Override
     public void onDisable() {
+        PacketEvents.getAPI().terminate();
+
         if (heartbeat != null) {
             heartbeat.cancel();
             heartbeat = null;
         }
-
 
         Storage.SERVICE.shutdownNow();
     }

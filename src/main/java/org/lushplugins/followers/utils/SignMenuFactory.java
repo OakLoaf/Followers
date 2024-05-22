@@ -1,19 +1,20 @@
 package org.lushplugins.followers.utils;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.BlockPosition;
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.event.PacketListenerAbstract;
+import com.github.retrooper.packetevents.event.PacketListenerPriority;
+import com.github.retrooper.packetevents.event.PacketReceiveEvent;
+import com.github.retrooper.packetevents.protocol.packettype.PacketType;
+import com.github.retrooper.packetevents.util.Vector3i;
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientUpdateSign;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerOpenSignEditor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
+import org.lushplugins.followers.Followers;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,41 +24,13 @@ import java.util.function.BiPredicate;
 public final class SignMenuFactory {
     private final Map<Player, SignMenuFactory.Menu> inputs;
 
-    public SignMenuFactory(Plugin plugin) {
+    public SignMenuFactory() {
         this.inputs = new HashMap<>();
-        this.listen(plugin);
+        PacketEvents.getAPI().getEventManager().registerListener(new PacketListener());
     }
 
     public SignMenuFactory.Menu newMenu(List<String> text) {
         return new SignMenuFactory.Menu(text);
-    }
-
-    private void listen(Plugin plugin) {
-        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(plugin, PacketType.Play.Client.UPDATE_SIGN) {
-            @Override
-            public void onPacketReceiving(PacketEvent event) {
-                Player player = event.getPlayer();
-
-                SignMenuFactory.Menu menu = inputs.remove(player);
-
-                if (menu == null) {
-                    return;
-                }
-                event.setCancelled(true);
-
-                boolean success = menu.response.test(player, event.getPacket().getStringArrays().read(0));
-
-                if (!success && menu.reopenIfFail && !menu.forceClose) {
-                    Bukkit.getScheduler().runTaskLater(plugin, () -> menu.open(player), 2L);
-                }
-
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if (player.isOnline()) {
-                        player.sendBlockChange(menu.location, menu.location.getBlock().getBlockData());
-                    }
-                }, 2L);
-            }
-        });
     }
 
     public final class Menu {
@@ -71,7 +44,7 @@ public final class SignMenuFactory {
 
         private boolean forceClose;
 
-        Menu(List<String> text) {
+        public Menu(List<String> text) {
             this.text = text;
         }
 
@@ -99,14 +72,9 @@ public final class SignMenuFactory {
                 text.stream().map(this::color).toList().toArray(new String[4])
             );
 
-            PacketContainer openSign = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.OPEN_SIGN_EDITOR);
-            BlockPosition position = new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-            openSign.getBlockPositionModifier().write(0, position);
-            try {
-                ProtocolLibrary.getProtocolManager().sendServerPacket(player, openSign);
-            } catch (InvocationTargetException exception) {
-                exception.printStackTrace();
-            }
+
+            WrapperPlayServerOpenSignEditor packet = new WrapperPlayServerOpenSignEditor(new Vector3i(location.getBlockX(), location.getBlockY(), location.getBlockZ()), true);
+            PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
 
             inputs.put(player, this);
         }
@@ -131,6 +99,40 @@ public final class SignMenuFactory {
 
         private String color(String input) {
             return ChatColor.translateAlternateColorCodes('&', input);
+        }
+    }
+
+    public class PacketListener extends PacketListenerAbstract {
+
+        public PacketListener() {
+            super(PacketListenerPriority.NORMAL);
+        }
+
+        @Override
+        public void onPacketReceive(PacketReceiveEvent event) {
+            if (event.getPacketType() == PacketType.Play.Client.UPDATE_SIGN) {
+                WrapperPlayClientUpdateSign packet = new WrapperPlayClientUpdateSign(event);
+
+                Player player = (Player) event.getPlayer();
+
+                SignMenuFactory.Menu menu = inputs.remove(player);
+                if (menu == null) {
+                    return;
+                }
+
+                event.setCancelled(true);
+
+                boolean success = menu.response.test(player, packet.getTextLines());
+                if (!success && menu.reopenIfFail && !menu.forceClose) {
+                    Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> menu.open(player), 2L);
+                }
+
+                Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> {
+                    if (player.isOnline()) {
+                        player.sendBlockChange(menu.location, menu.location.getBlock().getBlockData());
+                    }
+                }, 2L);
+            }
         }
     }
 }

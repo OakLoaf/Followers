@@ -12,7 +12,7 @@ public class TextInterface {
     private String placeholder = "";
 
     private String inputName = "Input";
-    private final SignMenuFactory signFactory = new SignMenuFactory(Followers.getInstance());
+    private final SignMenuFactory signFactory = new SignMenuFactory();
     private FloodgateFormFactory formFactory = null;
 
     public TextInterface title(String title) {

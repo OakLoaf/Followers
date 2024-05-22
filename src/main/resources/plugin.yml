@@ -4,14 +4,18 @@ main: org.lushplugins.followers.Followers
 api-version: 1.16
 authors:
   - OakLoaf
-depend:
-  - ProtocolLib
 softdepend:
   - Essentials
   - floodgate
+  - Geyser-Spigot # PacketEvents Soft-Dependency
   - GSit
   - PlaceholderAPI
+  - ProtocolLib # PacketEvents Soft-Dependency
+  - ProtocolSupport # PacketEvents Soft-Dependency
   - SimpleSit
+  - ViaVersion # PacketEvents Soft-Dependency
+  - ViaBackwards # PacketEvents Soft-Dependency
+  - ViaRewind # PacketEvents Soft-Dependency
 commands:
   followers:
     description: Opens Follower GUI

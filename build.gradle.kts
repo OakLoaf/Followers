@@ -1,5 +1,5 @@
 plugins {
-    java
+    `java-library`
     `maven-publish`
     id("io.github.goooler.shadow") version("8.1.7")
 }
@@ -16,7 +16,7 @@ repositories {
     maven(url="https://ci.ender.zone/plugin/repository/everything/") // Essentials
     maven(url="https://repo.opencollab.dev/main/") // Floodgate
     maven(url="https://repo.lushplugins.org/snapshots/") // LushLib
-    maven(url="https://repo.dmulloy2.net/repository/public/") // ProtocolLib
+    maven(url="https://repo.codemc.io/repository/maven-releases/") // PacketEvents
     maven(url="https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI
     maven(url="https://jitpack.io") //GSit
 }
@@ -24,7 +24,6 @@ repositories {
 dependencies {
     // Dependencies
     compileOnly("org.spigotmc:spigot:1.20-R0.1-SNAPSHOT")
-    compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0")
 
     // Soft Dependencies
     compileOnly("org.geysermc.floodgate:api:2.0-SNAPSHOT")
@@ -34,6 +33,7 @@ dependencies {
     compileOnly(files("libs/SimpleSit.jar"))
 
     // Libraries
+    implementation("com.github.retrooper.packetevents:spigot:2.3.0")
     implementation("mysql:mysql-connector-java:8.0.25")
     implementation("org.lushplugins:LushLib:0.6.0")
 }
@@ -48,6 +48,9 @@ tasks {
     }
 
     shadowJar {
+        relocate("com.github.retrooper.packetevents", "org.lushplugins.followers.libraries.packetevents.api")
+        relocate("io.github.retrooper.packetevents", "org.lushplugins.followers.libraries.packetevents.impl")
+        relocate("net.kyori", "org.lushplugins.followers.libraries.kyori") // Provided by PacketEvents
         relocate("com.mysql", "org.lushplugins.followers.libraries.mysql")
         relocate("org.lushplugins.lushlib", "org.lushplugins.followers.libraries.lushlib")
 
