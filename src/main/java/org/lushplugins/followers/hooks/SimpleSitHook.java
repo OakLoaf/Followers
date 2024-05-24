@@ -1,12 +1,12 @@
 package org.lushplugins.followers.hooks;
 
+import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.entity.FollowerEntity;
 import org.lushplugins.followers.entity.poses.FollowerPose;
 import net.apcat.simplesit.events.PlayerSitEvent;
 import net.apcat.simplesit.events.PlayerStopSittingEvent;
-import org.bukkit.Particle;
 import org.bukkit.event.EventHandler;
 import org.lushplugins.lushlib.hook.Hook;
 import org.lushplugins.lushlib.listener.EventListener;
@@ -36,7 +36,7 @@ public class SimpleSitHook extends Hook implements EventListener {
             return;
         }
 
-        followerEntity.startParticles(Particle.CLOUD);
+        followerEntity.startParticles(ParticleTypes.CLOUD);
     }
 
     @EventHandler

@@ -18,7 +18,7 @@ repositories {
     maven(url="https://repo.lushplugins.org/snapshots/") // LushLib
     maven(url="https://repo.codemc.io/repository/maven-releases/") // PacketEvents
     maven(url="https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI
-    maven(url="https://jitpack.io") //GSit
+    maven(url="https://jitpack.io") // EntityLib, GSit
 }
 
 dependencies {
@@ -34,6 +34,7 @@ dependencies {
 
     // Libraries
     implementation("com.github.retrooper.packetevents:spigot:2.3.0")
+    implementation("com.github.Tofaa2.EntityLib:spigot:2.2.0-SNAPSHOT")
     implementation("mysql:mysql-connector-java:8.0.25")
     implementation("org.lushplugins:LushLib:0.6.1")
 }

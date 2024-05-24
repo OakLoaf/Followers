@@ -2,13 +2,15 @@ package org.lushplugins.followers;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
+import me.tofaa.entitylib.APIConfig;
+import me.tofaa.entitylib.EntityLib;
+import me.tofaa.entitylib.spigot.SpigotEntityLibPlatform;
 import org.bukkit.scheduler.BukkitTask;
 import org.lushplugins.followers.hooks.EssentialsHook;
 import org.lushplugins.followers.hooks.GSitHook;
 import org.lushplugins.followers.hooks.PlaceholderAPIHook;
 import org.lushplugins.followers.hooks.SimpleSitHook;
 import org.lushplugins.followers.listener.FollowerEntityListener;
-import org.lushplugins.followers.listener.WorldListener;
 import org.lushplugins.followers.item.FollowerCreator;
 import org.lushplugins.followers.data.ConfigManager;
 import org.lushplugins.followers.data.DataManager;
@@ -47,8 +49,11 @@ public final class Followers extends SpigotPlugin {
             .reEncodeByDefault(false)
             .checkForUpdates(false)
             .bStats(false);
-
         PacketEvents.getAPI().load();
+
+        EntityLib.init(
+            new SpigotEntityLibPlatform(this),
+            new APIConfig(PacketEvents.getAPI()));
     }
 
     @Override
@@ -66,7 +71,6 @@ public final class Followers extends SpigotPlugin {
                 new FollowerEntityListener().registerListeners();
                 new FollowerUserListener().registerListeners();
                 new InventoryListener().registerListeners();
-                new WorldListener().registerListeners();
                 new FollowerCreator().registerListeners();
 
                 addHook("Essentials", () -> registerHook(new EssentialsHook()));

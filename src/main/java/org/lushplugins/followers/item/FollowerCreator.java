@@ -27,6 +27,7 @@ import java.util.Arrays;
 public class FollowerCreator implements EventListener {
     private static final ItemStack creatorItem = getOrLoadCreatorItem();
 
+    // TODO: Find out what event is triggered by packet followers (Potentially add custom event?)
     @EventHandler
     public void onPlayerInteract(PlayerInteractAtEntityEvent event) {
         Player player = event.getPlayer();
@@ -38,10 +39,6 @@ public class FollowerCreator implements EventListener {
         event.setCancelled(true);
         if (!player.hasPermission("follower.admin.create")) {
             ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
-            return;
-        }
-
-        if (Followers.getInstance().getDataManager().getActiveArmorStandsSet().contains(armorStand.getUniqueId())) {
             return;
         }
 

@@ -1,11 +1,11 @@
 package org.lushplugins.followers.hooks;
 
+import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes;
 import dev.geco.gsit.api.event.*;
 import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.entity.poses.FollowerPose;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.entity.FollowerEntity;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 import org.bukkit.event.EventHandler;
@@ -38,7 +38,7 @@ public class GSitHook extends Hook implements EventListener {
                 return;
             }
 
-            followerEntity.startParticles(Particle.CLOUD);
+            followerEntity.startParticles(ParticleTypes.CLOUD);
         }
     }
 
@@ -67,7 +67,7 @@ public class GSitHook extends Hook implements EventListener {
         Pose pose = event.getPoseSeat().getPose();
         if (pose == Pose.SPIN_ATTACK) {
             followerEntity.setPose(FollowerPose.SPINNING);
-            followerEntity.startParticles(Particle.CLOUD);
+            followerEntity.startParticles(ParticleTypes.CLOUD);
         }
     }
 

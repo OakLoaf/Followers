@@ -1,35 +1,40 @@
 package org.lushplugins.followers.entity;
 
+import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
+import com.github.retrooper.packetevents.protocol.item.ItemStack;
+import com.github.retrooper.packetevents.protocol.item.type.ItemTypes;
+import com.github.retrooper.packetevents.protocol.particle.type.ParticleType;
+import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
+import com.github.retrooper.packetevents.protocol.world.Location;
+import io.github.retrooper.packetevents.util.SpigotConversionUtil;
+import me.tofaa.entitylib.EntityLib;
+import me.tofaa.entitylib.meta.display.TextDisplayMeta;
+import me.tofaa.entitylib.meta.other.ArmorStandMeta;
+import me.tofaa.entitylib.wrapper.WrapperEntity;
+import me.tofaa.entitylib.wrapper.WrapperEntityEquipment;
+import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
+import org.bukkit.Bukkit;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.api.events.FollowerEntityChangeTypeEvent;
 import org.lushplugins.followers.api.events.FollowerEntitySpawnEvent;
 import org.lushplugins.followers.api.events.FollowerEntityTickEvent;
 import org.lushplugins.followers.entity.poses.FollowerPose;
 import org.lushplugins.followers.data.FollowerHandler;
-import org.bukkit.*;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.persistence.PersistentDataType;
 import org.lushplugins.followers.data.FollowerUser;
 import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.entity.tasks.*;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
-import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
+import org.lushplugins.lushlib.libraries.chatcolor.ModernChatColorHandler;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FollowerEntity {
     private final ConcurrentHashMap<String, FollowerTask> tasks = new ConcurrentHashMap<>();
     private final Player player;
-    private ArmorStand bodyEntity;
-    private ArmorStand nametagEntity;
-    private UUID nameArmorStandUUID;
+    private WrapperLivingEntity bodyEntity;
+    private WrapperEntity nametagEntity;
     private String followerType;
     private boolean alive;
     private boolean visible;
@@ -46,20 +51,12 @@ public class FollowerEntity {
         return player;
     }
 
-    public ArmorStand getBodyEntity() {
+    public WrapperLivingEntity getEntity() {
         return bodyEntity;
     }
 
-    public boolean isBodyEntityValid() {
-        return bodyEntity != null && bodyEntity.isValid();
-    }
-
-    public ArmorStand getNametagEntity() {
-        return nametagEntity;
-    }
-
-    public boolean isNametagEntityValid() {
-        return nametagEntity != null && nametagEntity.isValid();
+    public boolean isEntityValid() {
+        return bodyEntity != null;
     }
 
     @Nullable
@@ -68,7 +65,7 @@ public class FollowerEntity {
     }
 
     public boolean isAlive() {
-        if (!isBodyEntityValid()) {
+        if (!isEntityValid()) {
             alive = false;
         }
 
@@ -98,12 +95,12 @@ public class FollowerEntity {
         showDisplayName(true);
 
         if (Followers.getInstance().getConfigManager().areHitboxesEnabled()) {
-            if (isBodyEntityValid()) {
-                bodyEntity.setCustomName(ChatColorHandler.translate(Followers.getInstance().getConfigManager().getFollowerNicknameFormat().replaceAll("%nickname%", newName)));
+            if (isEntityValid()) {
+                bodyEntity.getEntityMeta().setCustomName(ModernChatColorHandler.translate(Followers.getInstance().getConfigManager().getFollowerNicknameFormat().replaceAll("%nickname%", newName)));
             }
         } else {
-            if (isNametagEntityValid()) {
-                nametagEntity.setCustomName(ChatColorHandler.translate(Followers.getInstance().getConfigManager().getFollowerNicknameFormat().replaceAll("%nickname%", newName)));
+            if (nametagEntity != null) {
+                nametagEntity.getEntityMeta().setCustomName(ModernChatColorHandler.translate(Followers.getInstance().getConfigManager().getFollowerNicknameFormat().replaceAll("%nickname%", newName)));
             }
         }
     }
@@ -130,8 +127,8 @@ public class FollowerEntity {
 
         this.pose = pose;
 
-        if (isBodyEntityValid()) {
-            pose.pose(bodyEntity);
+        if (isEntityValid() && bodyEntity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta) {
+            pose.pose(armorStandMeta);
         }
     }
 
@@ -146,8 +143,8 @@ public class FollowerEntity {
             return;
         }
 
-        if (isBodyEntityValid()) {
-            bodyEntity.setVisible(followerConfig.isVisible() && visible);
+        if (isEntityValid()) {
+            bodyEntity.getEntityMeta().setInvisible(!followerConfig.isVisible() || !visible);
         }
 
         displayName(visible && Followers.getInstance().getDataManager().getFollowerUser(player).isDisplayNameEnabled());
@@ -160,37 +157,37 @@ public class FollowerEntity {
     }
 
     public void setArmorSlot(EquipmentSlot equipmentSlot, FollowerHandler followerType) {
-        if (isBodyEntityValid()) {
-            EntityEquipment equipment = bodyEntity.getEquipment();
+        if (isEntityValid()) {
+            WrapperEntityEquipment equipment = bodyEntity.getEquipment();
 
             if (equipment != null) {
                 ExtendedSimpleItemStack simpleItemStack;
                 switch (equipmentSlot) {
-                    case HEAD -> simpleItemStack = followerType.getHead();
-                    case CHEST -> simpleItemStack = followerType.getChest();
-                    case LEGS -> simpleItemStack = followerType.getLegs();
-                    case FEET -> simpleItemStack = followerType.getFeet();
-                    case HAND -> simpleItemStack = followerType.getMainHand();
+                    case HELMET -> simpleItemStack = followerType.getHead();
+                    case CHEST_PLATE -> simpleItemStack = followerType.getChest();
+                    case LEGGINGS -> simpleItemStack = followerType.getLegs();
+                    case BOOTS -> simpleItemStack = followerType.getFeet();
+                    case MAIN_HAND -> simpleItemStack = followerType.getMainHand();
                     case OFF_HAND -> simpleItemStack = followerType.getOffHand();
                     default -> simpleItemStack = null; // Should never happen
                 }
 
                 if (simpleItemStack != null) {
-                    equipment.setItem(equipmentSlot, simpleItemStack.asItemStack());
+                    equipment.setItem(equipmentSlot, SpigotConversionUtil.fromBukkitItemStack(simpleItemStack.asItemStack()));
                 }
             }
         }
     }
 
     public void clearInventory() {
-        if (isBodyEntityValid()) {
-            EntityEquipment equipment = bodyEntity.getEquipment();
+        if (isEntityValid()) {
+            WrapperEntityEquipment equipment = bodyEntity.getEquipment();
             if (equipment == null) {
                 return;
             }
 
             for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-                equipment.setItem(equipmentSlot, new ItemStack(Material.AIR));
+                equipment.setItem(equipmentSlot, new ItemStack.Builder().type(ItemTypes.AIR).build());
             }
         }
     }
@@ -211,8 +208,8 @@ public class FollowerEntity {
             setArmorSlot(equipmentSlot, followerHandler);
         }
 
-        if (isBodyEntityValid()) {
-            bodyEntity.setVisible(followerHandler.isVisible());
+        if (isEntityValid()) {
+            bodyEntity.getEntityMeta().setInvisible(!followerHandler.isVisible());
         }
     }
 
@@ -220,12 +217,12 @@ public class FollowerEntity {
         if (Followers.getInstance().callEvent(new FollowerEntitySpawnEvent(this))) {
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
 
-            if (isBodyEntityValid()) {
+            if (isEntityValid()) {
                 bodyEntity.remove();
             }
 
             this.bodyEntity = summonBodyEntity();
-            if (!isBodyEntityValid()) {
+            if (!isEntityValid()) {
                 kill();
                 return false;
             }
@@ -251,55 +248,43 @@ public class FollowerEntity {
     }
 
     public boolean teleport(Location location) {
-        if (!isBodyEntityValid()) {
+        if (!isEntityValid()) {
             return false;
         }
 
-        if (bodyEntity.getLocation().getChunk().isLoaded()) {
-            if (nametagEntity != null) {
-                nametagEntity.teleport(location.clone().add(0, 1, 0));
-            }
-
-            return bodyEntity.teleport(location);
-        } else {
-            return false;
+        if (nametagEntity != null) {
+            nametagEntity.teleport(new Location(location.getX(), location.getY() + 1, location.getZ(), location.getYaw(), location.getPitch()));
         }
+
+        bodyEntity.teleport(location);
+        return true;
     }
 
     public void kill() {
         alive = false;
-
         stopTasks(MovementTask.ID, ParticleTask.ID, ValidateTask.ID);
 
         if (bodyEntity != null) {
             bodyEntity.remove();
-            Followers.getInstance().getDataManager().removeActiveArmorStand(bodyEntity.getUniqueId());
         }
 
         if (nametagEntity != null) {
             nametagEntity.remove();
         }
-
-        Followers.getInstance().getDataManager().removeActiveArmorStand(nameArmorStandUUID);
     }
 
     private void startMovement() {
-        if (isBodyEntityValid()) {
-            String strUUID = bodyEntity.getPersistentDataContainer().get(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING);
-
-            if (strUUID != null) {
-                Player player = Bukkit.getPlayer(UUID.fromString(strUUID));
-                if (player != null) {
-                    startTask(FollowerTasks.getTask(MovementTask.ID, this));
-                }
+        if (isEntityValid()) {
+            if (player != null) {
+                startTask(FollowerTasks.getTask(MovementTask.ID, this));
             }
         }
     }
 
-    public void startParticles(Particle particle) {
-        if (isBodyEntityValid()) {
+    public void startParticles(ParticleType<?> particle) {
+        if (isEntityValid()) {
             try {
-                startTask(FollowerTasks.getClass(ParticleTask.ID).getConstructor(FollowerEntity.class, Particle.class).newInstance(this, particle));
+                startTask(FollowerTasks.getClass(ParticleTask.ID).getConstructor(FollowerEntity.class, ParticleType.class).newInstance(this, particle));
             } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
                 e.printStackTrace();
             }
@@ -366,105 +351,72 @@ public class FollowerEntity {
 
     private void displayName(boolean display) {
         if (display) {
-            if (!isNametagEntityValid()) {
+            if (nametagEntity == null) {
                 nametagEntity = summonNametagEntity();
-                if (!isNametagEntityValid()) {
+                if (nametagEntity == null) {
                     return;
                 }
-
-                nameArmorStandUUID = nametagEntity.getUniqueId();
             }
 
             String nickname = Followers.getInstance().getConfigManager().getFollowerNicknameFormat().replaceAll("%nickname%", Followers.getInstance().getDataManager().getFollowerUser(player).getDisplayName());
-            nametagEntity.setCustomName(ChatColorHandler.translate(nickname));
-            nametagEntity.setCustomNameVisible(true);
+            TextDisplayMeta textDisplayMeta = (TextDisplayMeta) nametagEntity.getEntityMeta();
+            textDisplayMeta.setText(ModernChatColorHandler.translate(nickname));
         }
         else {
-            if (isNametagEntityValid()) {
+            if (nametagEntity != null) {
                 nametagEntity.remove();
+                nametagEntity = null;
             }
-
-            Followers.getInstance().getDataManager().removeActiveArmorStand(nameArmorStandUUID);
-            nametagEntity = null;
-            nameArmorStandUUID = null;
         }
     }
 
-    private ArmorStand summonBodyEntity() {
-        World world = player.getWorld();
-        Location location = player.getLocation().add(1.5, 0, 1.5);
+    private WrapperLivingEntity summonBodyEntity() {
+        Location location = SpigotConversionUtil.fromBukkitLocation(player.getLocation().add(1.5, 0, 1.5));
 
-        ArmorStand armorStand;
-        if (!location.getChunk().isLoaded()) {
-            return null;
-        }
-
+        WrapperLivingEntity livingEntity;
         try {
-            armorStand = world.spawn(location, ArmorStand.class, (as -> {
-                try {
-                    as.setBasePlate(false);
-                    as.setArms(true);
-                    as.setInvulnerable(true);
-                    as.setCanPickupItems(false);
-                    as.setSmall(true);
-                    as.setAI(false);
-                    as.setGravity(false);
-                    as.setMetadata("keep", new FixedMetadataValue(Followers.getInstance(), null));
-                    as.setPersistent(false);
-                    as.getPersistentDataContainer().set(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING, player.getUniqueId().toString());
-                    if (!Followers.getInstance().getConfigManager().areHitboxesEnabled()) {
-                        as.setMarker(true);
-                    }
-                    // TODO: Add equipment
+            livingEntity = EntityLib.getApi().createEntity(EntityTypes.ARMOR_STAND);
+            if (livingEntity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta) {
+                armorStandMeta.setHasNoBasePlate(true);
+                armorStandMeta.setHasArms(true);
+                armorStandMeta.setSmall(true);
 
-                    Followers.getInstance().getDataManager().addActiveArmorStand(as.getUniqueId());
-                } catch(Exception e) {
-                    e.printStackTrace();
+                if (!Followers.getInstance().getConfigManager().areHitboxesEnabled()) {
+                    armorStandMeta.setMarker(true);
                 }
-            }));
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
 
-        return armorStand;
+        livingEntity.spawn(location);
+        // TODO: Implement proper tracking system (not in this class)
+        player.getWorld().getPlayers().forEach(viewer -> livingEntity.addViewer(viewer.getUniqueId()));
+
+        return livingEntity;
     }
 
-    private ArmorStand summonNametagEntity() {
-        if (!isBodyEntityValid()) {
+    private WrapperEntity summonNametagEntity() {
+        if (!isEntityValid()) {
             return null;
         }
 
-        World world = bodyEntity.getWorld();
-        Location location = bodyEntity.getLocation();
-
-        ArmorStand armorStand;
-        if (!location.getChunk().isLoaded()) {
-            return null;
-        }
-
+        WrapperEntity textDisplay;
         try {
-            armorStand = world.spawn(location.clone().add(0, 1, 0), ArmorStand.class, (as -> {
-                try {
-                    as.setInvulnerable(true);
-                    as.setVisible(false);
-                    as.setMarker(true);
-                    as.setAI(false);
-                    as.setGravity(false);
-                    as.setMetadata("keep", new FixedMetadataValue(Followers.getInstance(), "keep"));
-                    as.setPersistent(false);
-                    as.getPersistentDataContainer().set(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING, "");
-
-                    Followers.getInstance().getDataManager().addActiveArmorStand(as.getUniqueId());
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }));
-        } catch(Exception e) {
+            textDisplay = EntityLib.getApi().createEntity(EntityTypes.TEXT_DISPLAY);
+            TextDisplayMeta textDisplayMeta = (TextDisplayMeta) nametagEntity.getEntityMeta();
+            textDisplayMeta.setBackgroundColor(0);
+            textDisplayMeta.setShadow(true);
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
 
-        return armorStand;
+        textDisplay.spawn(bodyEntity.getLocation());
+        // TODO: Implement proper tracking system (not in this class)
+        player.getWorld().getPlayers().forEach(viewer -> textDisplay.addViewer(viewer.getUniqueId()));
+
+        return textDisplay;
     }
 }

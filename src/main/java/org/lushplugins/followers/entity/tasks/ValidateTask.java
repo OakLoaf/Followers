@@ -26,7 +26,7 @@ public class ValidateTask extends FollowerTask {
             return;
         }
 
-        if (!followerEntity.isBodyEntityValid()) {
+        if (!followerEntity.isEntityValid()) {
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
             UUID uuid = player.getUniqueId();
 

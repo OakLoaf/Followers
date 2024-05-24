@@ -1,9 +1,9 @@
 package org.lushplugins.followers.gui.custom;
 
+import com.github.retrooper.packetevents.protocol.world.Location;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.entity.FollowerEntity;
 import org.lushplugins.followers.gui.abstracts.PagedGui;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -59,8 +59,9 @@ public class ModerationGui extends PagedGui {
             if (!followerEntity.isDisplayNameVisible()) {
                 lore.add("&7&o(Follower Name Hidden)");
             }
-            Location followerLocation = followerEntity.getLocation();
-            lore.add("&7&o" + followerLocation.getBlockX() + ", " + followerLocation.getBlockY() + ", " + followerLocation.getBlockZ());
+
+            Location followerLocation = followerEntity.getEntity().getLocation();
+            lore.add("&7&o" + Math.round(followerLocation.getX()) + ", " + Math.round(followerLocation.getY()) + ", " + Math.round(followerLocation.getZ()));
             followerMeta.setLore(ChatColorHandler.translate(lore));
 
             followerItem.setItemMeta(followerMeta);

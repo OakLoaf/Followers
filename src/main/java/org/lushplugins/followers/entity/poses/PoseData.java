@@ -1,69 +1,69 @@
 package org.lushplugins.followers.entity.poses;
 
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.util.EulerAngle;
+import com.github.retrooper.packetevents.util.Vector3f;
+import me.tofaa.entitylib.meta.other.ArmorStandMeta;
 
 public class PoseData {
-    private EulerAngle headPose;
-    private EulerAngle bodyPose;
-    private EulerAngle leftArmPose;
-    private EulerAngle rightArmPose;
-    private EulerAngle leftLegPose;
-    private EulerAngle rightLegPose;
+    private Vector3f headPose;
+    private Vector3f bodyPose;
+    private Vector3f leftArmPose;
+    private Vector3f rightArmPose;
+    private Vector3f leftLegPose;
+    private Vector3f rightLegPose;
 
-    public PoseData setHeadPose(EulerAngle eulerAngle) {
-        this.headPose = eulerAngle;
+    public PoseData setHeadPose(Vector3f vector) {
+        this.headPose = vector;
         return this;
     }
 
-    public PoseData setBodyPose(EulerAngle eulerAngle) {
-        this.bodyPose = eulerAngle;
+    public PoseData setBodyPose(Vector3f vector) {
+        this.bodyPose = vector;
         return this;
     }
 
-    public PoseData setLeftArmPose(EulerAngle eulerAngle) {
-        this.leftArmPose = eulerAngle;
+    public PoseData setLeftArmPose(Vector3f vector) {
+        this.leftArmPose = vector;
         return this;
     }
 
-    public PoseData setRightArmPose(EulerAngle eulerAngle) {
-        this.rightArmPose = eulerAngle;
+    public PoseData setRightArmPose(Vector3f vector) {
+        this.rightArmPose = vector;
         return this;
     }
 
-    public PoseData setLeftLegPose(EulerAngle eulerAngle) {
-        this.leftLegPose = eulerAngle;
+    public PoseData setLeftLegPose(Vector3f vector) {
+        this.leftLegPose = vector;
         return this;
     }
 
-    public PoseData setRightLegPose(EulerAngle eulerAngle) {
-        this.rightLegPose = eulerAngle;
+    public PoseData setRightLegPose(Vector3f vector) {
+        this.rightLegPose = vector;
         return this;
     }
 
-    public void pose(ArmorStand armorStand) {
+    public void pose(ArmorStandMeta armorStandMeta) {
         if (headPose != null) {
-            armorStand.setHeadPose(headPose);
+            armorStandMeta.setHeadRotation(headPose);
         }
 
         if (bodyPose != null) {
-            armorStand.setBodyPose(bodyPose);
+            armorStandMeta.setBodyRotation(bodyPose);
         }
 
         if (leftArmPose != null) {
-            armorStand.setLeftArmPose(leftArmPose);
+            armorStandMeta.setLeftArmRotation(leftArmPose);
         }
 
         if (rightArmPose != null) {
-            armorStand.setRightArmPose(rightArmPose);
+            armorStandMeta.setRightArmRotation(rightArmPose);
         }
 
         if (leftLegPose != null) {
-            armorStand.setLeftLegPose(leftLegPose);
+            armorStandMeta.setLeftLegRotation(leftLegPose);
         }
 
         if (rightLegPose != null) {
-            armorStand.setRightLegPose(rightLegPose);
+            armorStandMeta.setRightLegRotation(rightLegPose);
         }
     }
 }

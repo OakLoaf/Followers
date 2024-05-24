@@ -1,21 +1,20 @@
 package org.lushplugins.followers.entity.tasks;
 
+import com.github.retrooper.packetevents.protocol.world.Location;
+import com.github.retrooper.packetevents.util.Vector3d;
+import com.github.retrooper.packetevents.util.Vector3f;
+import io.github.retrooper.packetevents.util.SpigotConversionUtil;
+import me.tofaa.entitylib.meta.other.ArmorStandMeta;
+import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.entity.FollowerEntity;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
-import org.bukkit.util.EulerAngle;
-import org.bukkit.util.Vector;
-
-import java.util.concurrent.CompletableFuture;
+import org.lushplugins.followers.utils.LocationUtil;
 
 public class MovementTask extends FollowerTask {
     public static final String ID = "movement";
     private final Player player;
     private final double speed;
-    private boolean teleporting = false;
 
     public MovementTask(FollowerEntity followerEntity) {
         super(followerEntity);
@@ -26,73 +25,32 @@ public class MovementTask extends FollowerTask {
     @Override
     public void tick() {
         // Cancels the task if the armour stand is dead
-        if (!followerEntity.isBodyEntityValid()) {
+        if (!followerEntity.isEntityValid()) {
             cancel();
             return;
         }
 
-        ArmorStand bodyArmorStand = followerEntity.getBodyEntity();
-
-        // Teleports follower if the player has moved to another world
-        // This may be moved to ValidateTask in the future
-        if (bodyArmorStand.getWorld() != player.getWorld()) {
-            // Previously used teleportToPlayer method
-            if (!teleporting) {
-                teleporting = true;
-                delayedTeleportTo(player, followerEntity, 20).thenAccept(success -> {
-                    if (!success) {
-                        Followers.getInstance().getDataManager().getFollowerUser(player).respawnFollowerEntity();
-                    }
-
-                    teleporting = false;
-                });
-            }
-            return;
-        }
-
-        Location followerLoc = bodyArmorStand.getLocation();
-        Vector difference = getDifference(player, bodyArmorStand);
-
-        // Teleports follower to player if the player is too far away
-        if (difference.lengthSquared() > 1024) {
-            // Previously used teleportToPlayer method
-            if (!teleporting) {
-                teleporting = true;
-                delayedTeleportTo(player, followerEntity, 5).thenAccept(success -> {
-                    if (!success) {
-                        Followers.getInstance().getDataManager().getFollowerUser(player).respawnFollowerEntity();
-                    }
-
-                    teleporting = false;
-                });
-            }
-            return;
-        }
+        WrapperLivingEntity entity = followerEntity.getEntity();
+        Location followerLoc = entity.getLocation();
+        Vector3d difference = getDifference(player, entity);
 
         // Calculates new location and angle of follower based off of the distance to the player
-        if (difference.clone().setY(0).lengthSquared() < 6.25) {
-            Vector differenceY = difference.clone().setX(0).setZ(0);
-
-            if (Followers.getInstance().getConfigManager().areHitboxesEnabled()) {
-                differenceY.setY(differenceY.getY() - 0.25);
-            } else {
-                differenceY.setY(differenceY.getY() - 0.7);
-            }
-
-            followerLoc.add(differenceY.multiply(speed));
+        if (new Vector3d(difference.getX(), 0 , difference.getZ()).lengthSquared() < 6.25) {
+            double differenceY = difference.getY() - (Followers.getInstance().getConfigManager().areHitboxesEnabled() ? 0.25 : 0.7);
+            LocationUtil.add(followerLoc, new Vector3d(0, differenceY * speed, 0));
         } else {
-            Vector normalizedDifference = difference.clone().normalize();
+            Vector3d normalizedDifference = difference.normalize();
             double distance = difference.length() - 5;
             if (distance < 1) {
                 distance = 1;
             }
 
-            followerLoc.add(normalizedDifference.multiply(speed * distance));
+            LocationUtil.add(followerLoc, normalizedDifference.multiply(speed * distance));
         }
-        followerLoc.setDirection(difference);
+        followerLoc.setDirection(new Vector3f((float) difference.getX(), (float) difference.getY(), (float) difference.getZ()));
 
         // Teleports follower
-        boolean tpSuccess = followerEntity.teleport(followerLoc.add(0, getArmorStandYOffset(bodyArmorStand), 0));
+        boolean tpSuccess = followerEntity.teleport(LocationUtil.add(followerLoc, new Vector3d(0, calculateYOffset(entity), 0)));
         if (!tpSuccess) {
             Followers.getInstance().getDataManager().getFollowerUser(player).respawnFollowerEntity();
         }
@@ -102,17 +60,18 @@ public class MovementTask extends FollowerTask {
             return;
         }
 
-        // Sets follower head to be looking at the player
-        double headPoseX = eulerToDegree(bodyArmorStand.getHeadPose().getX());
-        EulerAngle newHeadPoseX = new EulerAngle(getPitch(player, bodyArmorStand), 0, 0);
-        if (headPoseX > 60 && headPoseX < 290) {
-            if (headPoseX <= 175) {
-                newHeadPoseX.setX(60D);
+        if (entity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta) {
+            // Sets follower head to be looking at the player
+            double headPoseX = eulerToDegree(armorStandMeta.getHeadRotation().getX());
+            Vector3f newHeadPoseX;
+            if (headPoseX > 60 && headPoseX < 290) {
+                newHeadPoseX = new Vector3f(headPoseX <= 175 ? 60 : 290, 0, 0);
             } else {
-                newHeadPoseX.setX(290D);
+                newHeadPoseX = new Vector3f(getPitch(player, entity), 0, 0);
             }
+
+            armorStandMeta.setHeadRotation(newHeadPoseX);
         }
-        bodyArmorStand.setHeadPose(newHeadPoseX);
     }
 
     @Override
@@ -130,27 +89,25 @@ public class MovementTask extends FollowerTask {
         return 1;
     }
 
-    private static CompletableFuture<Boolean> delayedTeleportTo(Player player, FollowerEntity followerEntity, int delay) {
-        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
-        Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> completableFuture.complete(followerEntity.teleport(player.getLocation())), delay);
-        return completableFuture;
+    private static double calculateYOffset(WrapperLivingEntity entity) {
+        return (Math.PI / 60) * Math.sin(((double) 1/30) * Math.PI * (Followers.getInstance().getCurrentTick() + entity.getEntityId()));
     }
 
-    private static double getArmorStandYOffset(ArmorStand armorStand) {
-        return (Math.PI / 60) * Math.sin(((double) 1/30) * Math.PI * (Followers.getInstance().getCurrentTick() + armorStand.getEntityId()));
-    }
-
-    private static double getPitch(Player player, ArmorStand armorStand) {
-        Vector difference = (player.getEyeLocation().subtract(0,0.9, 0)).subtract(armorStand.getEyeLocation()).toVector();
+    private static float getPitch(Player player, WrapperLivingEntity entity) {
+        // TODO: Work out how to getEyeLocation
+        // Vector difference = (player.getEyeLocation().subtract(0,0.9, 0)).subtract(entity.getEyeLocation()).toVector();
+        Vector3d difference = SpigotConversionUtil.fromBukkitLocation(player.getEyeLocation().subtract(0, 0.9, 0)).getPosition().subtract(entity.getLocation().getPosition());
         if (difference.getX() == 0.0D && difference.getZ() == 0.0D) {
-            return (float)(difference.getY() > 0.0D ? -90 : 90);
+            return (float) (difference.getY() > 0.0D ? -90 : 90);
         } else {
-            return Math.atan(-difference.getY() / Math.sqrt((difference.getX()*difference.getX()) + (difference.getZ()*difference.getZ())));
+            return (float) Math.atan(-difference.getY() / Math.sqrt((difference.getX()*difference.getX()) + (difference.getZ()*difference.getZ())));
         }
     }
 
-    private static Vector getDifference(Player player, ArmorStand armorStand) {
-        return player.getEyeLocation().subtract(armorStand.getEyeLocation()).toVector();
+    private static Vector3d getDifference(Player player, WrapperLivingEntity entity) {
+        // TODO: Work out how to getEyeLocation
+        // Vector vector = player.getEyeLocation().subtract(entity.getEyeLocation()).toVector();
+        return SpigotConversionUtil.fromBukkitLocation(player.getEyeLocation()).getPosition().subtract(entity.getLocation().getPosition());
     }
 
     private static double eulerToDegree(double euler) {

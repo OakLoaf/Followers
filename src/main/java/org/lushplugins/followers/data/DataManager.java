@@ -17,7 +17,6 @@ import static java.util.Objects.requireNonNull;
 public class DataManager {
     private Storage storage;
     private final HashMap<UUID, FollowerUser> uuidToFollowerUser = new HashMap<>();
-    private final HashSet<UUID> activeArmorStandsSet = new HashSet<>();
 
     // Safe to use bukkit api in callback.
     public void initAsync(Consumer<Boolean> onComplete) {
@@ -78,18 +77,6 @@ public class DataManager {
         });
 
         return followerEntities;
-    }
-
-    public HashSet<UUID> getActiveArmorStandsSet() {
-        return activeArmorStandsSet;
-    }
-
-    public void addActiveArmorStand(UUID uuid) {
-        activeArmorStandsSet.add(uuid);
-    }
-
-    public void removeActiveArmorStand(UUID uuid) {
-        activeArmorStandsSet.remove(uuid);
     }
 
     public void reloadFollowerInventories() {
