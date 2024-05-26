@@ -1,18 +1,22 @@
 package org.lushplugins.followers.entity;
 
+import com.github.retrooper.packetevents.protocol.attribute.Attributes;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.item.ItemStack;
 import com.github.retrooper.packetevents.protocol.item.type.ItemTypes;
 import com.github.retrooper.packetevents.protocol.particle.type.ParticleType;
 import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import com.github.retrooper.packetevents.protocol.world.Location;
+import com.github.retrooper.packetevents.util.Vector3f;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.EntityLib;
+import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import me.tofaa.entitylib.meta.display.TextDisplayMeta;
 import me.tofaa.entitylib.meta.other.ArmorStandMeta;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import me.tofaa.entitylib.wrapper.WrapperEntityEquipment;
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.api.events.FollowerEntityChangeTypeEvent;
@@ -252,10 +256,6 @@ public class FollowerEntity {
             return false;
         }
 
-        if (nametagEntity != null) {
-            nametagEntity.teleport(new Location(location.getX(), location.getY() + 1, location.getZ(), location.getYaw(), location.getPitch()));
-        }
-
         bodyEntity.teleport(location);
         return true;
     }
@@ -360,7 +360,9 @@ public class FollowerEntity {
 
             String nickname = Followers.getInstance().getConfigManager().getFollowerNicknameFormat().replaceAll("%nickname%", Followers.getInstance().getDataManager().getFollowerUser(player).getDisplayName());
             TextDisplayMeta textDisplayMeta = (TextDisplayMeta) nametagEntity.getEntityMeta();
-            textDisplayMeta.setText(ModernChatColorHandler.translate(nickname));
+            textDisplayMeta.setText(Component.text(nickname));
+            // TODO: Fix ChatColorHandler
+//            textDisplayMeta.setText(ModernChatColorHandler.translate(nickname));
         }
         else {
             if (nametagEntity != null) {
@@ -375,7 +377,12 @@ public class FollowerEntity {
 
         WrapperLivingEntity livingEntity;
         try {
-            livingEntity = EntityLib.getApi().createEntity(EntityTypes.ARMOR_STAND);
+            // TODO: Implement 'entity-type' follower option
+            livingEntity = EntityLib.getApi().createEntity(EntityTypes.GOAT);
+            livingEntity.spawn(location);
+
+            // TODO: Implement 'scale' follower option
+            livingEntity.getAttributes().setAttribute(Attributes.GENERIC_SCALE, 0.5);
             if (livingEntity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta) {
                 armorStandMeta.setHasNoBasePlate(true);
                 armorStandMeta.setHasArms(true);
@@ -390,9 +397,11 @@ public class FollowerEntity {
             return null;
         }
 
-        livingEntity.spawn(location);
+
         // TODO: Implement proper tracking system (not in this class)
         player.getWorld().getPlayers().forEach(viewer -> livingEntity.addViewer(viewer.getUniqueId()));
+        // TODO: Remove after EntityLib fix
+        livingEntity.getAttributes().refresh();
 
         return livingEntity;
     }
@@ -405,7 +414,11 @@ public class FollowerEntity {
         WrapperEntity textDisplay;
         try {
             textDisplay = EntityLib.getApi().createEntity(EntityTypes.TEXT_DISPLAY);
-            TextDisplayMeta textDisplayMeta = (TextDisplayMeta) nametagEntity.getEntityMeta();
+            textDisplay.spawn(bodyEntity.getLocation());
+
+            TextDisplayMeta textDisplayMeta = (TextDisplayMeta) textDisplay.getEntityMeta();
+            textDisplayMeta.setTranslation(new Vector3f(0, 0.5f, 0));
+            textDisplayMeta.setBillboardConstraints(AbstractDisplayMeta.BillboardConstraints.VERTICAL);
             textDisplayMeta.setBackgroundColor(0);
             textDisplayMeta.setShadow(true);
         } catch (Exception e) {
@@ -413,9 +426,10 @@ public class FollowerEntity {
             return null;
         }
 
-        textDisplay.spawn(bodyEntity.getLocation());
         // TODO: Implement proper tracking system (not in this class)
         player.getWorld().getPlayers().forEach(viewer -> textDisplay.addViewer(viewer.getUniqueId()));
+        // TODO: Investigate passenger handling
+        bodyEntity.addPassenger(textDisplay);
 
         return textDisplay;
     }
