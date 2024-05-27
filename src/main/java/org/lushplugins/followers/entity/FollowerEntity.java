@@ -363,6 +363,7 @@ public class FollowerEntity {
         WrapperLivingEntity entity;
         if (bodyEntity != null) {
             if (!bodyEntity.getEntityType().equals(followerHandler.getEntityType())) {
+                // Handles changing the entity type
                 entity = followerHandler.createEntity(bodyEntity.getEntityId(), bodyEntity.getUuid());
                 entity.spawn(bodyEntity.getLocation());
             } else {
