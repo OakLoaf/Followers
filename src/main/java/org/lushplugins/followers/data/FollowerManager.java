@@ -54,20 +54,24 @@ public class FollowerManager {
         }
 
         configurationSection = config.createSection(followerName);
+        configurationSection.set("entityType", followerHandler.getEntityType().getName());
         followerHandler.getHead().save(configurationSection, "head");
         followerHandler.getChest().save(configurationSection, "chest");
         followerHandler.getLegs().save(configurationSection, "legs");
         followerHandler.getFeet().save(configurationSection, "feet");
         followerHandler.getMainHand().save(configurationSection, "mainHand");
         followerHandler.getOffHand().save(configurationSection, "offHand");
-
         configurationSection.set("visible", followerHandler.isVisible());
+        configurationSection.set("scale", followerHandler.getScale());
 
         if (!replace) {
-            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-created").replaceAll("%follower%", followerName));
+            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-created")
+                .replaceAll("%follower%", followerName));
         } else {
-            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-edited").replaceAll("%follower%", followerName));
+            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-edited")
+                .replaceAll("%follower%", followerName));
         }
+
         saveFollowers();
         loadFollower(followerName, followerHandler);
         Followers.getInstance().getFollowerManager().refreshAllFollowers();

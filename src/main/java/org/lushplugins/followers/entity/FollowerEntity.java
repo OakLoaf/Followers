@@ -1,6 +1,5 @@
 package org.lushplugins.followers.entity;
 
-import com.github.retrooper.packetevents.protocol.attribute.Attributes;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.item.ItemStack;
 import com.github.retrooper.packetevents.protocol.item.type.ItemTypes;
@@ -83,9 +82,10 @@ public class FollowerEntity {
     public void setType(String followerType) {
         if (Followers.getInstance().callEvent(new FollowerEntityChangeTypeEvent(this, this.followerType, followerType))) {
             this.followerType = followerType;
-
             Followers.getInstance().getDataManager().getFollowerUser(player).setFollowerType(followerType);
+
             if (!player.isInvisible()) {
+                refreshEntity();
                 reloadInventory();
             }
         }
@@ -98,14 +98,10 @@ public class FollowerEntity {
     public void setDisplayName(String newName) {
         showDisplayName(true);
 
-        if (Followers.getInstance().getConfigManager().areHitboxesEnabled()) {
-            if (isEntityValid()) {
-                bodyEntity.getEntityMeta().setCustomName(ModernChatColorHandler.translate(Followers.getInstance().getConfigManager().getFollowerNicknameFormat().replaceAll("%nickname%", newName)));
-            }
-        } else {
-            if (nametagEntity != null) {
-                nametagEntity.getEntityMeta().setCustomName(ModernChatColorHandler.translate(Followers.getInstance().getConfigManager().getFollowerNicknameFormat().replaceAll("%nickname%", newName)));
-            }
+        // TODO: Potentially implement offset for hitboxes vs no hitboxes
+        if (nametagEntity != null) {
+            nametagEntity.getEntityMeta().setCustomName(ModernChatColorHandler.translate(Followers.getInstance().getConfigManager().getFollowerNicknameFormat()
+                .replaceAll("%nickname%", newName)));
         }
     }
 
@@ -220,21 +216,10 @@ public class FollowerEntity {
     public boolean spawn() {
         if (Followers.getInstance().callEvent(new FollowerEntitySpawnEvent(this))) {
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-
-            if (isEntityValid()) {
-                bodyEntity.remove();
-            }
-
-            this.bodyEntity = summonBodyEntity();
-            if (!isEntityValid()) {
-                kill();
-                return false;
-            }
-
+            refreshEntity();
             this.alive = true;
 
             displayName(followerUser.isDisplayNameEnabled());
-
             followerUser.setFollowerEnabled(true);
             setType(followerType);
             setVisible(!player.isInvisible());
@@ -252,12 +237,12 @@ public class FollowerEntity {
     }
 
     public boolean teleport(Location location) {
-        if (!isEntityValid()) {
-            return false;
+        if (bodyEntity != null) {
+            bodyEntity.teleport(location);
+            return true;
         }
 
-        bodyEntity.teleport(location);
-        return true;
+        return false;
     }
 
     public void kill() {
@@ -285,7 +270,8 @@ public class FollowerEntity {
         if (isEntityValid()) {
             try {
                 startTask(FollowerTasks.getClass(ParticleTask.ID).getConstructor(FollowerEntity.class, ParticleType.class).newInstance(this, particle));
-            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException |
+                     InvocationTargetException e) {
                 e.printStackTrace();
             }
         }
@@ -363,8 +349,7 @@ public class FollowerEntity {
             textDisplayMeta.setText(Component.text(nickname));
             // TODO: Fix ChatColorHandler
 //            textDisplayMeta.setText(ModernChatColorHandler.translate(nickname));
-        }
-        else {
+        } else {
             if (nametagEntity != null) {
                 nametagEntity.remove();
                 nametagEntity = null;
@@ -372,38 +357,47 @@ public class FollowerEntity {
         }
     }
 
-    private WrapperLivingEntity summonBodyEntity() {
-        Location location = SpigotConversionUtil.fromBukkitLocation(player.getLocation().add(1.5, 0, 1.5));
+    private void refreshEntity() {
+        FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerType);
 
-        WrapperLivingEntity livingEntity;
-        try {
-            // TODO: Implement 'entity-type' follower option
-            livingEntity = EntityLib.getApi().createEntity(EntityTypes.GOAT);
-            livingEntity.spawn(location);
-
-            // TODO: Implement 'scale' follower option
-            livingEntity.getAttributes().setAttribute(Attributes.GENERIC_SCALE, 0.5);
-            if (livingEntity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta) {
-                armorStandMeta.setHasNoBasePlate(true);
-                armorStandMeta.setHasArms(true);
-                armorStandMeta.setSmall(true);
-
-                if (!Followers.getInstance().getConfigManager().areHitboxesEnabled()) {
-                    armorStandMeta.setMarker(true);
-                }
+        WrapperLivingEntity entity;
+        if (bodyEntity != null) {
+            if (!bodyEntity.getEntityType().equals(followerHandler.getEntityType())) {
+                entity = followerHandler.createEntity(bodyEntity.getEntityId(), bodyEntity.getUuid());
+                entity.spawn(bodyEntity.getLocation());
+            } else {
+                entity = bodyEntity;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        } else {
+            entity = followerHandler.createEntity();
+            entity.spawn(SpigotConversionUtil.fromBukkitLocation(player.getLocation().add(1.5, 0, 1.5)));
         }
 
+        followerHandler.applyAttributes(entity);
+        this.bodyEntity = entity;
+        reloadInventory();
 
         // TODO: Implement proper tracking system (not in this class)
-        player.getWorld().getPlayers().forEach(viewer -> livingEntity.addViewer(viewer.getUniqueId()));
-        // TODO: Remove after EntityLib fix
-        livingEntity.getAttributes().refresh();
+        player.getWorld().getPlayers().forEach(viewer -> entity.addViewer(viewer.getUniqueId()));
+        // TODO: Remove on EntityLib implementation
+        entity.refresh();
+        refreshNametag();
+    }
 
-        return livingEntity;
+    public void refreshNametag() {
+        if (nametagEntity == null) {
+            return;
+        }
+
+        FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerType);
+        TextDisplayMeta textDisplayMeta = (TextDisplayMeta) nametagEntity.getEntityMeta();
+
+        float translation = followerHandler.getEntityType().equals(EntityTypes.ARMOR_STAND) && !Followers.getInstance().getConfigManager().areHitboxesEnabled() ? 0.6f : 0.1f;
+        textDisplayMeta.setTranslation(new Vector3f(0, translation, 0));
+
+        if (!bodyEntity.hasPassenger(nametagEntity)) {
+            bodyEntity.addPassenger(nametagEntity.getEntityId());
+        }
     }
 
     private WrapperEntity summonNametagEntity() {
@@ -411,16 +405,23 @@ public class FollowerEntity {
             return null;
         }
 
+        FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerType);
         WrapperEntity textDisplay;
         try {
             textDisplay = EntityLib.getApi().createEntity(EntityTypes.TEXT_DISPLAY);
-            textDisplay.spawn(bodyEntity.getLocation());
+            textDisplay.spawn(new Location(bodyEntity.getLocation().getPosition(), 0, 0));
+            bodyEntity.addPassenger(textDisplay);
 
             TextDisplayMeta textDisplayMeta = (TextDisplayMeta) textDisplay.getEntityMeta();
-            textDisplayMeta.setTranslation(new Vector3f(0, 0.5f, 0));
             textDisplayMeta.setBillboardConstraints(AbstractDisplayMeta.BillboardConstraints.VERTICAL);
             textDisplayMeta.setBackgroundColor(0);
             textDisplayMeta.setShadow(true);
+
+            float translation = followerHandler.getEntityType().equals(EntityTypes.ARMOR_STAND) && !Followers.getInstance().getConfigManager().areHitboxesEnabled() ? 0.6f : 0.1f;
+            textDisplayMeta.setTranslation(new Vector3f(0, translation, 0));
+
+            float scale = (float) followerHandler.getScale();
+            textDisplayMeta.setScale(new Vector3f(scale, scale, scale));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -428,8 +429,8 @@ public class FollowerEntity {
 
         // TODO: Implement proper tracking system (not in this class)
         player.getWorld().getPlayers().forEach(viewer -> textDisplay.addViewer(viewer.getUniqueId()));
-        // TODO: Investigate passenger handling
-        bodyEntity.addPassenger(textDisplay);
+        // TODO: Remove on EntityLib implementation
+        bodyEntity.refresh();
 
         return textDisplay;
     }
