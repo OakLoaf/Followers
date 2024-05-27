@@ -2,7 +2,6 @@ package org.lushplugins.followers.item;
 
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerHandler;
-import org.lushplugins.followers.exceptions.ObjectNameLockedException;
 import org.lushplugins.followers.gui.custom.BuilderGui;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -47,7 +46,7 @@ public class FollowerCreator implements EventListener {
         if (armorStandName != null) {
             try {
                 followerBuilder.setName(armorStandName);
-            } catch (ObjectNameLockedException ignored) {}
+            } catch (IllegalStateException ignored) {}
         }
 
         EntityEquipment armorStandEquipment = armorStand.getEquipment();

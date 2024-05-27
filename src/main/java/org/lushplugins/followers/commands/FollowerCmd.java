@@ -4,7 +4,6 @@ import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.api.events.FollowersReloadEvent;
 import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.entity.FollowerEntity;
-import org.lushplugins.followers.exceptions.ObjectNameLockedException;
 import org.lushplugins.followers.export.GeyserSkullExporter;
 import org.lushplugins.followers.gui.custom.BuilderGui;
 import org.lushplugins.followers.gui.custom.ModerationGui;
@@ -202,7 +201,7 @@ public class FollowerCmd extends Command {
                     FollowerHandler.Builder followerBuilder = new FollowerHandler.Builder(followerHandler);
                     try {
                         followerBuilder.setName(followerName);
-                    } catch (ObjectNameLockedException ignored) {}
+                    } catch (IllegalStateException ignored) {}
 
                     BuilderGui builderGui = new BuilderGui(player, BuilderGui.Mode.EDIT, followerBuilder.setNameLocked(true));
                     builderGui.openInventory();

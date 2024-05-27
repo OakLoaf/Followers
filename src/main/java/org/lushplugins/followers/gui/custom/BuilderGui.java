@@ -2,7 +2,6 @@ package org.lushplugins.followers.gui.custom;
 
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerHandler;
-import org.lushplugins.followers.exceptions.ObjectNameLockedException;
 import org.lushplugins.followers.gui.InventoryHandler;
 import org.lushplugins.followers.gui.abstracts.AbstractGui;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
@@ -167,7 +166,7 @@ public class BuilderGui extends AbstractGui {
                     Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
                         try {
                             followerBuilder.setName(finalOutput);
-                        } catch (ObjectNameLockedException ignored) {}
+                        } catch (IllegalStateException ignored) {}
 
                         openInventory();
                     });
