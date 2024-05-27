@@ -9,7 +9,7 @@ import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.entity.FollowerEntity;
 import org.bukkit.entity.Player;
-import org.lushplugins.followers.utils.LocationUtil;
+import org.lushplugins.lushlib.utils.Pair;
 
 public class MovementTask extends FollowerTask {
     public static final String ID = "movement";
@@ -24,20 +24,62 @@ public class MovementTask extends FollowerTask {
 
     @Override
     public void tick() {
-        // Cancels the task if the armour stand is dead
+        // Cancels the task if the entity is dead
         if (!followerEntity.isEntityValid()) {
             cancel();
             return;
         }
 
         WrapperLivingEntity entity = followerEntity.getEntity();
-        Location followerLoc = entity.getLocation();
+        Location currentLocation = entity.getLocation();
+        Vector3d newPosition = calculatePosition();
+
+        float yaw;
+        float pitch;
+        // Limits following code to run once every 2 ticks
+        if (Followers.getInstance().getCurrentTick() % 2 == 0) {
+            Pair<Float, Float> rotation = calculateRotation();
+            yaw = rotation.first();
+            pitch = rotation.second();
+        } else {
+            yaw = currentLocation.getYaw();
+            pitch = currentLocation.getPitch();
+        }
+
+        Location newLocation = new Location(newPosition, yaw, pitch);
+
+        // Teleports follower
+        boolean tpSuccess = followerEntity.teleport(newLocation);
+        if (!tpSuccess) {
+            Followers.getInstance().getDataManager().getFollowerUser(player).respawnFollowerEntity();
+        }
+
+        // Limits following code to run once every 2 ticks
+        if (Followers.getInstance().getCurrentTick() % 2 == 0) {
+            if (entity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta) {
+                // Sets follower head to be looking at the player
+                double headPoseX = eulerToDegree(armorStandMeta.getHeadRotation().getX());
+                Vector3f newHeadPoseX;
+                if (headPoseX > 60 && headPoseX < 290) {
+                    newHeadPoseX = new Vector3f(headPoseX <= 175 ? 60 : 290, 0, 0);
+                } else {
+                    newHeadPoseX = new Vector3f(getPitch(player, entity), 0, 0);
+                }
+
+                armorStandMeta.setHeadRotation(newHeadPoseX);
+            }
+        }
+    }
+
+    public Vector3d calculatePosition() {
+        WrapperLivingEntity entity = followerEntity.getEntity();
+        Vector3d position = entity.getLocation().getPosition();
         Vector3d difference = getDifference(player, entity);
 
-        // Calculates new location and angle of follower based off of the distance to the player
+        // Calculates new location of entity based off of the distance to the player
         if (new Vector3d(difference.getX(), 0 , difference.getZ()).lengthSquared() < 6.25) {
             double differenceY = difference.getY() - (Followers.getInstance().getConfigManager().areHitboxesEnabled() ? 0.25 : 0.7);
-            LocationUtil.add(followerLoc, new Vector3d(0, differenceY * speed, 0));
+            position.add(new Vector3d(0, differenceY * speed, 0));
         } else {
             Vector3d normalizedDifference = difference.normalize();
             double distance = difference.length() - 5;
@@ -45,33 +87,22 @@ public class MovementTask extends FollowerTask {
                 distance = 1;
             }
 
-            LocationUtil.add(followerLoc, normalizedDifference.multiply(speed * distance));
-        }
-        followerLoc.setDirection(new Vector3f((float) difference.getX(), (float) difference.getY(), (float) difference.getZ()));
-
-        // Teleports follower
-        boolean tpSuccess = followerEntity.teleport(LocationUtil.add(followerLoc, new Vector3d(0, calculateYOffset(entity), 0)));
-        if (!tpSuccess) {
-            Followers.getInstance().getDataManager().getFollowerUser(player).respawnFollowerEntity();
+            position.add(normalizedDifference.multiply(speed * distance));
         }
 
-        // Limits following code to run once every 2 ticks
-        if (Followers.getInstance().getCurrentTick() % 2 != 0) {
-            return;
-        }
+        return position.add(0, calculateYOffset(entity), 0);
+    }
 
-        if (entity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta) {
-            // Sets follower head to be looking at the player
-            double headPoseX = eulerToDegree(armorStandMeta.getHeadRotation().getX());
-            Vector3f newHeadPoseX;
-            if (headPoseX > 60 && headPoseX < 290) {
-                newHeadPoseX = new Vector3f(headPoseX <= 175 ? 60 : 290, 0, 0);
-            } else {
-                newHeadPoseX = new Vector3f(getPitch(player, entity), 0, 0);
-            }
+    /**
+     * Calculate the head rotation of the entity
+     * @return A pair of yaw and pitch as floats
+     */
+    // TODO: Consider changing to return Vector3f(pitch, yaw?, roll?)
+    public Pair<Float, Float> calculateRotation() {
+        WrapperLivingEntity entity = followerEntity.getEntity();
 
-            armorStandMeta.setHeadRotation(newHeadPoseX);
-        }
+        float pitch = getPitch(player, entity);
+        return new Pair<>(0f, pitch);
     }
 
     @Override
