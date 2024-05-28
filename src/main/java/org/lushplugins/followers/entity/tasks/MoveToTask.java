@@ -95,16 +95,16 @@ public class MoveToTask extends FollowerTask {
         return 1;
     }
 
-    private static double calculateYOffset(WrapperLivingEntity entity) {
+    protected static double calculateYOffset(WrapperLivingEntity entity) {
         return (Math.PI / 60) * Math.sin(((double) 1/30) * Math.PI * (Followers.getInstance().getCurrentTick() + entity.getEntityId()));
     }
 
-    private static float getYaw(Vector3d difference) {
+    protected static float getYaw(Vector3d difference) {
         double yawRadians = Math.atan2(difference.getX(), difference.getZ());
         return (float) -Math.toDegrees(yawRadians);
     }
 
-    private static float getPitch(Vector3d difference) {
+    protected static float getPitch(Vector3d difference) {
         if (difference.getX() == 0.0D && difference.getZ() == 0.0D) {
             return (float) (difference.getY() > 0.0D ? -90 : 90);
         } else {
@@ -113,7 +113,7 @@ public class MoveToTask extends FollowerTask {
         }
     }
 
-    private static Vector3d getDifference(Vector3d from, Vector3d to) {
+    protected static Vector3d getDifference(Vector3d from, Vector3d to) {
         return to.subtract(from);
     }
 }
