@@ -13,20 +13,19 @@ import org.lushplugins.followers.utils.ParticleUtil;
 public class ParticleTask extends FollowerTask {
     private final ParticleType<?> particle;
 
-    public ParticleTask(FollowerEntity followerEntity, ParticleType<?> particle) {
-        super(followerEntity);
+    public ParticleTask(ParticleType<?> particle) {
         this.particle = particle;
     }
 
     @Override
-    public void tick() {
-        if (!followerEntity.isEntityValid()) {
-            cancel();
+    public void tick(FollowerEntity follower) {
+        if (!follower.isEntityValid()) {
+            cancel(follower);
             return;
         }
 
-        WrapperLivingEntity livingEntity = followerEntity.getEntity();
-        World world = followerEntity.getPlayer().getWorld();
+        WrapperLivingEntity livingEntity = follower.getEntity();
+        World world = follower.getPlayer().getWorld();
         ParticleUtil.spawnParticle(
             new Particle<>(particle),
             world,
@@ -41,11 +40,6 @@ public class ParticleTask extends FollowerTask {
     @Override
     public String getIdentifier() {
         return TaskId.PARTICLE;
-    }
-
-    @Override
-    public int getDelay() {
-        return 0;
     }
 
     @Override

@@ -11,34 +11,30 @@ import org.lushplugins.followers.entity.FollowerEntity;
 
 public class MoveToTask extends FollowerTask {
 
-    public MoveToTask(FollowerEntity followerEntity) {
-        super(followerEntity);
-    }
-
     @Override
-    public void tick() {
+    public void tick(FollowerEntity follower) {
         // Cancels the task if the entity is dead
-        if (!followerEntity.isEntityValid()) {
-            cancel();
+        if (!follower.isEntityValid()) {
+            cancel(follower);
             return;
         }
 
         // TODO: Replace player with target entity (Potentially implement as separate task)
-        followerEntity.setTarget(SpigotConversionUtil.fromBukkitLocation(followerEntity.getPlayer().getLocation()));
+        follower.setTarget(SpigotConversionUtil.fromBukkitLocation(follower.getPlayer().getLocation()));
 
-        WrapperLivingEntity entity = followerEntity.getEntity();
+        WrapperLivingEntity entity = follower.getEntity();
         Location currentLocation = entity.getLocation();
-        Vector3d newPosition = calculatePosition();
+        Vector3d newPosition = calculatePosition(follower);
 
         // Calculations limited to running once every 2 ticks
         Vector3f rotation;
         if (Followers.getInstance().getCurrentTick() % 2 == 0) {
-            rotation = calculateRotation();
+            rotation = calculateRotation(follower);
         } else {
             rotation = new Vector3f(currentLocation.getPitch(), currentLocation.getYaw(), 0);
         }
 
-        followerEntity.teleport(new Location(newPosition, rotation.getY(), rotation.getX()));
+        follower.teleport(new Location(newPosition, rotation.getY(), rotation.getX()));
         entity.rotateHead(rotation.getY(), rotation.getX());
 
         if (entity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta) {
@@ -47,13 +43,13 @@ public class MoveToTask extends FollowerTask {
         }
     }
 
-    public Vector3d calculatePosition() {
-        WrapperLivingEntity entity = followerEntity.getEntity();
+    public Vector3d calculatePosition(FollowerEntity follower) {
+        WrapperLivingEntity entity = follower.getEntity();
         double speed = Followers.getInstance().getConfigManager().getSpeed();
 
         // Calculates new location of entity based off of the distance to the player
         Vector3d position = entity.getLocation().getPosition();
-        Vector3d difference = getDifference(position, followerEntity.getTarget()); // TODO: Work out how to get entity eye location from entity
+        Vector3d difference = getDifference(position, follower.getTarget()); // TODO: Work out how to get entity eye location from entity
         Vector3d normalizedDifference = difference.normalize();
         double distance = difference.length() - 5;
         if (distance < 1) {
@@ -71,11 +67,11 @@ public class MoveToTask extends FollowerTask {
      * Calculate the rotation of the entity
      * @return A rotation vector of pitch, yaw and roll
      */
-    public Vector3f calculateRotation() {
-        WrapperLivingEntity entity = followerEntity.getEntity();
+    public Vector3f calculateRotation(FollowerEntity follower) {
+        WrapperLivingEntity entity = follower.getEntity();
 
         // TODO: Work out how to get entity eye location from entity
-        Vector3d difference = getDifference(entity.getLocation().getPosition(), followerEntity.getTarget());
+        Vector3d difference = getDifference(entity.getLocation().getPosition(), follower.getTarget());
         float pitch = getPitch(difference);
         if (pitch > 60 && pitch < 290) {
             pitch = pitch <= 175 ? 60 : 290;

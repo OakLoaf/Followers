@@ -13,19 +13,18 @@ public class ValidateTask extends FollowerTask {
     private static final HashMap<UUID, Integer> attemptsMap = new HashMap<>();
     private final Player player;
 
-    public ValidateTask(FollowerEntity followerEntity) {
-        super(followerEntity);
-        this.player = followerEntity.getPlayer();
+    public ValidateTask(Player player) {
+        this.player = player;
     }
 
     @Override
-    public void tick() {
-        if (!followerEntity.isAlive()) {
-            cancel();
+    public void tick(FollowerEntity follower) {
+        if (!follower.isAlive()) {
+            cancel(follower);
             return;
         }
 
-        if (!followerEntity.isEntityValid()) {
+        if (!follower.isEntityValid()) {
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
             UUID uuid = player.getUniqueId();
 
@@ -41,23 +40,18 @@ public class ValidateTask extends FollowerTask {
                 followerUser.respawnFollowerEntity();
             }
 
-            cancel();
+            cancel(follower);
             return;
         }
 
         if (!player.isOnline()) {
-            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), followerEntity::kill, 5);
+            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), follower::kill, 5);
         }
     }
 
     @Override
     public String getIdentifier() {
         return TaskId.VALIDATE;
-    }
-
-    @Override
-    public int getDelay() {
-        return 0;
     }
 
     @Override

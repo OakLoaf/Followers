@@ -298,7 +298,7 @@ public class FollowerEntity {
             tasks.values().forEach(task -> {
                 if (currTick >= task.getStartTick() && currTick % task.getPeriod() == 0) {
                     try {
-                        task.tick();
+                        task.tick(this);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -321,7 +321,7 @@ public class FollowerEntity {
     public void stopTask(String taskType) {
         if (taskType.equals("all")) {
             tasks.forEach((aTaskType, task) -> {
-                task.cancel();
+                task.cancel(this);
                 tasks.remove(taskType);
             });
             return;
@@ -331,7 +331,7 @@ public class FollowerEntity {
 
         if (task != null) {
             if (!task.isCancelled()) {
-                task.cancel();
+                task.cancel(this);
             }
 
             tasks.remove(taskType);

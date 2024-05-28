@@ -4,16 +4,10 @@ import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.entity.FollowerEntity;
 
 public abstract class FollowerTask {
-    protected final FollowerEntity followerEntity;
-    private final int startTick;
+    private final int startTick = Followers.getInstance().getCurrentTick() + getDelay();
     private boolean cancelled = false;
 
-    public FollowerTask(FollowerEntity followerEntity) {
-        this.followerEntity = followerEntity;
-        this.startTick = Followers.getInstance().getCurrentTick() + getDelay();
-    }
-
-    public abstract void tick();
+    public abstract void tick(FollowerEntity follower);
 
     public abstract String getIdentifier();
 
@@ -27,9 +21,9 @@ public abstract class FollowerTask {
         return startTick;
     }
 
-    public void cancel() {
+    public void cancel(FollowerEntity follower) {
         cancelled = true;
-        followerEntity.stopTask(getIdentifier());
+        follower.stopTask(getIdentifier());
     }
 
     public boolean isCancelled() {

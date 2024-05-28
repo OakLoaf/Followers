@@ -8,13 +8,12 @@ import org.bukkit.entity.Player;
 public class VisibilityTask extends FollowerTask {
     private final Player player;
 
-    public VisibilityTask(FollowerEntity followerEntity) {
-        super(followerEntity);
-        this.player = followerEntity.getPlayer();
+    public VisibilityTask(Player player) {
+        this.player = player;
     }
 
     @Override
-    public void tick() {
+    public void tick(FollowerEntity follower) {
         FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
 
         boolean hidden = player.isInvisible() || followerUser.isVanished();
