@@ -93,7 +93,7 @@ public class MovementTask extends FollowerTask {
     }
 
     /**
-     * Calculate the head rotation of the entity
+     * Calculate the rotation of the entity
      * @return A pair of yaw and pitch as floats
      */
     // TODO: Consider changing to return Vector3f(pitch, yaw?, roll?)
