@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.lushplugins.lushlib.utils.Pair;
 
 public class MovementTask extends FollowerTask {
-    public static final String ID = "movement";
     private final Player player;
     private final double speed;
 
@@ -107,7 +106,7 @@ public class MovementTask extends FollowerTask {
 
     @Override
     public String getIdentifier() {
-        return "movement";
+        return TaskId.MOVEMENT;
     }
 
     @Override

@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class ValidateTask extends FollowerTask {
-    public static final String ID = "validate";
     private static final HashMap<UUID, Integer> attemptsMap = new HashMap<>();
     private final Player player;
 
@@ -53,7 +52,7 @@ public class ValidateTask extends FollowerTask {
 
     @Override
     public String getIdentifier() {
-        return ID;
+        return TaskId.VALIDATE;
     }
 
     @Override

@@ -11,7 +11,6 @@ import org.lushplugins.followers.utils.LocationUtil;
 import org.lushplugins.followers.utils.ParticleUtil;
 
 public class ParticleTask extends FollowerTask {
-    public static final String ID = "particle";
     private final ParticleType<?> particle;
 
     public ParticleTask(FollowerEntity followerEntity, ParticleType<?> particle) {
@@ -41,7 +40,7 @@ public class ParticleTask extends FollowerTask {
 
     @Override
     public String getIdentifier() {
-        return ID;
+        return TaskId.PARTICLE;
     }
 
     @Override
