@@ -224,8 +224,8 @@ public class FollowerEntity {
             setType(followerType);
             setVisible(!player.isInvisible());
 
-            startTask(FollowerTasks.getTask(ValidateTask.ID, this));
-            startTask(FollowerTasks.getTask(VisibilityTask.ID, this));
+            startTask(FollowerTasks.getTask(TaskId.VALIDATE, this));
+            startTask(FollowerTasks.getTask(TaskId.VISIBILITY, this));
             startMovement();
 
             Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::reloadInventory, 5);
@@ -247,7 +247,7 @@ public class FollowerEntity {
 
     public void kill() {
         alive = false;
-        stopTasks(MovementTask.ID, ParticleTask.ID, ValidateTask.ID);
+        stopTasks(TaskId.MOVEMENT, TaskId.PARTICLE, TaskId.VALIDATE);
 
         if (bodyEntity != null) {
             bodyEntity.remove();
@@ -261,7 +261,7 @@ public class FollowerEntity {
     private void startMovement() {
         if (isEntityValid()) {
             if (player != null) {
-                startTask(FollowerTasks.getTask(MovementTask.ID, this));
+                startTask(FollowerTasks.getTask(TaskId.MOVEMENT, this));
             }
         }
     }
@@ -269,7 +269,7 @@ public class FollowerEntity {
     public void startParticles(ParticleType<?> particle) {
         if (isEntityValid()) {
             try {
-                startTask(FollowerTasks.getClass(ParticleTask.ID).getConstructor(FollowerEntity.class, ParticleType.class).newInstance(this, particle));
+                startTask(FollowerTasks.getClass(TaskId.PARTICLE).getConstructor(FollowerEntity.class, ParticleType.class).newInstance(this, particle));
             } catch (NoSuchMethodException | IllegalAccessException | InstantiationException |
                      InvocationTargetException e) {
                 e.printStackTrace();
