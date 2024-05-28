@@ -11,6 +11,10 @@ import org.lushplugins.followers.entity.FollowerEntity;
 
 public class MoveToTask extends FollowerTask {
 
+    public MoveToTask(String id) {
+        super(id);
+    }
+
     @Override
     public void tick(FollowerEntity follower) {
         // Cancels the task if the entity is dead
@@ -79,11 +83,6 @@ public class MoveToTask extends FollowerTask {
         float yaw = getYaw(difference);
 
         return new Vector3f(pitch, yaw, 0);
-    }
-
-    @Override
-    public String getIdentifier() {
-        return TaskId.MOVE_TO;
     }
 
     @Override

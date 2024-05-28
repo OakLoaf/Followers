@@ -13,7 +13,8 @@ public class ValidateTask extends FollowerTask {
     private static final HashMap<UUID, Integer> attemptsMap = new HashMap<>();
     private final Player player;
 
-    public ValidateTask(Player player) {
+    public ValidateTask(String id, Player player) {
+        super(id);
         this.player = player;
     }
 
@@ -47,11 +48,6 @@ public class ValidateTask extends FollowerTask {
         if (!player.isOnline()) {
             Bukkit.getScheduler().runTaskLater(Followers.getInstance(), follower::kill, 5);
         }
-    }
-
-    @Override
-    public String getIdentifier() {
-        return TaskId.VALIDATE;
     }
 
     @Override

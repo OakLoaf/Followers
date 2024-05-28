@@ -238,9 +238,9 @@ public class FollowerEntity {
             setType(followerType);
             setVisible(!player.isInvisible());
 
-            startTask(FollowerTasks.getTask(TaskId.VALIDATE, this));
-            startTask(FollowerTasks.getTask(TaskId.VISIBILITY, this));
-            startMovement();
+            startTask(new ValidateTask(TaskId.VALIDATE, player));
+            startTask(new VisibilityTask(TaskId.VISIBILITY, player));
+            startTask(new MoveNearTask(TaskId.MOVE_NEAR));
 
             Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::reloadInventory, 5);
             return true;
@@ -267,22 +267,9 @@ public class FollowerEntity {
         }
     }
 
-    private void startMovement() {
-        if (isEntityValid()) {
-            if (player != null) {
-                startTask(FollowerTasks.getTask(TaskId.MOVE_NEAR, this));
-            }
-        }
-    }
-
     public void startParticles(ParticleType<?> particle) {
         if (isEntityValid()) {
-            try {
-                startTask(FollowerTasks.getClass(TaskId.PARTICLE).getConstructor(FollowerEntity.class, ParticleType.class).newInstance(this, particle));
-            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException |
-                     InvocationTargetException e) {
-                e.printStackTrace();
-            }
+            startTask(new ParticleTask(TaskId.PARTICLE + "_" + particle.getName().toString(), particle));
         }
     }
 
@@ -313,9 +300,9 @@ public class FollowerEntity {
     }
 
     public void startTask(FollowerTask task) {
-        stopTask(task.getIdentifier());
+        stopTask(task.getId());
 
-        tasks.put(task.getIdentifier(), task);
+        tasks.put(task.getId(), task);
     }
 
     public void stopTask(String taskType) {

@@ -8,7 +8,8 @@ import org.bukkit.entity.Player;
 public class VisibilityTask extends FollowerTask {
     private final Player player;
 
-    public VisibilityTask(Player player) {
+    public VisibilityTask(String id, Player player) {
+        super(id);
         this.player = player;
     }
 
@@ -18,11 +19,6 @@ public class VisibilityTask extends FollowerTask {
 
         boolean hidden = player.isInvisible() || followerUser.isVanished();
         followerUser.setHidden(hidden);
-    }
-
-    @Override
-    public String getIdentifier() {
-        return TaskId.VISIBILITY;
     }
 
     @Override

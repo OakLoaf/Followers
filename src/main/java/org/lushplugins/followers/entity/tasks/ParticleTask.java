@@ -13,7 +13,8 @@ import org.lushplugins.followers.utils.ParticleUtil;
 public class ParticleTask extends FollowerTask {
     private final ParticleType<?> particle;
 
-    public ParticleTask(ParticleType<?> particle) {
+    public ParticleTask(String id, ParticleType<?> particle) {
+        super(id);
         this.particle = particle;
     }
 
@@ -35,11 +36,6 @@ public class ParticleTask extends FollowerTask {
             0,
             false
         );
-    }
-
-    @Override
-    public String getIdentifier() {
-        return TaskId.PARTICLE;
     }
 
     @Override

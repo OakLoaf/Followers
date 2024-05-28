@@ -7,6 +7,10 @@ import org.lushplugins.followers.entity.FollowerEntity;
 
 public class MoveNearTask extends MoveToTask {
 
+    public MoveNearTask(String id) {
+        super(id);
+    }
+
     @Override
     public Vector3d calculatePosition(FollowerEntity follower) {
         WrapperLivingEntity entity = follower.getEntity();
@@ -32,10 +36,5 @@ public class MoveNearTask extends MoveToTask {
         position = position.add(0, calculateYOffset(entity), 0);
 
         return position;
-    }
-
-    @Override
-    public String getIdentifier() {
-        return TaskId.MOVE_NEAR;
     }
 }
