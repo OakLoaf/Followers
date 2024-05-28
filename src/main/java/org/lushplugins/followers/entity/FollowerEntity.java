@@ -31,7 +31,6 @@ import org.lushplugins.followers.entity.tasks.*;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.lushlib.libraries.chatcolor.ModernChatColorHandler;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FollowerEntity {
