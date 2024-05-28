@@ -256,7 +256,7 @@ public class FollowerEntity {
 
     public void kill() {
         alive = false;
-        stopTasks(TaskId.MOVEMENT, TaskId.PARTICLE, TaskId.VALIDATE);
+        stopTasks(TaskId.MOVE_NEAR, TaskId.PARTICLE, TaskId.VALIDATE);
 
         if (bodyEntity != null) {
             bodyEntity.remove();
@@ -270,7 +270,7 @@ public class FollowerEntity {
     private void startMovement() {
         if (isEntityValid()) {
             if (player != null) {
-                startTask(FollowerTasks.getTask(TaskId.MOVEMENT, this));
+                startTask(FollowerTasks.getTask(TaskId.MOVE_NEAR, this));
             }
         }
     }

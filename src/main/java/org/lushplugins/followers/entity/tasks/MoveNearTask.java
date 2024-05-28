@@ -5,9 +5,9 @@ import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.entity.FollowerEntity;
 
-public class MovementTask extends MoveToTask {
+public class MoveNearTask extends MoveToTask {
 
-    public MovementTask(FollowerEntity followerEntity) {
+    public MoveNearTask(FollowerEntity followerEntity) {
         super(followerEntity);
     }
 
@@ -40,6 +40,6 @@ public class MovementTask extends MoveToTask {
 
     @Override
     public String getIdentifier() {
-        return TaskId.MOVEMENT;
+        return TaskId.MOVE_NEAR;
     }
 }
