@@ -17,7 +17,9 @@ public abstract class FollowerTask {
 
     public abstract String getIdentifier();
 
-    public abstract int getDelay();
+    public int getDelay() {
+        return 0;
+    }
 
     public abstract int getPeriod();
 
