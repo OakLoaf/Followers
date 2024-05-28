@@ -6,6 +6,7 @@ import com.github.retrooper.packetevents.protocol.item.type.ItemTypes;
 import com.github.retrooper.packetevents.protocol.particle.type.ParticleType;
 import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import com.github.retrooper.packetevents.protocol.world.Location;
+import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.util.Vector3f;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.EntityLib;
@@ -36,6 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FollowerEntity {
     private final ConcurrentHashMap<String, FollowerTask> tasks = new ConcurrentHashMap<>();
     private final Player player;
+    private Vector3d target;
     private WrapperLivingEntity bodyEntity;
     private WrapperEntity nametagEntity;
     private String followerType;
@@ -52,6 +54,18 @@ public class FollowerEntity {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public Vector3d getTarget() {
+        return target;
+    }
+
+    public void setTarget(Location location) {
+        setTarget(location.getPosition());
+    }
+
+    public void setTarget(Vector3d target) {
+        this.target = target;
     }
 
     public WrapperLivingEntity getEntity() {

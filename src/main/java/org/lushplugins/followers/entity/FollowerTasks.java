@@ -5,11 +5,13 @@ import org.lushplugins.followers.entity.tasks.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
+// TODO: Consider replacing with some form of MultiMap
 public class FollowerTasks {
     private static final HashMap<String, Class<? extends FollowerTask>> tasks = new HashMap<>();
 
     static {
         register(TaskId.MOVEMENT, MovementTask.class);
+        register(TaskId.MOVE_TO, MoveToTask.class);
         register(TaskId.PARTICLE, ParticleTask.class);
         register(TaskId.VALIDATE, ValidateTask.class);
         register(TaskId.VISIBILITY, VisibilityTask.class);
