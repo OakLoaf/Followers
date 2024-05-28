@@ -24,7 +24,7 @@ public class MoveToTask extends FollowerTask {
         }
 
         // TODO: Replace player with target entity (Potentially implement as separate task)
-        follower.setTarget(SpigotConversionUtil.fromBukkitLocation(follower.getPlayer().getLocation()));
+        follower.setTarget(SpigotConversionUtil.fromBukkitLocation(follower.getPlayer().getEyeLocation()));
 
         WrapperLivingEntity entity = follower.getEntity();
         Location currentLocation = entity.getLocation();
