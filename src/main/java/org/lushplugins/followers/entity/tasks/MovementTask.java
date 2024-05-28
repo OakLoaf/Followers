@@ -79,7 +79,7 @@ public class MovementTask extends FollowerTask {
         // Calculates new location of entity based off of the distance to the player
         if (new Vector3d(difference.getX(), 0 , difference.getZ()).lengthSquared() < 6.25) {
             double differenceY = difference.getY() - (Followers.getInstance().getConfigManager().areHitboxesEnabled() ? 0.25 : 0.7);
-            position.add(new Vector3d(0, differenceY * speed, 0));
+            position = position.add(new Vector3d(0, differenceY * speed, 0));
         } else {
             Vector3d normalizedDifference = difference.normalize();
             double distance = difference.length() - 5;
@@ -87,7 +87,7 @@ public class MovementTask extends FollowerTask {
                 distance = 1;
             }
 
-            position.add(normalizedDifference.multiply(speed * distance));
+            position = position.add(normalizedDifference.multiply(speed * distance));
         }
 
         return position.add(0, calculateYOffset(entity), 0);
