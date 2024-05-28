@@ -430,7 +430,7 @@ public class FollowerEntity {
             float translation = followerHandler.getEntityType().equals(EntityTypes.ARMOR_STAND) && !Followers.getInstance().getConfigManager().areHitboxesEnabled() ? 0.6f : 0.1f;
             textDisplayMeta.setTranslation(new Vector3f(0, translation, 0));
 
-            float scale = (float) followerHandler.getScale();
+            float scale = (float) followerHandler.getScale() + 0.25f;
             textDisplayMeta.setScale(new Vector3f(scale, scale, scale));
         } catch (Exception e) {
             e.printStackTrace();
