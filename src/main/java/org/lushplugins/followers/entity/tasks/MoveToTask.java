@@ -38,10 +38,12 @@ public class MoveToTask extends FollowerTask {
             rotation = new Vector3f(currentLocation.getPitch(), currentLocation.getYaw(), 0);
         }
 
-        followerEntity.teleport(new Location(newPosition, rotation.getX(), rotation.getY()));
+        followerEntity.teleport(new Location(newPosition, rotation.getY(), rotation.getX()));
+        entity.rotateHead(rotation.getY(), rotation.getX());
 
         if (entity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta) {
-            armorStandMeta.setHeadRotation(rotation);
+            Vector3f rotationRadians = new Vector3f((float) Math.toRadians(rotation.getX()), (float) Math.toRadians(rotation.getY()), (float) Math.toRadians(rotation.getZ()));
+            armorStandMeta.setHeadRotation(rotationRadians);
         }
     }
 
@@ -49,10 +51,9 @@ public class MoveToTask extends FollowerTask {
         WrapperLivingEntity entity = followerEntity.getEntity();
         double speed = Followers.getInstance().getConfigManager().getSpeed();
 
-        // Calculates new position of entity based off of the distance to the target
+        // Calculates new location of entity based off of the distance to the player
         Vector3d position = entity.getLocation().getPosition();
-        // TODO: Work out how to get entity eye location from entity
-        Vector3d difference = getDifference(position, followerEntity.getTarget());
+        Vector3d difference = getDifference(position, followerEntity.getTarget()); // TODO: Work out how to get entity eye location from entity
         Vector3d normalizedDifference = difference.normalize();
         double distance = difference.length() - 5;
         if (distance < 1) {
@@ -74,12 +75,14 @@ public class MoveToTask extends FollowerTask {
         WrapperLivingEntity entity = followerEntity.getEntity();
 
         // TODO: Work out how to get entity eye location from entity
-        float pitch = getPitch(entity.getLocation().getPosition(), followerEntity.getTarget());
+        Vector3d difference = getDifference(entity.getLocation().getPosition(), followerEntity.getTarget());
+        float pitch = getPitch(difference);
         if (pitch > 60 && pitch < 290) {
             pitch = pitch <= 175 ? 60 : 290;
         }
+        float yaw = getYaw(difference);
 
-        return new Vector3f(pitch, 45, 0);
+        return new Vector3f(pitch, yaw, 0);
     }
 
     @Override
@@ -96,12 +99,17 @@ public class MoveToTask extends FollowerTask {
         return (Math.PI / 60) * Math.sin(((double) 1/30) * Math.PI * (Followers.getInstance().getCurrentTick() + entity.getEntityId()));
     }
 
-    private static float getPitch(Vector3d from, Vector3d to) {
-        Vector3d difference = to.subtract(from);
+    private static float getYaw(Vector3d difference) {
+        double yawRadians = Math.atan2(difference.getX(), difference.getZ());
+        return (float) -Math.toDegrees(yawRadians);
+    }
+
+    private static float getPitch(Vector3d difference) {
         if (difference.getX() == 0.0D && difference.getZ() == 0.0D) {
             return (float) (difference.getY() > 0.0D ? -90 : 90);
         } else {
-            return (float) Math.atan(-difference.getY() / Math.sqrt((difference.getX()*difference.getX()) + (difference.getZ()*difference.getZ())));
+            double pitchRadians = Math.atan(-difference.getY() / Math.sqrt((difference.getX() * difference.getX()) + (difference.getZ() * difference.getZ())));
+            return (float) Math.toDegrees(pitchRadians);
         }
     }
 
