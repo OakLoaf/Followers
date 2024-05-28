@@ -45,13 +45,7 @@ public class MovementTask extends FollowerTask {
             pitch = currentLocation.getPitch();
         }
 
-        Location newLocation = new Location(newPosition, yaw, pitch);
-
-        // Teleports follower
-        boolean tpSuccess = followerEntity.teleport(newLocation);
-        if (!tpSuccess) {
-            Followers.getInstance().getDataManager().getFollowerUser(player).respawnFollowerEntity();
-        }
+        followerEntity.teleport(new Location(newPosition, yaw, pitch));
 
         // Limits following code to run once every 2 ticks
         if (Followers.getInstance().getCurrentTick() % 2 == 0) {

@@ -236,13 +236,8 @@ public class FollowerEntity {
         }
     }
 
-    public boolean teleport(Location location) {
-        if (bodyEntity != null) {
-            bodyEntity.teleport(location);
-            return true;
-        }
-
-        return false;
+    public void teleport(Location location) {
+        bodyEntity.teleport(location);
     }
 
     public void kill() {
