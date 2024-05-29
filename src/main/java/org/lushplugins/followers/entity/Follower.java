@@ -226,6 +226,7 @@ public class Follower {
         }
     }
 
+    // TODO: Accept a location
     public boolean spawn() {
         if (Followers.getInstance().callEvent(new FollowerEntitySpawnEvent(this))) {
             refreshEntity();
