@@ -17,6 +17,7 @@ import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 
 import java.util.*;
 
+// TODO: Move GUIs to LushLib
 public class MenuGui extends PagedGui {
 
     public MenuGui(Player player) {

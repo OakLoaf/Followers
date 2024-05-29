@@ -140,10 +140,11 @@ public class Follower {
         return displayName;
     }
 
+    // TODO: Test
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
 
-        if (nametagEntity != null) {
+        if (displayName != null && nametagEntity != null) {
             nametagEntity.getEntityMeta().setCustomName(ModernChatColorHandler.translate(Followers.getInstance().getConfigManager().getFollowerNicknameFormat()
                 .replaceAll("%nickname%", displayName)));
         }
