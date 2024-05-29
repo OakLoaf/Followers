@@ -2,7 +2,6 @@ package org.lushplugins.followers.entity.tasks;
 
 import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes;
 import org.jetbrains.annotations.NotNull;
-import org.lushplugins.followers.entity.Follower;
 
 import java.util.HashMap;
 
