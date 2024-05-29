@@ -156,22 +156,6 @@ public class FollowerUser {
         else follower.setPose(FollowerPose.DEFAULT);
     }
 
-    // TODO: Move function into a PlayerUtils class
-    public boolean isVanished() {
-        Player player = getPlayer();
-        if (player == null) {
-            return false;
-        }
-
-        for (MetadataValue meta : player.getMetadata("vanished")) {
-            if (meta.asBoolean()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public boolean isPosing() {
         return posing;
     }

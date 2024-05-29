@@ -5,6 +5,7 @@ import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.entity.Follower;
 import org.bukkit.entity.Player;
 import org.lushplugins.followers.entity.OwnedFollower;
+import org.lushplugins.followers.utils.PlayerUtils;
 
 public class VisibilityTask extends FollowerTask {
 
@@ -23,8 +24,10 @@ public class VisibilityTask extends FollowerTask {
         }
 
         FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-        boolean hidden = player.isInvisible() || followerUser.isVanished();
-        followerUser.setHidden(hidden);
+        boolean hidden = player.isInvisible() || PlayerUtils.isVanished(player);
+        if (followerUser.isHidden() != hidden) {
+            followerUser.setHidden(hidden);
+        }
     }
 
     @Override
