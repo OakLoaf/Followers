@@ -8,6 +8,7 @@ import org.lushplugins.followers.entity.poses.FollowerPose;
 import net.apcat.simplesit.events.PlayerSitEvent;
 import net.apcat.simplesit.events.PlayerStopSittingEvent;
 import org.bukkit.event.EventHandler;
+import org.lushplugins.followers.entity.tasks.TaskId;
 import org.lushplugins.lushlib.hook.Hook;
 import org.lushplugins.lushlib.listener.EventListener;
 
@@ -36,7 +37,7 @@ public class SimpleSitHook extends Hook implements EventListener {
             return;
         }
 
-        follower.startParticles(ParticleTypes.CLOUD);
+        follower.addTask(TaskId.PARTICLE_CLOUD);
     }
 
     @EventHandler
@@ -48,6 +49,6 @@ public class SimpleSitHook extends Hook implements EventListener {
             return;
         }
 
-        follower.stopTask("particle");
+        follower.removeTask(TaskId.PARTICLE_CLOUD);
     }
 }

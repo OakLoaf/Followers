@@ -1,5 +1,6 @@
 package org.lushplugins.followers.entity.tasks;
 
+import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes;
 import org.jetbrains.annotations.NotNull;
 import org.lushplugins.followers.entity.Follower;
 
@@ -11,8 +12,9 @@ public class FollowerTaskRegistry {
     public FollowerTaskRegistry() {
         register(new MoveNearTask(TaskId.MOVE_NEAR));
         register(new MoveToTask(TaskId.MOVE_TO));
-//        register(new ValidateTask(TaskId.VALIDATE));
-//        register(new VisibilityTask(TaskId.VISIBILITY));
+        register(new ParticleTask(TaskId.PARTICLE_CLOUD, ParticleTypes.CLOUD));
+        register(new ValidateTask(TaskId.VALIDATE));
+        register(new VisibilityTask(TaskId.VISIBILITY));
     }
 
     public void register(String id, Runnable runnable) {

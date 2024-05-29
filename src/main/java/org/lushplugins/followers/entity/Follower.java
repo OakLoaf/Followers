@@ -3,7 +3,6 @@ package org.lushplugins.followers.entity;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.item.ItemStack;
 import com.github.retrooper.packetevents.protocol.item.type.ItemTypes;
-import com.github.retrooper.packetevents.protocol.particle.type.ParticleType;
 import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import com.github.retrooper.packetevents.protocol.world.Location;
 import com.github.retrooper.packetevents.util.Vector3d;
@@ -22,7 +21,6 @@ import org.bukkit.World;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.api.events.FollowerEntityChangeTypeEvent;
 import org.lushplugins.followers.api.events.FollowerEntitySpawnEvent;
-import org.lushplugins.followers.api.events.FollowerTickEvent;
 import org.lushplugins.followers.entity.poses.FollowerPose;
 import org.lushplugins.followers.data.FollowerHandler;
 import org.jetbrains.annotations.Nullable;
@@ -30,10 +28,10 @@ import org.lushplugins.followers.entity.tasks.*;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.lushlib.libraries.chatcolor.ModernChatColorHandler;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashSet;
 
 public class Follower {
-    private final ConcurrentHashMap<String, FollowerTask> tasks = new ConcurrentHashMap<>();
+    private final HashSet<String> tasks = new HashSet<>();
     private WrapperLivingEntity bodyEntity;
     private WrapperEntity nametagEntity;
     private String followerType;
@@ -71,6 +69,10 @@ public class Follower {
     }
 
     public void setType(String followerType) {
+        if (this.followerType.equals(followerType)) {
+            return;
+        }
+
         if (Followers.getInstance().callEvent(new FollowerEntityChangeTypeEvent(this, this.followerType, followerType))) {
             this.followerType = followerType;
 
@@ -228,13 +230,7 @@ public class Follower {
             refreshEntity();
             this.alive = true;
             updateVisibility();
-
             setType(followerType);
-
-
-//            startTask(new ValidateTask(TaskId.VALIDATE, player));
-//            startTask(new VisibilityTask(TaskId.VISIBILITY, player));
-//            startTask(new MoveNearTask(TaskId.MOVE_NEAR));
 
             Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::reloadInventory, 5);
             return true;
@@ -250,7 +246,7 @@ public class Follower {
 
     public void kill() {
         alive = false;
-        stopTasks(TaskId.MOVE_NEAR, TaskId.PARTICLE, TaskId.VALIDATE);
+        removeTasks(TaskId.MOVE_NEAR, TaskId.PARTICLE, TaskId.VALIDATE);
 
         if (bodyEntity != null) {
             bodyEntity.remove();
@@ -261,67 +257,25 @@ public class Follower {
         }
     }
 
-    public void startParticles(ParticleType<?> particle) {
-        if (isEntityValid()) {
-            startTask(new ParticleTask(TaskId.PARTICLE + "_" + particle.getName().toString(), particle));
+    public boolean hasTask(String id) {
+        return tasks.contains(id);
+    }
+
+    public void addTask(String id) {
+        tasks.add(id);
+    }
+
+    public void removeTask(String id) {
+        if (id.equals(TaskId.ALL)) {
+            tasks.clear();
+        } else {
+            tasks.remove(id);
         }
     }
 
-
-    ////////////////////////
-    //    Task Handler    //
-    ////////////////////////
-
-    public void tick() {
-        int currTick = Followers.getInstance().getCurrentTick();
-
-        if (Followers.getInstance().callEvent(new FollowerTickEvent(this))) {
-            tasks.values().forEach(task -> {
-                if (currTick % task.getPeriod() == 0) {
-                    try {
-                        task.tick(this);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
-    }
-
-    @Nullable
-    public FollowerTask getTask(String id) {
-        return tasks.get(id);
-    }
-
-    public void startTask(FollowerTask task) {
-        stopTask(task.getId());
-
-        tasks.put(task.getId(), task);
-    }
-
-    public void stopTask(String taskType) {
-        if (taskType.equals("all")) {
-            tasks.forEach((aTaskType, task) -> {
-                task.cancel(this);
-                tasks.remove(taskType);
-            });
-            return;
-        }
-
-        FollowerTask task = tasks.get(taskType);
-
-        if (task != null) {
-            if (!task.isCancelled()) {
-                task.cancel(this);
-            }
-
-            tasks.remove(taskType);
-        }
-    }
-
-    public void stopTasks(String... taskTypes) {
-        for (String taskType : taskTypes) {
-            stopTask(taskType);
+    public void removeTasks(String... ids) {
+        for (String id : ids) {
+            removeTask(id);
         }
     }
 

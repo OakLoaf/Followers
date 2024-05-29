@@ -21,7 +21,7 @@ public class ParticleTask extends FollowerTask {
     @Override
     public void tick(Follower follower) {
         if (!follower.isEntityValid()) {
-            cancel(follower);
+            follower.removeTask(this.getId());
             return;
         }
 

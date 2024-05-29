@@ -18,7 +18,7 @@ public class MoveToTask extends FollowerTask {
     public void tick(Follower follower) {
         // Cancels the task if the entity is dead
         if (!follower.isEntityValid()) {
-            cancel(follower);
+            follower.removeTask(this.getId());
             return;
         }
 

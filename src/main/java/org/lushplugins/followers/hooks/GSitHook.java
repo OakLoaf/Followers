@@ -9,6 +9,7 @@ import org.lushplugins.followers.Followers;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 import org.bukkit.event.EventHandler;
+import org.lushplugins.followers.entity.tasks.TaskId;
 import org.lushplugins.lushlib.hook.Hook;
 import org.lushplugins.lushlib.listener.EventListener;
 
@@ -38,7 +39,7 @@ public class GSitHook extends Hook implements EventListener {
                 return;
             }
 
-            follower.startParticles(ParticleTypes.CLOUD);
+            follower.addTask(TaskId.PARTICLE_CLOUD);
         }
     }
 
@@ -52,7 +53,7 @@ public class GSitHook extends Hook implements EventListener {
                 return;
             }
 
-            follower.stopTask("particle");
+            follower.removeTask(TaskId.PARTICLE_CLOUD);
         }
     }
 
@@ -67,7 +68,7 @@ public class GSitHook extends Hook implements EventListener {
         Pose pose = event.getPoseSeat().getPose();
         if (pose == Pose.SPIN_ATTACK) {
             follower.setPose(FollowerPose.SPINNING);
-            follower.startParticles(ParticleTypes.CLOUD);
+            follower.addTask(TaskId.PARTICLE_CLOUD);
         }
     }
 
@@ -80,6 +81,6 @@ public class GSitHook extends Hook implements EventListener {
         }
         
         follower.setPose(FollowerPose.DEFAULT);
-        follower.stopTask("particle");
+        follower.removeTask(TaskId.PARTICLE_CLOUD);
     }
 }

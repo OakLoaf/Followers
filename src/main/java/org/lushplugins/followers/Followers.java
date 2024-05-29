@@ -6,6 +6,7 @@ import me.tofaa.entitylib.APIConfig;
 import me.tofaa.entitylib.EntityLib;
 import me.tofaa.entitylib.spigot.SpigotEntityLibPlatform;
 import org.bukkit.scheduler.BukkitTask;
+import org.lushplugins.followers.api.events.FollowerTickEvent;
 import org.lushplugins.followers.hooks.EssentialsHook;
 import org.lushplugins.followers.hooks.GSitHook;
 import org.lushplugins.followers.hooks.PlaceholderAPIHook;
@@ -104,13 +105,7 @@ public final class Followers extends SpigotPlugin {
             tickCount++;
 
             if (dataManager != null) {
-                dataManager.getOwnedFollowers().forEach(followerEntity -> {
-                    try {
-                        followerEntity.tick();
-                    } catch(Exception e) {
-                        e.printStackTrace();
-                    }
-                });
+                dataManager.getOwnedFollowers().forEach(follower -> Followers.getInstance().callEvent(new FollowerTickEvent(follower)));
             }
         }, 1, 1);
     }

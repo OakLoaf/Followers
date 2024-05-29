@@ -7,6 +7,7 @@ import org.lushplugins.followers.entity.poses.FollowerPose;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
+import org.lushplugins.followers.entity.tasks.TaskId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -155,6 +156,7 @@ public class FollowerUser {
         else follower.setPose(FollowerPose.DEFAULT);
     }
 
+    // TODO: Move function into a PlayerUtils class
     public boolean isVanished() {
         Player player = getPlayer();
         if (player == null) {
@@ -249,6 +251,10 @@ public class FollowerUser {
 
         if (follower.spawn()) {
             setFollowerEnabled(true);
+
+            follower.addTask(TaskId.VALIDATE);
+            follower.addTask(TaskId.VISIBILITY);
+            follower.addTask(TaskId.MOVE_NEAR);
         }
     }
 

@@ -12,17 +12,23 @@ import java.util.UUID;
 
 public class ValidateTask extends FollowerTask {
     private static final HashMap<UUID, Integer> attemptsMap = new HashMap<>();
-    private final Player player;
 
-    public ValidateTask(String id, Player player) {
+    public ValidateTask(String id) {
         super(id);
-        this.player = player;
     }
 
     @Override
     public void tick(Follower follower) {
         if (!follower.isAlive()) {
-            cancel(follower);
+            cancelFor(follower);
+            return;
+        }
+
+        if (!(follower instanceof OwnedFollower ownedFollower)) {
+            return;
+        }
+
+        if (!(ownedFollower.getOwner() instanceof Player player)) {
             return;
         }
 
@@ -42,7 +48,7 @@ public class ValidateTask extends FollowerTask {
                 followerUser.respawnFollower();
             }
 
-            cancel(follower);
+            cancelFor(follower);
             return;
         }
 

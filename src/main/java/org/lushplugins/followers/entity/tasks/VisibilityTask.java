@@ -4,20 +4,26 @@ import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.entity.Follower;
 import org.bukkit.entity.Player;
+import org.lushplugins.followers.entity.OwnedFollower;
 
-// TODO: Ensure this task is delay by 5 ticks
+// TODO: Ensure this task is delayed by 5 ticks
 public class VisibilityTask extends FollowerTask {
-    private final Player player;
 
-    public VisibilityTask(String id, Player player) {
+    public VisibilityTask(String id) {
         super(id);
-        this.player = player;
     }
 
     @Override
     public void tick(Follower follower) {
-        FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
+        if (!(follower instanceof OwnedFollower ownedFollower)) {
+            return;
+        }
 
+        if (!(ownedFollower.getOwner() instanceof Player player)) {
+            return;
+        }
+
+        FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
         boolean hidden = player.isInvisible() || followerUser.isVanished();
         followerUser.setHidden(hidden);
     }
