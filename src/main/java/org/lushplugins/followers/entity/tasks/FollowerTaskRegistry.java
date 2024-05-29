@@ -17,20 +17,6 @@ public class FollowerTaskRegistry {
         register(new VisibilityTask(TaskId.VISIBILITY));
     }
 
-    public void register(String id, Runnable runnable) {
-        register(new FollowerTask(id) {
-            @Override
-            public void tick(Follower follower) {
-                runnable.run();
-            }
-
-            @Override
-            public int getPeriod() {
-                return 0;
-            }
-        });
-    }
-
     public void register(@NotNull FollowerTask task) {
         followerTasks.put(task.getId(), task);
         task.registerListeners();
