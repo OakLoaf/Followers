@@ -64,6 +64,7 @@ public class FollowerUser {
         this.enabled = followerIsEnabled;
         Followers.getInstance().getDataManager().saveFollowerUser(this);
 
+        // TODO
         if (follower != null) {
 
         }
