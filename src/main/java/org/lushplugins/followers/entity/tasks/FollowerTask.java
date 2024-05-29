@@ -2,7 +2,7 @@ package org.lushplugins.followers.entity.tasks;
 
 import org.bukkit.event.EventHandler;
 import org.lushplugins.followers.api.events.FollowerTickEvent;
-import org.lushplugins.followers.entity.FollowerEntity;
+import org.lushplugins.followers.entity.Follower;
 import org.lushplugins.lushlib.listener.EventListener;
 
 public abstract class FollowerTask implements EventListener {
@@ -19,13 +19,13 @@ public abstract class FollowerTask implements EventListener {
 
     @EventHandler
     public void onFollowerTick(FollowerTickEvent event) {
-        FollowerEntity follower = event.getFollower();
+        Follower follower = event.getFollower();
         if (follower.getTask(id) != null) {
             tick(event.getFollower());
         }
     }
 
-    public abstract void tick(FollowerEntity follower);
+    public abstract void tick(Follower follower);
 
     public abstract int getPeriod();
 
@@ -33,7 +33,7 @@ public abstract class FollowerTask implements EventListener {
         return cancelled;
     }
 
-    public void cancel(FollowerEntity follower) {
+    public void cancel(Follower follower) {
         cancelled = true;
         follower.stopTask(getId());
     }

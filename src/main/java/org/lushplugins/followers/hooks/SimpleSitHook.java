@@ -3,7 +3,7 @@ package org.lushplugins.followers.hooks;
 import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerUser;
-import org.lushplugins.followers.entity.FollowerEntity;
+import org.lushplugins.followers.entity.Follower;
 import org.lushplugins.followers.entity.poses.FollowerPose;
 import net.apcat.simplesit.events.PlayerSitEvent;
 import net.apcat.simplesit.events.PlayerStopSittingEvent;
@@ -31,23 +31,23 @@ public class SimpleSitHook extends Hook implements EventListener {
     public void onPlayerSit(PlayerSitEvent event) {
         FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(event.getPlayer());
         followerUser.setPose(FollowerPose.SITTING);
-        FollowerEntity followerEntity = followerUser.getFollowerEntity();
-        if (followerEntity == null || !followerEntity.isAlive()) {
+        Follower follower = followerUser.getFollowerEntity();
+        if (follower == null || !follower.isAlive()) {
             return;
         }
 
-        followerEntity.startParticles(ParticleTypes.CLOUD);
+        follower.startParticles(ParticleTypes.CLOUD);
     }
 
     @EventHandler
     public void onPlayerExitSeat(PlayerStopSittingEvent event) {
         FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(event.getPlayer());
         followerUser.setPose(FollowerPose.DEFAULT);
-        FollowerEntity followerEntity = followerUser.getFollowerEntity();
-        if (followerEntity == null || !followerEntity.isAlive()) {
+        Follower follower = followerUser.getFollowerEntity();
+        if (follower == null || !follower.isAlive()) {
             return;
         }
 
-        followerEntity.stopTask("particle");
+        follower.stopTask("particle");
     }
 }

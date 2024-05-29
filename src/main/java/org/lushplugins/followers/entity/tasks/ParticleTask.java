@@ -6,7 +6,7 @@ import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.util.Vector3f;
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import org.bukkit.World;
-import org.lushplugins.followers.entity.FollowerEntity;
+import org.lushplugins.followers.entity.Follower;
 import org.lushplugins.followers.utils.LocationUtil;
 import org.lushplugins.followers.utils.ParticleUtil;
 
@@ -19,7 +19,7 @@ public class ParticleTask extends FollowerTask {
     }
 
     @Override
-    public void tick(FollowerEntity follower) {
+    public void tick(Follower follower) {
         if (!follower.isEntityValid()) {
             cancel(follower);
             return;

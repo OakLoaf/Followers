@@ -2,7 +2,7 @@ package org.lushplugins.followers.entity.tasks;
 
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerUser;
-import org.lushplugins.followers.entity.FollowerEntity;
+import org.lushplugins.followers.entity.Follower;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -19,7 +19,7 @@ public class ValidateTask extends FollowerTask {
     }
 
     @Override
-    public void tick(FollowerEntity follower) {
+    public void tick(Follower follower) {
         if (!follower.isAlive()) {
             cancel(follower);
             return;

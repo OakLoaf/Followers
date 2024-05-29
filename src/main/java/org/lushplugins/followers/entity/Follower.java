@@ -33,7 +33,7 @@ import org.lushplugins.lushlib.libraries.chatcolor.ModernChatColorHandler;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class FollowerEntity {
+public class Follower {
     private final ConcurrentHashMap<String, FollowerTask> tasks = new ConcurrentHashMap<>();
     private final Player player;
     private Vector3d target;
@@ -44,7 +44,7 @@ public class FollowerEntity {
     private boolean visible;
     private FollowerPose pose;
 
-    public FollowerEntity(Player player, String followerType) {
+    public Follower(Player player, String followerType) {
         this.player = player;
         this.followerType = followerType;
         this.visible = !player.isInvisible();

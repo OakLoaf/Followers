@@ -1,10 +1,10 @@
 package org.lushplugins.followers.listener;
 
+import org.lushplugins.followers.entity.Follower;
 import org.lushplugins.followers.entity.poses.FollowerPose;
 import org.lushplugins.followers.item.FollowerCreator;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerUser;
-import org.lushplugins.followers.entity.FollowerEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -46,12 +46,12 @@ public class FollowerUserListener implements EventListener {
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
-        FollowerEntity followerEntity = Followers.getInstance().getDataManager().getFollowerUser(player).getFollowerEntity();
-        if (followerEntity == null || !followerEntity.isAlive()) {
+        Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollowerEntity();
+        if (follower == null || !follower.isAlive()) {
             return;
         }
 
-        followerEntity.setPose(FollowerPose.DEFAULT);
+        follower.setPose(FollowerPose.DEFAULT);
     }
 
     @EventHandler
@@ -65,9 +65,9 @@ public class FollowerUserListener implements EventListener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
-        FollowerEntity followerEntity = Followers.getInstance().getDataManager().getFollowerUser(player).getFollowerEntity();
-        if (followerEntity != null) {
-            followerEntity.kill();
+        Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollowerEntity();
+        if (follower != null) {
+            follower.kill();
         }
     }
 

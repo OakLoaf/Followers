@@ -3,7 +3,7 @@ package org.lushplugins.followers.hooks;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerUser;
-import org.lushplugins.followers.entity.FollowerEntity;
+import org.lushplugins.followers.entity.Follower;
 import org.bukkit.entity.Player;
 import org.lushplugins.lushlib.hook.Hook;
 
@@ -45,10 +45,10 @@ public class PlaceholderAPIHook extends Hook {
                     return followerUser.getFollowerType();
                 }
                 case "pose" -> {
-                    FollowerEntity followerEntity = Followers.getInstance().getDataManager().getFollowerUser(player).getFollowerEntity();
+                    Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollowerEntity();
 
-                    if (followerEntity != null) {
-                        return followerEntity.getPose().toString().toLowerCase();
+                    if (follower != null) {
+                        return follower.getPose().toString().toLowerCase();
                     } else {
                         return "default";
                     }

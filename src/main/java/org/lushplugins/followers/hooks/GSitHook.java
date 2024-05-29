@@ -3,9 +3,9 @@ package org.lushplugins.followers.hooks;
 import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes;
 import dev.geco.gsit.api.event.*;
 import org.lushplugins.followers.data.FollowerUser;
+import org.lushplugins.followers.entity.Follower;
 import org.lushplugins.followers.entity.poses.FollowerPose;
 import org.lushplugins.followers.Followers;
-import org.lushplugins.followers.entity.FollowerEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 import org.bukkit.event.EventHandler;
@@ -33,12 +33,12 @@ public class GSitHook extends Hook implements EventListener {
         if (event.getEntity() instanceof Player player) {
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
             followerUser.setPose(FollowerPose.SITTING);
-            FollowerEntity followerEntity = followerUser.getFollowerEntity();
-            if (followerEntity == null || !followerEntity.isAlive()) {
+            Follower follower = followerUser.getFollowerEntity();
+            if (follower == null || !follower.isAlive()) {
                 return;
             }
 
-            followerEntity.startParticles(ParticleTypes.CLOUD);
+            follower.startParticles(ParticleTypes.CLOUD);
         }
     }
 
@@ -47,39 +47,39 @@ public class GSitHook extends Hook implements EventListener {
         if (event.getEntity() instanceof Player player) {
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
             followerUser.setPose(FollowerPose.DEFAULT);
-            FollowerEntity followerEntity = followerUser.getFollowerEntity();
-            if (followerEntity == null || !followerEntity.isAlive()) {
+            Follower follower = followerUser.getFollowerEntity();
+            if (follower == null || !follower.isAlive()) {
                 return;
             }
 
-            followerEntity.stopTask("particle");
+            follower.stopTask("particle");
         }
     }
 
     @EventHandler
     public void onPlayerPose(PlayerPoseEvent event) {
         Player player = event.getPlayer();
-        FollowerEntity followerEntity = Followers.getInstance().getDataManager().getFollowerUser(player).getFollowerEntity();
-        if (followerEntity == null || !followerEntity.isAlive()) {
+        Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollowerEntity();
+        if (follower == null || !follower.isAlive()) {
             return;
         }
 
         Pose pose = event.getPoseSeat().getPose();
         if (pose == Pose.SPIN_ATTACK) {
-            followerEntity.setPose(FollowerPose.SPINNING);
-            followerEntity.startParticles(ParticleTypes.CLOUD);
+            follower.setPose(FollowerPose.SPINNING);
+            follower.startParticles(ParticleTypes.CLOUD);
         }
     }
 
     @EventHandler
     public void onPlayerEndPose(PlayerGetUpPoseEvent event) {
         Player player = event.getPlayer();
-        FollowerEntity followerEntity = Followers.getInstance().getDataManager().getFollowerUser(player).getFollowerEntity();
-        if (followerEntity == null || !followerEntity.isAlive()) {
+        Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollowerEntity();
+        if (follower == null || !follower.isAlive()) {
             return;
         }
         
-        followerEntity.setPose(FollowerPose.DEFAULT);
-        followerEntity.stopTask("particle");
+        follower.setPose(FollowerPose.DEFAULT);
+        follower.stopTask("particle");
     }
 }

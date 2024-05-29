@@ -1,7 +1,7 @@
 package org.lushplugins.followers.gui.custom;
 
 import org.lushplugins.followers.Followers;
-import org.lushplugins.followers.entity.FollowerEntity;
+import org.lushplugins.followers.entity.Follower;
 import org.lushplugins.followers.gui.abstracts.PagedGui;
 import org.lushplugins.followers.utils.TextInterface;
 import org.bukkit.Bukkit;
@@ -63,8 +63,8 @@ public class MenuGui extends PagedGui {
         FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
         if (!followerSet.isEmpty()) {
             ItemStack followerToggle;
-            FollowerEntity followerEntity = followerUser.getFollowerEntity();
-            if (followerUser.isFollowerEnabled() && followerEntity != null && followerEntity.isAlive()) {
+            Follower follower = followerUser.getFollowerEntity();
+            if (followerUser.isFollowerEnabled() && follower != null && follower.isAlive()) {
                 followerToggle = Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "follower-toggle.enabled", Material.LIME_WOOL);
             } else {
                 followerToggle = Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "follower-toggle.disabled", Material.RED_WOOL);
@@ -160,11 +160,11 @@ public class MenuGui extends PagedGui {
             return;
         } else if (event.getRawSlot() == 45 || (clickedItem.getType() == Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "nickname.shown", Material.NAME_TAG).getType() || (clickedItem.getType() == Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "nickname.hidden", Material.NAME_TAG).getType())) && clickedItem.getItemMeta().getDisplayName().startsWith(ChatColorHandler.translate("&eFollower Name:"))) {
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-            FollowerEntity followerEntity = followerUser.getFollowerEntity();
+            Follower follower = followerUser.getFollowerEntity();
             if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                 player.playSound(player.getEyeLocation(), Sound.BLOCK_LEVER_CLICK, 0.6f, 1.0f);
-                if (followerEntity != null) {
-                    followerEntity.showDisplayName(!followerUser.isDisplayNameEnabled());
+                if (follower != null) {
+                    follower.showDisplayName(!followerUser.isDisplayNameEnabled());
                 }
                 recalculateContents();
                 return;
@@ -185,8 +185,8 @@ public class MenuGui extends PagedGui {
                     Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
                         followerUser.setDisplayName(finalOutput);
 
-                        if (followerEntity != null) {
-                            followerEntity.setDisplayName(finalOutput);
+                        if (follower != null) {
+                            follower.setDisplayName(finalOutput);
                         }
                         ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-name-changed").replaceAll("%nickname%", finalOutput));
                     });
@@ -205,14 +205,14 @@ public class MenuGui extends PagedGui {
             followerUser.setRandom(false);
         }
 
-        FollowerEntity followerEntity = followerUser.getFollowerEntity();
+        Follower follower = followerUser.getFollowerEntity();
         String followerName = ChatColorHandler.stripColor(clickedItem.getItemMeta().getDisplayName());
-        if (followerEntity != null && followerEntity.isAlive()) {
-            followerEntity.setType(followerName);
+        if (follower != null && follower.isAlive()) {
+            follower.setType(followerName);
         } else {
             followerUser.setFollowerType(followerName);
-            if (followerEntity != null) {
-                followerEntity.setType(followerName);
+            if (follower != null) {
+                follower.setType(followerName);
             }
 
             followerUser.spawnFollowerEntity();

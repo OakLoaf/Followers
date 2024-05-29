@@ -7,7 +7,7 @@ import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.other.ArmorStandMeta;
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import org.lushplugins.followers.Followers;
-import org.lushplugins.followers.entity.FollowerEntity;
+import org.lushplugins.followers.entity.Follower;
 
 public class MoveToTask extends FollowerTask {
 
@@ -16,7 +16,7 @@ public class MoveToTask extends FollowerTask {
     }
 
     @Override
-    public void tick(FollowerEntity follower) {
+    public void tick(Follower follower) {
         // Cancels the task if the entity is dead
         if (!follower.isEntityValid()) {
             cancel(follower);
@@ -47,7 +47,7 @@ public class MoveToTask extends FollowerTask {
         }
     }
 
-    public Vector3d calculatePosition(FollowerEntity follower) {
+    public Vector3d calculatePosition(Follower follower) {
         WrapperLivingEntity entity = follower.getEntity();
         double speed = Followers.getInstance().getConfigManager().getSpeed();
 
@@ -71,7 +71,7 @@ public class MoveToTask extends FollowerTask {
      * Calculate the rotation of the entity
      * @return A rotation vector of pitch, yaw and roll
      */
-    public Vector3f calculateRotation(FollowerEntity follower) {
+    public Vector3f calculateRotation(Follower follower) {
         WrapperLivingEntity entity = follower.getEntity();
 
         // TODO: Work out how to get entity eye location from entity

@@ -1,6 +1,6 @@
 package org.lushplugins.followers.api.events;
 
-import org.lushplugins.followers.entity.FollowerEntity;
+import org.lushplugins.followers.entity.Follower;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -8,19 +8,19 @@ import org.jetbrains.annotations.NotNull;
 
 public class FollowerEntityChangeTypeEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private final FollowerEntity followerEntity;
+    private final Follower follower;
     private final String oldType;
     private final String newType;
     private boolean cancelled = false;
 
-    public FollowerEntityChangeTypeEvent(@NotNull FollowerEntity followerEntity, String oldType, String newType) {
-        this.followerEntity = followerEntity;
+    public FollowerEntityChangeTypeEvent(@NotNull Follower follower, String oldType, String newType) {
+        this.follower = follower;
         this.oldType = oldType;
         this.newType = newType;
     }
 
-    public FollowerEntity getFollowerEntity() {
-        return followerEntity;
+    public Follower getFollowerEntity() {
+        return follower;
     }
 
     public String getOldType() {

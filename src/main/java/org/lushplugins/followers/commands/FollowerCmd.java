@@ -3,7 +3,7 @@ package org.lushplugins.followers.commands;
 import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.api.events.FollowersReloadEvent;
 import org.lushplugins.followers.data.FollowerUser;
-import org.lushplugins.followers.entity.FollowerEntity;
+import org.lushplugins.followers.entity.Follower;
 import org.lushplugins.followers.export.GeyserSkullExporter;
 import org.lushplugins.followers.gui.custom.BuilderGui;
 import org.lushplugins.followers.gui.custom.ModerationGui;
@@ -125,8 +125,8 @@ public class FollowerCmd extends Command {
             }
 
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-            FollowerEntity followerEntity = followerUser.getFollowerEntity();
-            if (followerEntity != null) {
+            Follower follower = followerUser.getFollowerEntity();
+            if (follower != null) {
                 followerUser.disableFollowerEntity();
             }
 
@@ -149,20 +149,20 @@ public class FollowerCmd extends Command {
 
             if (args.length == 0) {
                 FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-                FollowerEntity followerEntity = followerUser.getFollowerEntity();
-                if (followerEntity != null) {
+                Follower follower = followerUser.getFollowerEntity();
+                if (follower != null) {
                     boolean newStatus = !followerUser.isDisplayNameEnabled();
                     followerUser.setDisplayNameEnabled(newStatus);
-                    followerEntity.showDisplayName(newStatus);
+                    follower.showDisplayName(newStatus);
                 }
             } else {
                 boolean newStatus = Boolean.parseBoolean(args[0]);
 
                 FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-                FollowerEntity followerEntity = followerUser.getFollowerEntity();
-                if (followerEntity != null) {
+                Follower follower = followerUser.getFollowerEntity();
+                if (follower != null) {
                     followerUser.setDisplayNameEnabled(newStatus);
-                    followerEntity.showDisplayName(newStatus);
+                    follower.showDisplayName(newStatus);
                 }
             }
 
@@ -231,8 +231,8 @@ public class FollowerCmd extends Command {
             }
 
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-            FollowerEntity followerEntity = followerUser.getFollowerEntity();
-            if (followerEntity == null || !followerEntity.isAlive()) {
+            Follower follower = followerUser.getFollowerEntity();
+            if (follower == null || !follower.isAlive()) {
                 Followers.getInstance().getDataManager().getFollowerUser(player).spawnFollowerEntity();
                 ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
             }
@@ -379,12 +379,12 @@ public class FollowerCmd extends Command {
                     .replaceAll("%command-usage%", "/followers rename <name>"));
             } else {
                 FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-                FollowerEntity followerEntity = followerUser.getFollowerEntity();
+                Follower follower = followerUser.getFollowerEntity();
                 String newName = args[1];
 
                 followerUser.setDisplayName(newName);
-                if (followerEntity != null) {
-                    followerEntity.setDisplayName(newName);
+                if (follower != null) {
+                    follower.setDisplayName(newName);
                 }
             }
 
@@ -429,9 +429,9 @@ public class FollowerCmd extends Command {
                         followerUser.setRandom(false);
                     }
 
-                    FollowerEntity followerEntity = followerUser.getFollowerEntity();
-                    if (followerEntity != null && followerEntity.isAlive()) {
-                        followerEntity.setType(followerName);
+                    Follower follower = followerUser.getFollowerEntity();
+                    if (follower != null && follower.isAlive()) {
+                        follower.setType(followerName);
                     } else {
                         followerUser.setFollowerType(followerName);
                         followerUser.spawnFollowerEntity();
@@ -466,8 +466,8 @@ public class FollowerCmd extends Command {
             }
 
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-            FollowerEntity followerEntity = followerUser.getFollowerEntity();
-            if (followerEntity == null || !followerEntity.isAlive()) {
+            Follower follower = followerUser.getFollowerEntity();
+            if (follower == null || !follower.isAlive()) {
                 Followers.getInstance().getDataManager().getFollowerUser(player).spawnFollowerEntity();
                 ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
             } else {

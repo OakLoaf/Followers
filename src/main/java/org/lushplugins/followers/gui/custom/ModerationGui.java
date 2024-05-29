@@ -2,7 +2,7 @@ package org.lushplugins.followers.gui.custom;
 
 import com.github.retrooper.packetevents.protocol.world.Location;
 import org.lushplugins.followers.Followers;
-import org.lushplugins.followers.entity.FollowerEntity;
+import org.lushplugins.followers.entity.Follower;
 import org.lushplugins.followers.gui.abstracts.PagedGui;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -33,7 +33,7 @@ public class ModerationGui extends PagedGui {
             }
         }
 
-        List<FollowerEntity> namedFollowerEntities = Followers.getInstance().getDataManager().getAllFollowerEntities();
+        List<Follower> namedFollowerEntities = Followers.getInstance().getDataManager().getAllFollowerEntities();
 
         int setStartPos = (page - 1) * 36;
         for (int i = 0; i < 36; i++, setStartPos++) {
@@ -41,26 +41,26 @@ public class ModerationGui extends PagedGui {
                 break;
             }
 
-            FollowerEntity followerEntity = namedFollowerEntities.get(setStartPos);
-            ItemStack followerItem = followerEntity.getType().getHead().asItemStack();
+            Follower follower = namedFollowerEntities.get(setStartPos);
+            ItemStack followerItem = follower.getType().getHead().asItemStack();
             if (followerItem == null || followerItem.getType() == Material.AIR) {
                 followerItem = new ItemStack(Material.ARMOR_STAND);
             }
 
             ItemMeta followerMeta = followerItem.getItemMeta();
 
-            String displayName = followerEntity.getDisplayName();
+            String displayName = follower.getDisplayName();
             if (displayName.equals("Unnamed")) {
                 displayName = "&oUnnamed";
             }
-            followerMeta.setDisplayName(ChatColorHandler.translate("&e" + displayName + " &7- " + followerEntity.getPlayer().getName()));
+            followerMeta.setDisplayName(ChatColorHandler.translate("&e" + displayName + " &7- " + follower.getPlayer().getName()));
 
             List<String> lore = new ArrayList<>();
-            if (!followerEntity.isDisplayNameVisible()) {
+            if (!follower.isDisplayNameVisible()) {
                 lore.add("&7&o(Follower Name Hidden)");
             }
 
-            Location followerLocation = followerEntity.getEntity().getLocation();
+            Location followerLocation = follower.getEntity().getLocation();
             lore.add("&7&o" + Math.round(followerLocation.getX()) + ", " + Math.round(followerLocation.getY()) + ", " + Math.round(followerLocation.getZ()));
             followerMeta.setLore(ChatColorHandler.translate(lore));
 

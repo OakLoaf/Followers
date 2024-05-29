@@ -3,7 +3,7 @@ package org.lushplugins.followers.entity.tasks;
 import com.github.retrooper.packetevents.util.Vector3d;
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import org.lushplugins.followers.Followers;
-import org.lushplugins.followers.entity.FollowerEntity;
+import org.lushplugins.followers.entity.Follower;
 
 public class MoveNearTask extends MoveToTask {
 
@@ -12,7 +12,7 @@ public class MoveNearTask extends MoveToTask {
     }
 
     @Override
-    public Vector3d calculatePosition(FollowerEntity follower) {
+    public Vector3d calculatePosition(Follower follower) {
         WrapperLivingEntity entity = follower.getEntity();
         double speed = Followers.getInstance().getConfigManager().getSpeed();
 

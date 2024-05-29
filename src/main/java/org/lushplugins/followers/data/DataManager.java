@@ -1,12 +1,12 @@
 package org.lushplugins.followers.data;
 
+import org.lushplugins.followers.entity.Follower;
 import org.lushplugins.followers.storage.MysqlStorage;
 import org.lushplugins.followers.storage.Storage;
 import org.lushplugins.followers.storage.YmlStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.lushplugins.followers.Followers;
-import org.lushplugins.followers.entity.FollowerEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -64,15 +64,15 @@ public class DataManager {
         return uuidToFollowerUser.values();
     }
 
-    public List<FollowerEntity> getAllFollowerEntities() {
-        List<FollowerEntity> followerEntities = new ArrayList<>();
+    public List<Follower> getAllFollowerEntities() {
+        List<Follower> followerEntities = new ArrayList<>();
 
         // Gets all available FollowerEntities - done via a forEach loop in preference to a stream for minor performance improvements
         Followers.getInstance().getDataManager().getOnlineFollowerUsers().forEach(followerUser -> {
-            FollowerEntity followerEntity = followerUser.getFollowerEntity();
+            Follower follower = followerUser.getFollowerEntity();
 
-            if (followerEntity != null) {
-                followerEntities.add(followerEntity);
+            if (follower != null) {
+                followerEntities.add(follower);
             }
         });
 
@@ -87,9 +87,9 @@ public class DataManager {
                 return;
             }
 
-            FollowerEntity followerEntity = getFollowerUser(player).getFollowerEntity();
-            if (followerEntity != null) {
-                followerEntity.reloadInventory();
+            Follower follower = getFollowerUser(player).getFollowerEntity();
+            if (follower != null) {
+                follower.reloadInventory();
             }
         });
     }
