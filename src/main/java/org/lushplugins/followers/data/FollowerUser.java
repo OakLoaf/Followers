@@ -6,7 +6,6 @@ import org.lushplugins.followers.entity.OwnedFollower;
 import org.lushplugins.followers.entity.poses.FollowerPose;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.MetadataValue;
 import org.lushplugins.followers.entity.tasks.TaskId;
 
 import java.util.ArrayList;
