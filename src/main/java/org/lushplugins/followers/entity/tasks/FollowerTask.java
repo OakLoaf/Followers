@@ -1,9 +1,10 @@
 package org.lushplugins.followers.entity.tasks;
 
+import org.bukkit.event.Listener;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.entity.FollowerEntity;
 
-public abstract class FollowerTask {
+public abstract class FollowerTask implements Listener {
     private final String id;
     private final int startTick = Followers.getInstance().getCurrentTick() + getDelay();
     private boolean cancelled = false;
@@ -28,12 +29,12 @@ public abstract class FollowerTask {
         return startTick;
     }
 
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
     public void cancel(FollowerEntity follower) {
         cancelled = true;
         follower.stopTask(getId());
-    }
-
-    public boolean isCancelled() {
-        return cancelled;
     }
 }
