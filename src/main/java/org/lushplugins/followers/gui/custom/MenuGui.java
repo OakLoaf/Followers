@@ -63,7 +63,7 @@ public class MenuGui extends PagedGui {
         FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
         if (!followerSet.isEmpty()) {
             ItemStack followerToggle;
-            Follower follower = followerUser.getFollowerEntity();
+            Follower follower = followerUser.getFollower();
             if (followerUser.isFollowerEnabled() && follower != null && follower.isAlive()) {
                 followerToggle = Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "follower-toggle.enabled", Material.LIME_WOOL);
             } else {
@@ -130,13 +130,13 @@ public class MenuGui extends PagedGui {
             return;
         } else if (clickedItem.isSimilar(Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "follower-toggle.enabled", Material.LIME_WOOL))) {
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-            followerUser.disableFollowerEntity();
+            followerUser.disableFollower();
             ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-despawned"));
             recalculateContents();
             return;
         } else if (clickedItem.isSimilar(Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "follower-toggle.disabled", Material.RED_WOOL))) {
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-            followerUser.spawnFollowerEntity();
+            followerUser.spawnFollower();
             ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
             recalculateContents();
             return;
@@ -154,18 +154,16 @@ public class MenuGui extends PagedGui {
         } else if (clickedItem.isSimilar(Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "random.disabled", Material.CONDUIT))) {
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
             followerUser.setRandom(true);
-            followerUser.randomizeFollowerType();
+            followerUser.randomiseFollowerType();
             ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-changed").replaceAll("%follower%", "random"));
             recalculateContents();
             return;
         } else if (event.getRawSlot() == 45 || (clickedItem.getType() == Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "nickname.shown", Material.NAME_TAG).getType() || (clickedItem.getType() == Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "nickname.hidden", Material.NAME_TAG).getType())) && clickedItem.getItemMeta().getDisplayName().startsWith(ChatColorHandler.translate("&eFollower Name:"))) {
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-            Follower follower = followerUser.getFollowerEntity();
+            Follower follower = followerUser.getFollower();
             if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                 player.playSound(player.getEyeLocation(), Sound.BLOCK_LEVER_CLICK, 0.6f, 1.0f);
-                if (follower != null) {
-                    follower.showDisplayName(!followerUser.isDisplayNameEnabled());
-                }
+                followerUser.setDisplayNameEnabled(!followerUser.isDisplayNameEnabled());
                 recalculateContents();
                 return;
             }
@@ -205,7 +203,7 @@ public class MenuGui extends PagedGui {
             followerUser.setRandom(false);
         }
 
-        Follower follower = followerUser.getFollowerEntity();
+        Follower follower = followerUser.getFollower();
         String followerName = ChatColorHandler.stripColor(clickedItem.getItemMeta().getDisplayName());
         if (follower != null && follower.isAlive()) {
             follower.setType(followerName);
@@ -215,7 +213,7 @@ public class MenuGui extends PagedGui {
                 follower.setType(followerName);
             }
 
-            followerUser.spawnFollowerEntity();
+            followerUser.spawnFollower();
             ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
         }
 

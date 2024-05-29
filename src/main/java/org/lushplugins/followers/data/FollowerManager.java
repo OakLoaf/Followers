@@ -38,7 +38,7 @@ public class FollowerManager {
     }
 
     public void refreshAllFollowers() {
-        Followers.getInstance().getDataManager().getOnlineFollowerUsers().forEach(FollowerUser::refreshFollowerEntity);
+        Followers.getInstance().getDataManager().getOnlineFollowerUsers().forEach(FollowerUser::refreshFollower);
     }
 
     public void createFollower(Player player, FollowerHandler followerHandler) {

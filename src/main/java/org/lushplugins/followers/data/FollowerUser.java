@@ -2,7 +2,7 @@ package org.lushplugins.followers.data;
 
 import jline.internal.Nullable;
 import org.lushplugins.followers.Followers;
-import org.lushplugins.followers.entity.Follower;
+import org.lushplugins.followers.entity.OwnedFollower;
 import org.lushplugins.followers.entity.poses.FollowerPose;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -22,7 +22,8 @@ public class FollowerUser {
     private boolean randomType;
     private String displayName;
     private boolean nameIsOn;
-    private Follower follower;
+
+    private OwnedFollower follower;
     private boolean afk = false;
     private boolean posing = false;
     private boolean hidden = false;
@@ -50,39 +51,81 @@ public class FollowerUser {
         return this.username;
     }
 
-    public String getFollowerType() {
-        return this.followerType;
-    }
-
-    public String getDisplayName() {
-        return this.displayName;
-    }
-
-    public boolean isDisplayNameEnabled() {
-        return this.nameIsOn;
+    public void setUsername(String username) {
+        this.username = username;
+        Followers.getInstance().getDataManager().saveFollowerUser(this);
     }
 
     public boolean isFollowerEnabled() {
         return this.enabled;
     }
 
-    public boolean isRandomType() {
-        return this.randomType;
+    public void setFollowerEnabled(boolean followerIsEnabled) {
+        this.enabled = followerIsEnabled;
+        Followers.getInstance().getDataManager().saveFollowerUser(this);
+
+        if (follower != null) {
+
+        }
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-        Followers.getInstance().getDataManager().saveFollowerUser(this);
+    public String getFollowerType() {
+        return this.followerType;
     }
 
     public void setFollowerType(String followerType) {
         this.followerType = followerType;
         Followers.getInstance().getDataManager().saveFollowerUser(this);
+
+        if (follower != null) {
+            follower.setType(followerType);
+        }
+    }
+
+    public String getDisplayName() {
+        return this.displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+        Followers.getInstance().getDataManager().saveFollowerUser(this);
+
+        if (follower != null) {
+            follower.setDisplayName(displayName);
+        }
+    }
+
+    public boolean isDisplayNameEnabled() {
+        return this.nameIsOn;
+    }
+
+    public void setDisplayNameEnabled(boolean nameIsEnabled) {
+        this.nameIsOn = nameIsEnabled;
+        Followers.getInstance().getDataManager().saveFollowerUser(this);
+
+        if (follower != null) {
+            follower.setDisplayName(nameIsEnabled ? displayName : null);
+        }
+    }
+
+    public boolean isRandomType() {
+        return this.randomType;
+    }
+
+    public String getRandomType() {
+        List<String> followerTypes = getOwnedFollowerNames();
+        return followerTypes.get(random.nextInt(followerTypes.size()));
     }
 
     public void setRandom(boolean randomize) {
         this.randomType = randomize;
         Followers.getInstance().getDataManager().saveFollowerUser(this);
+    }
+
+    public void randomiseFollowerType() {
+        if (follower != null) {
+            follower.setType(getRandomType());
+        }
     }
 
     public List<String> getOwnedFollowerNames() {
@@ -98,29 +141,6 @@ public class FollowerUser {
             }
         }
         return followers;
-    }
-
-    public void randomizeFollowerType() {
-        List<String> followerTypes = getOwnedFollowerNames();
-        if (follower == null) {
-            return;
-        }
-        follower.setType(followerTypes.get(random.nextInt(followerTypes.size())));
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-        Followers.getInstance().getDataManager().saveFollowerUser(this);
-    }
-
-    public void setDisplayNameEnabled(boolean nameIsEnabled) {
-        this.nameIsOn = nameIsEnabled;
-        Followers.getInstance().getDataManager().saveFollowerUser(this);
-    }
-
-    public void setFollowerEnabled(boolean followerIsEnabled) {
-        this.enabled = followerIsEnabled;
-        Followers.getInstance().getDataManager().saveFollowerUser(this);
     }
 
     public boolean isAfk() {
@@ -183,53 +203,60 @@ public class FollowerUser {
             }
         } else if (enabled) {
             if (follower == null || !follower.isAlive()) {
-                spawnFollowerEntity();
+                spawnFollower();
             }
         }
 
         this.hidden = hide;
     }
 
-    // TODO: turn Follower into a non-nullable object
-    public Follower getFollowerEntity() {
+    public OwnedFollower getFollower() {
         return follower;
     }
 
-    public void refreshFollowerEntity() {
+    public void refreshFollower() {
         if (follower != null) {
             follower.reloadInventory();
         }
     }
 
-    public void spawnFollowerEntity() {
-        removeFollowerEntity();
+    public void respawnFollower() {
+        if (follower != null) {
+            follower.kill();
+        }
+
+        Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::spawnFollower, 5);
+    }
+
+    public void spawnFollower() {
+        if (follower != null) {
+            follower.kill();
+        }
+
         Player player = getPlayer();
         if (player == null || player.isDead()) {
             return;
         }
 
         if (follower == null) {
-            follower = new Follower(player, followerType);
+            follower = new OwnedFollower(player, followerType);
         }
 
-        if (follower.spawn() && randomType) {
-            randomizeFollowerType();
+        follower.setDisplayName(isDisplayNameEnabled() ? displayName : null);
+        if (randomType) {
+            follower.setType(getRandomType());
+        }
+
+        if (follower.spawn()) {
+            setFollowerEnabled(true);
         }
     }
 
-    public void respawnFollowerEntity() {
-        removeFollowerEntity();
-        Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::spawnFollowerEntity, 5);
-    }
+    public void disableFollower() {
+        setFollowerEnabled(false);
 
-    public void removeFollowerEntity() {
         if (follower != null) {
             follower.kill();
         }
-    }
-
-    public void disableFollowerEntity() {
-        setFollowerEnabled(false);
-        removeFollowerEntity();
     }
 }

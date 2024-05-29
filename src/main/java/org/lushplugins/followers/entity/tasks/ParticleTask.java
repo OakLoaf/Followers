@@ -26,7 +26,7 @@ public class ParticleTask extends FollowerTask {
         }
 
         WrapperLivingEntity livingEntity = follower.getEntity();
-        World world = follower.getPlayer().getWorld();
+        World world = follower.getWorld();
         ParticleUtil.spawnParticle(
             new Particle<>(particle),
             world,

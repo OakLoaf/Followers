@@ -1,6 +1,8 @@
 package org.lushplugins.followers.listener;
 
+import org.lushplugins.followers.data.DataManager;
 import org.lushplugins.followers.entity.Follower;
+import org.lushplugins.followers.entity.OwnedFollower;
 import org.lushplugins.followers.entity.poses.FollowerPose;
 import org.lushplugins.followers.item.FollowerCreator;
 import org.lushplugins.followers.Followers;
@@ -29,7 +31,7 @@ public class FollowerUserListener implements EventListener {
             followerUser.setUsername(player.getName());
             String followerName = followerUser.getFollowerType();
             if (followerUser.isFollowerEnabled() && player.hasPermission("followers." +  followerName.toLowerCase().replaceAll(" ", "_"))) {
-                Bukkit.getScheduler().runTaskLater(Followers.getInstance(), followerUser::spawnFollowerEntity, 1);
+                Bukkit.getScheduler().runTaskLater(Followers.getInstance(), followerUser::spawnFollower, 1);
             }
         });
     }
@@ -37,16 +39,21 @@ public class FollowerUserListener implements EventListener {
     @EventHandler
     public void onPlayerDisconnect(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-        Bukkit.getScheduler().runTaskLater(Followers.getInstance(), followerUser::removeFollowerEntity, 5);
-        Followers.getInstance().getDataManager().saveFollowerUser(followerUser);
-        Followers.getInstance().getDataManager().unloadFollowerUser(player.getUniqueId());
+        DataManager dataManager = Followers.getInstance().getDataManager();
+        FollowerUser followerUser = dataManager.getFollowerUser(player);
+        OwnedFollower follower = followerUser.getFollower();
+        if (follower != null) {
+            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), follower::kill, 5);
+        }
+
+        dataManager.saveFollowerUser(followerUser);
+        dataManager.unloadFollowerUser(player.getUniqueId());
     }
 
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
-        Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollowerEntity();
+        Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollower();
         if (follower == null || !follower.isAlive()) {
             return;
         }
@@ -54,6 +61,7 @@ public class FollowerUserListener implements EventListener {
         follower.setPose(FollowerPose.DEFAULT);
     }
 
+    // TODO: Check usefulness
     @EventHandler
     public void onPlayerInteractWithEntity(PlayerInteractAtEntityEvent event) {
         Entity entity = event.getRightClicked();
@@ -65,7 +73,7 @@ public class FollowerUserListener implements EventListener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
-        Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollowerEntity();
+        Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollower();
         if (follower != null) {
             follower.kill();
         }
@@ -76,11 +84,11 @@ public class FollowerUserListener implements EventListener {
         Player player = event.getPlayer();
         FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
         if (followerUser.isFollowerEnabled()) {
-            followerUser.respawnFollowerEntity();
-        }
+            followerUser.respawnFollower();
 
-        if (followerUser.isRandomType()) {
-            followerUser.randomizeFollowerType();
+            if (followerUser.isRandomType()) {
+                followerUser.randomiseFollowerType();
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package org.lushplugins.followers.data;
 
 import org.lushplugins.followers.entity.Follower;
+import org.lushplugins.followers.entity.OwnedFollower;
 import org.lushplugins.followers.storage.MysqlStorage;
 import org.lushplugins.followers.storage.Storage;
 import org.lushplugins.followers.storage.YmlStorage;
@@ -64,12 +65,12 @@ public class DataManager {
         return uuidToFollowerUser.values();
     }
 
-    public List<Follower> getAllFollowerEntities() {
-        List<Follower> followerEntities = new ArrayList<>();
+    public List<OwnedFollower> getOwnedFollowers() {
+        List<OwnedFollower> followerEntities = new ArrayList<>();
 
         // Gets all available FollowerEntities - done via a forEach loop in preference to a stream for minor performance improvements
         Followers.getInstance().getDataManager().getOnlineFollowerUsers().forEach(followerUser -> {
-            Follower follower = followerUser.getFollowerEntity();
+            OwnedFollower follower = followerUser.getFollower();
 
             if (follower != null) {
                 followerEntities.add(follower);
@@ -87,7 +88,7 @@ public class DataManager {
                 return;
             }
 
-            Follower follower = getFollowerUser(player).getFollowerEntity();
+            Follower follower = getFollowerUser(player).getFollower();
             if (follower != null) {
                 follower.reloadInventory();
             }

@@ -2,7 +2,7 @@ package org.lushplugins.followers.gui.custom;
 
 import com.github.retrooper.packetevents.protocol.world.Location;
 import org.lushplugins.followers.Followers;
-import org.lushplugins.followers.entity.Follower;
+import org.lushplugins.followers.entity.OwnedFollower;
 import org.lushplugins.followers.gui.abstracts.PagedGui;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -33,15 +33,15 @@ public class ModerationGui extends PagedGui {
             }
         }
 
-        List<Follower> namedFollowerEntities = Followers.getInstance().getDataManager().getAllFollowerEntities();
+        List<OwnedFollower> ownedFollowers = Followers.getInstance().getDataManager().getOwnedFollowers();
 
         int setStartPos = (page - 1) * 36;
         for (int i = 0; i < 36; i++, setStartPos++) {
-            if (setStartPos >= namedFollowerEntities.size() || namedFollowerEntities.isEmpty()) {
+            if (setStartPos >= ownedFollowers.size() || ownedFollowers.isEmpty()) {
                 break;
             }
 
-            Follower follower = namedFollowerEntities.get(setStartPos);
+            OwnedFollower follower = ownedFollowers.get(setStartPos);
             ItemStack followerItem = follower.getType().getHead().asItemStack();
             if (followerItem == null || followerItem.getType() == Material.AIR) {
                 followerItem = new ItemStack(Material.ARMOR_STAND);
@@ -50,13 +50,13 @@ public class ModerationGui extends PagedGui {
             ItemMeta followerMeta = followerItem.getItemMeta();
 
             String displayName = follower.getDisplayName();
-            if (displayName.equals("Unnamed")) {
+            if (displayName != null && displayName.equals("Unnamed")) {
                 displayName = "&oUnnamed";
             }
-            followerMeta.setDisplayName(ChatColorHandler.translate("&e" + displayName + " &7- " + follower.getPlayer().getName()));
+            followerMeta.setDisplayName(ChatColorHandler.translate("&e" + displayName + " &7- " + follower.getOwner().getName()));
 
             List<String> lore = new ArrayList<>();
-            if (!follower.isDisplayNameVisible()) {
+            if (displayName == null) {
                 lore.add("&7&o(Follower Name Hidden)");
             }
 

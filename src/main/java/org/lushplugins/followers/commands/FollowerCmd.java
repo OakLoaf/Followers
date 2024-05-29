@@ -125,9 +125,9 @@ public class FollowerCmd extends Command {
             }
 
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-            Follower follower = followerUser.getFollowerEntity();
+            Follower follower = followerUser.getFollower();
             if (follower != null) {
-                followerUser.disableFollowerEntity();
+                followerUser.disableFollower();
             }
 
             return true;
@@ -149,20 +149,28 @@ public class FollowerCmd extends Command {
 
             if (args.length == 0) {
                 FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-                Follower follower = followerUser.getFollowerEntity();
+                Follower follower = followerUser.getFollower();
                 if (follower != null) {
                     boolean newStatus = !followerUser.isDisplayNameEnabled();
                     followerUser.setDisplayNameEnabled(newStatus);
-                    follower.showDisplayName(newStatus);
+
+                    if (newStatus) {
+                        follower.setDisplayName(followerUser.getDisplayName());
+                    } else {
+                        follower.hideDisplayName();
+                    }
                 }
             } else {
                 boolean newStatus = Boolean.parseBoolean(args[0]);
 
                 FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-                Follower follower = followerUser.getFollowerEntity();
+                Follower follower = followerUser.getFollower();
                 if (follower != null) {
-                    followerUser.setDisplayNameEnabled(newStatus);
-                    follower.showDisplayName(newStatus);
+                    if (newStatus) {
+                        follower.setDisplayName(followerUser.getDisplayName());
+                    } else {
+                        follower.hideDisplayName();
+                    }
                 }
             }
 
@@ -231,9 +239,9 @@ public class FollowerCmd extends Command {
             }
 
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-            Follower follower = followerUser.getFollowerEntity();
+            Follower follower = followerUser.getFollower();
             if (follower == null || !follower.isAlive()) {
-                Followers.getInstance().getDataManager().getFollowerUser(player).spawnFollowerEntity();
+                Followers.getInstance().getDataManager().getFollowerUser(player).spawnFollower();
                 ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
             }
 
@@ -329,7 +337,7 @@ public class FollowerCmd extends Command {
             boolean isRandom = args.length == 0 ? !followerUser.isRandomType() : Boolean.parseBoolean(args[1]);
             followerUser.setRandom(isRandom);
             if (!isRandom) {
-                followerUser.randomizeFollowerType();
+                followerUser.randomiseFollowerType();
                 ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
             }
 
@@ -379,7 +387,7 @@ public class FollowerCmd extends Command {
                     .replaceAll("%command-usage%", "/followers rename <name>"));
             } else {
                 FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-                Follower follower = followerUser.getFollowerEntity();
+                Follower follower = followerUser.getFollower();
                 String newName = args[1];
 
                 followerUser.setDisplayName(newName);
@@ -429,12 +437,12 @@ public class FollowerCmd extends Command {
                         followerUser.setRandom(false);
                     }
 
-                    Follower follower = followerUser.getFollowerEntity();
+                    Follower follower = followerUser.getFollower();
                     if (follower != null && follower.isAlive()) {
                         follower.setType(followerName);
                     } else {
                         followerUser.setFollowerType(followerName);
-                        followerUser.spawnFollowerEntity();
+                        followerUser.spawnFollower();
                     }
                 }
             }
@@ -466,12 +474,12 @@ public class FollowerCmd extends Command {
             }
 
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-            Follower follower = followerUser.getFollowerEntity();
+            Follower follower = followerUser.getFollower();
             if (follower == null || !follower.isAlive()) {
-                Followers.getInstance().getDataManager().getFollowerUser(player).spawnFollowerEntity();
+                Followers.getInstance().getDataManager().getFollowerUser(player).spawnFollower();
                 ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
             } else {
-                Followers.getInstance().getDataManager().getFollowerUser(player).disableFollowerEntity();
+                Followers.getInstance().getDataManager().getFollowerUser(player).disableFollower();
             }
 
             return true;

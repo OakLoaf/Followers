@@ -5,6 +5,7 @@ import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.entity.Follower;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.lushplugins.followers.entity.OwnedFollower;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -32,13 +33,13 @@ public class ValidateTask extends FollowerTask {
             int attempts = attemptsMap.getOrDefault(uuid, 0);
             if (attempts >= Followers.getInstance().getConfigManager().getMaxRespawnAttempts()) {
                 attemptsMap.remove(uuid);
-                followerUser.removeFollowerEntity();
+                follower.kill();
             } else {
                 if (attempts == 1) {
                     Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> attemptsMap.remove(uuid), 600);
                 }
                 attemptsMap.put(uuid, attempts + 1);
-                followerUser.respawnFollowerEntity();
+                followerUser.respawnFollower();
             }
 
             cancel(follower);

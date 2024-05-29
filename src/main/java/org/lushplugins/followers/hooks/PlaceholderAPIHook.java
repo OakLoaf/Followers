@@ -45,7 +45,7 @@ public class PlaceholderAPIHook extends Hook {
                     return followerUser.getFollowerType();
                 }
                 case "pose" -> {
-                    Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollowerEntity();
+                    Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollower();
 
                     if (follower != null) {
                         return follower.getPose().toString().toLowerCase();

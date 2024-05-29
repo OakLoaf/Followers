@@ -33,7 +33,7 @@ public class GSitHook extends Hook implements EventListener {
         if (event.getEntity() instanceof Player player) {
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
             followerUser.setPose(FollowerPose.SITTING);
-            Follower follower = followerUser.getFollowerEntity();
+            Follower follower = followerUser.getFollower();
             if (follower == null || !follower.isAlive()) {
                 return;
             }
@@ -47,7 +47,7 @@ public class GSitHook extends Hook implements EventListener {
         if (event.getEntity() instanceof Player player) {
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
             followerUser.setPose(FollowerPose.DEFAULT);
-            Follower follower = followerUser.getFollowerEntity();
+            Follower follower = followerUser.getFollower();
             if (follower == null || !follower.isAlive()) {
                 return;
             }
@@ -59,7 +59,7 @@ public class GSitHook extends Hook implements EventListener {
     @EventHandler
     public void onPlayerPose(PlayerPoseEvent event) {
         Player player = event.getPlayer();
-        Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollowerEntity();
+        Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollower();
         if (follower == null || !follower.isAlive()) {
             return;
         }
@@ -74,7 +74,7 @@ public class GSitHook extends Hook implements EventListener {
     @EventHandler
     public void onPlayerEndPose(PlayerGetUpPoseEvent event) {
         Player player = event.getPlayer();
-        Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollowerEntity();
+        Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollower();
         if (follower == null || !follower.isAlive()) {
             return;
         }

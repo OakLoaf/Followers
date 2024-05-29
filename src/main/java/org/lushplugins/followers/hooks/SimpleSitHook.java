@@ -31,7 +31,7 @@ public class SimpleSitHook extends Hook implements EventListener {
     public void onPlayerSit(PlayerSitEvent event) {
         FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(event.getPlayer());
         followerUser.setPose(FollowerPose.SITTING);
-        Follower follower = followerUser.getFollowerEntity();
+        Follower follower = followerUser.getFollower();
         if (follower == null || !follower.isAlive()) {
             return;
         }
@@ -43,7 +43,7 @@ public class SimpleSitHook extends Hook implements EventListener {
     public void onPlayerExitSeat(PlayerStopSittingEvent event) {
         FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(event.getPlayer());
         followerUser.setPose(FollowerPose.DEFAULT);
-        Follower follower = followerUser.getFollowerEntity();
+        Follower follower = followerUser.getFollower();
         if (follower == null || !follower.isAlive()) {
             return;
         }

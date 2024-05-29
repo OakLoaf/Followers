@@ -3,7 +3,6 @@ package org.lushplugins.followers.entity.tasks;
 import com.github.retrooper.packetevents.protocol.world.Location;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.util.Vector3f;
-import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.other.ArmorStandMeta;
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import org.lushplugins.followers.Followers;
@@ -22,9 +21,6 @@ public class MoveToTask extends FollowerTask {
             cancel(follower);
             return;
         }
-
-        // TODO: Replace player with target entity (Potentially implement as separate task)
-        follower.setTarget(SpigotConversionUtil.fromBukkitLocation(follower.getPlayer().getEyeLocation()));
 
         WrapperLivingEntity entity = follower.getEntity();
         Location currentLocation = entity.getLocation();
@@ -53,16 +49,20 @@ public class MoveToTask extends FollowerTask {
 
         // Calculates new location of entity based off of the distance to the player
         Vector3d position = entity.getLocation().getPosition();
-        Vector3d difference = getDifference(position, follower.getTarget()); // TODO: Work out how to get entity eye location from entity
-        Vector3d normalizedDifference = difference.normalize();
-        double distance = difference.length() - 5;
-        if (distance < 1) {
-            distance = 1;
+        Vector3d target = follower.getTarget();
+        if (target != null) {
+            Vector3d difference = getDifference(position, follower.getTarget()); // TODO: Work out how to get entity eye location from entity
+            Vector3d normalizedDifference = difference.normalize();
+            double distance = difference.length() - 5;
+            if (distance < 1) {
+                distance = 1;
+            }
+
+            position = position.add(normalizedDifference.multiply(speed * distance));
         }
 
-        position = position
-            .add(normalizedDifference.multiply(speed * distance))
-            .add(0, calculateYOffset(entity), 0); // Adds y offset of entity (Bobbing animation)
+        // Adds y offset of entity (Bobbing animation)
+        position = position.add(0, calculateYOffset(entity), 0);
 
         return position;
     }

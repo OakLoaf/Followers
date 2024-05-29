@@ -104,7 +104,7 @@ public final class Followers extends SpigotPlugin {
             tickCount++;
 
             if (dataManager != null) {
-                dataManager.getAllFollowerEntities().forEach(followerEntity -> {
+                dataManager.getOwnedFollowers().forEach(followerEntity -> {
                     try {
                         followerEntity.tick();
                     } catch(Exception e) {

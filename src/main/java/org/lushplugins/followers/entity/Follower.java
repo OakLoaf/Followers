@@ -18,14 +18,13 @@ import me.tofaa.entitylib.wrapper.WrapperEntityEquipment;
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.api.events.FollowerEntityChangeTypeEvent;
 import org.lushplugins.followers.api.events.FollowerEntitySpawnEvent;
 import org.lushplugins.followers.api.events.FollowerTickEvent;
 import org.lushplugins.followers.entity.poses.FollowerPose;
 import org.lushplugins.followers.data.FollowerHandler;
-import org.bukkit.entity.Player;
-import org.lushplugins.followers.data.FollowerUser;
 import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.entity.tasks.*;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
@@ -35,36 +34,24 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Follower {
     private final ConcurrentHashMap<String, FollowerTask> tasks = new ConcurrentHashMap<>();
-    private final Player player;
-    private Vector3d target;
     private WrapperLivingEntity bodyEntity;
     private WrapperEntity nametagEntity;
     private String followerType;
-    private boolean alive;
-    private boolean visible;
+    private World world;
+    private Vector3d target;
+    private boolean alive = false;
+    private boolean visible = true;
+    private String displayName;
     private FollowerPose pose;
 
-    public Follower(Player player, String followerType) {
-        this.player = player;
+    public Follower(String followerType) {
         this.followerType = followerType;
-        this.visible = !player.isInvisible();
-        this.alive = false;
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
-    public Vector3d getTarget() {
-        return target;
-    }
-
-    public void setTarget(Location location) {
-        setTarget(location.getPosition());
-    }
-
-    public void setTarget(Vector3d target) {
-        this.target = target;
+    public Follower(String followerType, boolean visible, String displayName) {
+        this.followerType = followerType;
+        this.visible = visible;
+        this.displayName = displayName;
     }
 
     public WrapperLivingEntity getEntity() {
@@ -75,9 +62,40 @@ public class Follower {
         return bodyEntity != null;
     }
 
-    @Nullable
-    public Location getLocation() {
+    public @Nullable Location getLocation() {
         return bodyEntity != null ? bodyEntity.getLocation().clone() : null;
+    }
+
+    public FollowerHandler getType() {
+        return Followers.getInstance().getFollowerManager().getFollower(followerType);
+    }
+
+    public void setType(String followerType) {
+        if (Followers.getInstance().callEvent(new FollowerEntityChangeTypeEvent(this, this.followerType, followerType))) {
+            this.followerType = followerType;
+
+            if (visible) {
+                refreshEntity();
+                reloadInventory();
+            }
+        }
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public Vector3d getTarget() {
+        return target;
+    }
+
+    public void setTarget(World world, Location location) {
+        setTarget(world, location.getPosition());
+    }
+
+    public void setTarget(World world, Vector3d target) {
+        this.world = world;
+        this.target = target;
     }
 
     public boolean isAlive() {
@@ -88,45 +106,49 @@ public class Follower {
         return alive;
     }
 
-    public FollowerHandler getType() {
-        return Followers.getInstance().getFollowerManager().getFollower(followerType);
+    public boolean isVisible() {
+        return visible;
     }
 
-    public void setType(String followerType) {
-        if (Followers.getInstance().callEvent(new FollowerEntityChangeTypeEvent(this, this.followerType, followerType))) {
-            this.followerType = followerType;
-            Followers.getInstance().getDataManager().getFollowerUser(player).setFollowerType(followerType);
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+        updateVisibility();
+    }
 
-            if (!player.isInvisible()) {
-                refreshEntity();
-                reloadInventory();
-            }
+    public void updateVisibility() {
+        FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerType);
+        if (followerHandler == null) {
+            return;
+        }
+
+        if (isEntityValid()) {
+            bodyEntity.getEntityMeta().setInvisible(!followerHandler.isVisible() || !visible);
+        }
+
+        displayName(visible && displayName != null);
+
+        if (visible) {
+            reloadInventory();
+        } else {
+            clearInventory();
         }
     }
 
     public String getDisplayName() {
-        return Followers.getInstance().getDataManager().getFollowerUser(player).getDisplayName();
+        return displayName;
     }
 
-    public void setDisplayName(String newName) {
-        showDisplayName(true);
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
 
-        // TODO: Potentially implement offset for hitboxes vs no hitboxes
         if (nametagEntity != null) {
             nametagEntity.getEntityMeta().setCustomName(ModernChatColorHandler.translate(Followers.getInstance().getConfigManager().getFollowerNicknameFormat()
-                .replaceAll("%nickname%", newName)));
+                .replaceAll("%nickname%", displayName)));
         }
     }
 
-    public boolean isDisplayNameVisible() {
-        return Followers.getInstance().getDataManager().getFollowerUser(player).isDisplayNameEnabled();
-    }
-
-    public void showDisplayName(boolean visible) {
-        Followers.getInstance().getDataManager().getFollowerUser(player).setDisplayNameEnabled(visible);
-        if (!player.isInvisible()) {
-            displayName(visible);
-        }
+    public void hideDisplayName() {
+        this.displayName = null;
     }
 
     public FollowerPose getPose() {
@@ -142,30 +164,6 @@ public class Follower {
 
         if (isEntityValid() && bodyEntity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta) {
             pose.pose(armorStandMeta);
-        }
-    }
-
-    public boolean isVisible() {
-        return visible;
-    }
-
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-        FollowerHandler followerConfig = Followers.getInstance().getFollowerManager().getFollower(followerType);
-        if (followerConfig == null) {
-            return;
-        }
-
-        if (isEntityValid()) {
-            bodyEntity.getEntityMeta().setInvisible(!followerConfig.isVisible() || !visible);
-        }
-
-        displayName(visible && Followers.getInstance().getDataManager().getFollowerUser(player).isDisplayNameEnabled());
-
-        if (visible) {
-            reloadInventory();
-        } else {
-            clearInventory();
         }
     }
 
@@ -208,12 +206,11 @@ public class Follower {
     public void reloadInventory() {
         FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(this.followerType);
         if (followerHandler == null) {
-            FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-            followerUser.disableFollowerEntity();
+            kill();
             return;
         }
 
-        if (player.isInvisible()) {
+        if (!visible) {
             return;
         }
 
@@ -228,18 +225,16 @@ public class Follower {
 
     public boolean spawn() {
         if (Followers.getInstance().callEvent(new FollowerEntitySpawnEvent(this))) {
-            FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
             refreshEntity();
             this.alive = true;
+            updateVisibility();
 
-            displayName(followerUser.isDisplayNameEnabled());
-            followerUser.setFollowerEnabled(true);
             setType(followerType);
-            setVisible(!player.isInvisible());
 
-            startTask(new ValidateTask(TaskId.VALIDATE, player));
-            startTask(new VisibilityTask(TaskId.VISIBILITY, player));
-            startTask(new MoveNearTask(TaskId.MOVE_NEAR));
+
+//            startTask(new ValidateTask(TaskId.VALIDATE, player));
+//            startTask(new VisibilityTask(TaskId.VISIBILITY, player));
+//            startTask(new MoveNearTask(TaskId.MOVE_NEAR));
 
             Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::reloadInventory, 5);
             return true;
@@ -339,7 +334,9 @@ public class Follower {
                 }
             }
 
-            String nickname = Followers.getInstance().getConfigManager().getFollowerNicknameFormat().replaceAll("%nickname%", Followers.getInstance().getDataManager().getFollowerUser(player).getDisplayName());
+            String nickname = Followers.getInstance().getConfigManager().getFollowerNicknameFormat()
+                .replaceAll("%nickname%", displayName);
+
             TextDisplayMeta textDisplayMeta = (TextDisplayMeta) nametagEntity.getEntityMeta();
             textDisplayMeta.setText(Component.text(nickname));
             // TODO: Fix ChatColorHandler
@@ -353,6 +350,10 @@ public class Follower {
     }
 
     private void refreshEntity() {
+        if (this.getWorld() == null) {
+            throw new IllegalStateException("Cannot spawn Follower without world defined");
+        }
+
         FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerType);
 
         WrapperLivingEntity entity;
@@ -366,7 +367,8 @@ public class Follower {
             }
         } else {
             entity = followerHandler.createEntity();
-            entity.spawn(SpigotConversionUtil.fromBukkitLocation(player.getLocation().add(1.5, 0, 1.5)));
+            entity.spawn(new Location(getTarget(), 0, 0));
+//            entity.spawn(SpigotConversionUtil.fromBukkitLocation(player.getLocation().add(1.5, 0, 1.5)));
         }
 
         followerHandler.applyAttributes(entity);
@@ -374,7 +376,7 @@ public class Follower {
         reloadInventory();
 
         // TODO: Implement proper tracking system (not in this class)
-        player.getWorld().getPlayers().forEach(viewer -> entity.addViewer(viewer.getUniqueId()));
+        this.getWorld().getPlayers().forEach(viewer -> entity.addViewer(viewer.getUniqueId()));
         // TODO: Remove on EntityLib implementation
         entity.refresh();
         refreshNametag();
@@ -424,7 +426,7 @@ public class Follower {
         }
 
         // TODO: Implement proper tracking system (not in this class)
-        player.getWorld().getPlayers().forEach(viewer -> textDisplay.addViewer(viewer.getUniqueId()));
+        this.getWorld().getPlayers().forEach(viewer -> textDisplay.addViewer(viewer.getUniqueId()));
         // TODO: Remove on EntityLib implementation
         bodyEntity.refresh();
 
