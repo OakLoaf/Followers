@@ -8,7 +8,7 @@ import com.github.retrooper.packetevents.util.Vector3f;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerParticle;
 import org.bukkit.World;
 
-public class ParticleUtil {
+public class ParticleUtils {
 
     public static void spawnParticle(Particle<?> particle, World world, Location location) {
         spawnParticle(particle, world, location, 1, new Vector3f(0f, 0f, 0f), 0f, false);
