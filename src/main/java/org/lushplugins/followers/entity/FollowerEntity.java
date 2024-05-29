@@ -21,7 +21,7 @@ import org.bukkit.Bukkit;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.api.events.FollowerEntityChangeTypeEvent;
 import org.lushplugins.followers.api.events.FollowerEntitySpawnEvent;
-import org.lushplugins.followers.api.events.FollowerEntityTickEvent;
+import org.lushplugins.followers.api.events.FollowerTickEvent;
 import org.lushplugins.followers.entity.poses.FollowerPose;
 import org.lushplugins.followers.data.FollowerHandler;
 import org.bukkit.entity.Player;
@@ -280,7 +280,7 @@ public class FollowerEntity {
     public void tick() {
         int currTick = Followers.getInstance().getCurrentTick();
 
-        if (Followers.getInstance().callEvent(new FollowerEntityTickEvent(this))) {
+        if (Followers.getInstance().callEvent(new FollowerTickEvent(this))) {
             tasks.values().forEach(task -> {
                 if (currTick >= task.getStartTick() && currTick % task.getPeriod() == 0) {
                     try {
