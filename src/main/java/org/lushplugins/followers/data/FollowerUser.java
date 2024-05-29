@@ -253,8 +253,8 @@ public class FollowerUser {
             setFollowerEnabled(true);
 
             follower.addTask(TaskId.VALIDATE);
-            follower.addTask(TaskId.VISIBILITY);
             follower.addTask(TaskId.MOVE_NEAR);
+            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> follower.addTask(TaskId.VISIBILITY), 5);
         }
     }
 

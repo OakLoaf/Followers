@@ -6,7 +6,6 @@ import org.lushplugins.followers.entity.Follower;
 import org.bukkit.entity.Player;
 import org.lushplugins.followers.entity.OwnedFollower;
 
-// TODO: Ensure this task is delayed by 5 ticks
 public class VisibilityTask extends FollowerTask {
 
     public VisibilityTask(String id) {
