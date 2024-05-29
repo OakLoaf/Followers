@@ -15,7 +15,7 @@ public class FollowerTickEvent extends Event implements Cancellable {
         this.followerEntity = followerEntity;
     }
 
-    public FollowerEntity getFollowerEntity() {
+    public FollowerEntity getFollower() {
         return followerEntity;
     }
 
