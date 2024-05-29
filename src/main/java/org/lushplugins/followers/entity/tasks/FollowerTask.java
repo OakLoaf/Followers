@@ -1,12 +1,12 @@
 package org.lushplugins.followers.entity.tasks;
 
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.lushplugins.followers.Followers;
+import org.lushplugins.followers.api.events.FollowerTickEvent;
 import org.lushplugins.followers.entity.FollowerEntity;
 
 public abstract class FollowerTask implements Listener {
     private final String id;
-    private final int startTick = Followers.getInstance().getCurrentTick() + getDelay();
     private boolean cancelled = false;
 
     public FollowerTask(String id) {
@@ -17,17 +17,17 @@ public abstract class FollowerTask implements Listener {
         return id;
     }
 
+    @EventHandler
+    public void onFollowerTick(FollowerTickEvent event) {
+        FollowerEntity follower = event.getFollower();
+        if (follower.getTask(id) != null) {
+            tick(event.getFollower());
+        }
+    }
+
     public abstract void tick(FollowerEntity follower);
 
-    public int getDelay() {
-        return 0;
-    }
-
     public abstract int getPeriod();
-
-    public int getStartTick() {
-        return startTick;
-    }
 
     public boolean isCancelled() {
         return cancelled;

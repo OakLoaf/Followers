@@ -5,6 +5,7 @@ import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.entity.FollowerEntity;
 import org.bukkit.entity.Player;
 
+// TODO: Ensure this task is delay by 5 ticks
 public class VisibilityTask extends FollowerTask {
     private final Player player;
 
@@ -19,11 +20,6 @@ public class VisibilityTask extends FollowerTask {
 
         boolean hidden = player.isInvisible() || followerUser.isVanished();
         followerUser.setHidden(hidden);
-    }
-
-    @Override
-    public int getDelay() {
-        return 5;
     }
 
     @Override

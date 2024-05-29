@@ -282,7 +282,7 @@ public class FollowerEntity {
 
         if (Followers.getInstance().callEvent(new FollowerTickEvent(this))) {
             tasks.values().forEach(task -> {
-                if (currTick >= task.getStartTick() && currTick % task.getPeriod() == 0) {
+                if (currTick % task.getPeriod() == 0) {
                     try {
                         task.tick(this);
                     } catch (Exception e) {
