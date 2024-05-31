@@ -6,10 +6,10 @@ import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.entity.Follower;
 import org.lushplugins.followers.export.GeyserSkullExporter;
 import org.lushplugins.followers.gui.custom.BuilderGui;
-import org.lushplugins.followers.gui.custom.ModerationGui;
+import org.lushplugins.followers.gui.custom.MenuGui;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerHandler;
-import org.lushplugins.followers.gui.custom.MenuGui;
+import org.lushplugins.followers.gui.custom.ModerationGui;
 import org.lushplugins.followers.item.FollowerCreator;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
@@ -51,7 +51,7 @@ public class FollowerCmd extends Command {
         }
 
         MenuGui menuGui = new MenuGui(player);
-        menuGui.openInventory();
+        menuGui.open();
         return true;
     }
 
@@ -212,7 +212,7 @@ public class FollowerCmd extends Command {
                     } catch (IllegalStateException ignored) {}
 
                     BuilderGui builderGui = new BuilderGui(player, BuilderGui.Mode.EDIT, followerBuilder.setNameLocked(true));
-                    builderGui.openInventory();
+                    builderGui.open();
                 }
             }
 
@@ -314,7 +314,7 @@ public class FollowerCmd extends Command {
             }
 
             ModerationGui moderationGui = new ModerationGui(player);
-            moderationGui.openInventory();
+            moderationGui.open();
             return true;
         }
     }

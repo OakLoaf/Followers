@@ -2,7 +2,6 @@ package org.lushplugins.followers.item;
 
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerHandler;
-import org.lushplugins.followers.gui.custom.BuilderGui;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
@@ -17,6 +16,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.lushplugins.followers.gui.custom.BuilderGui;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 import org.lushplugins.lushlib.listener.EventListener;
@@ -57,7 +57,7 @@ public class FollowerCreator implements EventListener {
         }
 
         BuilderGui builderGui = new BuilderGui(player, BuilderGui.Mode.CREATE, followerBuilder);
-        builderGui.openInventory();
+        builderGui.open();
     }
 
     @EventHandler
@@ -77,7 +77,7 @@ public class FollowerCreator implements EventListener {
             }
 
             BuilderGui builderGui = new BuilderGui(player, BuilderGui.Mode.CREATE, new FollowerHandler.Builder());
-            builderGui.openInventory();
+            builderGui.open();
         }
     }
 

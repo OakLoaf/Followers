@@ -60,7 +60,7 @@ public class FollowerManager {
         }
 
         configurationSection = config.createSection(followerName);
-        configurationSection.set("entityType", followerHandler.getEntityType().getName());
+        configurationSection.set("entityType", followerHandler.getEntityType().getName().toString());
         followerHandler.getHead().save(configurationSection, "head");
         followerHandler.getChest().save(configurationSection, "chest");
         followerHandler.getLegs().save(configurationSection, "legs");
