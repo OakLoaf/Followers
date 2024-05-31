@@ -11,14 +11,14 @@ version = "2.0.0-BETA"
 repositories {
     mavenCentral()
     mavenLocal()
-    maven(url="https://oss.sonatype.org/content/groups/public/")
-    maven(url="https://hub.spigotmc.org/nexus/content/repositories/snapshots/") // Spigot
-    maven(url="https://ci.ender.zone/plugin/repository/everything/") // Essentials
-    maven(url="https://repo.opencollab.dev/main/") // Floodgate
-    maven(url="https://repo.lushplugins.org/snapshots/") // LushLib
-    maven(url="https://repo.codemc.io/repository/maven-releases/") // PacketEvents
-    maven(url="https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI
-    maven(url="https://jitpack.io") // EntityLib, GSit
+    maven("https://oss.sonatype.org/content/groups/public/")
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") // Spigot
+    maven("https://ci.ender.zone/plugin/repository/everything/") // Essentials
+    maven("https://repo.opencollab.dev/main/") // Floodgate
+    maven("https://repo.lushplugins.org/snapshots/") // LushLib
+    maven("https://repo.codemc.io/repository/maven-releases/") // PacketEvents
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI
+    maven("https://jitpack.io") // EntityLib, GSit
 }
 
 dependencies {
