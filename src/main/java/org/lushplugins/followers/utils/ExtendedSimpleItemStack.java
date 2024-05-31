@@ -114,10 +114,6 @@ public class ExtendedSimpleItemStack extends org.lushplugins.lushlib.utils.Simpl
 
     @Override
     public void save(ConfigurationSection configurationSection) {
-        if (!configurationSection.contains("type") || configurationSection.getString("type").equalsIgnoreCase("air")) {
-            return;
-        }
-
         super.save(configurationSection);
         if (dyeColor != null) {
             configurationSection.set("color", String.format("%02x%02x%02x", dyeColor.getRed(), dyeColor.getGreen(), dyeColor.getBlue()));
