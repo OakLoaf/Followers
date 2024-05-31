@@ -311,6 +311,7 @@ public class Follower {
         }
 
         FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerType);
+        // TODO: Handle null cases
 
         WrapperLivingEntity entity;
         if (bodyEntity != null) {

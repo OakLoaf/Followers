@@ -214,6 +214,7 @@ public class FollowerUser {
         Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::spawnFollower, 5);
     }
 
+    // TODO: Move into setFollowerEnabled (or make private)
     public void spawnFollower() {
         if (follower != null) {
             follower.kill();
@@ -242,6 +243,7 @@ public class FollowerUser {
         }
     }
 
+    // TODO: Move into setFollowerEnabled
     public void disableFollower() {
         setFollowerEnabled(false);
 
