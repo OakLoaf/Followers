@@ -21,6 +21,7 @@ import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 import java.util.List;
 
 public class MenuGui extends PagedGui {
+    // TODO: Add static cache (store follower buttons for 1 minute)
     private final FollowerUser followerUser;
 
     public MenuGui(Player player) {
