@@ -17,12 +17,12 @@ public class MoveToTask extends FollowerTask {
     @Override
     public void tick(Follower follower) {
         // Cancels the task if the entity is dead
-        if (!follower.isEntityValid()) {
+        WrapperLivingEntity entity = follower.getEntity();
+        if (entity == null || !follower.isSpawned()) {
             follower.removeTask(this.getId());
             return;
         }
 
-        WrapperLivingEntity entity = follower.getEntity();
         Location currentLocation = entity.getLocation();
         Vector3d newPosition = calculatePosition(follower);
 

@@ -1,5 +1,6 @@
 package org.lushplugins.followers.entity.tasks;
 
+import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.entity.Follower;
@@ -19,7 +20,8 @@ public class ValidateTask extends FollowerTask {
 
     @Override
     public void tick(Follower follower) {
-        if (!follower.isAlive()) {
+        WrapperLivingEntity entity = follower.getEntity();
+        if (entity == null) {
             cancelFor(follower);
             return;
         }
@@ -32,14 +34,14 @@ public class ValidateTask extends FollowerTask {
             return;
         }
 
-        if (!follower.isEntityValid()) {
+        if (!entity.isSpawned()) {
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
             UUID uuid = player.getUniqueId();
 
             int attempts = attemptsMap.getOrDefault(uuid, 0);
             if (attempts >= Followers.getInstance().getConfigManager().getMaxRespawnAttempts()) {
                 attemptsMap.remove(uuid);
-                follower.kill();
+                follower.despawn();
             } else {
                 if (attempts == 1) {
                     Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> attemptsMap.remove(uuid), 600);
@@ -53,7 +55,7 @@ public class ValidateTask extends FollowerTask {
         }
 
         if (!player.isOnline()) {
-            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), follower::kill, 5);
+            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), follower::despawn, 5);
         }
     }
 

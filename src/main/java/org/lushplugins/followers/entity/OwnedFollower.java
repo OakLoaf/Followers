@@ -7,11 +7,12 @@ import org.bukkit.entity.LivingEntity;
 
 public class OwnedFollower extends Follower {
     private final LivingEntity owner;
+    private boolean visible;
 
     public OwnedFollower(LivingEntity owner, String followerType) {
         super(followerType);
         this.owner = owner;
-        setVisible(!owner.isInvisible());
+        this.visible = !owner.isInvisible();
     }
 
     public LivingEntity getOwner() {
@@ -19,12 +20,25 @@ public class OwnedFollower extends Follower {
     }
 
     @Override
-    public World getWorld() {
-        return owner.getWorld();
+    public Vector3d getTarget() {
+        return SpigotConversionUtil.fromBukkitLocation(owner.getEyeLocation()).getPosition();
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+        refresh();
     }
 
     @Override
-    public Vector3d getTarget() {
-        return SpigotConversionUtil.fromBukkitLocation(owner.getEyeLocation()).getPosition();
+    public void refresh() {
+        if (!visible) {
+            if (this.isSpawned()) {
+                despawn();
+            }
+
+            return;
+        }
+
+        super.refresh();
     }
 }

@@ -18,6 +18,7 @@ import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.api.events.FollowerEntityChangeTypeEvent;
 import org.lushplugins.followers.api.events.FollowerEntitySpawnEvent;
@@ -26,19 +27,17 @@ import org.lushplugins.followers.data.FollowerHandler;
 import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.entity.tasks.*;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
-import org.lushplugins.lushlib.libraries.chatcolor.ModernChatColorHandler;
 
 import java.util.HashSet;
 
+// TODO: Add javadocs (Maybe make api module)
 public class Follower {
     private final HashSet<String> tasks = new HashSet<>();
-    private WrapperLivingEntity bodyEntity;
-    private WrapperEntity nametagEntity;
     private String followerType;
+    private WrapperLivingEntity entity;
+    private WrapperEntity nametagEntity;
     private World world;
     private Vector3d target;
-    private boolean alive = false;
-    private boolean visible = true;
     private String displayName;
     private FollowerPose pose;
 
@@ -46,22 +45,9 @@ public class Follower {
         this.followerType = followerType;
     }
 
-    public Follower(String followerType, boolean visible, String displayName) {
+    public Follower(String followerType, String displayName) {
         this.followerType = followerType;
-        this.visible = visible;
         this.displayName = displayName;
-    }
-
-    public WrapperLivingEntity getEntity() {
-        return bodyEntity;
-    }
-
-    public boolean isEntityValid() {
-        return bodyEntity != null;
-    }
-
-    public @Nullable Location getLocation() {
-        return bodyEntity != null ? bodyEntity.getLocation().clone() : null;
     }
 
     public FollowerHandler getType() {
@@ -75,16 +61,28 @@ public class Follower {
 
         if (Followers.getInstance().callEvent(new FollowerEntityChangeTypeEvent(this, this.followerType, followerType))) {
             this.followerType = followerType;
-
-            if (visible) {
-                refreshEntity();
-                reloadInventory();
-            }
+            refresh();
         }
+    }
+
+    public WrapperLivingEntity getEntity() {
+        return entity;
     }
 
     public World getWorld() {
         return world;
+    }
+
+    public void setWorld(World world) {
+        this.world = world;
+    }
+
+    public @Nullable Location getLocation() {
+        return entity != null ? entity.getLocation().clone() : null;
+    }
+
+    public void teleport(Location location) {
+        entity.teleport(location);
     }
 
     public Vector3d getTarget() {
@@ -100,58 +98,25 @@ public class Follower {
         this.target = target;
     }
 
-    public boolean isAlive() {
-        if (!isEntityValid()) {
-            alive = false;
-        }
-
-        return alive;
-    }
-
-    public boolean isVisible() {
-        return visible;
-    }
-
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-        updateVisibility();
-    }
-
-    public void updateVisibility() {
-        FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerType);
-        if (followerHandler == null) {
-            return;
-        }
-
-        if (isEntityValid()) {
-            bodyEntity.getEntityMeta().setInvisible(!followerHandler.isVisible() || !visible);
-        }
-
-        displayName(visible && displayName != null);
-
-        if (visible) {
-            reloadInventory();
-        } else {
-            clearInventory();
-        }
+    public boolean isSpawned() {
+        return entity != null && entity.isSpawned();
     }
 
     public String getDisplayName() {
         return displayName;
     }
 
-    // TODO: Test
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
 
-        if (displayName != null && nametagEntity != null) {
-            nametagEntity.getEntityMeta().setCustomName(ModernChatColorHandler.translate(Followers.getInstance().getConfigManager().getFollowerNicknameFormat()
-                .replaceAll("%nickname%", displayName)));
+        if (displayName != null) {
+            refreshNametag();
+        } else {
+            if (nametagEntity != null) {
+                nametagEntity.remove();
+                nametagEntity = null;
+            }
         }
-    }
-
-    public void hideDisplayName() {
-        this.displayName = null;
     }
 
     public FollowerPose getPose() {
@@ -165,14 +130,14 @@ public class Follower {
 
         this.pose = pose;
 
-        if (isEntityValid() && bodyEntity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta) {
+        if (entity != null && entity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta) {
             pose.pose(armorStandMeta);
         }
     }
 
     public void setArmorSlot(EquipmentSlot equipmentSlot, FollowerHandler followerType) {
-        if (isEntityValid()) {
-            WrapperEntityEquipment equipment = bodyEntity.getEquipment();
+        if (entity != null) {
+            WrapperEntityEquipment equipment = entity.getEquipment();
 
             if (equipment != null) {
                 ExtendedSimpleItemStack simpleItemStack;
@@ -194,8 +159,8 @@ public class Follower {
     }
 
     public void clearInventory() {
-        if (isEntityValid()) {
-            WrapperEntityEquipment equipment = bodyEntity.getEquipment();
+        if (entity != null) {
+            WrapperEntityEquipment equipment = entity.getEquipment();
             if (equipment == null) {
                 return;
             }
@@ -209,11 +174,7 @@ public class Follower {
     public void reloadInventory() {
         FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(this.followerType);
         if (followerHandler == null) {
-            kill();
-            return;
-        }
-
-        if (!visible) {
+            despawn();
             return;
         }
 
@@ -221,41 +182,8 @@ public class Follower {
             setArmorSlot(equipmentSlot, followerHandler);
         }
 
-        if (isEntityValid()) {
-            bodyEntity.getEntityMeta().setInvisible(!followerHandler.isVisible());
-        }
-    }
-
-    // TODO: Accept a location
-    public boolean spawn() {
-        if (Followers.getInstance().callEvent(new FollowerEntitySpawnEvent(this))) {
-            refreshEntity();
-            this.alive = true;
-            updateVisibility();
-            setType(followerType);
-
-            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::reloadInventory, 5);
-            return true;
-        } else {
-            kill();
-            return false;
-        }
-    }
-
-    public void teleport(Location location) {
-        bodyEntity.teleport(location);
-    }
-
-    public void kill() {
-        alive = false;
-        removeTasks(TaskId.MOVE_NEAR, TaskId.PARTICLE, TaskId.VALIDATE);
-
-        if (bodyEntity != null) {
-            bodyEntity.remove();
-        }
-
-        if (nametagEntity != null) {
-            nametagEntity.remove();
+        if (entity != null) {
+            entity.getEntityMeta().setInvisible(!followerHandler.isVisible());
         }
     }
 
@@ -281,82 +209,140 @@ public class Follower {
         }
     }
 
-    private void displayName(boolean display) {
-        if (display) {
-            if (nametagEntity == null) {
-                nametagEntity = summonNametagEntity();
-                if (nametagEntity == null) {
-                    return;
-                }
-            }
-
-            String nickname = Followers.getInstance().getConfigManager().getFollowerNicknameFormat()
-                .replaceAll("%nickname%", displayName);
-
-            TextDisplayMeta textDisplayMeta = (TextDisplayMeta) nametagEntity.getEntityMeta();
-            textDisplayMeta.setText(Component.text(nickname));
-            // TODO: Fix ChatColorHandler
-//            textDisplayMeta.setText(ModernChatColorHandler.translate(nickname));
-        } else {
-            if (nametagEntity != null) {
-                nametagEntity.remove();
-                nametagEntity = null;
-            }
-        }
-    }
-
-    private void refreshEntity() {
-        if (this.getWorld() == null) {
-            throw new IllegalStateException("Cannot spawn Follower without world defined");
+    public void refresh() {
+        if (entity == null) {
+            return;
         }
 
         FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerType);
-        // TODO: Handle null cases
+        if (followerHandler == null) {
+            return;
+        }
 
         WrapperLivingEntity entity;
-        if (bodyEntity != null) {
-            if (!bodyEntity.getEntityType().equals(followerHandler.getEntityType())) {
-                // Handles changing the entity type
-                entity = followerHandler.createEntity(bodyEntity.getEntityId(), bodyEntity.getUuid());
-                entity.spawn(bodyEntity.getLocation());
-            } else {
-                entity = bodyEntity;
-            }
+        if (!this.entity.getEntityType().equals(followerHandler.getEntityType())) {
+            // Handles changing the entity type
+            entity = followerHandler.createEntity(this.entity.getEntityId(), this.entity.getUuid());
+            entity.spawn(this.entity.getLocation());
         } else {
-            entity = followerHandler.createEntity();
-            entity.spawn(new Location(getTarget(), 0, 0));
-//            entity.spawn(SpigotConversionUtil.fromBukkitLocation(player.getLocation().add(1.5, 0, 1.5)));
+            entity = this.entity;
         }
 
         followerHandler.applyAttributes(entity);
-        this.bodyEntity = entity;
+        this.entity = entity;
         reloadInventory();
 
         // TODO: Implement proper tracking system (not in this class)
         this.getWorld().getPlayers().forEach(viewer -> entity.addViewer(viewer.getUniqueId()));
         // TODO: Remove on EntityLib implementation
         entity.refresh();
+
         refreshNametag();
     }
 
     public void refreshNametag() {
-        if (nametagEntity == null) {
+        if (entity == null || !entity.isSpawned()) {
+            if (nametagEntity != null && nametagEntity.isSpawned()) {
+                nametagEntity.despawn();
+            }
+
             return;
         }
 
-        FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerType);
-        TextDisplayMeta textDisplayMeta = (TextDisplayMeta) nametagEntity.getEntityMeta();
+        if (nametagEntity == null) {
+            if (displayName != null) {
+                nametagEntity = summonNametagEntity();
+                if (nametagEntity == null) {
+                    return;
+                }
+            } else {
+                return;
+            }
+        } else if (!nametagEntity.isSpawned()) {
+            nametagEntity.spawn(new Location(entity.getLocation().getPosition(), 0, 0));
+        }
 
-        float translation = followerHandler.getEntityType().equals(EntityTypes.ARMOR_STAND) && !Followers.getInstance().getConfigManager().areHitboxesEnabled() ? 0.6f : 0.1f;
+        float translation;
+        if (entity != null && entity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta && armorStandMeta.isMarker()) {
+            translation = 0.6f;
+        } else {
+            translation = 0.1f;
+        }
+
+        TextDisplayMeta textDisplayMeta = (TextDisplayMeta) nametagEntity.getEntityMeta();
         textDisplayMeta.setTranslation(new Vector3f(0, translation, 0));
 
-        if (!bodyEntity.hasPassenger(nametagEntity)) {
-            bodyEntity.addPassenger(nametagEntity.getEntityId());
+        String nickname = Followers.getInstance().getConfigManager().getFollowerNicknameFormat()
+            .replaceAll("%nickname%", displayName);
+
+
+        textDisplayMeta.setText(Component.text(nickname));
+        // TODO: Fix ChatColorHandler
+//        textDisplayMeta.setText(ModernChatColorHandler.translate(nickname));
+
+        if (!entity.hasPassenger(nametagEntity)) {
+            entity.addPassenger(nametagEntity.getEntityId());
+        }
+    }
+
+    public boolean spawn() {
+        if (this.getWorld() == null) {
+            throw new IllegalStateException("World must be defined to spawn follower.");
+        }
+
+        return spawn(this.getWorld(), new Location(getTarget(), 0, 0));
+    }
+
+    public boolean spawn(@NotNull World world, @NotNull Location location) {
+        if (isSpawned()) {
+            throw new IllegalStateException("Follower is already spawned.");
+        }
+
+        this.world = world;
+
+        if (Followers.getInstance().callEvent(new FollowerEntitySpawnEvent(this))) {
+            entity = Followers.getInstance().getFollowerManager().getFollower(followerType).createEntity();
+            entity.spawn(location);
+
+            refresh();
+            setType(followerType);
+
+            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::reloadInventory, 5);
+            return true;
+        } else {
+            despawn();
+            return false;
+        }
+    }
+
+    public void despawn() {
+        removeTasks(TaskId.MOVE_NEAR, TaskId.PARTICLE, TaskId.VALIDATE);
+
+        if (entity != null) {
+            entity.despawn();
+        }
+
+        if (nametagEntity != null) {
+            nametagEntity.despawn();
+        }
+    }
+
+    public void remove() {
+        removeTasks(TaskId.MOVE_NEAR, TaskId.PARTICLE, TaskId.VALIDATE);
+
+        if (entity != null) {
+            entity.remove();
+            entity = null;
+        }
+
+        if (nametagEntity != null) {
+            nametagEntity.remove();
+            nametagEntity = null;
         }
     }
 
     private WrapperEntity summonNametagEntity() {
-        if (!isEntityValid()) {
+        if (entity == null) {
             return null;
         }
 
@@ -364,8 +350,8 @@ public class Follower {
         WrapperEntity textDisplay;
         try {
             textDisplay = EntityLib.getApi().createEntity(EntityTypes.TEXT_DISPLAY);
-            textDisplay.spawn(new Location(bodyEntity.getLocation().getPosition(), 0, 0));
-            bodyEntity.addPassenger(textDisplay);
+            textDisplay.spawn(new Location(entity.getLocation().getPosition(), 0, 0));
+            entity.addPassenger(textDisplay);
 
             TextDisplayMeta textDisplayMeta = (TextDisplayMeta) textDisplay.getEntityMeta();
             textDisplayMeta.setBillboardConstraints(AbstractDisplayMeta.BillboardConstraints.VERTICAL);
@@ -385,7 +371,7 @@ public class Follower {
         // TODO: Implement proper tracking system (not in this class)
         this.getWorld().getPlayers().forEach(viewer -> textDisplay.addViewer(viewer.getUniqueId()));
         // TODO: Remove on EntityLib implementation
-        bodyEntity.refresh();
+        entity.refresh();
 
         return textDisplay;
     }

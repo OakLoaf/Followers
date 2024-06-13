@@ -24,7 +24,7 @@ import org.lushplugins.followers.commands.DyeCmd;
 import org.lushplugins.followers.commands.FollowerCmd;
 import org.lushplugins.followers.commands.GetHexArmorCmd;
 import org.lushplugins.followers.storage.Storage;
-import org.lushplugins.followers.listener.FollowerUserListener;
+import org.lushplugins.followers.listener.PlayerListener;
 import org.lushplugins.lushlib.LushLib;
 import org.lushplugins.lushlib.hook.Hook;
 import org.lushplugins.lushlib.plugin.SpigotPlugin;
@@ -69,7 +69,7 @@ public final class Followers extends SpigotPlugin {
                 followerManager = new FollowerManager();
 
                 new FollowerEntityListener().registerListeners();
-                new FollowerUserListener().registerListeners();
+                new PlayerListener().registerListeners();
                 new FollowerCreator().registerListeners();
 
                 addHook("Essentials", () -> registerHook(new EssentialsHook()));

@@ -8,7 +8,6 @@ import org.lushplugins.followers.item.FollowerCreator;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerUser;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityResurrectEvent;
@@ -16,12 +15,11 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.persistence.PersistentDataType;
 import org.lushplugins.lushlib.listener.EventListener;
 
 import java.util.UUID;
 
-public class FollowerUserListener implements EventListener {
+public class PlayerListener implements EventListener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -43,7 +41,7 @@ public class FollowerUserListener implements EventListener {
         FollowerUser followerUser = dataManager.getFollowerUser(player);
         OwnedFollower follower = followerUser.getFollower();
         if (follower != null) {
-            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), follower::kill, 5);
+            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), follower::despawn, 5);
         }
 
         dataManager.saveFollowerUser(followerUser);
@@ -54,20 +52,11 @@ public class FollowerUserListener implements EventListener {
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
         Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollower();
-        if (follower == null || !follower.isAlive()) {
+        if (follower == null || !follower.isSpawned()) {
             return;
         }
 
         follower.setPose(FollowerPose.DEFAULT);
-    }
-
-    // TODO: Check usefulness
-    @EventHandler
-    public void onPlayerInteractWithEntity(PlayerInteractAtEntityEvent event) {
-        Entity entity = event.getRightClicked();
-        if (entity.getPersistentDataContainer().has(Followers.getInstance().getFollowerKey(), PersistentDataType.STRING)) {
-            event.setCancelled(true);
-        }
     }
 
     @EventHandler
@@ -75,7 +64,7 @@ public class FollowerUserListener implements EventListener {
         Player player = event.getEntity();
         Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollower();
         if (follower != null) {
-            follower.kill();
+            follower.despawn();
         }
     }
 
@@ -89,6 +78,16 @@ public class FollowerUserListener implements EventListener {
             if (followerUser.isRandomType()) {
                 followerUser.randomiseFollowerType();
             }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
+        Player player = event.getPlayer();
+        FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
+        Follower follower = followerUser.getFollower();
+        if (follower != null) {
+            follower.setWorld(player.getWorld());
         }
     }
 

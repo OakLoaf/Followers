@@ -20,17 +20,17 @@ public class ParticleTask extends FollowerTask {
 
     @Override
     public void tick(Follower follower) {
-        if (!follower.isEntityValid()) {
+        WrapperLivingEntity entity = follower.getEntity();
+        if (entity == null || !follower.isSpawned()) {
             follower.removeTask(this.getId());
             return;
         }
 
-        WrapperLivingEntity livingEntity = follower.getEntity();
         World world = follower.getWorld();
         ParticleUtils.spawnParticle(
             new Particle<>(particle),
             world,
-            LocationUtils.add(livingEntity.getLocation(), new Vector3d(0, -0.15, 0)),
+            LocationUtils.add(entity.getLocation(), new Vector3d(0, -0.15, 0)),
             1,
             Vector3f.zero(),
             0,

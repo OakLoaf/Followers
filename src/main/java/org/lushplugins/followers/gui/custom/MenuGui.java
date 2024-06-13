@@ -36,7 +36,7 @@ public class MenuGui extends PagedGui {
         addButton(49, new DynamicItemButton(
                 () -> {
                     Follower follower = followerUser.getFollower();
-                    if (followerUser.isFollowerEnabled() && follower != null && follower.isAlive()) {
+                    if (followerUser.isFollowerEnabled() && follower != null && follower.isSpawned()) {
                         return Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "follower-toggle.enabled", Material.LIME_WOOL).asItemStack(this.getPlayer());
                     } else {
                         return Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "follower-toggle.disabled", Material.RED_WOOL).asItemStack(this.getPlayer());
@@ -45,10 +45,10 @@ public class MenuGui extends PagedGui {
                 (event) -> {
                     String messageKey;
                     if (followerUser.isFollowerEnabled()) {
-                        followerUser.disableFollower();
+                        followerUser.setFollowerEnabled(false);
                         messageKey = "follower-despawned";
                     } else {
-                        followerUser.spawnFollower();
+                        followerUser.setFollowerEnabled(true);
                         messageKey = "follower-spawned";
                     }
 

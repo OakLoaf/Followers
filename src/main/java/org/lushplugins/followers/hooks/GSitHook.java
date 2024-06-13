@@ -1,6 +1,5 @@
 package org.lushplugins.followers.hooks;
 
-import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes;
 import dev.geco.gsit.api.event.*;
 import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.entity.Follower;
@@ -35,7 +34,7 @@ public class GSitHook extends Hook implements EventListener {
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
             followerUser.setPose(FollowerPose.SITTING);
             Follower follower = followerUser.getFollower();
-            if (follower == null || !follower.isAlive()) {
+            if (follower == null || !follower.isSpawned()) {
                 return;
             }
 
@@ -49,7 +48,7 @@ public class GSitHook extends Hook implements EventListener {
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
             followerUser.setPose(FollowerPose.DEFAULT);
             Follower follower = followerUser.getFollower();
-            if (follower == null || !follower.isAlive()) {
+            if (follower == null || !follower.isSpawned()) {
                 return;
             }
 
@@ -61,7 +60,7 @@ public class GSitHook extends Hook implements EventListener {
     public void onPlayerPose(PlayerPoseEvent event) {
         Player player = event.getPlayer();
         Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollower();
-        if (follower == null || !follower.isAlive()) {
+        if (follower == null || !follower.isSpawned()) {
             return;
         }
 
@@ -76,7 +75,7 @@ public class GSitHook extends Hook implements EventListener {
     public void onPlayerEndPose(PlayerGetUpPoseEvent event) {
         Player player = event.getPlayer();
         Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollower();
-        if (follower == null || !follower.isAlive()) {
+        if (follower == null || !follower.isSpawned()) {
             return;
         }
         

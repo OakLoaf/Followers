@@ -40,7 +40,7 @@ public class EssentialsHook extends Hook implements EventListener {
         Player player = iUser.getBase();
         FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
         Follower follower = followerUser.getFollower();
-        if (follower == null || !follower.isAlive()) {
+        if (follower == null || !follower.isSpawned()) {
             return;
         }
 

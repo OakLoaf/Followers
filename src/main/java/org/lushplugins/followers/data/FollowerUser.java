@@ -1,5 +1,6 @@
 package org.lushplugins.followers.data;
 
+import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import jline.internal.Nullable;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.entity.OwnedFollower;
@@ -64,9 +65,14 @@ public class FollowerUser {
         this.enabled = followerIsEnabled;
         Followers.getInstance().getDataManager().saveFollowerUser(this);
 
-        // TODO
-        if (follower != null) {
-
+        if (followerIsEnabled) {
+            if (follower == null || !follower.isSpawned()) {
+                spawnFollower();
+            }
+        } else {
+            if (follower != null) {
+                follower.despawn();
+            }
         }
     }
 
@@ -184,11 +190,11 @@ public class FollowerUser {
         }
 
         if (hide) {
-            if (follower != null && follower.isAlive()) {
-                follower.kill();
+            if (follower != null && follower.isSpawned()) {
+                follower.despawn();
             }
         } else if (enabled) {
-            if (follower == null || !follower.isAlive()) {
+            if (follower == null || !follower.isSpawned()) {
                 spawnFollower();
             }
         }
@@ -208,47 +214,29 @@ public class FollowerUser {
 
     public void respawnFollower() {
         if (follower != null) {
-            follower.kill();
+            follower.despawn();
         }
 
         Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::spawnFollower, 5);
     }
 
-    // TODO: Move into setFollowerEnabled (or make private)
-    public void spawnFollower() {
-        if (follower != null) {
-            follower.kill();
-        }
 
+    public void spawnFollower() {
         Player player = getPlayer();
         if (player == null || player.isDead()) {
             return;
         }
 
         if (follower == null) {
-            follower = new OwnedFollower(player, followerType);
+            follower = new OwnedFollower(player, randomType ? getRandomType() : followerType);
+            follower.setWorld(player.getWorld());
+            follower.setDisplayName(isDisplayNameEnabled() ? displayName : null);
         }
 
-        follower.setDisplayName(isDisplayNameEnabled() ? displayName : null);
-        if (randomType) {
-            follower.setType(getRandomType());
-        }
-
-        if (follower.spawn()) {
-            setFollowerEnabled(true);
-
+        if (follower.spawn(player.getWorld(), SpigotConversionUtil.fromBukkitLocation(player.getLocation().add(1.5, 0, 1.5)))) {
             follower.addTask(TaskId.VALIDATE);
             follower.addTask(TaskId.MOVE_NEAR);
             Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> follower.addTask(TaskId.VISIBILITY), 5);
-        }
-    }
-
-    // TODO: Move into setFollowerEnabled
-    public void disableFollower() {
-        setFollowerEnabled(false);
-
-        if (follower != null) {
-            follower.kill();
         }
     }
 }

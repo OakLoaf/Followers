@@ -16,6 +16,7 @@ public class VisibilityTask extends FollowerTask {
     @Override
     public void tick(Follower follower) {
         if (!(follower instanceof OwnedFollower ownedFollower)) {
+            cancelFor(follower);
             return;
         }
 
