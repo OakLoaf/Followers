@@ -2,18 +2,21 @@ package org.lushplugins.followers.entity.tasks;
 
 import com.github.retrooper.packetevents.protocol.particle.Particle;
 import com.github.retrooper.packetevents.protocol.particle.type.ParticleType;
-import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.util.Vector3f;
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import org.bukkit.World;
 import org.lushplugins.followers.entity.Follower;
-import org.lushplugins.followers.utils.LocationUtils;
 import org.lushplugins.followers.utils.ParticleUtils;
 
 public class ParticleTask extends FollowerTask {
-    private final ParticleType<?> particle;
+    private final Particle<?> particle;
 
     public ParticleTask(String id, ParticleType<?> particle) {
+        super(id);
+        this.particle = new Particle<>(particle);
+    }
+
+    public ParticleTask(String id, Particle<?> particle) {
         super(id);
         this.particle = particle;
     }
@@ -28,9 +31,9 @@ public class ParticleTask extends FollowerTask {
 
         World world = follower.getWorld();
         ParticleUtils.spawnParticle(
-            new Particle<>(particle),
+            particle,
             world,
-            entity.getLocation().getPosition().add(0, -0.15, 0),
+            entity.getLocation().getPosition().add(0, -0.15 - MoveToTask.calculateYOffset(entity), 0),
             1,
             Vector3f.zero(),
             0,

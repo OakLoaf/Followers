@@ -90,7 +90,7 @@ public class MoveToTask extends FollowerTask {
         return 1;
     }
 
-    protected static double calculateYOffset(WrapperLivingEntity entity) {
+    public static double calculateYOffset(WrapperLivingEntity entity) {
         return (Math.PI / 60) * Math.sin(((double) 1/30) * Math.PI * (Followers.getInstance().getCurrentTick() + entity.getEntityId()));
     }
 
