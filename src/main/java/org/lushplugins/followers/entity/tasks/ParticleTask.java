@@ -30,7 +30,7 @@ public class ParticleTask extends FollowerTask {
         ParticleUtils.spawnParticle(
             new Particle<>(particle),
             world,
-            LocationUtils.add(entity.getLocation(), new Vector3d(0, -0.15, 0)),
+            entity.getLocation().getPosition().add(0, -0.15, 0),
             1,
             Vector3f.zero(),
             0,
