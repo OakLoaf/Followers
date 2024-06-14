@@ -34,7 +34,7 @@ dependencies {
 
     // Libraries
     implementation("com.github.retrooper.packetevents:spigot:2.3.0")
-    implementation("com.github.OakLoaf.EntityLib:spigot:08062bd3d5")
+    implementation("com.github.OakLoaf.EntityLib:spigot:3117c89d5c")
     implementation("mysql:mysql-connector-java:8.0.25")
     implementation("org.lushplugins:LushLib:0.7.6")
 }
@@ -49,9 +49,7 @@ tasks {
     }
 
     shadowJar {
-        relocate("net.kyori", "org.lushplugins.followers.libraries.kyori") {
-            from(files("com/github/retrooper/packetevents", "io/github/retrooper/packetevents"))
-        } // Provided by PacketEvents
+        relocate("net.kyori", "org.lushplugins.followers.libraries.kyori") // Provided by PacketEvents
         relocate("com.github.retrooper.packetevents", "org.lushplugins.followers.libraries.packetevents.api")
         relocate("io.github.retrooper.packetevents", "org.lushplugins.followers.libraries.packetevents.impl")
         relocate("me.tofaa.entitylib", "org.lushplugins.followers.libraries.entitylib")

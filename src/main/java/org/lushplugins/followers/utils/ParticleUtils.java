@@ -21,7 +21,9 @@ public class ParticleUtils {
 
         world.getPlayers().forEach(player -> {
             User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
-            user.sendPacket(packet);
+            if (user != null) {
+                user.sendPacket(packet);
+            }
         });
     }
 }

@@ -4,6 +4,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.lushplugins.followers.Followers;
+import org.lushplugins.followers.entity.poses.FollowerPoseRegistry;
 import org.lushplugins.followers.entity.tasks.FollowerTaskRegistry;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 
@@ -12,7 +13,9 @@ import java.io.IOException;
 import java.util.*;
 
 public class FollowerManager {
-    private final FollowerTaskRegistry taskRegistry = new FollowerTaskRegistry();
+    private static final FollowerTaskRegistry TASK_REGISTRY = new FollowerTaskRegistry();
+    private static final FollowerPoseRegistry POSE_REGISTRY = new FollowerPoseRegistry();
+
     private final File followerConfigFile = initYML();
     private YamlConfiguration config = YamlConfiguration.loadConfiguration(followerConfigFile);
     private final Map<String, FollowerHandler> followerList = new TreeMap<>();
@@ -24,7 +27,11 @@ public class FollowerManager {
     }
 
     public FollowerTaskRegistry getTaskRegistry() {
-        return taskRegistry;
+        return TASK_REGISTRY;
+    }
+
+    public FollowerPoseRegistry getPoseRegistry() {
+        return POSE_REGISTRY;
     }
 
     public void saveFollowers() {

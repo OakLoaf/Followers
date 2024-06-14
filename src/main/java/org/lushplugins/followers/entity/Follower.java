@@ -130,8 +130,8 @@ public class Follower {
 
         this.pose = pose;
 
-        if (entity != null && entity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta) {
-            pose.pose(armorStandMeta);
+        if (entity != null) {
+            Followers.getInstance().getFollowerManager().getPoseRegistry().applyPose(entity, pose);
         }
     }
 
