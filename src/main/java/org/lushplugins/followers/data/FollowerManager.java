@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.entity.poses.FollowerPoseRegistry;
 import org.lushplugins.followers.entity.tasks.FollowerTaskRegistry;
+import org.lushplugins.followers.utils.SkinData;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 
 import java.io.File;
@@ -68,6 +69,13 @@ public class FollowerManager {
 
         configurationSection = config.createSection(followerName);
         configurationSection.set("entityType", followerHandler.getEntityType().getName().toString());
+
+        SkinData skin = followerHandler.getSkin();
+        if (skin != null) {
+            configurationSection.set("skin", skin.getValue());
+            configurationSection.set("skin-signature", skin.getSignature());
+        }
+
         followerHandler.getHead().save(configurationSection, "head");
         followerHandler.getChest().save(configurationSection, "chest");
         followerHandler.getLegs().save(configurationSection, "legs");

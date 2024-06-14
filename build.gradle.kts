@@ -16,6 +16,7 @@ repositories {
     maven("https://ci.ender.zone/plugin/repository/everything/") // Essentials
     maven("https://repo.opencollab.dev/main/") // Floodgate
     maven("https://repo.lushplugins.org/snapshots/") // LushLib
+    maven("https://repo.inventivetalent.org/repository/public/") // MineSkin
     maven("https://repo.codemc.io/repository/maven-releases/") // PacketEvents
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI
     maven("https://jitpack.io") // EntityLib, GSit
@@ -37,6 +38,7 @@ dependencies {
     implementation("com.github.OakLoaf.EntityLib:spigot:3117c89d5c")
     implementation("mysql:mysql-connector-java:8.0.25")
     implementation("org.lushplugins:LushLib:0.7.6")
+    implementation("org.mineskin:java-client:1.2.4-SNAPSHOT")
 }
 
 java {

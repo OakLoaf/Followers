@@ -3,12 +3,16 @@ package org.lushplugins.followers.data;
 import com.github.retrooper.packetevents.protocol.attribute.Attributes;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
+import com.github.retrooper.packetevents.protocol.player.TextureProperty;
+import com.github.retrooper.packetevents.protocol.player.UserProfile;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.EntityLib;
 import me.tofaa.entitylib.meta.EntityMeta;
 import me.tofaa.entitylib.meta.other.ArmorStandMeta;
 import me.tofaa.entitylib.meta.types.LivingEntityMeta;
+import me.tofaa.entitylib.meta.types.PlayerMeta;
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
+import me.tofaa.entitylib.wrapper.WrapperPlayer;
 import org.bukkit.Material;
 import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,13 +21,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
+import org.lushplugins.followers.utils.SkinData;
+import org.lushplugins.followers.utils.SkinUtils;
 import org.lushplugins.lushlib.utils.RegistryUtils;
 
+import java.util.List;
 import java.util.UUID;
 
 public class FollowerHandler {
     private final String name;
     private final EntityType entityType;
+    private final SkinData skin;
     private final ExtendedSimpleItemStack head;
     private final ExtendedSimpleItemStack chest;
     private final ExtendedSimpleItemStack legs;
@@ -36,6 +44,19 @@ public class FollowerHandler {
     public FollowerHandler(ConfigurationSection configurationSection) {
         this.name = configurationSection.getName();
         this.entityType = SpigotConversionUtil.fromBukkitEntityType(RegistryUtils.fromString(Registry.ENTITY_TYPE, configurationSection.getString("entityType", "armor_stand")));
+
+        String skinValue = configurationSection.getString("skin");
+        String skinSignature = configurationSection.getString("skin-signature");
+        if (skinValue != null) {
+            this.skin = new SkinData(skinValue, skinSignature);
+
+            if (skinSignature == null) {
+                SkinUtils.generateSkin(skinValue).thenAccept(skin -> this.skin.setSignature(skin.data.texture.signature));
+            }
+        } else {
+            this.skin = null;
+        }
+
         this.head = configurationSection.contains("head") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("head")) : new ExtendedSimpleItemStack(Material.AIR);
         this.chest = configurationSection.contains("chest") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("chest")) : new ExtendedSimpleItemStack(Material.AIR);
         this.legs = configurationSection.contains("legs") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("legs")) : new ExtendedSimpleItemStack(Material.AIR);
@@ -46,9 +67,10 @@ public class FollowerHandler {
         this.scale = configurationSection.getDouble("scale", 0.5);
     }
 
-    private FollowerHandler(String name, EntityType entityType, ExtendedSimpleItemStack head, ExtendedSimpleItemStack chest, ExtendedSimpleItemStack legs, ExtendedSimpleItemStack feet, ExtendedSimpleItemStack mainHand, ExtendedSimpleItemStack offHand, boolean visible, double scale) {
+    private FollowerHandler(String name, EntityType entityType, SkinData skin, ExtendedSimpleItemStack head, ExtendedSimpleItemStack chest, ExtendedSimpleItemStack legs, ExtendedSimpleItemStack feet, ExtendedSimpleItemStack mainHand, ExtendedSimpleItemStack offHand, boolean visible, double scale) {
         this.name = name;
         this.entityType = entityType;
+        this.skin = skin;
         this.head = head;
         this.chest = chest;
         this.legs = legs;
@@ -65,6 +87,10 @@ public class FollowerHandler {
 
     public EntityType getEntityType() {
         return entityType;
+    }
+
+    public SkinData getSkin() {
+        return skin;
     }
 
     public ExtendedSimpleItemStack getHead() {
@@ -111,7 +137,24 @@ public class FollowerHandler {
     }
 
     public WrapperLivingEntity createEntity(int entityId, UUID uuid, EntityMeta entityMeta) {
-        return new WrapperLivingEntity(entityId, uuid, entityType, entityMeta);
+        if (entityType.equals(EntityTypes.PLAYER)) {
+            List<TextureProperty> textureProperties = List.of(new TextureProperty("textures", skin.getValue(), skin.getSignature()));
+
+            WrapperPlayer entity = new WrapperPlayer(new UserProfile(uuid, "follower_pet", textureProperties), entityId);
+            entity.setInTablist(false);
+
+            PlayerMeta meta = entity.getEntityMeta(PlayerMeta.class);
+            meta.setJacketEnabled(true);
+            meta.setLeftSleeveEnabled(true);
+            meta.setRightSleeveEnabled(true);
+            meta.setLeftLegEnabled(true);
+            meta.setRightLegEnabled(true);
+            meta.setHatEnabled(true);
+
+            return entity;
+        } else {
+            return new WrapperLivingEntity(entityId, uuid, entityType, entityMeta);
+        }
     }
 
     /**
@@ -140,6 +183,7 @@ public class FollowerHandler {
         private boolean nameLocked = false;
         private String name;
         private EntityType entityType;
+        private SkinData skin;
         private ExtendedSimpleItemStack head;
         private ExtendedSimpleItemStack chest;
         private ExtendedSimpleItemStack legs;
@@ -164,6 +208,7 @@ public class FollowerHandler {
         public Builder(FollowerHandler handler) {
             this.name = handler.getName();
             this.entityType = handler.getEntityType();
+            this.skin = handler.getSkin();
             this.head = handler.getHead();
             this.chest = handler.getChest();
             this.legs = handler.getLegs();
@@ -197,6 +242,15 @@ public class FollowerHandler {
 
         public Builder setEntityType(EntityType entityType) {
             this.entityType = entityType;
+            return this;
+        }
+
+        public SkinData getSkin() {
+            return skin;
+        }
+
+        public Builder setSkin(SkinData skin) {
+            this.skin = skin;
             return this;
         }
 
@@ -259,7 +313,7 @@ public class FollowerHandler {
         }
 
         public FollowerHandler build() {
-            return new FollowerHandler(name, entityType, head, chest, legs, feet, mainHand, offHand, visible, scale);
+            return new FollowerHandler(name, entityType, skin, head, chest, legs, feet, mainHand, offHand, visible, scale);
         }
     }
 }
