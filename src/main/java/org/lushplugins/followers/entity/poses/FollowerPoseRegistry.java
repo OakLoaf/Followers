@@ -23,6 +23,7 @@ public class FollowerPoseRegistry {
         setPoses(PARROT, new ParrotPoses());
         setPoses(PIGLIN, new PiglinPoses());
         setPoses(SNIFFER, new SnifferPoses());
+        setPoses(WARDEN, new WardenPoses()); // TODO: Test
         setPoses(WOLF, new WolfPoses());
     }
 
