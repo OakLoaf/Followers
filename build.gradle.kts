@@ -58,7 +58,9 @@ tasks {
         relocate("com.mysql", "org.lushplugins.followers.libraries.mysql")
         relocate("org.lushplugins.lushlib", "org.lushplugins.followers.libraries.lushlib")
 
-        minimize()
+        minimize {
+            exclude(dependency("com.mysql:.*:.*"))
+        }
 
         val folder = System.getenv("pluginFolder_1-20-6")
         if (folder != null) destinationDirectory.set(file(folder))
