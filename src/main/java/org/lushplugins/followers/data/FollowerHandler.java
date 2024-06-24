@@ -170,8 +170,7 @@ public class FollowerHandler {
     public void applyAttributes(WrapperLivingEntity entity) {
         LivingEntityMeta entityMeta = (LivingEntityMeta) entity.getEntityMeta();
         entityMeta.setInvisible(!isVisible);
-        // TODO: Uncomment when implemented in EntityLib
-//        entityMeta.setSilent(true);
+        entityMeta.setSilent(true);
         entity.getAttributes().setAttribute(Attributes.GENERIC_SCALE, scale);
 
         if (entityMeta instanceof ArmorStandMeta armorStandMeta) {
