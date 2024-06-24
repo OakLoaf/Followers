@@ -74,7 +74,7 @@ public class FollowerCmd extends Command {
 
             FollowerHandler.Builder followerBuilder = new FollowerHandler.Builder();
             Location eyeLocation = player.getEyeLocation();
-            RayTraceResult rayTrace = player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 5, entity -> entity instanceof LivingEntity);
+            RayTraceResult rayTrace = player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 5, entity -> entity instanceof LivingEntity && !entity.equals(player));
             if (rayTrace != null) {
                 LivingEntity entity = (LivingEntity) rayTrace.getHitEntity();
                 if (entity != null) {
