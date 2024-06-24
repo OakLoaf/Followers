@@ -1,10 +1,11 @@
 package org.lushplugins.followers;
 
 import com.github.retrooper.packetevents.PacketEvents;
-import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import me.tofaa.entitylib.APIConfig;
 import me.tofaa.entitylib.EntityLib;
 import me.tofaa.entitylib.spigot.SpigotEntityLibPlatform;
+import org.bukkit.plugin.InvalidDescriptionException;
+import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.scheduler.BukkitTask;
 import org.lushplugins.followers.api.events.FollowerTickEvent;
 import org.lushplugins.followers.hooks.EssentialsHook;
@@ -25,9 +26,14 @@ import org.lushplugins.followers.commands.FollowerCmd;
 import org.lushplugins.followers.commands.GetHexArmorCmd;
 import org.lushplugins.followers.storage.Storage;
 import org.lushplugins.followers.listener.PlayerListener;
+import org.lushplugins.followers.utils.WebUtils;
 import org.lushplugins.lushlib.LushLib;
 import org.lushplugins.lushlib.hook.Hook;
 import org.lushplugins.lushlib.plugin.SpigotPlugin;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 public final class Followers extends SpigotPlugin {
     private static Followers plugin;
@@ -40,16 +46,24 @@ public final class Followers extends SpigotPlugin {
     private int tickCount;
     private boolean hasFloodgate = false;
 
+    static {
+        if (Bukkit.getPluginManager().getPlugin("packetevents") == null) {
+            try {
+                File output = WebUtils.downloadFile(
+                    new URL("https://ci.codemc.io/job/retrooper/job/packetevents/478/artifact/spigot/build/libs/packetevents-spigot-2.3.1-SNAPSHOT.jar"),
+                    Bukkit.getUpdateFolderFile().getParentFile(),
+                    "packetevents-spigot.jar");
+
+                Bukkit.getPluginManager().loadPlugin(output);
+            } catch (IOException | InvalidPluginException | InvalidDescriptionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     public void onLoad() {
         LushLib.getInstance().enable(this);
-
-        PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
-        PacketEvents.getAPI().getSettings()
-            .reEncodeByDefault(false)
-            .checkForUpdates(false)
-            .bStats(false);
-        PacketEvents.getAPI().load();
 
         EntityLib.init(
             new SpigotEntityLibPlatform(this),

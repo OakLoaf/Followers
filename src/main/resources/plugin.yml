@@ -7,15 +7,10 @@ authors:
 softdepend:
   - Essentials
   - floodgate
-  - Geyser-Spigot # PacketEvents Soft-Dependency
   - GSit
+  - packetevents
   - PlaceholderAPI
-  - ProtocolLib # PacketEvents Soft-Dependency
-  - ProtocolSupport # PacketEvents Soft-Dependency
   - SimpleSit
-  - ViaVersion # PacketEvents Soft-Dependency
-  - ViaBackwards # PacketEvents Soft-Dependency
-  - ViaRewind # PacketEvents Soft-Dependency
 commands:
   followers:
     description: Opens Follower GUI

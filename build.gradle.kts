@@ -17,7 +17,7 @@ repositories {
     maven("https://repo.opencollab.dev/main/") // Floodgate
     maven("https://repo.lushplugins.org/snapshots/") // LushLib
     maven("https://repo.inventivetalent.org/repository/public/") // MineSkin
-    maven("https://repo.codemc.io/repository/maven-releases/") // PacketEvents
+    maven("https://repo.codemc.io/repository/maven-snapshots/") // PacketEvents
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI
     maven("https://jitpack.io") // EntityLib, GSit
 }
@@ -25,6 +25,7 @@ repositories {
 dependencies {
     // Dependencies
     compileOnly("org.spigotmc:spigot:1.20-R0.1-SNAPSHOT")
+    compileOnly("com.github.retrooper:packetevents-spigot:2.3.1-20240621.113314-17")
 
     // Soft Dependencies
     compileOnly("org.geysermc.floodgate:api:2.0-SNAPSHOT")
@@ -34,8 +35,7 @@ dependencies {
     compileOnly(files("libs/SimpleSit.jar"))
 
     // Libraries
-    implementation("com.github.retrooper.packetevents:spigot:2.3.0")
-    implementation("com.github.OakLoaf.EntityLib:spigot:3117c89d5c")
+    implementation("com.github.OakLoaf:EntityLib:aef1wrf")
     implementation("mysql:mysql-connector-java:8.0.25")
     implementation("org.lushplugins:LushLib:0.7.6")
     implementation("org.mineskin:java-client:1.2.4-SNAPSHOT")
@@ -51,9 +51,6 @@ tasks {
     }
 
     shadowJar {
-        relocate("net.kyori", "org.lushplugins.followers.libraries.kyori") // Provided by PacketEvents
-        relocate("com.github.retrooper.packetevents", "org.lushplugins.followers.libraries.packetevents.api")
-        relocate("io.github.retrooper.packetevents", "org.lushplugins.followers.libraries.packetevents.impl")
         relocate("me.tofaa.entitylib", "org.lushplugins.followers.libraries.entitylib")
         relocate("com.mysql", "org.lushplugins.followers.libraries.mysql")
         relocate("org.lushplugins.lushlib", "org.lushplugins.followers.libraries.lushlib")
