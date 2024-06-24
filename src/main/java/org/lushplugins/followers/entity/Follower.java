@@ -166,7 +166,9 @@ public class Follower {
             }
 
             for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-                equipment.setItem(equipmentSlot, new ItemStack.Builder().type(ItemTypes.AIR).build());
+                try {
+                    equipment.setItem(equipmentSlot, new ItemStack.Builder().type(ItemTypes.AIR).build());
+                } catch (IllegalArgumentException ignored) {}
             }
         }
     }
@@ -179,7 +181,9 @@ public class Follower {
         }
 
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-            setArmorSlot(equipmentSlot, followerHandler);
+            try {
+                setArmorSlot(equipmentSlot, followerHandler);
+            } catch (IllegalArgumentException ignored) {}
         }
 
         if (entity != null) {
