@@ -16,10 +16,9 @@ hitboxesEnabled: false
 speed: 0.4
 # follower-nickname-format: Changes the colour of the follower's nickname
 follower-nickname-format: "%nickname%"
-# force-spawn: Spawn the Follower even if another plugin cancels the event
-force-spawn: true
-# max-respawn-attempts: The maximum number of times the plugin will try to respawn the pet before giving up
-max-respawn-attempts: 3
+# world-blacklist: A list of worlds that followers cannot appear in
+world-blacklist:
+  - blacklisted_world
 
 # Data storage
 database:

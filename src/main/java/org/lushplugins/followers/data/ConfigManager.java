@@ -7,11 +7,13 @@ import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class ConfigManager {
     private double speed;
     private boolean areHitboxesEnabled;
     private String nicknameFormat;
+    private List<String> worldBlacklist;
     private GuiConfig gui;
     private DatabaseConfig database;
     private final HashMap<String, String> langMessages = new HashMap<>();
@@ -31,8 +33,7 @@ public class ConfigManager {
         areHitboxesEnabled = config.getBoolean("hitboxesEnabled");
         speed = config.getDouble("speed", 0.4);
         nicknameFormat = config.getString("follower-nickname-format", "%nickname%");
-        forceSpawn = config.getBoolean("force-spawn"); // TODO: Remove
-        maxRespawnAttempts = config.getInt("max-respawn-attempts", 3); // TODO: Remove
+        worldBlacklist = config.getStringList("world-blacklist");
 
         gui = new GuiConfig(config.getString("menu-gui.title", "Followers"), config.getString("menu-gui.follower-format", "&e%follower%"));
         database = new DatabaseConfig(config.getString("database.type"), config.getConfigurationSection("database"));
@@ -99,6 +100,9 @@ public class ConfigManager {
         return nicknameFormat;
     }
 
+    public List<String> getWorldBlacklist() {
+        return worldBlacklist;
+    }
 
     public record GuiConfig(String title, String followerFormat) {}
     public record DatabaseConfig(String type, ConfigurationSection section) {}
