@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 public class WebUtils {
     private static final Pattern FILENAME_PATTERN = Pattern.compile("filename=\"(.+)\"");
+    private static final Pattern URL_FILENAME_PATTERN = Pattern.compile("/([^/]+\\.[a-zA-Z0-9]+)$");
 
     public static File downloadFile(URL downloadUrl, File output) throws IOException {
         return downloadFile(downloadUrl, output, "filename.jar");
@@ -30,16 +31,21 @@ public class WebUtils {
         ReadableByteChannel rbc = Channels.newChannel(connection.getInputStream());
 
         String fieldValue = connection.getHeaderField("Content-Disposition");
-        String fileName;
+        String fileName = null;
         if (fieldValue != null && fieldValue.contains("filename=\"")) {
             Matcher matcher = FILENAME_PATTERN.matcher(fieldValue);
             if (matcher.find()) {
                 fileName = matcher.group();
+            }
+        }
+
+        if (fileName == null) {
+            Matcher matcher = URL_FILENAME_PATTERN.matcher(downloadUrl.toString());
+            if (matcher.find()) {
+                fileName = matcher.group(1);
             } else {
                 fileName = defaultFileName;
             }
-        } else {
-            fileName = defaultFileName;
         }
 
         Bukkit.getLogger().info("Saving '" + fileName + "' to '" + output.getAbsolutePath() + "'");
