@@ -1,5 +1,9 @@
 package org.lushplugins.followers.commands;
 
+import org.bukkit.Location;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.util.RayTraceResult;
 import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.api.events.FollowersReloadEvent;
 import org.lushplugins.followers.data.FollowerUser;
@@ -10,11 +14,10 @@ import org.lushplugins.followers.gui.custom.MenuGui;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerHandler;
 import org.lushplugins.followers.gui.custom.ModerationGui;
-import org.lushplugins.followers.item.FollowerCreator;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.lushlib.command.Command;
 import org.lushplugins.lushlib.command.SubCommand;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
@@ -69,9 +72,30 @@ public class FollowerCmd extends Command {
                 return true;
             }
 
-            ItemStack creator = FollowerCreator.getOrLoadCreatorItem();
-            player.getInventory().addItem(creator);
-            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("get-follower-creator"));
+            FollowerHandler.Builder followerBuilder = new FollowerHandler.Builder();
+            Location eyeLocation = player.getEyeLocation();
+            RayTraceResult rayTrace = player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 5, entity -> entity instanceof LivingEntity);
+            if (rayTrace != null) {
+                LivingEntity entity = (LivingEntity) rayTrace.getHitEntity();
+                if (entity != null) {
+                    String name = entity.getCustomName();
+                    if (name != null) {
+                        try {
+                            followerBuilder.setName(name);
+                        } catch (IllegalStateException ignored) {}
+                    }
+
+                    EntityEquipment entityEquipment = entity.getEquipment();
+                    if (entityEquipment != null) {
+                        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
+                            followerBuilder.setSlot(equipmentSlot, new ExtendedSimpleItemStack(entityEquipment.getItem(equipmentSlot)));
+                        }
+                    }
+                }
+            }
+
+            BuilderGui builderGui = new BuilderGui(player, BuilderGui.Mode.CREATE, followerBuilder);
+            builderGui.open();
             return true;
         }
     }

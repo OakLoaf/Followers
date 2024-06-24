@@ -13,7 +13,6 @@ import org.lushplugins.followers.hooks.GSitHook;
 import org.lushplugins.followers.hooks.PlaceholderAPIHook;
 import org.lushplugins.followers.hooks.SimpleSitHook;
 import org.lushplugins.followers.listener.FollowerEntityListener;
-import org.lushplugins.followers.item.FollowerCreator;
 import org.lushplugins.followers.data.ConfigManager;
 import org.lushplugins.followers.data.DataManager;
 import org.lushplugins.followers.data.FollowerManager;
@@ -84,7 +83,6 @@ public final class Followers extends SpigotPlugin {
 
                 new FollowerEntityListener().registerListeners();
                 new PlayerListener().registerListeners();
-                new FollowerCreator().registerListeners();
 
                 addHook("Essentials", () -> registerHook(new EssentialsHook()));
                 addHook("floodgate", () -> hasFloodgate = true);

@@ -4,17 +4,13 @@ import org.lushplugins.followers.data.DataManager;
 import org.lushplugins.followers.entity.Follower;
 import org.lushplugins.followers.entity.OwnedFollower;
 import org.lushplugins.followers.entity.poses.FollowerPose;
-import org.lushplugins.followers.item.FollowerCreator;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerUser;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.EquipmentSlot;
 import org.lushplugins.lushlib.listener.EventListener;
 
 import java.util.UUID;
@@ -95,20 +91,5 @@ public class PlayerListener implements EventListener {
         if (follower != null) {
             follower.setWorld(player.getWorld());
         }
-    }
-
-    @EventHandler
-    public void onTotem(EntityResurrectEvent event) {
-        try {
-            EntityEquipment equipment = event.getEntity().getEquipment();
-            EquipmentSlot hand = event.getHand();
-            if (equipment == null || hand == null) {
-                return;
-            }
-
-            if (equipment.getItem(hand).isSimilar(FollowerCreator.getOrLoadCreatorItem())) {
-                event.setCancelled(true);
-            }
-        } catch (NoSuchMethodError ignored) {}
     }
 }
