@@ -12,8 +12,6 @@ public class ConfigManager {
     private double speed;
     private boolean areHitboxesEnabled;
     private String nicknameFormat;
-    private boolean forceSpawn;
-    private int maxRespawnAttempts;
     private GuiConfig gui;
     private DatabaseConfig database;
     private final HashMap<String, String> langMessages = new HashMap<>();
@@ -99,14 +97,6 @@ public class ConfigManager {
 
     public String getFollowerNicknameFormat() {
         return nicknameFormat;
-    }
-
-    public boolean shouldForceSpawn() {
-        return forceSpawn;
-    }
-
-    public int getMaxRespawnAttempts() {
-        return maxRespawnAttempts;
     }
 
 
