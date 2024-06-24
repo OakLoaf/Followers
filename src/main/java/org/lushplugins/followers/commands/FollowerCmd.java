@@ -78,6 +78,8 @@ public class FollowerCmd extends Command {
             if (rayTrace != null) {
                 LivingEntity entity = (LivingEntity) rayTrace.getHitEntity();
                 if (entity != null) {
+                    followerBuilder.setEntityType(entity.getType());
+
                     String name = entity.getCustomName();
                     if (name != null) {
                         try {
