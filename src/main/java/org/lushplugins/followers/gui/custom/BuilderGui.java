@@ -2,6 +2,8 @@ package org.lushplugins.followers.gui.custom;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Registry;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -16,6 +18,7 @@ import org.lushplugins.lushlib.gui.button.DynamicItemButton;
 import org.lushplugins.lushlib.gui.button.ItemButton;
 import org.lushplugins.lushlib.gui.inventory.Gui;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
+import org.lushplugins.lushlib.utils.RegistryUtils;
 
 import java.util.*;
 
@@ -26,7 +29,8 @@ public class BuilderGui extends Gui {
         Map.entry(29, EquipmentSlot.LEGS),
         Map.entry(38, EquipmentSlot.FEET),
         Map.entry(19, EquipmentSlot.HAND),
-        Map.entry(21, EquipmentSlot.OFF_HAND)
+        Map.entry(21, EquipmentSlot.OFF_HAND),
+        Map.entry(10, EquipmentSlot.BODY)
     );
 
     private final FollowerHandler.Builder followerBuilder;
@@ -37,7 +41,7 @@ public class BuilderGui extends Gui {
         this.mode = mode;
         this.followerBuilder = followerBuilder;
 
-        this.unlockSlots(11, 19, 20, 21, 29, 38);
+        EQUIPMENT_SLOT_MAP.keySet().forEach(this::unlockSlot);
 
         ItemStack borderItem = Followers.getInstance().getConfigManager().getGuiItem("builder-gui", "border", Material.GRAY_STAINED_GLASS_PANE).asItemStack();
         for (int i = 0; i < 54; i++) {
@@ -47,7 +51,10 @@ public class BuilderGui extends Gui {
         EQUIPMENT_SLOT_MAP.forEach((slot, equipmentSlot) -> addButton(
             slot,
             new DynamicItemButton(
-                () -> followerBuilder.getSlot(equipmentSlot).asItemStack(player),
+                () -> {
+                    ExtendedSimpleItemStack item = followerBuilder.getSlot(equipmentSlot);
+                    return item != null ? item.asItemStack(player) : new ItemStack(Material.AIR);
+                },
                 (event) -> {
                     ItemStack clickedItem = event.getCurrentItem();
                     ItemStack cursorItem = event.getCursor();
@@ -113,6 +120,39 @@ public class BuilderGui extends Gui {
 
                             open();
                         });
+                    }), 1);
+                }
+            ),
+            new DynamicItemButton(
+                () -> {
+                    String materialRaw = followerBuilder.getEntityType().getName().toString() + "_spawn_egg";
+                    try {
+                        return new ItemStack(RegistryUtils.fromString(Registry.MATERIAL, materialRaw));
+                    } catch (IllegalArgumentException e) {
+                        return new ItemStack(Material.ARMOR_STAND);
+                    }
+                },
+                (event) -> {
+                    close();
+
+                    TextInterface textInterface = new TextInterface();
+                    textInterface.title("Enter Entity Type:");
+                    textInterface.placeholder("Entity Type");
+
+                    Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> textInterface.getInput(player, (output) -> {
+                        if (output.isBlank()) {
+                            // TODO: Replace error message
+                            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-no-name"));
+                            return;
+                        }
+
+                        EntityType entityType = RegistryUtils.fromString(Registry.ENTITY_TYPE, output);
+                        if (entityType != null) {
+                            Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
+                                followerBuilder.setEntityType(entityType);
+                                open();
+                            });
+                        }
                     }), 1);
                 }
             ),

@@ -38,6 +38,7 @@ public class FollowerHandler {
     private final ExtendedSimpleItemStack feet;
     private final ExtendedSimpleItemStack mainHand;
     private final ExtendedSimpleItemStack offHand;
+    private final ExtendedSimpleItemStack body;
     private final boolean isVisible;
     private final double scale;
 
@@ -63,11 +64,12 @@ public class FollowerHandler {
         this.feet = configurationSection.contains("feet") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("feet")) : new ExtendedSimpleItemStack(Material.AIR);
         this.mainHand = configurationSection.contains("mainHand") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("mainHand")) : new ExtendedSimpleItemStack(Material.AIR);
         this.offHand = configurationSection.contains("offHand") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("offHand")) : new ExtendedSimpleItemStack(Material.AIR);
+        this.body = configurationSection.contains("body") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("body")) : new ExtendedSimpleItemStack(Material.AIR);
         this.isVisible = configurationSection.getBoolean("visible", true);
         this.scale = configurationSection.getDouble("scale", 0.5);
     }
 
-    private FollowerHandler(String name, EntityType entityType, SkinData skin, ExtendedSimpleItemStack head, ExtendedSimpleItemStack chest, ExtendedSimpleItemStack legs, ExtendedSimpleItemStack feet, ExtendedSimpleItemStack mainHand, ExtendedSimpleItemStack offHand, boolean visible, double scale) {
+    private FollowerHandler(String name, EntityType entityType, SkinData skin, ExtendedSimpleItemStack head, ExtendedSimpleItemStack chest, ExtendedSimpleItemStack legs, ExtendedSimpleItemStack feet, ExtendedSimpleItemStack mainHand, ExtendedSimpleItemStack offHand, ExtendedSimpleItemStack body, boolean visible, double scale) {
         this.name = name;
         this.entityType = entityType;
         this.skin = skin;
@@ -77,6 +79,7 @@ public class FollowerHandler {
         this.feet = feet;
         this.mainHand = mainHand;
         this.offHand = offHand;
+        this.body = body;
         this.isVisible = visible;
         this.scale = scale;
     }
@@ -115,6 +118,10 @@ public class FollowerHandler {
 
     public ExtendedSimpleItemStack getOffHand() {
         return offHand.clone();
+    }
+
+    public ExtendedSimpleItemStack getBody() {
+        return body.clone();
     }
 
     public boolean isVisible() {
@@ -184,12 +191,14 @@ public class FollowerHandler {
         private String name;
         private EntityType entityType;
         private SkinData skin;
+        // TODO: Change to map
         private ExtendedSimpleItemStack head;
         private ExtendedSimpleItemStack chest;
         private ExtendedSimpleItemStack legs;
         private ExtendedSimpleItemStack feet;
         private ExtendedSimpleItemStack mainHand;
         private ExtendedSimpleItemStack offHand;
+        private ExtendedSimpleItemStack body;
         private boolean visible;
         private double scale;
 
@@ -201,6 +210,7 @@ public class FollowerHandler {
             this.feet = new ExtendedSimpleItemStack(Material.AIR);
             this.mainHand = new ExtendedSimpleItemStack(Material.AIR);
             this.offHand = new ExtendedSimpleItemStack(Material.AIR);
+            this.body = new ExtendedSimpleItemStack(Material.AIR);
             this.visible = true;
             this.scale = 0.5;
         }
@@ -215,6 +225,7 @@ public class FollowerHandler {
             this.feet = handler.getFeet();
             this.mainHand = handler.getMainHand();
             this.offHand = handler.getOffHand();
+            this.body = handler.getBody();
             this.visible = handler.isVisible();
             this.scale = handler.getScale();
         }
@@ -263,6 +274,7 @@ public class FollowerHandler {
                 case FEET -> output = this.feet;
                 case HAND -> output = this.mainHand;
                 case OFF_HAND -> output = this.offHand;
+                case BODY -> output = this.body;
             }
             return output;
         }
@@ -281,6 +293,7 @@ public class FollowerHandler {
                 case FEET -> this.feet = item;
                 case HAND -> this.mainHand = item;
                 case OFF_HAND -> this.offHand = item;
+                case BODY -> this.body = item;
             }
             return this;
         }
@@ -313,7 +326,7 @@ public class FollowerHandler {
         }
 
         public FollowerHandler build() {
-            return new FollowerHandler(name, entityType, skin, head, chest, legs, feet, mainHand, offHand, visible, scale);
+            return new FollowerHandler(name, entityType, skin, head, chest, legs, feet, mainHand, offHand, body, visible, scale);
         }
     }
 }

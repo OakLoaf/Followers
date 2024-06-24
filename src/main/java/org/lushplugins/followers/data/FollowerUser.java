@@ -1,7 +1,7 @@
 package org.lushplugins.followers.data;
 
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
-import jline.internal.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.entity.OwnedFollower;
 import org.lushplugins.followers.entity.poses.FollowerPose;
@@ -39,8 +39,7 @@ public class FollowerUser {
         this.randomType = randomFollower;
     }
 
-    @Nullable
-    public Player getPlayer() {
+    public @Nullable Player getPlayer() {
         return Bukkit.getPlayer(uuid);
     }
 
