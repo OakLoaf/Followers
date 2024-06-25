@@ -66,8 +66,12 @@ public class Follower {
         }
     }
 
-    public WrapperLivingEntity getEntity() {
+    public @Nullable WrapperLivingEntity getEntity() {
         return entity;
+    }
+
+    public @Nullable WrapperEntity getNametagEntity() {
+        return nametagEntity;
     }
 
     public World getWorld() {
@@ -195,6 +199,12 @@ public class Follower {
         return tasks.contains(id);
     }
 
+    public void addTasks(String... ids) {
+        for (String id : ids) {
+            addTask(id);
+        }
+    }
+
     public void addTask(String id) {
         tasks.add(id);
     }
@@ -235,11 +245,6 @@ public class Follower {
         followerHandler.applyAttributes(entity);
         this.entity = entity;
         reloadInventory();
-
-        // TODO: Implement proper tracking system (not in this class)
-        this.getWorld().getPlayers().forEach(viewer -> entity.addViewer(viewer.getUniqueId()));
-        // TODO: Remove on EntityLib implementation
-        entity.refresh();
 
         refreshNametag();
     }
@@ -368,11 +373,6 @@ public class Follower {
             e.printStackTrace();
             return null;
         }
-
-        // TODO: Implement proper tracking system (not in this class)
-        this.getWorld().getPlayers().forEach(viewer -> textDisplay.addViewer(viewer.getUniqueId()));
-        // TODO: Remove on EntityLib implementation
-        entity.refresh();
 
         return textDisplay;
     }

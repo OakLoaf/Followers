@@ -9,4 +9,10 @@ public class LocationUtils {
         location.setPosition(location.getPosition().add(vector));
         return location;
     }
+
+    public static double getDistance(Location location1, Location location2) {
+        return Math.sqrt(Math.pow(location1.getX() - location2.getX(), 2)
+            + Math.pow(location1.getY() - location2.getY(), 2)
+            + Math.pow(location1.getZ() - location2.getZ(), 2));
+    }
 }

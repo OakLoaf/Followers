@@ -7,5 +7,6 @@ public class TaskId {
     public static final String PARTICLE = "particle";
     public static final String PARTICLE_CLOUD = "particle_cloud";
     public static final String VALIDATE = "validate";
+    public static final String VIEWERS = "viewers";
     public static final String VISIBILITY = "visibility";
 }

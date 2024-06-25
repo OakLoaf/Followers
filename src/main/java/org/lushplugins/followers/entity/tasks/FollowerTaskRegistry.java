@@ -15,6 +15,7 @@ public class FollowerTaskRegistry {
         register(new MoveToTask(TaskId.MOVE_TO));
         register(new ParticleTask(TaskId.PARTICLE_CLOUD, new Particle<>(ParticleTypes.DUST, new ParticleDustData(2, 1, 1, 1))));
         register(new ValidateTask(TaskId.VALIDATE));
+        register(new ViewersTask(TaskId.VIEWERS));
         register(new VisibilityTask(TaskId.VISIBILITY));
     }
 
