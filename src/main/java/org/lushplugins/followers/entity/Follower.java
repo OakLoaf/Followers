@@ -15,7 +15,6 @@ import me.tofaa.entitylib.meta.other.ArmorStandMeta;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import me.tofaa.entitylib.wrapper.WrapperEntityEquipment;
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
@@ -26,8 +25,9 @@ import org.lushplugins.followers.entity.poses.FollowerPose;
 import org.lushplugins.followers.data.FollowerHandler;
 import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.entity.tasks.*;
-import org.lushplugins.followers.utils.Converter;
+
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
+import org.lushplugins.lushlib.libraries.chatcolor.ModernChatColorHandler;
 
 import java.util.HashSet;
 
@@ -279,10 +279,7 @@ public class Follower {
         String nickname = Followers.getInstance().getConfigManager().getFollowerNicknameFormat()
             .replaceAll("%nickname%", displayName);
 
-
-        textDisplayMeta.setText(Component.text(nickname));
-        // TODO: Fix ChatColorHandler
-//        textDisplayMeta.setText(ModernChatColorHandler.translate(nickname));
+        textDisplayMeta.setText(ModernChatColorHandler.translate(nickname));
 
         if (!entity.hasPassenger(nametagEntity)) {
             entity.addPassenger(nametagEntity.getEntityId());
