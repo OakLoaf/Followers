@@ -1,5 +1,6 @@
 package org.lushplugins.followers.gui.custom;
 
+import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Registry;
@@ -8,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerHandler;
@@ -24,13 +24,13 @@ import java.util.*;
 
 public class BuilderGui extends Gui {
     private static final Map<Integer, EquipmentSlot> EQUIPMENT_SLOT_MAP = Map.ofEntries(
-        Map.entry(11, EquipmentSlot.HEAD),
-        Map.entry(20, EquipmentSlot.CHEST),
-        Map.entry(29, EquipmentSlot.LEGS),
-        Map.entry(38, EquipmentSlot.FEET),
-        Map.entry(19, EquipmentSlot.HAND),
-        Map.entry(21, EquipmentSlot.OFF_HAND),
-        Map.entry(10, EquipmentSlot.BODY)
+        Map.entry(11, EquipmentSlot.HELMET),
+        Map.entry(20, EquipmentSlot.CHEST_PLATE),
+        Map.entry(29, EquipmentSlot.LEGGINGS),
+        Map.entry(38, EquipmentSlot.BOOTS),
+        Map.entry(19, EquipmentSlot.MAIN_HAND),
+        Map.entry(21, EquipmentSlot.OFF_HAND)
+//        Map.entry(10, EquipmentSlot.BODY)
     );
 
     private final FollowerHandler.Builder followerBuilder;

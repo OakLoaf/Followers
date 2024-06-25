@@ -3,6 +3,7 @@ package org.lushplugins.followers.data;
 import com.github.retrooper.packetevents.protocol.attribute.Attributes;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
+import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import com.github.retrooper.packetevents.protocol.player.TextureProperty;
 import com.github.retrooper.packetevents.protocol.player.UserProfile;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
@@ -13,11 +14,11 @@ import me.tofaa.entitylib.meta.types.LivingEntityMeta;
 import me.tofaa.entitylib.meta.types.PlayerMeta;
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import me.tofaa.entitylib.wrapper.WrapperPlayer;
-import org.bukkit.Material;
 import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.inventory.EquipmentSlot;
+import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.Followers;
+import org.lushplugins.followers.utils.Converter;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.followers.utils.SkinData;
 import org.lushplugins.followers.utils.SkinUtils;
@@ -39,12 +40,7 @@ public class FollowerHandler {
 
         this.equipment = new HashMap<>();
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-            String slotName;
-            switch (equipmentSlot) {
-                case HAND -> slotName = "mainHand";
-                case OFF_HAND -> slotName = "offHand";
-                default -> slotName = equipmentSlot.name().toLowerCase();
-            }
+            String slotName = Converter.getEquipmentSlotName(equipmentSlot);
 
             if (configurationSection.contains(slotName)) {
                 equipment.put(equipmentSlot, new ExtendedSimpleItemStack(configurationSection.getConfigurationSection(slotName)));
@@ -88,8 +84,8 @@ public class FollowerHandler {
         return Collections.unmodifiableMap(equipment);
     }
 
-    public ExtendedSimpleItemStack getEquipmentSlot(EquipmentSlot equipmentSlot) {
-        return equipment.getOrDefault(equipmentSlot, new ExtendedSimpleItemStack(Material.AIR)).clone();
+    public @Nullable ExtendedSimpleItemStack getEquipmentSlot(EquipmentSlot equipmentSlot) {
+        return equipment.containsKey(equipmentSlot) ? equipment.get(equipmentSlot).clone() : null;
     }
 
     public SkinData getSkin() {

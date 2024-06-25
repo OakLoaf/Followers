@@ -25,7 +25,7 @@ repositories {
 dependencies {
     // Dependencies
     compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
-    compileOnly("com.github.retrooper:packetevents-spigot:2.3.1-20240621.113314-17")
+    compileOnly("com.github.retrooper:packetevents-spigot:2.3.1-20240624.151351-33")
 
     // Soft Dependencies
     compileOnly("org.geysermc.floodgate:api:2.0-SNAPSHOT")

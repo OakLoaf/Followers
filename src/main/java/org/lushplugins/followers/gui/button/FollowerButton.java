@@ -1,5 +1,6 @@
 package org.lushplugins.followers.gui.button;
 
+import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -23,7 +24,7 @@ public class FollowerButton extends ItemButton {
         super(onClick);
         this.followerName = followerName;
 
-        ExtendedSimpleItemStack headItem = Followers.getInstance().getFollowerManager().getFollower(followerName).getHead();
+        ExtendedSimpleItemStack headItem = Followers.getInstance().getFollowerManager().getFollower(followerName).getEquipmentSlot(EquipmentSlot.HELMET);
         if (headItem == null || headItem.getType() == Material.AIR) {
             headItem = new ExtendedSimpleItemStack(Material.ARMOR_STAND);
         }

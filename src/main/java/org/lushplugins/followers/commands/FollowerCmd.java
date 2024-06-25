@@ -17,6 +17,7 @@ import org.lushplugins.followers.gui.custom.ModerationGui;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.jetbrains.annotations.NotNull;
+import org.lushplugins.followers.utils.Converter;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.lushlib.command.Command;
 import org.lushplugins.lushlib.command.SubCommand;
@@ -91,7 +92,7 @@ public class FollowerCmd extends Command {
                     if (entityEquipment != null) {
                         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
                             try {
-                                followerBuilder.setEquipmentSlot(equipmentSlot, new ExtendedSimpleItemStack(entityEquipment.getItem(equipmentSlot)));
+                                followerBuilder.setEquipmentSlot(Converter.convertEquipmentSlot(equipmentSlot), new ExtendedSimpleItemStack(entityEquipment.getItem(equipmentSlot)));
                             } catch (IllegalArgumentException ignored) {}
                         }
                     }

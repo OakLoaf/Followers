@@ -26,6 +26,7 @@ import org.lushplugins.followers.entity.poses.FollowerPose;
 import org.lushplugins.followers.data.FollowerHandler;
 import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.entity.tasks.*;
+import org.lushplugins.followers.utils.Converter;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 
 import java.util.HashSet;
@@ -136,23 +137,20 @@ public class Follower {
     }
 
     public void setArmorSlot(EquipmentSlot equipmentSlot, FollowerHandler followerType) {
+        if (equipmentSlot.name().equals("BODY")) {
+            Followers.getInstance().getLogger().warning("Equipment slot 'body' is not currently supported");
+            return;
+        }
+
         if (entity != null) {
             WrapperEntityEquipment equipment = entity.getEquipment();
 
             if (equipment != null) {
-                ExtendedSimpleItemStack simpleItemStack;
-                switch (equipmentSlot) {
-                    case HELMET -> simpleItemStack = followerType.getHead();
-                    case CHEST_PLATE -> simpleItemStack = followerType.getChest();
-                    case LEGGINGS -> simpleItemStack = followerType.getLegs();
-                    case BOOTS -> simpleItemStack = followerType.getFeet();
-                    case MAIN_HAND -> simpleItemStack = followerType.getMainHand();
-                    case OFF_HAND -> simpleItemStack = followerType.getOffHand();
-                    default -> simpleItemStack = null; // Should never happen
-                }
-
+                ExtendedSimpleItemStack simpleItemStack = followerType.getEquipmentSlot(equipmentSlot);
                 if (simpleItemStack != null) {
-                    equipment.setItem(equipmentSlot, SpigotConversionUtil.fromBukkitItemStack(simpleItemStack.asItemStack()));
+                    equipment.setItem(
+                        equipmentSlot,
+                        SpigotConversionUtil.fromBukkitItemStack(simpleItemStack.asItemStack()));
                 }
             }
         }
@@ -167,7 +165,9 @@ public class Follower {
 
             for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
                 try {
-                    equipment.setItem(equipmentSlot, new ItemStack.Builder().type(ItemTypes.AIR).build());
+                    equipment.setItem(
+                        com.github.retrooper.packetevents.protocol.player.EquipmentSlot.valueOf(equipmentSlot.name()),
+                        new ItemStack.Builder().type(ItemTypes.AIR).build());
                 } catch (IllegalArgumentException ignored) {}
             }
         }

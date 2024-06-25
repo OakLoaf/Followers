@@ -1,5 +1,6 @@
 package org.lushplugins.followers.gui.custom;
 
+import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import com.github.retrooper.packetevents.protocol.world.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -35,7 +36,7 @@ public class ModerationGui extends PagedGui {
             }
 
             OwnedFollower follower = ownedFollowers.get(startPos);
-            ExtendedSimpleItemStack item = follower.getType().getHead();
+            ExtendedSimpleItemStack item = follower.getType().getEquipmentSlot(EquipmentSlot.HELMET);
             if (item == null || item.getType() == Material.AIR) {
                 item = new ExtendedSimpleItemStack(Material.ARMOR_STAND);
             }

@@ -1,11 +1,14 @@
 package org.lushplugins.followers.data;
 
+import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.entity.poses.FollowerPoseRegistry;
 import org.lushplugins.followers.entity.tasks.FollowerTaskRegistry;
+import org.lushplugins.followers.utils.Converter;
+import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.followers.utils.SkinData;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 
@@ -76,12 +79,13 @@ public class FollowerManager {
             configurationSection.set("skin-signature", skin.getSignature());
         }
 
-        followerHandler.getHead().save(configurationSection, "head");
-        followerHandler.getChest().save(configurationSection, "chest");
-        followerHandler.getLegs().save(configurationSection, "legs");
-        followerHandler.getFeet().save(configurationSection, "feet");
-        followerHandler.getMainHand().save(configurationSection, "mainHand");
-        followerHandler.getOffHand().save(configurationSection, "offHand");
+        for (Map.Entry<EquipmentSlot, ExtendedSimpleItemStack> entry : followerHandler.getEquipment().entrySet()) {
+            EquipmentSlot slot = entry.getKey();
+            ExtendedSimpleItemStack item = entry.getValue();
+
+            item.save(configurationSection, Converter.getEquipmentSlotName(slot));
+        }
+
         configurationSection.set("visible", followerHandler.isVisible());
         configurationSection.set("scale", followerHandler.getScale());
 
