@@ -91,7 +91,7 @@ public class FollowerCmd extends Command {
                     if (entityEquipment != null) {
                         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
                             try {
-                                followerBuilder.setSlot(equipmentSlot, new ExtendedSimpleItemStack(entityEquipment.getItem(equipmentSlot)));
+                                followerBuilder.setEquipmentSlot(equipmentSlot, new ExtendedSimpleItemStack(entityEquipment.getItem(equipmentSlot)));
                             } catch (IllegalArgumentException ignored) {}
                         }
                     }

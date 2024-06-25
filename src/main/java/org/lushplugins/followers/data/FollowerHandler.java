@@ -17,34 +17,39 @@ import org.bukkit.Material;
 import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.EquipmentSlot;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.followers.utils.SkinData;
 import org.lushplugins.followers.utils.SkinUtils;
 import org.lushplugins.lushlib.utils.RegistryUtils;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class FollowerHandler {
     private final String name;
     private final EntityType entityType;
+    private final Map<EquipmentSlot, ExtendedSimpleItemStack> equipment;
     private final SkinData skin;
-    private final ExtendedSimpleItemStack head;
-    private final ExtendedSimpleItemStack chest;
-    private final ExtendedSimpleItemStack legs;
-    private final ExtendedSimpleItemStack feet;
-    private final ExtendedSimpleItemStack mainHand;
-    private final ExtendedSimpleItemStack offHand;
-    private final ExtendedSimpleItemStack body;
     private final boolean isVisible;
     private final double scale;
 
     public FollowerHandler(ConfigurationSection configurationSection) {
         this.name = configurationSection.getName();
         this.entityType = SpigotConversionUtil.fromBukkitEntityType(RegistryUtils.fromString(Registry.ENTITY_TYPE, configurationSection.getString("entityType", "armor_stand")));
+
+        this.equipment = new HashMap<>();
+        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
+            String slotName;
+            switch (equipmentSlot) {
+                case HAND -> slotName = "mainHand";
+                case OFF_HAND -> slotName = "offHand";
+                default -> slotName = equipmentSlot.name().toLowerCase();
+            }
+
+            if (configurationSection.contains(slotName)) {
+                equipment.put(equipmentSlot, new ExtendedSimpleItemStack(configurationSection.getConfigurationSection(slotName)));
+            }
+        }
 
         String skinValue = configurationSection.getString("skin");
         String skinSignature = configurationSection.getString("skin-signature");
@@ -58,28 +63,15 @@ public class FollowerHandler {
             this.skin = null;
         }
 
-        this.head = configurationSection.contains("head") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("head")) : new ExtendedSimpleItemStack(Material.AIR);
-        this.chest = configurationSection.contains("chest") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("chest")) : new ExtendedSimpleItemStack(Material.AIR);
-        this.legs = configurationSection.contains("legs") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("legs")) : new ExtendedSimpleItemStack(Material.AIR);
-        this.feet = configurationSection.contains("feet") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("feet")) : new ExtendedSimpleItemStack(Material.AIR);
-        this.mainHand = configurationSection.contains("mainHand") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("mainHand")) : new ExtendedSimpleItemStack(Material.AIR);
-        this.offHand = configurationSection.contains("offHand") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("offHand")) : new ExtendedSimpleItemStack(Material.AIR);
-        this.body = configurationSection.contains("body") ? new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("body")) : new ExtendedSimpleItemStack(Material.AIR);
         this.isVisible = configurationSection.getBoolean("visible", true);
         this.scale = configurationSection.getDouble("scale", 0.5);
     }
 
-    private FollowerHandler(String name, EntityType entityType, SkinData skin, ExtendedSimpleItemStack head, ExtendedSimpleItemStack chest, ExtendedSimpleItemStack legs, ExtendedSimpleItemStack feet, ExtendedSimpleItemStack mainHand, ExtendedSimpleItemStack offHand, ExtendedSimpleItemStack body, boolean visible, double scale) {
+    private FollowerHandler(String name, EntityType entityType, Map<EquipmentSlot, ExtendedSimpleItemStack> equipment, SkinData skin, boolean visible, double scale) {
         this.name = name;
         this.entityType = entityType;
+        this.equipment = equipment;
         this.skin = skin;
-        this.head = head;
-        this.chest = chest;
-        this.legs = legs;
-        this.feet = feet;
-        this.mainHand = mainHand;
-        this.offHand = offHand;
-        this.body = body;
         this.isVisible = visible;
         this.scale = scale;
     }
@@ -92,36 +84,16 @@ public class FollowerHandler {
         return entityType;
     }
 
+    public Map<EquipmentSlot, ExtendedSimpleItemStack> getEquipment() {
+        return Collections.unmodifiableMap(equipment);
+    }
+
+    public ExtendedSimpleItemStack getEquipmentSlot(EquipmentSlot equipmentSlot) {
+        return equipment.getOrDefault(equipmentSlot, new ExtendedSimpleItemStack(Material.AIR)).clone();
+    }
+
     public SkinData getSkin() {
         return skin;
-    }
-
-    public ExtendedSimpleItemStack getHead() {
-        return head.clone();
-    }
-
-    public ExtendedSimpleItemStack getChest() {
-        return chest.clone();
-    }
-
-    public ExtendedSimpleItemStack getLegs() {
-        return legs.clone();
-    }
-
-    public ExtendedSimpleItemStack getFeet() {
-        return feet.clone();
-    }
-
-    public ExtendedSimpleItemStack getMainHand() {
-        return mainHand.clone();
-    }
-
-    public ExtendedSimpleItemStack getOffHand() {
-        return offHand.clone();
-    }
-
-    public ExtendedSimpleItemStack getBody() {
-        return body.clone();
     }
 
     public boolean isVisible() {
@@ -189,27 +161,14 @@ public class FollowerHandler {
         private boolean nameLocked = false;
         private String name;
         private EntityType entityType;
+        private Map<EquipmentSlot, ExtendedSimpleItemStack> equipment;
         private SkinData skin;
-        // TODO: Change to map
-        private ExtendedSimpleItemStack head;
-        private ExtendedSimpleItemStack chest;
-        private ExtendedSimpleItemStack legs;
-        private ExtendedSimpleItemStack feet;
-        private ExtendedSimpleItemStack mainHand;
-        private ExtendedSimpleItemStack offHand;
-        private ExtendedSimpleItemStack body;
         private boolean visible;
         private double scale;
 
         public Builder() {
             this.entityType = EntityTypes.ARMOR_STAND;
-            this.head = new ExtendedSimpleItemStack(Material.AIR);
-            this.chest = new ExtendedSimpleItemStack(Material.AIR);
-            this.legs = new ExtendedSimpleItemStack(Material.AIR);
-            this.feet = new ExtendedSimpleItemStack(Material.AIR);
-            this.mainHand = new ExtendedSimpleItemStack(Material.AIR);
-            this.offHand = new ExtendedSimpleItemStack(Material.AIR);
-            this.body = new ExtendedSimpleItemStack(Material.AIR);
+            this.equipment = new HashMap<>();
             this.visible = true;
             this.scale = 0.5;
         }
@@ -217,14 +176,8 @@ public class FollowerHandler {
         public Builder(FollowerHandler handler) {
             this.name = handler.getName();
             this.entityType = handler.getEntityType();
+            this.equipment = handler.getEquipment();
             this.skin = handler.getSkin();
-            this.head = handler.getHead();
-            this.chest = handler.getChest();
-            this.legs = handler.getLegs();
-            this.feet = handler.getFeet();
-            this.mainHand = handler.getMainHand();
-            this.offHand = handler.getOffHand();
-            this.body = handler.getBody();
             this.visible = handler.isVisible();
             this.scale = handler.getScale();
         }
@@ -255,45 +208,30 @@ public class FollowerHandler {
             return this;
         }
 
+        public Map<EquipmentSlot, ExtendedSimpleItemStack> getEquipment() {
+            return equipment;
+        }
+
+        public Builder setEquipment(Map<EquipmentSlot, ExtendedSimpleItemStack> equipment) {
+            this.equipment = equipment;
+            return this;
+        }
+
+        public ExtendedSimpleItemStack getEquipmentSlot(EquipmentSlot slot) {
+            return equipment.get(slot);
+        }
+
+        public Builder setEquipmentSlot(EquipmentSlot slot, ExtendedSimpleItemStack item) {
+            equipment.put(slot, item);
+            return this;
+        }
+
         public SkinData getSkin() {
             return skin;
         }
 
         public Builder setSkin(SkinData skin) {
             this.skin = skin;
-            return this;
-        }
-
-        public ExtendedSimpleItemStack getSlot(@NotNull EquipmentSlot slot) {
-            ExtendedSimpleItemStack output = null;
-            switch(slot) {
-                case HEAD -> output = this.head;
-                case CHEST -> output = this.chest;
-                case LEGS -> output = this.legs;
-                case FEET -> output = this.feet;
-                case HAND -> output = this.mainHand;
-                case OFF_HAND -> output = this.offHand;
-                case BODY -> output = this.body;
-            }
-            return output;
-        }
-
-        public Builder setSlot(EquipmentSlot slot, @Nullable ExtendedSimpleItemStack item) {
-            if (item == null) {
-                item = new ExtendedSimpleItemStack(Material.AIR);
-            }
-            item = item.clone();
-            item.setAmount(1);
-
-            switch(slot) {
-                case HEAD -> this.head = item;
-                case CHEST -> this.chest = item;
-                case LEGS -> this.legs = item;
-                case FEET -> this.feet = item;
-                case HAND -> this.mainHand = item;
-                case OFF_HAND -> this.offHand = item;
-                case BODY -> this.body = item;
-            }
             return this;
         }
 
@@ -325,7 +263,7 @@ public class FollowerHandler {
         }
 
         public FollowerHandler build() {
-            return new FollowerHandler(name, entityType, skin, head, chest, legs, feet, mainHand, offHand, body, visible, scale);
+            return new FollowerHandler(name, entityType, equipment, skin, visible, scale);
         }
     }
 }

@@ -52,7 +52,7 @@ public class BuilderGui extends Gui {
             slot,
             new DynamicItemButton(
                 () -> {
-                    ExtendedSimpleItemStack item = followerBuilder.getSlot(equipmentSlot);
+                    ExtendedSimpleItemStack item = followerBuilder.getEquipmentSlot(equipmentSlot);
                     return item != null ? item.asItemStack(player) : new ItemStack(Material.AIR);
                 },
                 (event) -> {
@@ -66,14 +66,14 @@ public class BuilderGui extends Gui {
                         case PLACE_ALL -> {
                             if (EQUIPMENT_SLOT_MAP.containsKey(slot)) {
                                 event.setCancelled(true);
-                                followerBuilder.setSlot(EQUIPMENT_SLOT_MAP.get(slot), new ExtendedSimpleItemStack(cursorItem));
+                                followerBuilder.setEquipmentSlot(EQUIPMENT_SLOT_MAP.get(slot), new ExtendedSimpleItemStack(cursorItem));
                                 refresh(slot);
                             }
                         }
                         case PICKUP_ALL, SWAP_WITH_CURSOR -> {
                             if (EQUIPMENT_SLOT_MAP.containsKey(slot)) {
                                 event.setCancelled(true);
-                                followerBuilder.setSlot(EQUIPMENT_SLOT_MAP.get(slot), null);
+                                followerBuilder.setEquipmentSlot(EQUIPMENT_SLOT_MAP.get(slot), null);
                                 refresh(slot);
                             }
                         }
