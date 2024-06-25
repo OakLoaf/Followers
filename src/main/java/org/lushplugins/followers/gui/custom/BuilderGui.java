@@ -1,5 +1,6 @@
 package org.lushplugins.followers.gui.custom;
 
+import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -125,12 +126,22 @@ public class BuilderGui extends Gui {
             ),
             new DynamicItemButton(
                 () -> {
-                    String materialRaw = followerBuilder.getEntityType().getName().toString() + "_spawn_egg";
-                    try {
-                        return new ItemStack(RegistryUtils.fromString(Registry.MATERIAL, materialRaw));
-                    } catch (IllegalArgumentException e) {
-                        return new ItemStack(Material.ARMOR_STAND);
+                    ItemStack item;
+                    if (followerBuilder.getEntityType().equals(EntityTypes.ARMOR_STAND)) {
+                        item = new ItemStack(Material.ARMOR_STAND);
+                    } else if (followerBuilder.getEntityType().equals(EntityTypes.GIANT)) {
+                        item = new ItemStack(Material.ZOMBIE_SPAWN_EGG);
+                    } else {
+                        String materialRaw = followerBuilder.getEntityType().getName().toString() + "_spawn_egg";
+
+                        try {
+                            item = new ItemStack(RegistryUtils.fromString(Registry.MATERIAL, materialRaw));
+                        } catch (IllegalArgumentException e) {
+                            item = new ItemStack(Material.POLAR_BEAR_SPAWN_EGG);
+                        }
                     }
+
+                    return item;
                 },
                 (event) -> {
                     close();
