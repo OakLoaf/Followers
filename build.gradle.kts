@@ -25,7 +25,7 @@ repositories {
 dependencies {
     // Dependencies
     compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
-    compileOnly("com.github.retrooper:packetevents-spigot:2.3.1-20240624.151351-33")
+    compileOnlyApi("com.github.retrooper:packetevents-spigot:2.3.1-20240624.151351-33")
 
     // Soft Dependencies
     compileOnly("org.geysermc.floodgate:api:2.0-SNAPSHOT")
@@ -35,7 +35,7 @@ dependencies {
     compileOnly(files("libs/SimpleSit.jar"))
 
     // Libraries
-    implementation("com.github.OakLoaf:EntityLib:aef1wrf")
+    api("com.github.OakLoaf:EntityLib:aef1wrf")
     implementation("mysql:mysql-connector-java:8.0.25")
     implementation("org.lushplugins:LushLib:0.7.6")
     implementation("org.mineskin:java-client:1.2.4-SNAPSHOT")
