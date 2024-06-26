@@ -4,6 +4,7 @@ import com.github.retrooper.packetevents.protocol.particle.Particle;
 import com.github.retrooper.packetevents.protocol.particle.data.ParticleDustData;
 import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
@@ -17,6 +18,10 @@ public class FollowerTaskRegistry {
         register(new ValidateTask(TaskId.VALIDATE));
         register(new ViewersTask(TaskId.VIEWERS));
         register(new VisibilityTask(TaskId.VISIBILITY));
+    }
+
+    public @Nullable FollowerTask get(@NotNull String id) {
+        return followerTasks.get(id);
     }
 
     public void register(@NotNull FollowerTask task) {
