@@ -94,16 +94,7 @@ public final class Followers extends SpigotPlugin {
                 registerCommand(new DyeCmd());
 
                 // TODO: Deprecated for removal (Since 2.0.0)
-                NamespacedKey followerKey = new NamespacedKey(this, "Follower");
-                Bukkit.getWorlds().forEach(world -> {
-                    for (Chunk chunk : world.getLoadedChunks()) {
-                        for (Entity entity : chunk.getEntities()) {
-                            if (entity.getPersistentDataContainer().has(followerKey, PersistentDataType.STRING)) {
-                                entity.remove();
-                            }
-                        }
-                    }
-                });
+                new Version1Compatibility();
 
                 getHooks().forEach(Hook::enable);
 
