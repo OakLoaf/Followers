@@ -69,7 +69,7 @@ public class DataManager {
         List<OwnedFollower> followerEntities = new ArrayList<>();
 
         // Gets all available FollowerEntities - done via a forEach loop in preference to a stream for minor performance improvements
-        Followers.getInstance().getDataManager().getOnlineFollowerUsers().forEach(followerUser -> {
+        getOnlineFollowerUsers().forEach(followerUser -> {
             OwnedFollower follower = followerUser.getFollower();
 
             if (follower != null) {
