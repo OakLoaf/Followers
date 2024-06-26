@@ -36,7 +36,7 @@ public class Follower {
     private final HashSet<String> tasks = new HashSet<>();
     private String followerType;
     private WrapperLivingEntity entity;
-    private WrapperEntity nametagEntity;
+    private WrapperEntity nameTagEntity;
     private World world;
     private Vector3d target;
     private String displayName;
@@ -70,8 +70,8 @@ public class Follower {
         return entity;
     }
 
-    public @Nullable WrapperEntity getNametagEntity() {
-        return nametagEntity;
+    public @Nullable WrapperEntity getNameTagEntity() {
+        return nameTagEntity;
     }
 
     public World getWorld() {
@@ -86,8 +86,8 @@ public class Follower {
                 entity.getViewers().forEach(entity::removeViewer);
             }
 
-            if (nametagEntity != null) {
-                nametagEntity.getViewers().forEach(nametagEntity::removeViewer);
+            if (nameTagEntity != null) {
+                nameTagEntity.getViewers().forEach(nameTagEntity::removeViewer);
             }
         }
     }
@@ -127,9 +127,9 @@ public class Follower {
         if (displayName != null) {
             refreshNametag();
         } else {
-            if (nametagEntity != null) {
-                nametagEntity.remove();
-                nametagEntity = null;
+            if (nameTagEntity != null) {
+                nameTagEntity.remove();
+                nameTagEntity = null;
             }
         }
     }
@@ -261,24 +261,24 @@ public class Follower {
 
     public void refreshNametag() {
         if (entity == null || !entity.isSpawned()) {
-            if (nametagEntity != null && nametagEntity.isSpawned()) {
-                nametagEntity.despawn();
+            if (nameTagEntity != null && nameTagEntity.isSpawned()) {
+                nameTagEntity.despawn();
             }
 
             return;
         }
 
-        if (nametagEntity == null) {
+        if (nameTagEntity == null) {
             if (displayName != null) {
-                nametagEntity = summonNametagEntity();
-                if (nametagEntity == null) {
+                nameTagEntity = summonNametagEntity();
+                if (nameTagEntity == null) {
                     return;
                 }
             } else {
                 return;
             }
-        } else if (!nametagEntity.isSpawned()) {
-            nametagEntity.spawn(new Location(entity.getLocation().getPosition(), 0, 0));
+        } else if (!nameTagEntity.isSpawned()) {
+            nameTagEntity.spawn(new Location(entity.getLocation().getPosition(), 0, 0));
         }
 
         float translation;
@@ -288,7 +288,7 @@ public class Follower {
             translation = 0.1f;
         }
 
-        TextDisplayMeta textDisplayMeta = (TextDisplayMeta) nametagEntity.getEntityMeta();
+        TextDisplayMeta textDisplayMeta = (TextDisplayMeta) nameTagEntity.getEntityMeta();
         textDisplayMeta.setTranslation(new Vector3f(0, translation, 0));
 
         String nickname = Followers.getInstance().getConfigManager().getFollowerNicknameFormat()
@@ -296,8 +296,8 @@ public class Follower {
 
         textDisplayMeta.setText(ModernChatColorHandler.translate(nickname));
 
-        if (!entity.hasPassenger(nametagEntity)) {
-            entity.addPassenger(nametagEntity.getEntityId());
+        if (!entity.hasPassenger(nameTagEntity)) {
+            entity.addPassenger(nameTagEntity.getEntityId());
         }
     }
 
@@ -350,8 +350,8 @@ public class Follower {
             entity.despawn();
         }
 
-        if (nametagEntity != null) {
-            nametagEntity.despawn();
+        if (nameTagEntity != null) {
+            nameTagEntity.despawn();
         }
     }
 
@@ -363,9 +363,9 @@ public class Follower {
             entity = null;
         }
 
-        if (nametagEntity != null) {
-            nametagEntity.remove();
-            nametagEntity = null;
+        if (nameTagEntity != null) {
+            nameTagEntity.remove();
+            nameTagEntity = null;
         }
     }
 

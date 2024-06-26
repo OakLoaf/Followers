@@ -46,7 +46,7 @@ public class ViewersTask extends FollowerTask {
             if (inRange && !viewers.contains(uuid)) {
                 entity.addViewer(uuid);
 
-                WrapperEntity nameTagEntity = follower.getNametagEntity();
+                WrapperEntity nameTagEntity = follower.getNameTagEntity();
                 if (nameTagEntity != null && nameTagEntity.isSpawned()) {
                     nameTagEntity.addViewer(uuid);
                 }
@@ -54,7 +54,7 @@ public class ViewersTask extends FollowerTask {
                 // TODO: Remove on EntityLib implementation
                 entity.refresh();
             } else if (!inRange && viewers.contains(uuid)) {
-                WrapperEntity nameTagEntity = follower.getNametagEntity();
+                WrapperEntity nameTagEntity = follower.getNameTagEntity();
                 if (nameTagEntity != null && nameTagEntity.isSpawned()) {
                     nameTagEntity.removeViewer(uuid);
                 }
