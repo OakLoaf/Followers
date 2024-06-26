@@ -124,8 +124,6 @@ public final class Followers extends SpigotPlugin {
 
     @Override
     public void onDisable() {
-        PacketEvents.getAPI().terminate();
-
         if (heartbeat != null) {
             heartbeat.cancel();
             heartbeat = null;
