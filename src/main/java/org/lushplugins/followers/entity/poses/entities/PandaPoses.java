@@ -9,12 +9,10 @@ public class PandaPoses extends PoseSet {
     public PandaPoses() {
         addPose(FollowerPose.DEFAULT, (entity) -> {
             entity.getEntityMeta(PandaMeta.class).setOnBack(false);
-            entity.refresh();
         });
 
         addPose(FollowerPose.SITTING, (entity) -> {
             entity.getEntityMeta(PandaMeta.class).setOnBack(true);
-            entity.refresh();
         });
     }
 }

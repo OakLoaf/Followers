@@ -10,12 +10,10 @@ public class SnifferPoses extends PoseSet {
     public SnifferPoses() {
         addPose(FollowerPose.DEFAULT, (entity) -> {
             entity.getEntityMeta(SnifferMeta.class).setState(SnifferState.IDLING);
-            entity.refresh();
         });
 
         addPose(FollowerPose.SITTING, (entity) -> {
             entity.getEntityMeta(SnifferMeta.class).setState(SnifferState.FEELING_HAPPY);
-            entity.refresh();
         });
     }
 }

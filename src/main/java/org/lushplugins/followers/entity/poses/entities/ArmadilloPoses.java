@@ -16,17 +16,14 @@ public class ArmadilloPoses extends PoseSet {
             switch (entityMeta.getState()) {
                 case SCARED -> {
                     entityMeta.setState(ArmadilloState.UNROLLING);
-                    entity.refresh();
 
                     Bukkit.getScheduler().runTaskLaterAsynchronously(Followers.getInstance(), () -> {
                         entityMeta.setState(ArmadilloState.IDLE);
-                        entity.refresh();
                     }, 30);
                 }
                 case IDLE -> {}
                 default -> Bukkit.getScheduler().runTaskLaterAsynchronously(Followers.getInstance(), () -> {
                     entityMeta.setState(ArmadilloState.IDLE);
-                    entity.refresh();
                 }, 30);
             }
         });
@@ -37,17 +34,14 @@ public class ArmadilloPoses extends PoseSet {
             switch (entityMeta.getState()) {
                 case IDLE -> {
                     entityMeta.setState(ArmadilloState.ROLLING);
-                    entity.refresh();
 
                     Bukkit.getScheduler().runTaskLaterAsynchronously(Followers.getInstance(), () -> {
                         entityMeta.setState(ArmadilloState.SCARED);
-                        entity.refresh();
                     }, 30);
                 }
                 case SCARED -> {}
                 default -> Bukkit.getScheduler().runTaskLaterAsynchronously(Followers.getInstance(), () -> {
                     entityMeta.setState(ArmadilloState.SCARED);
-                    entity.refresh();
                 }, 30);
             }
         });

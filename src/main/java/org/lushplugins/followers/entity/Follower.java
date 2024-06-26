@@ -308,7 +308,7 @@ public class Follower {
 
         if (Followers.getInstance().callEvent(new FollowerEntitySpawnEvent(this))) {
             entity = Followers.getInstance().getFollowerManager().getFollower(followerType).createEntity();
-            entity.spawn(location);
+            EntityLib.getApi().spawnEntity(entity, location);
 
             refresh();
             setType(followerType);

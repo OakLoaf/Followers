@@ -9,12 +9,10 @@ public class FoxPoses extends PoseSet {
     public FoxPoses() {
         addPose(FollowerPose.DEFAULT, (entity) -> {
             entity.getEntityMeta(FoxMeta.class).setSleeping(false);
-            entity.refresh();
         });
 
         addPose(FollowerPose.SITTING, (entity) -> {
             entity.getEntityMeta(FoxMeta.class).setSleeping(true);
-            entity.refresh();
         });
     }
 }

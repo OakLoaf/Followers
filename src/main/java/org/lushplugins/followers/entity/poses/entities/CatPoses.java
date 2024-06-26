@@ -9,12 +9,10 @@ public class CatPoses extends PoseSet {
     public CatPoses() {
         addPose(FollowerPose.DEFAULT, (entity) -> {
             entity.getEntityMeta(CatMeta.class).setLying(false);
-            entity.refresh();
         });
 
         addPose(FollowerPose.SITTING, (entity) -> {
             entity.getEntityMeta(CatMeta.class).setLying(true);
-            entity.refresh();
         });
     }
 }

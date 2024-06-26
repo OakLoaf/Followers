@@ -9,12 +9,10 @@ public class AxolotlPoses extends PoseSet {
     public AxolotlPoses() {
         addPose(FollowerPose.DEFAULT, (entity) -> {
             entity.getEntityMeta(AxolotlMeta.class).setPlayingDead(false);
-            entity.refresh();
         });
 
         addPose(FollowerPose.SITTING, (entity) -> {
             entity.getEntityMeta(AxolotlMeta.class).setPlayingDead(true);
-            entity.refresh();
         });
     }
 }

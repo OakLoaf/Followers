@@ -26,17 +26,14 @@ public class ArmorStandPoses extends PoseSet {
     public ArmorStandPoses() {
         addPose(FollowerPose.DEFAULT, (entity) -> {
             DEFAULT.pose((ArmorStandMeta) entity.getEntityMeta());
-            entity.refresh();
         });
 
         addPose(FollowerPose.SITTING, (entity) -> {
             SITTING.pose((ArmorStandMeta) entity.getEntityMeta());
-            entity.refresh();
         });
 
         addPose(FollowerPose.SPINNING, (entity) -> {
             SPINNING.pose((ArmorStandMeta) entity.getEntityMeta());
-            entity.refresh();
         });
     }
 }

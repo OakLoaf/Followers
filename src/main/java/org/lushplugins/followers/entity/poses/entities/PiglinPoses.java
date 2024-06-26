@@ -9,12 +9,10 @@ public class PiglinPoses extends PoseSet {
     public PiglinPoses() {
         addPose(FollowerPose.DEFAULT, (entity) -> {
             entity.getEntityMeta(PiglinMeta.class).setDancing(false);
-            entity.refresh();
         });
 
         addPose(FollowerPose.SITTING, (entity) -> {
             entity.getEntityMeta(PiglinMeta.class).setDancing(true);
-            entity.refresh();
         });
     }
 }

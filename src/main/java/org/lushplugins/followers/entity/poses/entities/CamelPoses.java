@@ -9,12 +9,10 @@ public class CamelPoses extends PoseSet {
     public CamelPoses() {
         addPose(FollowerPose.DEFAULT, (entity) -> {
             entity.getEntityMeta(CamelMeta.class).setLastPoseChangeTick(0);
-            entity.refresh();
         });
 
         addPose(FollowerPose.SITTING, (entity) -> {
             entity.getEntityMeta(CamelMeta.class).setLastPoseChangeTick(-30);
-            entity.refresh();
         });
     }
 }
