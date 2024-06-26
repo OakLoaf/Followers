@@ -79,7 +79,17 @@ public class Follower {
     }
 
     public void setWorld(World world) {
-        this.world = world;
+        if (this.world != world) {
+            this.world = world;
+
+            if (entity != null) {
+                entity.getViewers().forEach(entity::removeViewer);
+            }
+
+            if (nametagEntity != null) {
+                nametagEntity.getViewers().forEach(nametagEntity::removeViewer);
+            }
+        }
     }
 
     public @Nullable Location getLocation() {

@@ -91,16 +91,6 @@ public class PlayerListener implements EventListener {
 
         Follower follower = followerUser.getFollower();
         if (follower != null) {
-            WrapperLivingEntity entity = follower.getEntity();
-            if (entity != null) {
-                entity.getViewers().forEach(entity::removeViewer);
-            }
-
-            WrapperEntity nameTagEntity = follower.getNametagEntity();
-            if (nameTagEntity != null) {
-                nameTagEntity.getViewers().forEach(nameTagEntity::removeViewer);
-            }
-
             follower.setWorld(player.getWorld());
         }
     }
