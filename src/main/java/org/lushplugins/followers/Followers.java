@@ -91,9 +91,6 @@ public final class Followers extends SpigotPlugin {
                 registerCommand(new GetHexArmorCmd());
                 registerCommand(new DyeCmd());
 
-                // TODO: Deprecated for removal (Since 2.0.0)
-                new Version1Compatibility();
-
                 getHooks().forEach(Hook::enable);
 
                 PacketEvents.getAPI().getEventManager().registerListener(new PacketListener());
