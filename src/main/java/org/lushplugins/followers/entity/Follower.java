@@ -31,7 +31,6 @@ import org.lushplugins.lushlib.libraries.chatcolor.ModernChatColorHandler;
 
 import java.util.HashSet;
 
-// TODO: Add javadocs (Maybe make api module)
 public class Follower {
     private final HashSet<String> tasks = new HashSet<>();
     private String followerType;
