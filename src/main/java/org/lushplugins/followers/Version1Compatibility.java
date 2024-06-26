@@ -29,7 +29,7 @@ public class Version1Compatibility {
     public static class WorldListener implements EventListener {
 
         @EventHandler
-        public void onChunkLoad(EntitiesLoadEvent event) {
+        public void onEntitiesLoad(EntitiesLoadEvent event) {
             for (Entity entity : event.getEntities()) {
                 if (entity.getPersistentDataContainer().has(FOLLOWER_KEY, PersistentDataType.STRING)) {
                     entity.remove();
