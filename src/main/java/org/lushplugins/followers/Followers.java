@@ -23,6 +23,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.lushplugins.followers.commands.DyeCmd;
 import org.lushplugins.followers.commands.FollowerCmd;
 import org.lushplugins.followers.commands.GetHexArmorCmd;
+import org.lushplugins.followers.listener.PacketListener;
 import org.lushplugins.followers.storage.Storage;
 import org.lushplugins.followers.listener.PlayerListener;
 import org.lushplugins.followers.utils.WebUtils;
@@ -105,7 +106,8 @@ public final class Followers extends SpigotPlugin {
                 });
 
                 getHooks().forEach(Hook::enable);
-                PacketEvents.getAPI().init();
+
+                PacketEvents.getAPI().getEventManager().registerListener(new PacketListener());
             } else {
                 Followers.getInstance().getLogger().severe("Could not initialise the data. Aborting further plugin setup.");
             }
