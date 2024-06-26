@@ -366,6 +366,7 @@ public class FollowerCmd extends Command {
             Followers.getInstance().getConfigManager().reloadConfig(Followers.getInstance());
             Followers.getInstance().getFollowerManager().reloadFollowers();
             Followers.getInstance().getDataManager().reloadFollowerInventories();
+            MenuGui.clearCache();
             Followers.getInstance().callEvent(new FollowersReloadEvent());
             ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("reloaded"));
             return true;

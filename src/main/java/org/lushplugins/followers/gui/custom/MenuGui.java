@@ -1,5 +1,7 @@
 package org.lushplugins.followers.gui.custom;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -18,10 +20,12 @@ import org.lushplugins.lushlib.gui.button.SimpleItemButton;
 import org.lushplugins.lushlib.gui.inventory.PagedGui;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 
+import java.time.Duration;
 import java.util.List;
 
 public class MenuGui extends PagedGui {
-    // TODO: Add static cache (store follower buttons for 1 minute)
+    private static final Cache<String, FollowerButton> FOLLOWER_BUTTONS_CACHE = CacheBuilder.newBuilder().expireAfterWrite(Duration.ofMinutes(1)).build();
+
     private final FollowerUser followerUser;
 
     public MenuGui(Player player) {
@@ -134,7 +138,13 @@ public class MenuGui extends PagedGui {
                 removeButton(slot);
             } else {
                 String followerName = followerList.get(startPos);
-                addButton(slot, new FollowerButton(followerName));
+                FollowerButton button = FOLLOWER_BUTTONS_CACHE.getIfPresent(followerName);
+                if (button == null) {
+                    button = new FollowerButton(followerName);
+                    FOLLOWER_BUTTONS_CACHE.put(followerName, button);
+                }
+
+                addButton(slot, button);
             }
         }
 
@@ -189,5 +199,9 @@ public class MenuGui extends PagedGui {
                     .replace("%follower%", followerName));
             }
         }
+    }
+
+    public static void clearCache() {
+        FOLLOWER_BUTTONS_CACHE.invalidateAll();
     }
 }
