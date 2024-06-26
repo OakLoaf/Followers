@@ -1,5 +1,7 @@
 package org.lushplugins.followers.listener;
 
+import me.tofaa.entitylib.wrapper.WrapperEntity;
+import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import org.lushplugins.followers.data.DataManager;
 import org.lushplugins.followers.entity.Follower;
 import org.lushplugins.followers.entity.OwnedFollower;
@@ -89,6 +91,16 @@ public class PlayerListener implements EventListener {
 
         Follower follower = followerUser.getFollower();
         if (follower != null) {
+            WrapperLivingEntity entity = follower.getEntity();
+            if (entity != null) {
+                entity.getViewers().forEach(entity::removeViewer);
+            }
+
+            WrapperEntity nameTagEntity = follower.getNametagEntity();
+            if (nameTagEntity != null) {
+                nameTagEntity.getViewers().forEach(nameTagEntity::removeViewer);
+            }
+
             follower.setWorld(player.getWorld());
         }
     }

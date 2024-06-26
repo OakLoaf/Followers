@@ -233,12 +233,6 @@ public class FollowerUser {
         }
 
         if (follower.spawn(player.getWorld(), SpigotConversionUtil.fromBukkitLocation(player.getLocation().add(1.5, 0, 1.5)))) {
-            follower.addTasks(
-                TaskId.VALIDATE,
-                TaskId.VIEWERS,
-                TaskId.MOVE_NEAR
-            );
-
             Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> follower.addTask(TaskId.VISIBILITY), 5);
         }
     }

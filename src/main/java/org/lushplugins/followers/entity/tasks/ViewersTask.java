@@ -4,10 +4,12 @@ import com.github.retrooper.packetevents.protocol.world.Location;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.lushplugins.followers.entity.Follower;
 import org.lushplugins.followers.utils.LocationUtils;
 
+import java.util.Set;
 import java.util.UUID;
 
 public class ViewersTask extends FollowerTask {
@@ -19,24 +21,29 @@ public class ViewersTask extends FollowerTask {
 
     @Override
     public void tick(Follower follower) {
-        for (Player player : follower.getWorld().getPlayers()) {
-            UUID uuid = player.getUniqueId();
-            Location location = follower.getLocation();
-            WrapperLivingEntity entity = follower.getEntity();
-            if (entity == null) {
-                continue;
-            }
+        Location location = follower.getLocation();
+        WrapperLivingEntity entity = follower.getEntity();
+        if (entity == null) {
+            return;
+        }
 
-            if (location == null) {
+        Set<UUID> viewers = entity.getViewers();
+        if (location == null) {
+            viewers.forEach(entity::removeViewer);
+            return;
+        }
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            UUID uuid = player.getUniqueId();
+            if (!player.getWorld().equals(follower.getWorld()) && viewers.contains(uuid)) {
                 entity.removeViewer(uuid);
-                continue;
             }
 
             Location playerLocation = SpigotConversionUtil.fromBukkitLocation(player.getLocation());
             double distance = LocationUtils.getDistance(playerLocation, location);
             boolean inRange = distance <= VISIBILITY_DISTANCE;
 
-            if (inRange && !entity.getViewers().contains(uuid)) {
+            if (inRange && !viewers.contains(uuid)) {
                 entity.addViewer(uuid);
 
                 WrapperEntity nameTagEntity = follower.getNametagEntity();
@@ -46,7 +53,7 @@ public class ViewersTask extends FollowerTask {
 
                 // TODO: Remove on EntityLib implementation
                 entity.refresh();
-            } else if (!inRange && entity.getViewers().contains(uuid)) {
+            } else if (!inRange && viewers.contains(uuid)) {
                 WrapperEntity nameTagEntity = follower.getNametagEntity();
                 if (nameTagEntity != null && nameTagEntity.isSpawned()) {
                     nameTagEntity.removeViewer(uuid);

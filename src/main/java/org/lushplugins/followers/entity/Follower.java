@@ -313,6 +313,12 @@ public class Follower {
             refresh();
             setType(followerType);
 
+            addTasks(
+                TaskId.MOVE_NEAR,
+                TaskId.VIEWERS,
+                TaskId.VALIDATE
+            );
+
             Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::reloadInventory, 5);
             return true;
         } else {
@@ -322,7 +328,13 @@ public class Follower {
     }
 
     public void despawn() {
-        removeTasks(TaskId.MOVE_NEAR, TaskId.PARTICLE, TaskId.VALIDATE);
+        removeTasks(
+            TaskId.MOVE_NEAR,
+            TaskId.PARTICLE,
+            TaskId.PARTICLE_CLOUD,
+            TaskId.VIEWERS,
+            TaskId.VALIDATE
+        );
 
         if (entity != null) {
             entity.despawn();
