@@ -38,7 +38,6 @@ import java.net.URL;
 public final class Followers extends SpigotPlugin {
     private static Followers plugin;
 
-    private NamespacedKey followerKey;
     private ConfigManager configManager;
     private DataManager dataManager;
     private FollowerManager followerManager;
@@ -73,7 +72,6 @@ public final class Followers extends SpigotPlugin {
     @Override
     public void onEnable() {
         plugin = this;
-        followerKey = new NamespacedKey(this, "Follower");
         Storage.SERVICE.submit(() -> Thread.currentThread().setName("Followers IO Thread"));
 
         configManager = new ConfigManager();
@@ -95,6 +93,8 @@ public final class Followers extends SpigotPlugin {
                 registerCommand(new GetHexArmorCmd());
                 registerCommand(new DyeCmd());
 
+                // TODO: Deprecated for removal (Since 2.0.0)
+                NamespacedKey followerKey = new NamespacedKey(this, "Follower");
                 Bukkit.getWorlds().forEach(world -> {
                     for (Chunk chunk : world.getLoadedChunks()) {
                         for (Entity entity : chunk.getEntities()) {
@@ -132,10 +132,6 @@ public final class Followers extends SpigotPlugin {
         }
 
         Storage.SERVICE.shutdownNow();
-    }
-
-    public NamespacedKey getFollowerKey() {
-        return followerKey;
     }
 
     public ConfigManager getConfigManager() {
