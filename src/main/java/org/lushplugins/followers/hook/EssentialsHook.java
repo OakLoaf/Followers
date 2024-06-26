@@ -1,4 +1,4 @@
-package org.lushplugins.followers.hooks;
+package org.lushplugins.followers.hook;
 
 import com.earth2me.essentials.Essentials;
 import org.lushplugins.followers.data.FollowerUser;

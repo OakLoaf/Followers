@@ -1,4 +1,4 @@
-package org.lushplugins.followers.commands;
+package org.lushplugins.followers.command;
 
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;

@@ -1,4 +1,4 @@
-package org.lushplugins.followers.commands;
+package org.lushplugins.followers.command;
 
 import org.lushplugins.followers.Followers;
 import org.bukkit.Color;

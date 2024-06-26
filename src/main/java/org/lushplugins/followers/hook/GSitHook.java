@@ -1,4 +1,4 @@
-package org.lushplugins.followers.hooks;
+package org.lushplugins.followers.hook;
 
 import dev.geco.gsit.api.event.*;
 import org.lushplugins.followers.data.FollowerUser;

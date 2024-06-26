@@ -1,4 +1,4 @@
-package org.lushplugins.followers.hooks;
+package org.lushplugins.followers.hook;
 
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerUser;

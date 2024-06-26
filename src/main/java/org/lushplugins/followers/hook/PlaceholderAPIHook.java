@@ -1,4 +1,4 @@
-package org.lushplugins.followers.hooks;
+package org.lushplugins.followers.hook;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.lushplugins.followers.Followers;
