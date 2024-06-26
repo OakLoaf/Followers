@@ -150,6 +150,7 @@ public class Follower {
     }
 
     public void setArmorSlot(EquipmentSlot equipmentSlot, FollowerHandler followerType) {
+        // TODO: Remove on EntityLib implementation
         if (equipmentSlot.name().equals("BODY")) {
             Followers.getInstance().getLogger().warning("Equipment slot 'body' is not currently supported");
             return;
@@ -193,7 +194,7 @@ public class Follower {
             return;
         }
 
-        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
+        for (EquipmentSlot equipmentSlot : followerHandler.getEquipment().keySet()) {
             try {
                 setArmorSlot(equipmentSlot, followerHandler);
             } catch (IllegalArgumentException ignored) {}
