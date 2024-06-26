@@ -2,7 +2,6 @@ package org.lushplugins.followers.entity;
 
 import com.github.retrooper.packetevents.util.Vector3d;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
-import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 
 public class OwnedFollower extends Follower {

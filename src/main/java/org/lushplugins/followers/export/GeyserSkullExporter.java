@@ -2,7 +2,6 @@ package org.lushplugins.followers.export;
 
 import org.lushplugins.followers.Followers;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.NotNull;
 import org.lushplugins.followers.data.FollowerHandler;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 

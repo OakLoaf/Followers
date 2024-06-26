@@ -17,9 +17,7 @@ import org.lushplugins.followers.data.ConfigManager;
 import org.lushplugins.followers.data.DataManager;
 import org.lushplugins.followers.data.FollowerManager;
 import org.bukkit.*;
-import org.bukkit.entity.Entity;
 
-import org.bukkit.persistence.PersistentDataType;
 import org.lushplugins.followers.commands.DyeCmd;
 import org.lushplugins.followers.commands.FollowerCmd;
 import org.lushplugins.followers.commands.GetHexArmorCmd;

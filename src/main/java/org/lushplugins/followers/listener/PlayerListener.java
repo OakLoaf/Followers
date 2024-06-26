@@ -1,7 +1,5 @@
 package org.lushplugins.followers.listener;
 
-import me.tofaa.entitylib.wrapper.WrapperEntity;
-import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import org.lushplugins.followers.data.DataManager;
 import org.lushplugins.followers.entity.Follower;
 import org.lushplugins.followers.entity.OwnedFollower;
