@@ -142,6 +142,7 @@ messages:
   follower-despawned: "&#b7faa2Follower despawned"
   follower-changed: "&#b7faa2Follower changed to &#66b04f%follower%"
   follower-no-name: "&#ff6969You did not enter a name for the follower"
+  invalid-entity-type: "&#ff6969You did not enter a valid entity type"
   follower-name-changed: "&#b7faa2Follower name has been set to &#66b04f'%nickname%'"
   follower-created: "&#b7faa2A Follower with the name &#66b04f%follower% &#b7faa2has been added &#66b04f⬆"
   follower-edited: "&#b7faa2The Follower &#66b04f%follower% &#b7faa2has been edited &#66b04f⬆"

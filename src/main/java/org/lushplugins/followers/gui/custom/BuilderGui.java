@@ -163,8 +163,7 @@ public class BuilderGui extends Gui {
 
                     Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> textInterface.getInput(player, (output) -> {
                         if (output.isBlank()) {
-                            // TODO: Replace error message
-                            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-no-name"));
+                            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("invalid-entity-type"));
                             return;
                         }
 
