@@ -47,6 +47,7 @@ public class FollowerHandler {
             }
         }
 
+        // TODO: Add mirror option
         String skinValue = configurationSection.getString("skin");
         String skinSignature = configurationSection.getString("skin-signature");
         if (skinValue != null) {
