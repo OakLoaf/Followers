@@ -50,7 +50,11 @@ public class Follower {
         this.displayName = displayName;
     }
 
-    public FollowerHandler getType() {
+    public String getType() {
+        return followerType;
+    }
+
+    public FollowerHandler getTypeHandler() {
         return Followers.getInstance().getFollowerManager().getFollower(followerType);
     }
 

@@ -36,7 +36,7 @@ public class ModerationGui extends PagedGui {
             }
 
             OwnedFollower follower = ownedFollowers.get(startPos);
-            ExtendedSimpleItemStack item = follower.getType().getEquipmentSlot(EquipmentSlot.HELMET);
+            ExtendedSimpleItemStack item = follower.getTypeHandler().getEquipmentSlot(EquipmentSlot.HELMET);
             if (item == null || item.getType() == Material.AIR) {
                 item = new ExtendedSimpleItemStack(Material.ARMOR_STAND);
             }
