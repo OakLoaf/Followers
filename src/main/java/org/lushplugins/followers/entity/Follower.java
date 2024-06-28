@@ -312,6 +312,9 @@ public class Follower {
         TextDisplayMeta textDisplayMeta = (TextDisplayMeta) nameTagEntity.getEntityMeta();
         textDisplayMeta.setTranslation(new Vector3f(0, translation, 0));
 
+        float scale = (float) getTypeHandler().getScale() + 0.25f;
+        textDisplayMeta.setScale(new Vector3f(scale, scale, scale));
+
         String nickname = Followers.getInstance().getConfigManager().getFollowerNicknameFormat()
             .replaceAll("%nickname%", displayName);
 
@@ -407,23 +410,16 @@ public class Follower {
             return null;
         }
 
-        FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerType);
         WrapperEntity textDisplay;
         try {
             textDisplay = EntityLib.getApi().createEntity(EntityTypes.TEXT_DISPLAY);
-            textDisplay.spawn(new Location(entity.getLocation().getPosition(), 0, 0));
+            EntityLib.getApi().spawnEntity(textDisplay, new Location(entity.getLocation().getPosition(), 0, 0));
             entity.addPassenger(textDisplay);
 
             TextDisplayMeta textDisplayMeta = (TextDisplayMeta) textDisplay.getEntityMeta();
             textDisplayMeta.setBillboardConstraints(AbstractDisplayMeta.BillboardConstraints.VERTICAL);
             textDisplayMeta.setBackgroundColor(0);
             textDisplayMeta.setShadow(true);
-
-            float translation = followerHandler.getEntityType().equals(EntityTypes.ARMOR_STAND) && !Followers.getInstance().getConfigManager().areHitboxesEnabled() ? 0.6f : 0.1f;
-            textDisplayMeta.setTranslation(new Vector3f(0, translation, 0));
-
-            float scale = (float) followerHandler.getScale() + 0.25f;
-            textDisplayMeta.setScale(new Vector3f(scale, scale, scale));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
