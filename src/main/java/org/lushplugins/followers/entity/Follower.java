@@ -256,10 +256,14 @@ public class Follower {
         if (!this.entity.getEntityType().equals(followerHandler.getEntityType())) {
             // Handles changing the entity type
             entity = followerHandler.createEntity(this.entity.getEntityId(), this.entity.getUuid());
-            if (followerHandler.getSkin().getValue().equals("mirror") && entity instanceof WrapperPlayer wrapperPlayer) {
-                if (this instanceof OwnedFollower ownedFollower && ownedFollower.getOwner() instanceof Player player) {
-                    User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
-                    wrapperPlayer.setTextureProperties(user.getProfile().getTextureProperties());
+
+            if (entity instanceof WrapperPlayer wrapperPlayer) {
+                SkinData skinData = followerHandler.getSkin();
+                if (skinData != null && skinData.getValue().equals("mirror")) {
+                    if (this instanceof OwnedFollower ownedFollower && ownedFollower.getOwner() instanceof Player player) {
+                        User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
+                        wrapperPlayer.setTextureProperties(user.getProfile().getTextureProperties());
+                    }
                 }
             }
 
