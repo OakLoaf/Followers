@@ -1,9 +1,11 @@
 package org.lushplugins.followers.entity;
 
+import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.item.ItemStack;
 import com.github.retrooper.packetevents.protocol.item.type.ItemTypes;
 import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
+import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.protocol.world.Location;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.util.Vector3f;
@@ -15,8 +17,10 @@ import me.tofaa.entitylib.meta.other.ArmorStandMeta;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import me.tofaa.entitylib.wrapper.WrapperEntityEquipment;
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
+import me.tofaa.entitylib.wrapper.WrapperPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.api.events.FollowerEntityChangeTypeEvent;
@@ -27,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.entity.tasks.*;
 
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
+import org.lushplugins.followers.utils.SkinData;
 import org.lushplugins.lushlib.libraries.chatcolor.ModernChatColorHandler;
 
 import java.util.HashSet;
@@ -251,6 +256,13 @@ public class Follower {
         if (!this.entity.getEntityType().equals(followerHandler.getEntityType())) {
             // Handles changing the entity type
             entity = followerHandler.createEntity(this.entity.getEntityId(), this.entity.getUuid());
+            if (followerHandler.getSkin().getValue().equals("mirror") && entity instanceof WrapperPlayer wrapperPlayer) {
+                if (this instanceof OwnedFollower ownedFollower && ownedFollower.getOwner() instanceof Player player) {
+                    User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
+                    wrapperPlayer.setTextureProperties(user.getProfile().getTextureProperties());
+                }
+            }
+
             this.entity.despawn();
             entity.spawn(this.entity.getLocation());
         } else {
@@ -322,9 +334,21 @@ public class Follower {
         this.world = world;
 
         if (Followers.getInstance().callEvent(new FollowerEntitySpawnEvent(this))) {
-            entity = Followers.getInstance().getFollowerManager().getFollower(followerType).createEntity();
-            EntityLib.getApi().spawnEntity(entity, location);
+            FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerType);
+            entity = followerHandler.createEntity();
 
+            if (entity instanceof WrapperPlayer wrapperPlayer) {
+                SkinData skinData = followerHandler.getSkin();
+                if (skinData != null && skinData.getValue().equals("mirror")) {
+                    if (this instanceof OwnedFollower ownedFollower && ownedFollower.getOwner() instanceof Player player) {
+                        User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
+                        wrapperPlayer.setTextureProperties(user.getProfile().getTextureProperties());
+                    }
+                }
+            }
+
+
+            EntityLib.getApi().spawnEntity(entity, location);
             refresh();
             setType(followerType);
 

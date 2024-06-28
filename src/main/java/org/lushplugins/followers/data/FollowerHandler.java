@@ -47,14 +47,17 @@ public class FollowerHandler {
             }
         }
 
-        // TODO: Add mirror option
         String skinValue = configurationSection.getString("skin");
         String skinSignature = configurationSection.getString("skin-signature");
         if (skinValue != null) {
-            this.skin = new SkinData(skinValue, skinSignature);
+            if (skinValue.equalsIgnoreCase("mirror")) {
+                this.skin = new SkinData("mirror", null);
+            } else {
+                this.skin = new SkinData(skinValue, skinSignature);
 
-            if (skinSignature == null) {
-                SkinUtils.generateSkin(skinValue).thenAccept(skin -> this.skin.setSignature(skin.data.texture.signature));
+                if (skinSignature == null) {
+                    SkinUtils.generateSkin(skinValue).thenAccept(skin -> this.skin.setSignature(skin.data.texture.signature));
+                }
             }
         } else {
             this.skin = null;
