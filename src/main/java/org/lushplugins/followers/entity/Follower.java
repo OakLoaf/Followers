@@ -247,6 +247,7 @@ public class Follower {
         if (!this.entity.getEntityType().equals(followerHandler.getEntityType())) {
             // Handles changing the entity type
             entity = followerHandler.createEntity(this.entity.getEntityId(), this.entity.getUuid());
+            this.entity.despawn();
             entity.spawn(this.entity.getLocation());
         } else {
             entity = this.entity;
