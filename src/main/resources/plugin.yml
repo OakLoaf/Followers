@@ -17,6 +17,7 @@ commands:
     usage: /followers
     aliases:
       - "pets"
+      - "fpets"
   gethexarmor:
     description: Gives the user a colored piece of leather armor based on a hex value
     usage: /gethexarmor
