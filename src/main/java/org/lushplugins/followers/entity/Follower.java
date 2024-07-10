@@ -117,7 +117,7 @@ public class Follower {
     }
 
     public void setTarget(World world, Vector3d target) {
-        this.world = world;
+        this.setWorld(world);
         this.target = target;
     }
 
@@ -338,7 +338,7 @@ public class Follower {
             throw new IllegalStateException("Follower is already spawned.");
         }
 
-        this.world = world;
+        this.setWorld(world);
 
         if (Followers.getInstance().callEvent(new FollowerEntitySpawnEvent(this))) {
             FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerType);
