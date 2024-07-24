@@ -32,7 +32,7 @@ public class FollowerHandler {
     private final Map<EquipmentSlot, ExtendedSimpleItemStack> equipment;
     private final SkinData skin;
     private final boolean isVisible;
-    private final double scale;
+    private final Double scale;
 
     public FollowerHandler(ConfigurationSection configurationSection) {
         this.name = configurationSection.getName();
@@ -64,10 +64,10 @@ public class FollowerHandler {
         }
 
         this.isVisible = configurationSection.getBoolean("visible", true);
-        this.scale = configurationSection.getDouble("scale", Followers.getInstance().getConfigManager().getDefaultScale());
+        this.scale = configurationSection.contains("scale") ? configurationSection.getDouble("scale") : null;
     }
 
-    private FollowerHandler(String name, EntityType entityType, Map<EquipmentSlot, ExtendedSimpleItemStack> equipment, SkinData skin, boolean visible, double scale) {
+    private FollowerHandler(String name, EntityType entityType, Map<EquipmentSlot, ExtendedSimpleItemStack> equipment, SkinData skin, boolean visible, @Nullable Double scale) {
         this.name = name;
         this.entityType = entityType;
         this.equipment = equipment;
@@ -101,7 +101,7 @@ public class FollowerHandler {
     }
 
     public double getScale() {
-        return scale;
+        return scale != null ? scale : Followers.getInstance().getConfigManager().getDefaultScale();
     }
 
     public WrapperLivingEntity createEntity() {
@@ -164,13 +164,13 @@ public class FollowerHandler {
         private Map<EquipmentSlot, ExtendedSimpleItemStack> equipment;
         private SkinData skin;
         private boolean visible;
-        private double scale;
+        private Double scale;
 
         public Builder() {
             this.entityType = EntityTypes.ARMOR_STAND;
             this.equipment = new HashMap<>();
             this.visible = true;
-            this.scale = 0.5;
+            this.scale = null;
         }
 
         public Builder(FollowerHandler handler) {
@@ -244,11 +244,11 @@ public class FollowerHandler {
             return this;
         }
 
-        public double getScale() {
+        public @Nullable Double getScale() {
             return scale;
         }
 
-        public Builder setScale(double scale) {
+        public Builder setScale(@Nullable Double scale) {
             this.scale = scale;
             return this;
         }
