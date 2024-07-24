@@ -82,6 +82,9 @@ public class FollowerManager {
         for (Map.Entry<EquipmentSlot, ExtendedSimpleItemStack> entry : followerHandler.getEquipment().entrySet()) {
             EquipmentSlot slot = entry.getKey();
             ExtendedSimpleItemStack item = entry.getValue();
+            if (item == null) {
+                continue;
+            }
 
             item.save(configurationSection, Converter.getEquipmentSlotName(slot));
         }
