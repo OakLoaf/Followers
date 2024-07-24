@@ -36,8 +36,9 @@ public class MoveNearTask extends MoveToTask {
             }
         }
 
-        // Adds y offset of entity (Bobbing animation)
-        position = position.add(0, calculateYOffset(entity), 0);
+        position = position
+            .add(0, calculateYOffset(entity), 0) // Adds y offset of entity (Bobbing animation)
+            .add(0, Followers.getInstance().getConfigManager().getHeightOffset(), 0); // Adds configured height offset
 
         return position;
     }

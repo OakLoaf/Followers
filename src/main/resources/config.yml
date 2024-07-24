@@ -16,6 +16,8 @@ hitboxesEnabled: false
 speed: 0.4
 # default-scale: The default scale of followers
 default-scale: 0.5
+# height-offset: How much to raise or lower the height of followers by
+height-offset: 0
 # follower-nickname-format: Changes the colour of the follower's nickname
 follower-nickname-format: "%nickname%"
 # world-blacklist: A list of worlds that followers cannot appear in
