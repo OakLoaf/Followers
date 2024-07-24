@@ -222,7 +222,12 @@ public class FollowerHandler {
         }
 
         public Builder setEquipmentSlot(EquipmentSlot slot, ExtendedSimpleItemStack item) {
-            equipment.put(slot, item);
+            if (item != null) {
+                equipment.put(slot, item);
+            } else {
+                equipment.remove(slot);
+            }
+
             return this;
         }
 
