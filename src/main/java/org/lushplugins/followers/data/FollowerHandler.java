@@ -64,7 +64,7 @@ public class FollowerHandler {
         }
 
         this.isVisible = configurationSection.getBoolean("visible", true);
-        this.scale = configurationSection.getDouble("scale", 0.5);
+        this.scale = configurationSection.getDouble("scale", Followers.getInstance().getConfigManager().getDefaultScale());
     }
 
     private FollowerHandler(String name, EntityType entityType, Map<EquipmentSlot, ExtendedSimpleItemStack> equipment, SkinData skin, boolean visible, double scale) {

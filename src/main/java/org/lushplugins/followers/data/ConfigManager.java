@@ -11,6 +11,7 @@ import java.util.List;
 
 public class ConfigManager {
     private double speed;
+    private double defaultScale;
     private boolean areHitboxesEnabled;
     private String nicknameFormat;
     private List<String> worldBlacklist;
@@ -32,6 +33,7 @@ public class ConfigManager {
 
         areHitboxesEnabled = config.getBoolean("hitboxesEnabled");
         speed = config.getDouble("speed", 0.4);
+        defaultScale = config.getDouble("default-scale", 1);
         nicknameFormat = config.getString("follower-nickname-format", "%nickname%");
         worldBlacklist = config.getStringList("world-blacklist");
 
@@ -94,6 +96,10 @@ public class ConfigManager {
 
     public double getSpeed() {
         return speed;
+    }
+
+    public double getDefaultScale() {
+        return defaultScale;
     }
 
     public String getFollowerNicknameFormat() {

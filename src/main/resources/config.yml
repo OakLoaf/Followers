@@ -14,6 +14,8 @@ prefix: "&e&lFollowers &8» &r"
 hitboxesEnabled: false
 # speed: The speed at which the followers move.
 speed: 0.4
+# default-scale: The default scale of followers
+default-scale: 0.5
 # follower-nickname-format: Changes the colour of the follower's nickname
 follower-nickname-format: "%nickname%"
 # world-blacklist: A list of worlds that followers cannot appear in
