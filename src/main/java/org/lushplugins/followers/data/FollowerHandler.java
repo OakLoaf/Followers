@@ -176,7 +176,7 @@ public class FollowerHandler {
         public Builder(FollowerHandler handler) {
             this.name = handler.getName();
             this.entityType = handler.getEntityType();
-            this.equipment = handler.getEquipment();
+            this.equipment = new HashMap<>(handler.getEquipment());
             this.skin = handler.getSkin();
             this.visible = handler.isVisible();
             this.scale = handler.getScale();
