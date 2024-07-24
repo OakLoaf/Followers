@@ -143,7 +143,7 @@ public class FollowerHandler {
         LivingEntityMeta entityMeta = (LivingEntityMeta) entity.getEntityMeta();
         entityMeta.setInvisible(!isVisible);
         entityMeta.setSilent(true);
-        entity.getAttributes().setAttribute(Attributes.GENERIC_SCALE, scale);
+        entity.getAttributes().setAttribute(Attributes.GENERIC_SCALE, this.getScale());
 
         if (entityMeta instanceof ArmorStandMeta armorStandMeta) {
             armorStandMeta.setHasNoBasePlate(true);
