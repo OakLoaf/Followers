@@ -393,7 +393,7 @@ public class FollowerCmd extends Command {
             } else {
                 FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
                 Follower follower = followerUser.getFollower();
-                String newName = args[1];
+                String newName = args[0];
 
                 followerUser.setDisplayName(newName);
                 if (follower != null) {
