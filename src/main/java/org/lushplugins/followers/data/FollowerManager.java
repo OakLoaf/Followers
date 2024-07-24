@@ -4,7 +4,9 @@ import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.lushplugins.followers.Followers;
+import org.lushplugins.followers.entity.EyeHeightRegistry;
 import org.lushplugins.followers.entity.poses.FollowerPoseRegistry;
 import org.lushplugins.followers.entity.tasks.FollowerTaskRegistry;
 import org.lushplugins.followers.utils.Converter;
@@ -21,13 +23,11 @@ public class FollowerManager {
     private static final FollowerPoseRegistry POSE_REGISTRY = new FollowerPoseRegistry();
 
     private final File followerConfigFile = initYML();
-    private YamlConfiguration config = YamlConfiguration.loadConfiguration(followerConfigFile);
+    private YamlConfiguration config;
     private final Map<String, FollowerHandler> followerList = new TreeMap<>();
 
     public FollowerManager() {
-        for (String followerName : config.getKeys(false)) {
-            loadFollower(followerName);
-        }
+        reloadFollowers();
     }
 
     public FollowerTaskRegistry getTaskRegistry() {
@@ -48,10 +48,23 @@ public class FollowerManager {
 
     public void reloadFollowers() {
         clearFollowerCache();
+        EyeHeightRegistry eyeHeightRegistry = Followers.getInstance().getEyeHeightRegistry();
+        eyeHeightRegistry.clear();
+
         config = YamlConfiguration.loadConfiguration(followerConfigFile);
         for (String followerName : config.getKeys(false)) {
-            loadFollower(followerName);
+            ConfigurationSection followerSection = config.getConfigurationSection(followerName);
+            if (followerSection == null) {
+                Followers.getInstance().getLogger().severe("Tried to load follower \"" + followerName + "\" but data for this follower could not be found");
+                return;
+            }
+
+            loadFollower(followerSection);
         }
+
+        eyeHeightRegistry.loadEyeHeights(
+            followerList.values().stream().map(FollowerHandler::getEntityType).distinct().toList()
+        );
     }
 
     public void refreshAllFollowers() {
@@ -109,13 +122,8 @@ public class FollowerManager {
         createFollower(player, followerHandler, true);
     }
 
-    public void loadFollower(String followerName) {
-        ConfigurationSection configurationSection = config.getConfigurationSection(followerName);
-        if (configurationSection == null) {
-            Followers.getInstance().getLogger().severe("Tried to load follower \"" + followerName + "\" but data for this follower could not be found");
-            return;
-        }
-        followerList.put(followerName, new FollowerHandler(configurationSection));
+    public void loadFollower(@NotNull ConfigurationSection configurationSection) {
+        followerList.put(configurationSection.getName(), new FollowerHandler(configurationSection));
     }
 
     public void loadFollower(String followerName, FollowerHandler followerHandler) {

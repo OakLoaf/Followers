@@ -5,6 +5,11 @@ import com.github.retrooper.packetevents.util.Vector3d;
 
 public class LocationUtils {
 
+    public static Location add(Location location, double x, double y, double z) {
+        location.setPosition(location.getPosition().add(x, y, z));
+        return location;
+    }
+
     public static Location add(Location location, Vector3d vector) {
         location.setPosition(location.getPosition().add(vector));
         return location;

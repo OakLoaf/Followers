@@ -8,6 +8,7 @@ import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.scheduler.BukkitTask;
 import org.lushplugins.followers.api.events.FollowerTickEvent;
+import org.lushplugins.followers.entity.EyeHeightRegistry;
 import org.lushplugins.followers.hook.EssentialsHook;
 import org.lushplugins.followers.hook.GSitHook;
 import org.lushplugins.followers.hook.PlaceholderAPIHook;
@@ -36,6 +37,7 @@ import java.net.URL;
 public final class Followers extends SpigotPlugin {
     private static Followers plugin;
 
+    private final EyeHeightRegistry eyeHeightRegistry = new EyeHeightRegistry();
     private ConfigManager configManager;
     private DataManager dataManager;
     private FollowerManager followerManager;
@@ -116,6 +118,10 @@ public final class Followers extends SpigotPlugin {
         }
 
         Storage.SERVICE.shutdownNow();
+    }
+
+    public EyeHeightRegistry getEyeHeightRegistry() {
+        return eyeHeightRegistry;
     }
 
     public ConfigManager getConfigManager() {

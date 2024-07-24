@@ -20,10 +20,11 @@ public class MoveNearTask extends MoveToTask {
         Vector3d position = entity.getLocation().getPosition();
         Vector3d target = follower.getTarget();
         if (target != null) {
-            Vector3d difference = getDifference(position, follower.getTarget()); // TODO: Work out how to get entity eye location from entity
+            Vector3d difference = getDifference(
+                Followers.getInstance().getEyeHeightRegistry().calculateEyeLocation(entity).getPosition(),
+                follower.getTarget());
             if (new Vector3d(difference.getX(), 0 , difference.getZ()).lengthSquared() < 6.25) {
-                double differenceY = difference.getY() - (Followers.getInstance().getConfigManager().areHitboxesEnabled() ? 0.25 : 0.7);
-                position = position.add(new Vector3d(0, differenceY * speed, 0));
+                position = position.add(new Vector3d(0, difference.getY() * speed, 0));
             } else {
                 Vector3d normalizedDifference = difference.normalize();
                 double distance = difference.length() - 5;

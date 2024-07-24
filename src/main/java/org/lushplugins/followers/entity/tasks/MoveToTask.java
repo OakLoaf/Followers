@@ -51,7 +51,9 @@ public class MoveToTask extends FollowerTask {
         Vector3d position = entity.getLocation().getPosition();
         Vector3d target = follower.getTarget();
         if (target != null) {
-            Vector3d difference = getDifference(position, follower.getTarget()); // TODO: Work out how to get entity eye location from entity
+            Vector3d difference = getDifference(
+                Followers.getInstance().getEyeHeightRegistry().calculateEyeLocation(entity).getPosition(),
+                follower.getTarget());
             Vector3d normalizedDifference = difference.normalize();
             double distance = difference.length() - 5;
             if (distance < 1) {
@@ -74,8 +76,9 @@ public class MoveToTask extends FollowerTask {
     public Vector3f calculateRotation(Follower follower) {
         WrapperLivingEntity entity = follower.getEntity();
 
-        // TODO: Work out how to get entity eye location from entity
-        Vector3d difference = getDifference(entity.getLocation().getPosition(), follower.getTarget());
+        Vector3d difference = getDifference(
+            Followers.getInstance().getEyeHeightRegistry().calculateEyeLocation(entity).getPosition(),
+            follower.getTarget());
         float pitch = getPitch(difference);
         if (pitch > 60 && pitch < 290) {
             pitch = pitch <= 175 ? 60 : 290;

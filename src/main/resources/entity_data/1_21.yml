@@ -1,0 +1,249 @@
+minecraft:elder_guardian:
+  height: 1.9975
+  eye-height: 0.9987
+minecraft:wither_skeleton:
+  height: 2.4
+  eye-height: 2.1
+minecraft:stray:
+  height: 1.99
+  eye-height: 1.74
+minecraft:husk:
+  height: 1.95
+  eye-height: 1.74
+minecraft:zombie_villager:
+  height: 1.95
+  eye-height: 1.74
+minecraft:skeleton_horse:
+  height: 1.6
+  eye-height: 1.52
+minecraft:zombie_horse:
+  height: 1.6
+  eye-height: 1.52
+minecraft:armor_stand:
+  height: 1.975
+  eye-height: 1.7775
+minecraft:donkey:
+  height: 1.5
+  eye-height: 1.425
+minecraft:mule:
+  height: 1.6
+  eye-height: 1.52
+minecraft:evoker:
+  height: 1.95
+  eye-height: 1.6575
+minecraft:vex:
+  height: 0.8
+  eye-height: 0.5188
+minecraft:vindicator:
+  height: 1.95
+  eye-height: 1.6575
+minecraft:illusioner:
+  height: 1.95
+  eye-height: 1.6575
+minecraft:creeper:
+  height: 1.7
+  eye-height: 1.445
+minecraft:skeleton:
+  height: 1.99
+  eye-height: 1.74
+minecraft:spider:
+  height: 0.9
+  eye-height: 0.65
+minecraft:giant:
+  height: 12.0
+  eye-height: 10.44
+minecraft:zombie:
+  height: 1.95
+  eye-height: 1.74
+minecraft:slime:
+  height: 2.08
+  eye-height: 1.3
+minecraft:ghast:
+  height: 4.0
+  eye-height: 2.6
+minecraft:zombified_piglin:
+  height: 1.95
+  eye-height: 1.79
+minecraft:enderman:
+  height: 2.9
+  eye-height: 2.55
+minecraft:cave_spider:
+  height: 0.5
+  eye-height: 0.45
+minecraft:silverfish:
+  height: 0.3
+  eye-height: 0.13
+minecraft:blaze:
+  height: 1.8
+  eye-height: 1.53
+minecraft:magma_cube:
+  height: 1.04
+  eye-height: 0.65
+minecraft:ender_dragon:
+  height: 8.0
+  eye-height: 6.8
+minecraft:wither:
+  height: 3.5
+  eye-height: 2.975
+minecraft:bat:
+  height: 0.9
+  eye-height: 0.45
+minecraft:witch:
+  height: 1.95
+  eye-height: 1.62
+minecraft:endermite:
+  height: 0.3
+  eye-height: 0.13
+minecraft:guardian:
+  height: 0.85
+  eye-height: 0.425
+minecraft:shulker:
+  height: 1.0
+  eye-height: 0.5
+minecraft:pig:
+  height: 0.9
+  eye-height: 0.765
+minecraft:sheep:
+  height: 1.3
+  eye-height: 1.235
+minecraft:cow:
+  height: 1.4
+  eye-height: 1.3
+minecraft:chicken:
+  height: 0.7
+  eye-height: 0.644
+minecraft:squid:
+  height: 0.8
+  eye-height: 0.4
+minecraft:wolf:
+  height: 0.85
+  eye-height: 0.68
+minecraft:mooshroom:
+  height: 1.4
+  eye-height: 1.3
+minecraft:snow_golem:
+  height: 1.9
+  eye-height: 1.7
+minecraft:ocelot:
+  height: 0.7
+  eye-height: 0.595
+minecraft:iron_golem:
+  height: 2.7
+  eye-height: 2.295
+minecraft:horse:
+  height: 1.6
+  eye-height: 1.52
+minecraft:rabbit:
+  height: 0.5
+  eye-height: 0.425
+minecraft:polar_bear:
+  height: 1.4
+  eye-height: 1.19
+minecraft:llama:
+  height: 1.87
+  eye-height: 1.7765
+minecraft:parrot:
+  height: 0.9
+  eye-height: 0.54
+minecraft:villager:
+  height: 1.95
+  eye-height: 1.62
+minecraft:turtle:
+  height: 0.4
+  eye-height: 0.34
+minecraft:phantom:
+  height: 0.5
+  eye-height: 0.175
+minecraft:cod:
+  height: 0.3
+  eye-height: 0.195
+minecraft:salmon:
+  height: 0.4
+  eye-height: 0.26
+minecraft:pufferfish:
+  height: 0.35
+  eye-height: 0.2275
+minecraft:tropical_fish:
+  height: 0.4
+  eye-height: 0.26
+minecraft:drowned:
+  height: 1.95
+  eye-height: 1.74
+minecraft:dolphin:
+  height: 0.6
+  eye-height: 0.3
+minecraft:cat:
+  height: 0.7
+  eye-height: 0.35
+minecraft:panda:
+  height: 1.25
+  eye-height: 1.0625
+minecraft:pillager:
+  height: 1.95
+  eye-height: 1.6575
+minecraft:ravager:
+  height: 2.2
+  eye-height: 1.87
+minecraft:trader_llama:
+  height: 1.87
+  eye-height: 1.7765
+minecraft:wandering_trader:
+  height: 1.95
+  eye-height: 1.62
+minecraft:fox:
+  height: 0.7
+  eye-height: 0.4
+minecraft:bee:
+  height: 0.6
+  eye-height: 0.3
+minecraft:hoglin:
+  height: 0.7
+  eye-height: 0.595
+minecraft:piglin:
+  height: 1.95
+  eye-height: 1.79
+minecraft:strider:
+  height: 1.7
+  eye-height: 1.445
+minecraft:zoglin:
+  height: 1.4
+  eye-height: 1.19
+minecraft:piglin_brute:
+  height: 1.95
+  eye-height: 1.79
+minecraft:axolotl:
+  height: 0.42
+  eye-height: 0.2751
+minecraft:glow_squid:
+  height: 0.8
+  eye-height: 0.4
+minecraft:goat:
+  height: 1.3
+  eye-height: 1.105
+minecraft:allay:
+  height: 0.6
+  eye-height: 0.36
+minecraft:frog:
+  height: 0.5
+  eye-height: 0.425
+minecraft:tadpole:
+  height: 0.3
+  eye-height: 0.195
+minecraft:warden:
+  height: 2.9
+  eye-height: 2.465
+minecraft:camel:
+  height: 2.375
+  eye-height: 2.275
+minecraft:sniffer:
+  height: 1.75
+  eye-height: 1.05
+minecraft:breeze:
+  height: 1.77
+  eye-height: 1.3452
+minecraft:armadillo:
+  height: 0.65
+  eye-height: 0.26
+minecraft:bogged:
+  height: 1.99
+  eye-height: 1.74
