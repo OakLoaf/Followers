@@ -192,10 +192,16 @@ public class MenuGui extends PagedGui {
                 followerUser.setRandom(false);
             }
 
+            if (!followerUser.isFollowerEnabled()) {
+                followerUser.setFollowerEnabled(true);
+                refresh(49);
+            }
+
             Follower follower = followerUser.getFollower();
             if (follower == null) {
-                followerUser.spawnFollower();
+                followerUser.setFollowerEnabled(true);
                 ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
+                refresh(49);
             } else {
                 ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-changed")
                     .replace("%follower%", followerName));
