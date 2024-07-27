@@ -24,7 +24,9 @@ import java.time.Duration;
 import java.util.List;
 
 public class MenuGui extends PagedGui {
-    private static final Cache<String, FollowerButton> FOLLOWER_BUTTONS_CACHE = CacheBuilder.newBuilder().expireAfterWrite(Duration.ofMinutes(1)).build();
+    private static final Cache<String, FollowerButton> FOLLOWER_BUTTONS_CACHE = CacheBuilder.newBuilder()
+        .expireAfterWrite(Duration.ofMinutes(1))
+        .build();
 
     private final FollowerUser followerUser;
 
