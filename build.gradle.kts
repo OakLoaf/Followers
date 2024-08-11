@@ -17,7 +17,7 @@ repositories {
     maven("https://repo.opencollab.dev/main/") // Floodgate
     maven("https://repo.lushplugins.org/snapshots/") // LushLib
     maven("https://repo.inventivetalent.org/repository/public/") // MineSkin
-    maven("https://repo.codemc.io/repository/maven-snapshots/") // PacketEvents
+    maven("https://repo.codemc.io/repository/maven-releases/") // PacketEvents
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI
     maven("https://jitpack.io") // EntityLib, GSit
 }
@@ -25,7 +25,7 @@ repositories {
 dependencies {
     // Dependencies
     compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
-    compileOnlyApi("com.github.retrooper:packetevents-spigot:2.3.1-20240624.151351-33")
+    compileOnlyApi("com.github.retrooper:packetevents-spigot:2.4.0")
 
     // Soft Dependencies
     compileOnly("org.geysermc.floodgate:api:2.0-SNAPSHOT")
@@ -65,7 +65,7 @@ tasks {
             exclude(dependency("com.mysql:.*:.*"))
         }
 
-        val folder = System.getenv("pluginFolder_1-21")
+        val folder = System.getenv("pluginFolder")
         if (folder != null) {
             destinationDirectory.set(file(folder))
         }
