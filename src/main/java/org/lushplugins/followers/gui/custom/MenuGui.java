@@ -137,6 +137,7 @@ public class MenuGui extends PagedGui {
         for (int i = 0; i < 36; i++, startPos++) {
             int slot = i + 9;
             if (startPos >= followerList.size() || followerList.isEmpty()) {
+                setItem(slot, new ItemStack(Material.AIR));
                 removeButton(slot);
             } else {
                 String followerName = followerList.get(startPos);
