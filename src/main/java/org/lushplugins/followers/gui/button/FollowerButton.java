@@ -26,11 +26,7 @@ public class FollowerButton extends ItemButton {
         this.followerName = followerName;
 
         FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerName);
-        if (followerHandler == null) {
-            return;
-        }
-
-        ExtendedSimpleItemStack headItem = followerHandler.getEquipmentSlot(EquipmentSlot.HELMET);
+        ExtendedSimpleItemStack headItem = followerHandler != null ? followerHandler.getEquipmentSlot(EquipmentSlot.HELMET) : new ExtendedSimpleItemStack(Material.ARMOR_STAND);
         if (headItem == null || headItem.getType() == Material.AIR) {
             headItem = new ExtendedSimpleItemStack(Material.ARMOR_STAND);
         }
