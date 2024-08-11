@@ -342,6 +342,10 @@ public class Follower {
 
         if (Followers.getInstance().callEvent(new FollowerEntitySpawnEvent(this))) {
             FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerType);
+            if (followerHandler == null) {
+                return false;
+            }
+
             entity = followerHandler.createEntity();
 
             if (entity instanceof WrapperPlayer wrapperPlayer) {

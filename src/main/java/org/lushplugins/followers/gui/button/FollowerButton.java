@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.lushplugins.followers.Followers;
+import org.lushplugins.followers.data.FollowerHandler;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.lushlib.gui.button.ItemButton;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
@@ -24,7 +25,12 @@ public class FollowerButton extends ItemButton {
         super(onClick);
         this.followerName = followerName;
 
-        ExtendedSimpleItemStack headItem = Followers.getInstance().getFollowerManager().getFollower(followerName).getEquipmentSlot(EquipmentSlot.HELMET);
+        FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerName);
+        if (followerHandler == null) {
+            return;
+        }
+
+        ExtendedSimpleItemStack headItem = followerHandler.getEquipmentSlot(EquipmentSlot.HELMET);
         if (headItem == null || headItem.getType() == Material.AIR) {
             headItem = new ExtendedSimpleItemStack(Material.ARMOR_STAND);
         }

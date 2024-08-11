@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.lushplugins.followers.Followers;
+import org.lushplugins.followers.data.FollowerHandler;
 import org.lushplugins.followers.entity.OwnedFollower;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.lushlib.gui.inventory.PagedGui;
@@ -36,7 +37,12 @@ public class ModerationGui extends PagedGui {
             }
 
             OwnedFollower follower = ownedFollowers.get(startPos);
-            ExtendedSimpleItemStack item = follower.getTypeHandler().getEquipmentSlot(EquipmentSlot.HELMET);
+            FollowerHandler followerHandler = follower.getTypeHandler();
+            if (followerHandler == null) {
+                continue;
+            }
+
+            ExtendedSimpleItemStack item = followerHandler.getEquipmentSlot(EquipmentSlot.HELMET);
             if (item == null || item.getType() == Material.AIR) {
                 item = new ExtendedSimpleItemStack(Material.ARMOR_STAND);
             }
