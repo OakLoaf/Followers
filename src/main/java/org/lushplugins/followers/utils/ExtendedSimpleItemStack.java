@@ -48,7 +48,7 @@ public class ExtendedSimpleItemStack extends org.lushplugins.lushlib.utils.Simpl
             this.setCustomModelData(configurationSection.getInt("customModelData"));
         }
         if (configurationSection.contains("skullType") && configurationSection.contains("texture")) {
-            if (configurationSection.getString("skullType").equals("custom")) {
+            if (configurationSection.getString("skullType").equalsIgnoreCase("custom")) {
                 this.setSkullTexture(configurationSection.getString("texture"));
             } else {
                 UUID uuid = UUID.fromString(configurationSection.getString("uuid"));
