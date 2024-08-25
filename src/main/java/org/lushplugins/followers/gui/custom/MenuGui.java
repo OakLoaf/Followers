@@ -16,7 +16,7 @@ import org.lushplugins.followers.gui.button.FollowerButton;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.followers.utils.TextInterface;
 import org.lushplugins.lushlib.gui.button.DynamicItemButton;
-import org.lushplugins.lushlib.gui.button.SimpleItemButton;
+import org.lushplugins.lushlib.gui.button.LegacySimpleItemButton;
 import org.lushplugins.lushlib.gui.inventory.PagedGui;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 
@@ -156,7 +156,7 @@ public class MenuGui extends PagedGui {
         }
 
         if (page > 1) {
-            addButton(48, new SimpleItemButton(
+            addButton(48, new LegacySimpleItemButton(
                 Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "previous-page", Material.ARROW),
                 (event) -> previousPage()));
         } else {
@@ -164,7 +164,7 @@ public class MenuGui extends PagedGui {
         }
 
         if (followerList.size() > page * 36) {
-            addButton(50, new SimpleItemButton(
+            addButton(50, new LegacySimpleItemButton(
                 Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "next-page", Material.ARROW),
                 (event) -> nextPage()));
         } else {
