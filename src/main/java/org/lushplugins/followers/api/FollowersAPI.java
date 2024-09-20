@@ -6,6 +6,7 @@ import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.entity.poses.FollowerPoseRegistry;
 import org.lushplugins.followers.entity.tasks.FollowerTaskRegistry;
 
+@SuppressWarnings("unused")
 public class FollowersAPI {
 
     /**
