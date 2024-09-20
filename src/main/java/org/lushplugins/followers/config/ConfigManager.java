@@ -5,6 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
+import org.lushplugins.lushlib.gui.inventory.GuiFormat;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,27 @@ public class ConfigManager {
         nicknameFormat = config.getString("follower-nickname-format", "%nickname%");
         worldBlacklist = config.getStringList("world-blacklist");
 
-        gui = new GuiConfig(config.getString("menu-gui.title", "Followers"), config.getString("menu-gui.follower-format", "&e%follower%"));
+        GuiFormat guiFormat;
+        if (config.contains("menu-gui.format")) {
+            guiFormat = new GuiFormat(config.getStringList("menu-gui.format"));
+        } else {
+             guiFormat = new GuiFormat(
+                "#########",
+                "FFFFFFFFF",
+                "FFFFFFFFF",
+                "FFFFFFFFF",
+                "FFFFFFFFF",
+                "NR#<T>###"
+            );
+        }
+        // TODO: Move some static items over to DisplayItemStack and use GuiFormat#setItemReference
+
+        gui = new GuiConfig(
+            config.getString("menu-gui.title", "Followers"),
+            config.getString("menu-gui.follower-format", "&e%follower%"),
+            guiFormat
+        );
+
         database = new DatabaseConfig(config.getString("database.type"), config.getConfigurationSection("database"));
 
         for (String messageName : config.getConfigurationSection("messages").getKeys(false)) {
@@ -66,7 +87,7 @@ public class ConfigManager {
     }
 
     public String getGuiTitle(String guiType) {
-        switch(guiType) {
+        switch (guiType) {
             case "menu-gui" -> {
                 return gui.title;
             }
@@ -82,6 +103,10 @@ public class ConfigManager {
 
     public String getGuiFollowerFormat() {
         return gui.followerFormat;
+    }
+
+    public GuiFormat getGuiFormat() {
+        return gui.guiFormat;
     }
 
     public String getDatabaseType() {
@@ -116,6 +141,6 @@ public class ConfigManager {
         return worldBlacklist;
     }
 
-    public record GuiConfig(String title, String followerFormat) {}
+    public record GuiConfig(String title, String followerFormat, GuiFormat guiFormat) {}
     public record DatabaseConfig(String type, ConfigurationSection section) {}
 }

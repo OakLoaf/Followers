@@ -86,6 +86,21 @@ menu-gui:
       disabled:
         name: "&eRandom Follower: &cDisabled"
         material: "conduit"
+  # Available Buttons:
+  # '#' - Border
+  # 'F' - Follower Slot
+  # 'T' - Follower Toggle
+  # '<' - Previous Page
+  # '>' - Next Page
+  # 'N' - Nickname Button
+  # 'R' - Randomise Button
+  format:
+    - "#########"
+    - "FFFFFFFFF"
+    - "FFFFFFFFF"
+    - "FFFFFFFFF"
+    - "FFFFFFFFF"
+    - "NR#<T>###"
 
 # builder-gui: Config changes for the Follower Editor menu
 builder-gui:
