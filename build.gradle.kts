@@ -25,6 +25,7 @@ repositories {
 dependencies {
     // Dependencies
     compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
+    compileOnly("com.mysql:mysql-connector-j:8.3.0") // Uses Spigot copy
     compileOnlyApi("com.github.retrooper:packetevents-spigot:2.4.0")
 
     // Soft Dependencies
@@ -36,7 +37,6 @@ dependencies {
 
     // Libraries
     api("com.github.OakLoaf:EntityLib:aef1wrf")
-    implementation("com.mysql:mysql-connector-j:8.3.0")
     implementation("org.lushplugins:LushLib:0.8.4.2")
     implementation("org.mineskin:java-client:1.2.4-SNAPSHOT")
 }
