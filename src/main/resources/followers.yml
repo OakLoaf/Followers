@@ -57,6 +57,8 @@ Spy Chicken:
     texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTg4NGQ1ZGFiZTA3M2UyOGU2YjdlYjE2NmZmNjEyNDc5MDVjNzlmODM4YjZmNTc1MmU3YWQ0MDYwOTFlZWFmMyJ9fX0=
 Goat:
   entityType: goat
+  displayItem:
+    material: goat_horn
 Ghost:
   entityType: armor_stand
   visible: false
@@ -86,13 +88,21 @@ Slime:
     texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmZkOTk2YzI3Y2Y4Mzc1NTY0MGFiNjMyYzhkMmY4OGZmY2Y2MWI1YmFmZDhiMjMwMTU0OGNlNDUzMjJjNWU1NyJ9fX0=
 Armadillo:
   entityType: armadillo
+  displayItem:
+    material: armadillo_scute
   scale: 1
 Allay:
   entityType: allay
   scale: 1.5
+  displayItem:
+    material: cookie
 Warden:
   entityType: warden
   scale: 0.25
+  displayItem:
+    material: echo_shard
 Mini Me:
   entityType: player
   skin: mirror
+  displayItem:
+    material: player_head
