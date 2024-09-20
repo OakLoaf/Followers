@@ -58,12 +58,9 @@ tasks {
 
     shadowJar {
         relocate("me.tofaa.entitylib", "org.lushplugins.followers.libraries.entitylib")
-        relocate("com.mysql", "org.lushplugins.followers.libraries.mysql")
         relocate("org.lushplugins.lushlib", "org.lushplugins.followers.libraries.lushlib")
 
-        minimize {
-            exclude(dependency("com.mysql:.*:.*"))
-        }
+        minimize()
 
         val folder = System.getenv("pluginFolder")
         if (folder != null) {
