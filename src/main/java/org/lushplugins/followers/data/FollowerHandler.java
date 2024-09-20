@@ -18,17 +18,16 @@ import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.Followers;
-import org.lushplugins.followers.utils.Converter;
-import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
-import org.lushplugins.followers.utils.SkinData;
-import org.lushplugins.followers.utils.SkinUtils;
+import org.lushplugins.followers.utils.*;
 import org.lushplugins.lushlib.utils.RegistryUtils;
+import org.lushplugins.lushlib.utils.SimpleItemStack;
 
 import java.util.*;
 
 public class FollowerHandler {
     private final String name;
     private final EntityType entityType;
+    private final SimpleItemStack displayItem;
     private final Map<EquipmentSlot, ExtendedSimpleItemStack> equipment;
     private final SkinData skin;
     private final boolean isVisible;
@@ -37,6 +36,12 @@ public class FollowerHandler {
     public FollowerHandler(ConfigurationSection configurationSection) {
         this.name = configurationSection.getName();
         this.entityType = SpigotConversionUtil.fromBukkitEntityType(RegistryUtils.fromString(Registry.ENTITY_TYPE, configurationSection.getString("entityType", "armor_stand")));
+
+        if (configurationSection.isConfigurationSection("displayItem")) {
+            this.displayItem = new SimpleItemStack(configurationSection.getConfigurationSection("displayItem"));
+        } else {
+            this.displayItem = null;
+        }
 
         this.equipment = new HashMap<>();
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
@@ -67,9 +72,10 @@ public class FollowerHandler {
         this.scale = configurationSection.contains("scale") ? configurationSection.getDouble("scale") : null;
     }
 
-    private FollowerHandler(String name, EntityType entityType, Map<EquipmentSlot, ExtendedSimpleItemStack> equipment, SkinData skin, boolean visible, @Nullable Double scale) {
+    private FollowerHandler(String name, EntityType entityType, SimpleItemStack displayItem, Map<EquipmentSlot, ExtendedSimpleItemStack> equipment, SkinData skin, boolean visible, @Nullable Double scale) {
         this.name = name;
         this.entityType = entityType;
+        this.displayItem = displayItem;
         this.equipment = equipment;
         this.skin = skin;
         this.isVisible = visible;
@@ -82,6 +88,10 @@ public class FollowerHandler {
 
     public EntityType getEntityType() {
         return entityType;
+    }
+
+    public SimpleItemStack getDisplayItem() {
+        return displayItem;
     }
 
     public Map<EquipmentSlot, ExtendedSimpleItemStack> getEquipment() {
@@ -161,6 +171,7 @@ public class FollowerHandler {
         private boolean nameLocked = false;
         private String name;
         private EntityType entityType;
+        private SimpleItemStack displayItem;
         private Map<EquipmentSlot, ExtendedSimpleItemStack> equipment;
         private SkinData skin;
         private boolean visible;
@@ -176,6 +187,7 @@ public class FollowerHandler {
         public Builder(FollowerHandler handler) {
             this.name = handler.getName();
             this.entityType = handler.getEntityType();
+            this.displayItem = handler.getDisplayItem();
             this.equipment = new HashMap<>(handler.getEquipment());
             this.skin = handler.getSkin();
             this.visible = handler.isVisible();
@@ -205,6 +217,15 @@ public class FollowerHandler {
 
         public Builder setEntityType(EntityType entityType) {
             this.entityType = entityType;
+            return this;
+        }
+
+        public SimpleItemStack getDisplayItem() {
+            return displayItem;
+        }
+
+        public Builder setDisplayItem(SimpleItemStack displayItem) {
+            this.displayItem = displayItem;
             return this;
         }
 
@@ -268,7 +289,7 @@ public class FollowerHandler {
         }
 
         public FollowerHandler build() {
-            return new FollowerHandler(name, entityType, equipment, skin, visible, scale);
+            return new FollowerHandler(name, entityType, displayItem, equipment, skin, visible, scale);
         }
     }
 }

@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerHandler;
+import org.lushplugins.followers.utils.EntityTypeUtils;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.followers.utils.StringUtils;
 import org.lushplugins.followers.utils.TextInterface;
@@ -131,21 +132,7 @@ public class BuilderGui extends Gui {
                     com.github.retrooper.packetevents.protocol.entity.type.EntityType entityType = followerBuilder.getEntityType();
                     String entityTypeRaw = entityType.getName().getKey().toLowerCase();
 
-                    ItemStack item;
-                    if (entityType.equals(EntityTypes.ARMOR_STAND)) {
-                        item = new ItemStack(Material.ARMOR_STAND);
-                    } else if (entityType.equals(EntityTypes.GIANT)) {
-                        item = new ItemStack(Material.ZOMBIE_SPAWN_EGG);
-                    } else {
-                        String materialRaw = entityType.getName().toString() + "_spawn_egg";
-
-                        try {
-                            item = new ItemStack(RegistryUtils.fromString(Registry.MATERIAL, materialRaw));
-                        } catch (IllegalArgumentException e) {
-                            item = new ItemStack(Material.POLAR_BEAR_SPAWN_EGG);
-                        }
-                    }
-
+                    ItemStack item = new ItemStack(EntityTypeUtils.getSpawnEgg(entityType));
                     ItemMeta itemMeta = item.getItemMeta();
                     if (itemMeta != null) {
                         itemMeta.setDisplayName(ChatColorHandler.translate("&#ffde8aEntity Type: &f" + StringUtils.makeFriendly(entityTypeRaw.replace("_", " "))));
