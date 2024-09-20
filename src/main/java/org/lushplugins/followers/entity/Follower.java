@@ -418,6 +418,7 @@ public class Follower {
         try {
             textDisplay = EntityLib.getApi().createEntity(EntityTypes.TEXT_DISPLAY);
             EntityLib.getApi().spawnEntity(textDisplay, new Location(entity.getLocation().getPosition(), 0, 0));
+            entity.getViewers().forEach(textDisplay::addViewer);
             entity.addPassenger(textDisplay);
 
             TextDisplayMeta textDisplayMeta = (TextDisplayMeta) textDisplay.getEntityMeta();
