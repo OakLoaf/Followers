@@ -14,9 +14,9 @@ import org.lushplugins.followers.hook.GSitHook;
 import org.lushplugins.followers.hook.PlaceholderAPIHook;
 import org.lushplugins.followers.hook.SimpleSitHook;
 import org.lushplugins.followers.listener.FollowerEntityListener;
-import org.lushplugins.followers.data.ConfigManager;
+import org.lushplugins.followers.config.ConfigManager;
 import org.lushplugins.followers.data.DataManager;
-import org.lushplugins.followers.data.FollowerManager;
+import org.lushplugins.followers.config.FollowerManager;
 import org.bukkit.*;
 
 import org.lushplugins.followers.command.DyeCmd;

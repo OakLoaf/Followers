@@ -1,4 +1,4 @@
-package org.lushplugins.followers.data;
+package org.lushplugins.followers.config;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;

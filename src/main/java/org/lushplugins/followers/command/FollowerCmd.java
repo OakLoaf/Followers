@@ -12,7 +12,7 @@ import org.lushplugins.followers.export.GeyserSkullExporter;
 import org.lushplugins.followers.gui.custom.BuilderGui;
 import org.lushplugins.followers.gui.custom.MenuGui;
 import org.lushplugins.followers.Followers;
-import org.lushplugins.followers.data.FollowerHandler;
+import org.lushplugins.followers.config.FollowerHandler;
 import org.lushplugins.followers.gui.custom.ModerationGui;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;

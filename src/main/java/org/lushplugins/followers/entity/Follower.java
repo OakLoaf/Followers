@@ -26,7 +26,7 @@ import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.api.events.FollowerEntityChangeTypeEvent;
 import org.lushplugins.followers.api.events.FollowerEntitySpawnEvent;
 import org.lushplugins.followers.entity.poses.FollowerPose;
-import org.lushplugins.followers.data.FollowerHandler;
+import org.lushplugins.followers.config.FollowerHandler;
 import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.entity.tasks.*;
 

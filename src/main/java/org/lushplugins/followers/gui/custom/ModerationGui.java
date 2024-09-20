@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.lushplugins.followers.Followers;
-import org.lushplugins.followers.data.FollowerHandler;
+import org.lushplugins.followers.config.FollowerHandler;
 import org.lushplugins.followers.entity.OwnedFollower;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.lushlib.gui.inventory.PagedGui;

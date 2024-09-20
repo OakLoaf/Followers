@@ -1,4 +1,4 @@
-package org.lushplugins.followers.data;
+package org.lushplugins.followers.config;
 
 import com.github.retrooper.packetevents.protocol.attribute.Attributes;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;

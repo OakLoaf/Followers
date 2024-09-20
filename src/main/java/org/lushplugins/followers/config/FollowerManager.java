@@ -1,4 +1,4 @@
-package org.lushplugins.followers.data;
+package org.lushplugins.followers.config;
 
 import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import org.bukkit.configuration.ConfigurationSection;
@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lushplugins.followers.Followers;
+import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.entity.EyeHeightRegistry;
 import org.lushplugins.followers.entity.poses.FollowerPoseRegistry;
 import org.lushplugins.followers.entity.tasks.FollowerTaskRegistry;

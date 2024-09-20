@@ -1,6 +1,5 @@
 package org.lushplugins.followers.gui.custom;
 
-import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -13,7 +12,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.lushplugins.followers.Followers;
-import org.lushplugins.followers.data.FollowerHandler;
+import org.lushplugins.followers.config.FollowerHandler;
 import org.lushplugins.followers.utils.EntityTypeUtils;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.followers.utils.StringUtils;
