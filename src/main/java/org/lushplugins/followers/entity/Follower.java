@@ -291,7 +291,7 @@ public class Follower {
 
         if (nameTagEntity == null) {
             if (displayName != null) {
-                nameTagEntity = summonNametagEntity();
+                nameTagEntity = summonNameTagEntity();
                 if (nameTagEntity == null) {
                     return;
                 }
@@ -409,7 +409,7 @@ public class Follower {
         }
     }
 
-    private WrapperEntity summonNametagEntity() {
+    private WrapperEntity summonNameTagEntity() {
         if (entity == null) {
             return null;
         }
