@@ -81,8 +81,7 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.20.1")
-
+        minecraftVersion("1.21.1")
 
         downloadPlugins {
             modrinth("packetevents", "QLgJReg5")
