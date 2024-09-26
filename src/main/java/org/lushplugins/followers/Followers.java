@@ -29,6 +29,7 @@ import org.lushplugins.followers.utils.WebUtils;
 import org.lushplugins.lushlib.LushLib;
 import org.lushplugins.lushlib.hook.Hook;
 import org.lushplugins.lushlib.plugin.SpigotPlugin;
+import org.lushplugins.lushlib.utils.SimpleItemStack;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,6 +64,7 @@ public final class Followers extends SpigotPlugin {
     @Override
     public void onLoad() {
         LushLib.getInstance().enable(this);
+        SimpleItemStack.setDefaultMaterial(Material.EGG);
 
         EntityLib.init(
             new SpigotEntityLibPlatform(this),

@@ -2,6 +2,7 @@ plugins {
     `java-library`
     `maven-publish`
     id("io.github.goooler.shadow") version("8.1.7")
+    id("xyz.jpenilla.run-paper") version("2.3.1")
 }
 
 
@@ -37,7 +38,7 @@ dependencies {
 
     // Libraries
     api("com.github.OakLoaf:EntityLib:aef1wrf")
-    implementation("org.lushplugins:LushLib:0.8.4.2")
+    implementation("org.lushplugins:LushLib:0.8.4.5")
     implementation("org.mineskin:java-client:1.2.4-SNAPSHOT")
 }
 
@@ -78,6 +79,26 @@ tasks {
             expand("version" to rootProject.version)
         }
     }
+
+    runServer {
+        minecraftVersion("1.20.1")
+
+
+        downloadPlugins {
+            modrinth("packetevents", "QLgJReg5")
+            modrinth("viaversion", "5.0.3")
+            modrinth("viabackwards", "5.0.3")
+        }
+    }
+}
+
+tasks.withType(xyz.jpenilla.runtask.task.AbstractRun::class) {
+    javaLauncher = javaToolchains.launcherFor {
+        vendor = JvmVendorSpec.JETBRAINS
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+
+    jvmArgs("-XX:+AllowEnhancedClassRedefinition")
 }
 
 publishing {

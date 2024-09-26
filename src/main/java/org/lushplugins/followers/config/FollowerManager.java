@@ -121,7 +121,11 @@ public class FollowerManager {
     }
 
     public void loadFollower(@NotNull ConfigurationSection configurationSection) {
-        followerList.put(configurationSection.getName(), new FollowerHandler(configurationSection));
+        try {
+            followerList.put(configurationSection.getName(), new FollowerHandler(configurationSection));
+        } catch (IllegalArgumentException e) {
+            Followers.getInstance().getLogger().warning(e.getMessage());
+        }
     }
 
     public void loadFollower(String followerName, FollowerHandler followerHandler) {

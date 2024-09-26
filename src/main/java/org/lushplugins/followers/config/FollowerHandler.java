@@ -14,12 +14,11 @@ import me.tofaa.entitylib.meta.types.LivingEntityMeta;
 import me.tofaa.entitylib.meta.types.PlayerMeta;
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import me.tofaa.entitylib.wrapper.WrapperPlayer;
-import org.bukkit.Registry;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.utils.*;
-import org.lushplugins.lushlib.utils.RegistryUtils;
 import org.lushplugins.lushlib.utils.SimpleItemStack;
 
 import java.util.*;
@@ -35,7 +34,11 @@ public class FollowerHandler {
 
     public FollowerHandler(ConfigurationSection configurationSection) {
         this.name = configurationSection.getName();
-        this.entityType = SpigotConversionUtil.fromBukkitEntityType(RegistryUtils.fromString(Registry.ENTITY_TYPE, configurationSection.getString("entityType", "armor_stand")));
+
+        this.entityType = EntityTypes.getByName(NamespacedKey.fromString(configurationSection.getString("entityType", "armor_stand").toLowerCase()).toString());
+        if (entityType == null) {
+            throw new IllegalArgumentException("Invalid entity type defined for pet '" + configurationSection.getCurrentPath() + "'");
+        }
 
         if (configurationSection.isConfigurationSection("displayItem")) {
             this.displayItem = new SimpleItemStack(configurationSection.getConfigurationSection("displayItem"));
