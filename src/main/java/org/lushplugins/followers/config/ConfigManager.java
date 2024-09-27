@@ -34,7 +34,17 @@ public class ConfigManager {
         langMessages.clear();
 
         areHitboxesEnabled = config.getBoolean("hitboxesEnabled");
-        speed = config.getDouble("speed", 0.4);
+
+        double speed = config.getDouble("speed", 0.4);
+        if (speed < 0.001) {
+            plugin.getLogger().warning("Found invalid speed '" + speed + "', speed must be higher than 0.001");
+            speed = 0.001;
+        } else if (speed > 1) {
+            plugin.getLogger().warning("Found invalid speed '" + speed + "', speed must be less than or equal to 1");
+            speed = 1;
+        }
+        this.speed = speed;
+
         defaultScale = config.getDouble("default-scale", 1);
         heightOffset = config.getDouble("height-offset", 0);
         nicknameFormat = config.getString("follower-nickname-format", "%nickname%");
