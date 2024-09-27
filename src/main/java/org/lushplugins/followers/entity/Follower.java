@@ -2,8 +2,6 @@ package org.lushplugins.followers.entity;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
-import com.github.retrooper.packetevents.protocol.item.ItemStack;
-import com.github.retrooper.packetevents.protocol.item.type.ItemTypes;
 import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.protocol.world.Location;
@@ -158,44 +156,6 @@ public class Follower {
         }
     }
 
-    public void setArmorSlot(EquipmentSlot equipmentSlot, FollowerHandler followerType) {
-        // TODO: Remove on EntityLib implementation
-        if (equipmentSlot.name().equals("BODY")) {
-            Followers.getInstance().getLogger().warning("Equipment slot 'body' is not currently supported");
-            return;
-        }
-
-        if (entity != null) {
-            WrapperEntityEquipment equipment = entity.getEquipment();
-
-            if (equipment != null) {
-                ExtendedSimpleItemStack simpleItemStack = followerType.getEquipmentSlot(equipmentSlot);
-                if (simpleItemStack != null) {
-                    equipment.setItem(
-                        equipmentSlot,
-                        SpigotConversionUtil.fromBukkitItemStack(simpleItemStack.asItemStack()));
-                }
-            }
-        }
-    }
-
-    public void clearInventory() {
-        if (entity != null) {
-            WrapperEntityEquipment equipment = entity.getEquipment();
-            if (equipment == null) {
-                return;
-            }
-
-            for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-                try {
-                    equipment.setItem(
-                        com.github.retrooper.packetevents.protocol.player.EquipmentSlot.valueOf(equipmentSlot.name()),
-                        new ItemStack.Builder().type(ItemTypes.AIR).build());
-                } catch (IllegalArgumentException ignored) {}
-            }
-        }
-    }
-
     public void reloadInventory() {
         FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(this.followerType);
         if (followerHandler == null) {
@@ -203,10 +163,26 @@ public class Follower {
             return;
         }
 
-        for (EquipmentSlot equipmentSlot : followerHandler.getEquipment().keySet()) {
-            try {
-                setArmorSlot(equipmentSlot, followerHandler);
-            } catch (IllegalArgumentException ignored) {}
+        WrapperEntityEquipment equipment = entity.getEquipment();
+        if (equipment != null) {
+            equipment.clearAll();
+
+            for (EquipmentSlot equipmentSlot : followerHandler.getEquipment().keySet()) {
+                // TODO: Remove on EntityLib implementation
+                if (equipmentSlot.name().equals("BODY")) {
+                    Followers.getInstance().getLogger().warning("Equipment slot 'body' is not currently supported");
+                    continue;
+                }
+
+                try {
+                    ExtendedSimpleItemStack simpleItemStack = followerHandler.getEquipmentSlot(equipmentSlot);
+                    if (simpleItemStack != null) {
+                        equipment.setItem(
+                            equipmentSlot,
+                            SpigotConversionUtil.fromBukkitItemStack(simpleItemStack.asItemStack()));
+                    }
+                } catch (IllegalArgumentException ignored) {}
+            }
         }
 
         if (entity != null) {
