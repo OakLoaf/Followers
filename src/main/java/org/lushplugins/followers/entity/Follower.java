@@ -10,7 +10,6 @@ import com.github.retrooper.packetevents.protocol.world.Location;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.util.Vector3f;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
-import me.tofaa.entitylib.EntityLib;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import me.tofaa.entitylib.meta.display.TextDisplayMeta;
 import me.tofaa.entitylib.meta.other.ArmorStandMeta;
@@ -360,7 +359,7 @@ public class Follower {
             }
 
 
-            EntityLib.getApi().spawnEntity(entity, location);
+            entity.spawn(location);
             refresh();
             setType(followerType);
 
@@ -417,8 +416,8 @@ public class Follower {
 
         WrapperEntity textDisplay;
         try {
-            textDisplay = EntityLib.getApi().createEntity(EntityTypes.TEXT_DISPLAY);
-            EntityLib.getApi().spawnEntity(textDisplay, new Location(entity.getLocation().getPosition(), 0, 0));
+            textDisplay = new WrapperEntity(EntityTypes.TEXT_DISPLAY);
+            textDisplay.spawn(new Location(entity.getLocation().getPosition(), 0, 0));
             entity.getViewers().forEach(textDisplay::addViewer);
             entity.addPassenger(textDisplay);
 

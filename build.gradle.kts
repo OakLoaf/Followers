@@ -20,7 +20,8 @@ repositories {
     maven("https://repo.inventivetalent.org/repository/public/") // MineSkin
     maven("https://repo.codemc.io/repository/maven-releases/") // PacketEvents
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI
-    maven("https://jitpack.io") // EntityLib, GSit
+    maven("https://maven.evokegames.gg/snapshots") // EntityLib
+    maven("https://jitpack.io") // GSit
 }
 
 dependencies {
@@ -37,7 +38,7 @@ dependencies {
     compileOnly(files("libs/SimpleSit.jar"))
 
     // Libraries
-    api("com.github.OakLoaf:EntityLib:aef1wrf")
+    api("me.tofaa.entitylib:spigot:2.4.10-SNAPSHOT")
     implementation("org.lushplugins:LushLib:0.9.0")
     implementation("org.mineskin:java-client:1.2.4-SNAPSHOT")
 }
