@@ -33,6 +33,7 @@ import org.lushplugins.followers.entity.tasks.*;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.followers.utils.SkinData;
 import org.lushplugins.lushlib.libraries.chatcolor.ModernChatColorHandler;
+import org.lushplugins.lushlib.libraries.chatcolor.parsers.ParserTypes;
 
 import java.util.HashSet;
 
@@ -318,7 +319,7 @@ public class Follower {
         String nickname = Followers.getInstance().getConfigManager().getFollowerNicknameFormat()
             .replaceAll("%nickname%", displayName);
 
-        textDisplayMeta.setText(ModernChatColorHandler.translate(nickname));
+        textDisplayMeta.setText(ModernChatColorHandler.translate(nickname, ParserTypes.color()));
 
         if (!entity.hasPassenger(nameTagEntity)) {
             entity.addPassenger(nameTagEntity.getEntityId());
