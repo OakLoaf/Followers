@@ -157,6 +157,7 @@ public class FollowerCmd extends Command {
             Follower follower = followerUser.getFollower();
             if (follower != null) {
                 followerUser.setFollowerEnabled(false);
+                ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-despawned"));
             }
 
             return true;
