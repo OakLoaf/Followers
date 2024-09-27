@@ -88,6 +88,7 @@ tasks {
             modrinth("packetevents", "QLgJReg5")
             modrinth("viaversion", "5.0.3")
             modrinth("viabackwards", "5.0.3")
+            hangar("PlaceholderAPI", "2.11.6")
         }
     }
 }
