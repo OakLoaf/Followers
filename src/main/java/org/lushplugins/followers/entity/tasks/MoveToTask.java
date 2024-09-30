@@ -34,8 +34,8 @@ public class MoveToTask extends FollowerTask {
             rotation = new Vector3f(currentLocation.getPitch(), currentLocation.getYaw(), 0);
         }
 
-        follower.teleport(new Location(newPosition, rotation.getY(), rotation.getX()));
         entity.rotateHead(rotation.getY(), rotation.getX());
+        follower.teleport(new Location(newPosition, rotation.getY(), rotation.getX()));
 
         if (entity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta) {
             armorStandMeta.setHeadRotation(new Vector3f(rotation.getX(), 0, 0));
