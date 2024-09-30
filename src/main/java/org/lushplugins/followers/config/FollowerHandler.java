@@ -41,7 +41,7 @@ public class FollowerHandler {
         }
 
         if (configurationSection.isConfigurationSection("displayItem")) {
-            this.displayItem = new SimpleItemStack(configurationSection.getConfigurationSection("displayItem"));
+            this.displayItem = new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("displayItem"));
         } else {
             this.displayItem = null;
         }
