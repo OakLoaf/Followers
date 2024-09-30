@@ -230,6 +230,7 @@ public class Follower {
 
         WrapperLivingEntity entity;
         if (!this.entity.getEntityType().equals(followerHandler.getEntityType())) {
+            this.entity.despawn();
             // Handles changing the entity type
             entity = followerHandler.createEntity(this.entity.getEntityId(), this.entity.getUuid());
 
@@ -243,7 +244,6 @@ public class Follower {
                 }
             }
 
-            this.entity.despawn();
             entity.spawn(this.entity.getLocation());
         } else {
             entity = this.entity;
