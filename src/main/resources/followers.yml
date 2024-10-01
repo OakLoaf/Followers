@@ -106,3 +106,5 @@ Mini Me:
   skin: mirror
   displayItem:
     material: player_head
+    skullType: custom
+    texture: mirror
