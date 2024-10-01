@@ -41,7 +41,8 @@ public class FollowerHandler {
         }
 
         // Check if the entity is currently supported
-        if (EntityMeta.getMetaClass(entityType).isAssignableFrom(LivingEntityMeta.class)) {
+        Class<?> metaClass = EntityMeta.getMetaClass(entityType);
+        if (!LivingEntityMeta.class.isAssignableFrom(metaClass)) {
             throw new IllegalArgumentException("Entity type is not currently supported for pet '" + configurationSection.getCurrentPath() + "'");
         }
 
