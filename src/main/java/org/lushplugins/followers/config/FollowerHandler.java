@@ -40,6 +40,11 @@ public class FollowerHandler {
             throw new IllegalArgumentException("Invalid entity type defined for pet '" + configurationSection.getCurrentPath() + "'");
         }
 
+        // Check if the entity is currently supported
+        if (EntityMeta.getMetaClass(entityType).isAssignableFrom(LivingEntityMeta.class)) {
+            throw new IllegalArgumentException("Entity type is not currently supported for pet '" + configurationSection.getCurrentPath() + "'");
+        }
+
         if (configurationSection.isConfigurationSection("displayItem")) {
             this.displayItem = new ExtendedSimpleItemStack(configurationSection.getConfigurationSection("displayItem"));
         } else {
