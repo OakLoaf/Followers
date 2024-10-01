@@ -107,7 +107,7 @@ public class MenuGui extends PagedGui {
 
         if (followerList.size() > page * followersPerPage) {
             SimpleItemStack nextPageButton = Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "next-page", Material.ARROW);
-            slotMap.get('>').forEach(slot -> addButton(slot, new LegacySimpleItemButton(nextPageButton, (event) -> previousPage())));
+            slotMap.get('>').forEach(slot -> addButton(slot, new LegacySimpleItemButton(nextPageButton, (event) -> nextPage())));
         } else {
             slotMap.get('>').forEach(slot -> {
                 setItem(slot, borderItem);
