@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 
 public class FollowerButton extends ItemButton {
     private final String followerName;
-    private final ItemStack itemStack;
+    private final SimpleItemStack itemStack;
 
     public FollowerButton(String followerName) {
         this(followerName, event -> {});
@@ -32,9 +32,9 @@ public class FollowerButton extends ItemButton {
             SimpleItemStack handlerDisplayItem = followerHandler.getDisplayItem();
             SimpleItemStack headItem = followerHandler.getEquipmentSlot(EquipmentSlot.HELMET);
             if (handlerDisplayItem != null && handlerDisplayItem.getType() != Material.AIR) {
-                displayItem = handlerDisplayItem;
+                displayItem = handlerDisplayItem.clone();
             } else if (headItem != null && headItem.getType() != Material.AIR) {
-                displayItem = headItem;
+                displayItem = headItem.clone();
             } else {
                 displayItem = new SimpleItemStack(EntityTypeUtils.getSpawnEgg(followerHandler.getEntityType()));
             }
@@ -45,7 +45,7 @@ public class FollowerButton extends ItemButton {
         displayItem.setDisplayName(ChatColorHandler.translate(Followers.getInstance().getConfigManager().getGuiFollowerFormat()
             .replace("%follower%", followerName)));
 
-        this.itemStack = displayItem.asItemStack();
+        this.itemStack = displayItem;
     }
 
     public String getFollowerName() {
@@ -54,6 +54,6 @@ public class FollowerButton extends ItemButton {
 
     @Override
     public ItemStack getItemStack(Player player) {
-        return itemStack;
+        return itemStack.asItemStack(player);
     }
 }
