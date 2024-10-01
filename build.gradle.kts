@@ -7,7 +7,7 @@ plugins {
 
 
 group = "org.lushplugins"
-version = "2.0.2"
+version = "2.0.3-alpha1"
 
 repositories {
     mavenCentral()
@@ -39,7 +39,7 @@ dependencies {
 
     // Libraries
     api("me.tofaa.entitylib:spigot:2.4.10-SNAPSHOT")
-    implementation("org.lushplugins:LushLib:0.9.0.3")
+    implementation("org.lushplugins:LushLib:0.9.1")
     implementation("org.mineskin:java-client:1.2.4-SNAPSHOT")
 }
 
