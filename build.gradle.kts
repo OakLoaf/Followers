@@ -28,7 +28,7 @@ dependencies {
     // Dependencies
     compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
     compileOnly("com.mysql:mysql-connector-j:8.3.0") // Uses Spigot copy
-    compileOnlyApi("com.github.retrooper:packetevents-spigot:2.4.0")
+    compileOnlyApi("com.github.retrooper:packetevents-spigot:2.6.0")
 
     // Soft Dependencies
     compileOnly("org.geysermc.floodgate:api:2.0-SNAPSHOT")
@@ -38,7 +38,7 @@ dependencies {
     compileOnly(files("libs/SimpleSit.jar"))
 
     // Libraries
-    api("me.tofaa.entitylib:spigot:2.4.10-SNAPSHOT")
+    api("me.tofaa.entitylib:spigot:2.4.11-SNAPSHOT")
     implementation("org.lushplugins:LushLib:0.9.1")
     implementation("org.mineskin:java-client:1.2.4-SNAPSHOT")
 }
