@@ -50,7 +50,7 @@ public final class Followers extends SpigotPlugin {
         if (Bukkit.getPluginManager().getPlugin("packetevents") == null) {
             try {
                 File output = WebUtils.downloadFile(
-                    new URL("https://ci.codemc.io/job/retrooper/job/packetevents/478/artifact/spigot/build/libs/packetevents-spigot-2.3.1-SNAPSHOT.jar"),
+                    new URL("https://ci.codemc.io/job/retrooper/job/packetevents/600/artifact/spigot/build/libs/packetevents-spigot-2.6.0.jar"),
                     Bukkit.getUpdateFolderFile().getParentFile(),
                     "packetevents-spigot.jar");
 
