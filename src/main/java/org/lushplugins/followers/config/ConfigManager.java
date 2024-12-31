@@ -8,7 +8,9 @@ import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.lushlib.gui.inventory.GuiFormat;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ConfigManager {
     private double speed;
@@ -17,7 +19,7 @@ public class ConfigManager {
     private boolean areHitboxesEnabled;
     private String nicknameFormat;
     private String defaultNickname;
-    private List<String> worldBlacklist;
+    private Set<String> worldBlacklist;
     private GuiConfig gui;
     private DatabaseConfig database;
     private final HashMap<String, String> langMessages = new HashMap<>();
@@ -50,7 +52,7 @@ public class ConfigManager {
         heightOffset = config.getDouble("height-offset", 0);
         nicknameFormat = config.getString("follower-nickname-format", "%nickname%");
         defaultNickname = config.getString("follower-default-nickname", "Unnamed");
-        worldBlacklist = config.getStringList("world-blacklist");
+        worldBlacklist = new HashSet<>(config.getStringList("world-blacklist"));
 
         GuiFormat guiFormat;
         if (config.contains("menu-gui.format")) {
@@ -153,8 +155,8 @@ public class ConfigManager {
         return defaultNickname;
     }
 
-    public List<String> getWorldBlacklist() {
-        return worldBlacklist;
+    public boolean isBlackWorld(String worldName) {
+        return worldBlacklist.contains(worldName);
     }
 
     public record GuiConfig(String title, String followerFormat, GuiFormat guiFormat) {}

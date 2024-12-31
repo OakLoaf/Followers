@@ -56,7 +56,7 @@ public class DataManager {
         UUID uuid = player.getUniqueId();
         FollowerUser followerUser = uuidToFollowerUser.get(uuid);
         if (followerUser == null) {
-            followerUser = new FollowerUser(uuid, player.getName(), "none", "Unnamed", false, false, false);
+            followerUser = new FollowerUser(uuid, player.getName(), "none", Followers.getInstance().getConfigManager().getDefaultNickname(), false, false, false);
         }
         return followerUser;
     }

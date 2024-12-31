@@ -96,7 +96,7 @@ public class BuilderGui extends Gui {
                 () -> {
                     ExtendedSimpleItemStack nametagButton = Followers.getInstance().getConfigManager().getGuiItem("builder-gui", followerBuilder.isNameLocked() ? "name-button.locked" : "name-button.default", Material.OAK_SIGN);
                     nametagButton.setDisplayName(nametagButton.getDisplayName() != null
-                        ? nametagButton.getDisplayName().replace("%name%", followerBuilder.getName() != null ? followerBuilder.getName() : ChatColorHandler.translate("&c&oUnnamed"))
+                        ? nametagButton.getDisplayName().replace("%name%", followerBuilder.getName() != null ? followerBuilder.getName() : ChatColorHandler.translate("&c&o" + Followers.getInstance().getConfigManager().getDefaultNickname()))
                         : followerBuilder.getName());
 
                     return nametagButton.asItemStack();
