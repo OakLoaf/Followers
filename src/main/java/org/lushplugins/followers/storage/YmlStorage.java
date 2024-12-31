@@ -25,11 +25,11 @@ public class YmlStorage implements Storage {
             Player player = Bukkit.getPlayer(uuid);
             configurationSection.set("name", player.getName());
             configurationSection.set("follower", "none");
-            configurationSection.set("followerDisplayName", "Unnamed");
+            configurationSection.set("followerDisplayName", Followers.getInstance().getConfigManager().getDefaultName());
             configurationSection.set("followerNameEnabled", Boolean.FALSE);
             configurationSection.set("followerEnabled", Boolean.TRUE);
             configurationSection.set("randomFollower", Boolean.FALSE);
-            FollowerUser followerUser = new FollowerUser(uuid, player.getName(), "none", "Unnamed", false, false, false);
+            FollowerUser followerUser = new FollowerUser(uuid, player.getName(), "none", Followers.getInstance().getConfigManager().getDefaultName(), false, false, false);
             saveFollowerUser(followerUser);
             return followerUser;
         }
