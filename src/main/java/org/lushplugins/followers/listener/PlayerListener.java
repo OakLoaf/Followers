@@ -81,7 +81,7 @@ public class PlayerListener implements EventListener {
     public void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
         FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-        if (Followers.getInstance().getConfigManager().isBlackWorld(player.getWorld().getName())) {
+        if (Followers.getInstance().getConfigManager().getWorldBlacklist().contains(player.getWorld().getName())) {
             followerUser.setHidden(true);
         } else if (followerUser.isHidden()) {
             followerUser.setHidden(false);
