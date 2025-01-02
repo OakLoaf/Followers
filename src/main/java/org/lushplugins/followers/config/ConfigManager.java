@@ -1,12 +1,14 @@
 package org.lushplugins.followers.config;
 
 import org.bukkit.Material;
+import org.bukkit.Registry;
 import org.bukkit.Tag;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.lushlib.gui.inventory.GuiFormat;
+import org.lushplugins.lushlib.utils.RegistryUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -77,7 +79,7 @@ public class ConfigManager {
         );
 
         try {
-            Material material = Material.valueOf(config.getString("change-name-sign.material", "oak_sign").toUpperCase());
+            Material material = RegistryUtils.fromString(Registry.MATERIAL, config.getString("change-name-sign.material", "oak_sign").toLowerCase());
             if (Tag.SIGNS.isTagged(material)) {
                 signMaterial = material;
             } else {

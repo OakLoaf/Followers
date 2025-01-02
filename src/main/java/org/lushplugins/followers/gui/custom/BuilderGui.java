@@ -149,16 +149,17 @@ public class BuilderGui extends Gui {
 
                     Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> textInterface.getInput(player, (output) -> {
                         if (output.isBlank()) {
-                            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("invalid-entity-type"));
-                            return;
-                        }
-
-                        EntityType entityType = RegistryUtils.fromString(Registry.ENTITY_TYPE, output);
-                        if (entityType != null) {
-                            Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
-                                followerBuilder.setEntityType(entityType);
+                            open();
+                        } else {
+                            EntityType entityType = RegistryUtils.fromString(Registry.ENTITY_TYPE, output);
+                            if (entityType != null) {
+                                Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
+                                    followerBuilder.setEntityType(entityType);
+                                    open();
+                                });
+                            } else {
                                 open();
-                            });
+                            }
                         }
                     }), 1);
                 }
