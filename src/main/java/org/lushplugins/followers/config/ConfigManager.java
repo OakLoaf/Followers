@@ -1,6 +1,7 @@
 package org.lushplugins.followers.config;
 
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.lushplugins.followers.Followers;
@@ -19,6 +20,8 @@ public class ConfigManager {
     private String defaultNickname;
     private List<String> worldBlacklist;
     private GuiConfig gui;
+    private Material signMaterial;
+    private String signTitle;
     private DatabaseConfig database;
     private final HashMap<String, String> langMessages = new HashMap<>();
 
@@ -72,6 +75,16 @@ public class ConfigManager {
             config.getString("menu-gui.follower-format", "&e%follower%"),
             guiFormat
         );
+
+        try {
+            Material material = Material.valueOf(config.getString("change-name-sign.material", "oak_sign").toUpperCase());
+            if (Tag.SIGNS.isTagged(material)) {
+                signMaterial = material;
+            }
+        } catch (Exception e) {
+            signMaterial = Material.OAK_SIGN;
+        }
+        signTitle = config.getString("change-name-sign.title", "Enter Name:");
 
         database = new DatabaseConfig(config.getString("database.type"), config.getConfigurationSection("database"));
 
@@ -155,6 +168,14 @@ public class ConfigManager {
 
     public List<String> getWorldBlacklist() {
         return worldBlacklist;
+    }
+
+    public Material getSignMaterial() {
+        return signMaterial;
+    }
+
+    public String getSignTitle() {
+        return signTitle;
     }
 
     public record GuiConfig(String title, String followerFormat, GuiFormat guiFormat) {}

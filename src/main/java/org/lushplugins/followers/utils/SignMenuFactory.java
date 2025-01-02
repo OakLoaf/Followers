@@ -66,7 +66,7 @@ public final class SignMenuFactory {
             location = player.getLocation();
             location.setY(location.getBlockY() - 4);
 
-            player.sendBlockChange(location, Material.OAK_SIGN.createBlockData());
+            player.sendBlockChange(location, Followers.getInstance().getConfigManager().getSignMaterial().createBlockData());
             player.sendSignChange(
                 location,
                 text.stream().map(this::color).toList().toArray(new String[4])
