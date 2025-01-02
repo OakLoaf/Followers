@@ -80,6 +80,8 @@ public class ConfigManager {
             Material material = Material.valueOf(config.getString("change-name-sign.material", "oak_sign").toUpperCase());
             if (Tag.SIGNS.isTagged(material)) {
                 signMaterial = material;
+            } else {
+                signMaterial = Material.OAK_SIGN;
             }
         } catch (Exception e) {
             signMaterial = Material.OAK_SIGN;
