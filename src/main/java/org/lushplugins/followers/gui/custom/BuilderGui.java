@@ -149,6 +149,7 @@ public class BuilderGui extends Gui {
 
                     Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> textInterface.getInput(player, (output) -> {
                         if (output.isBlank()) {
+                            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("incorrect-content"));
                             open();
                         } else {
                             EntityType entityType = RegistryUtils.fromString(Registry.ENTITY_TYPE, output);
@@ -158,6 +159,7 @@ public class BuilderGui extends Gui {
                                     open();
                                 });
                             } else {
+                                ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("incorrect-content"));
                                 open();
                             }
                         }
