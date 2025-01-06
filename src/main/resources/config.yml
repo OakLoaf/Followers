@@ -154,11 +154,13 @@ moderation-gui:
       material: "gray_stained_glass_pane"
 
 # the sign when you enter the name
-change-name-sign:
+change-name-sign-gui:
   # material: it can be SIGN of different materials
   material: "oak_sign"
   #title: the title on the sign
-  title: "Enter Name:"
+  title:
+    - "Enter Name:"
+    - ""
 
 # %command-usage% - The command being used incorrectly
 # %follower% - The selected follower
