@@ -179,4 +179,3 @@ messages:
   follower-already-exists: "&#ff6969A Follower already exists with this name"
   follower-default-skull: "&#ffe27aSkull has been created as &#e0c01bdefault &#ffe27askull type - to get custom textures, manually edit the config"
   dye-wrong-material: "&#ffe27aMaterial has to be a form of &#e0c01bLeather Armor"
-  incorrect-content: "&#ff6969The content you entered is incorrect."
