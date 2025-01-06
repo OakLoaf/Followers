@@ -79,7 +79,7 @@ public class ConfigManager {
         );
 
         try {
-            Material material = RegistryUtils.fromString(Registry.MATERIAL, config.getString("change-name-sign.material", "oak_sign").toLowerCase());
+            Material material = RegistryUtils.fromString(Registry.MATERIAL, config.getString("change-name-sign-gui.material", "oak_sign").toLowerCase());
             if (Tag.SIGNS.isTagged(material)) {
                 signMaterial = material;
             } else {
@@ -88,7 +88,7 @@ public class ConfigManager {
         } catch (Exception e) {
             signMaterial = Material.OAK_SIGN;
         }
-        signTitle = config.getString("change-name-sign.title", "Enter Name:");
+        signTitle = config.getString("change-name-sign-gui.title", "Enter Name:");
 
         database = new DatabaseConfig(config.getString("database.type"), config.getConfigurationSection("database"));
 
