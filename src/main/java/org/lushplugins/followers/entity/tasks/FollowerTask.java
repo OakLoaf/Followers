@@ -1,12 +1,12 @@
 package org.lushplugins.followers.entity.tasks;
 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.api.events.FollowerTickEvent;
 import org.lushplugins.followers.entity.Follower;
-import org.lushplugins.lushlib.listener.EventListener;
 
-public abstract class FollowerTask implements EventListener {
+public abstract class FollowerTask implements Listener {
     private final String id;
 
     public FollowerTask(String id) {

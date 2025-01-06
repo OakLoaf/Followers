@@ -4,7 +4,7 @@ import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import org.bukkit.Material;
 import org.bukkit.Registry;
-import org.lushplugins.lushlib.utils.RegistryUtils;
+import org.lushplugins.lushlib.registry.RegistryUtils;
 
 public class EntityTypeUtils {
 
@@ -17,7 +17,7 @@ public class EntityTypeUtils {
             String materialRaw = entityType.getName().toString() + "_spawn_egg";
 
             try {
-                return RegistryUtils.fromString(Registry.MATERIAL, materialRaw);
+                return RegistryUtils.parseString(materialRaw, Registry.MATERIAL);
             } catch (IllegalArgumentException e) {
                 return Material.POLAR_BEAR_SPAWN_EGG;
             }

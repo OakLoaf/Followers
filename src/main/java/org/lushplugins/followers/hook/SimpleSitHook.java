@@ -1,5 +1,7 @@
 package org.lushplugins.followers.hook;
 
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.entity.Follower;
@@ -9,9 +11,8 @@ import net.apcat.simplesit.events.PlayerStopSittingEvent;
 import org.bukkit.event.EventHandler;
 import org.lushplugins.followers.entity.tasks.TaskId;
 import org.lushplugins.lushlib.hook.Hook;
-import org.lushplugins.lushlib.listener.EventListener;
 
-public class SimpleSitHook extends Hook implements EventListener {
+public class SimpleSitHook extends Hook implements Listener {
 
     public SimpleSitHook() {
         super("SimpleSit");
@@ -19,12 +20,12 @@ public class SimpleSitHook extends Hook implements EventListener {
 
     @Override
     protected void onEnable() {
-        this.registerListeners();
+        Followers.getInstance().registerListeners();
     }
 
     @Override
     protected void onDisable() {
-        this.unregisterListeners();
+        HandlerList.unregisterAll(this);
     }
 
     @EventHandler

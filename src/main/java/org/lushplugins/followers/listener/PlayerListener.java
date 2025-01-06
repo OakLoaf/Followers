@@ -1,5 +1,6 @@
 package org.lushplugins.followers.listener;
 
+import org.bukkit.event.Listener;
 import org.lushplugins.followers.data.DataManager;
 import org.lushplugins.followers.entity.Follower;
 import org.lushplugins.followers.entity.OwnedFollower;
@@ -11,11 +12,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
-import org.lushplugins.lushlib.listener.EventListener;
 
 import java.util.UUID;
 
-public class PlayerListener implements EventListener {
+public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {

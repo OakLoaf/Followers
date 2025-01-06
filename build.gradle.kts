@@ -39,7 +39,7 @@ dependencies {
 
     // Libraries
     api("me.tofaa.entitylib:spigot:2.4.11-SNAPSHOT")
-    implementation("org.lushplugins:LushLib:0.9.1")
+    implementation("org.lushplugins:LushLib:0.10.24")
     implementation("org.mineskin:java-client:1.2.4-SNAPSHOT")
 }
 
@@ -85,7 +85,7 @@ tasks {
         minecraftVersion("1.21")
 
         downloadPlugins {
-            modrinth("packetevents", "QLgJReg5")
+            modrinth("packetevents", "2.7.0")
             modrinth("viaversion", "5.0.3")
             modrinth("viabackwards", "5.0.3")
             hangar("PlaceholderAPI", "2.11.6")
