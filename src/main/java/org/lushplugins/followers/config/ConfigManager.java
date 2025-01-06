@@ -10,8 +10,6 @@ import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.lushlib.gui.inventory.GuiFormat;
 import org.lushplugins.lushlib.utils.RegistryUtils;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,7 +23,7 @@ public class ConfigManager {
     private List<String> worldBlacklist;
     private GuiConfig gui;
     private Material signMaterial;
-    private List<String> signTitle;
+    private String signTitle;
     private DatabaseConfig database;
     private final HashMap<String, String> langMessages = new HashMap<>();
 
@@ -81,7 +79,7 @@ public class ConfigManager {
         );
 
         try {
-            Material material = RegistryUtils.fromString(Registry.MATERIAL, config.getString("change-name-sign-gui.material", "oak_sign").toLowerCase());
+            Material material = RegistryUtils.fromString(Registry.MATERIAL, config.getString("change-name-sign.material", "oak_sign").toLowerCase());
             if (Tag.SIGNS.isTagged(material)) {
                 signMaterial = material;
             } else {
@@ -90,15 +88,7 @@ public class ConfigManager {
         } catch (Exception e) {
             signMaterial = Material.OAK_SIGN;
         }
-
-        signTitle = config.getStringList("change-name-sign-gui.title");
-        if (signTitle.isEmpty()) {
-            signTitle = Arrays.asList("Enter Name:", "");
-        } else {
-            if (signTitle.size() < 2) {
-                signTitle.addAll(Collections.nCopies(Math.max(0, 2 - signTitle.size()), ""));
-            }
-        }
+        signTitle = config.getString("change-name-sign.title", "Enter Name:");
 
         database = new DatabaseConfig(config.getString("database.type"), config.getConfigurationSection("database"));
 
@@ -188,7 +178,7 @@ public class ConfigManager {
         return signMaterial;
     }
 
-    public List<String> getSignTitle() {
+    public String getSignTitle() {
         return signTitle;
     }
 
