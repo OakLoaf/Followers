@@ -109,20 +109,17 @@ public class BuilderGui extends Gui {
                     textInterface.placeholder("Enter follower name");
 
                     Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> textInterface.getInput(player, (output) -> {
-                        if (output.isBlank()) {
-                            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-no-name"));
-                            return;
-                        }
+                        if (!output.isBlank()) {
+                            String finalOutput = output.replaceAll("\\.", "-");
 
-                        String finalOutput = output.replaceAll("\\.", "-");
-                        Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
                             try {
                                 followerBuilder.setName(finalOutput);
-                            } catch (IllegalStateException ignored) {
-                            }
+                            } catch (IllegalStateException ignored) {}
+                        } else {
+                            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-no-name"));
+                        }
 
-                            open();
-                        });
+                        Bukkit.getScheduler().runTask(Followers.getInstance(), this::open);
                     }), 1);
                 }
             ),
@@ -155,11 +152,12 @@ public class BuilderGui extends Gui {
 
                         EntityType entityType = RegistryUtils.parseString(output, Registry.ENTITY_TYPE);
                         if (entityType != null) {
-                            Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
-                                followerBuilder.setEntityType(entityType);
-                                open();
-                            });
+                            followerBuilder.setEntityType(entityType);
+                        } else {
+                            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("invalid-entity-type"));
                         }
+
+                        Bukkit.getScheduler().runTask(Followers.getInstance(), this::open);
                     }), 1);
                 }
             ),

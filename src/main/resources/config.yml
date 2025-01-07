@@ -20,6 +20,8 @@ default-scale: 0.5
 height-offset: 0
 # follower-nickname-format: Changes the colour of the follower's nickname
 follower-nickname-format: "%nickname%"
+# follower-default-name: The default nickname of followers
+follower-default-nickname: "Unnamed"
 # world-blacklist: A list of worlds that followers cannot appear in
 world-blacklist:
   - blacklisted_world

@@ -42,7 +42,7 @@ public class NicknameButton extends DynamicItemButton {
 
                 Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> textInterface.getInput(player, (output) -> {
                     if (output.isBlank()) {
-                        output = "Unnamed";
+                        output = Followers.getInstance().getConfigManager().getDefaultNickname();
                     }
 
                     String finalOutput = output;
