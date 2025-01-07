@@ -94,7 +94,6 @@ public class FollowerUser {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
-        this.nameIsOn = true;
         Followers.getInstance().getDataManager().saveFollowerUser(this);
 
         if (follower != null) {
