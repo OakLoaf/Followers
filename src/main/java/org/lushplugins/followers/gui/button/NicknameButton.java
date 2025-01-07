@@ -37,8 +37,6 @@ public class NicknameButton extends DynamicItemButton {
                 gui.close();
 
                 TextInterface textInterface = new TextInterface();
-                String originName = followerUser.getDisplayName();
-                textInterface.originName(originName);
                 textInterface.title("Enter Name:");
                 textInterface.placeholder("Enter follower name");
 
@@ -46,8 +44,6 @@ public class NicknameButton extends DynamicItemButton {
                     if (output.isBlank()) {
                         output = Followers.getInstance().getConfigManager().getDefaultNickname();
                     }
-                    if (output.equals(originName)) {
-                        return;
                     }
 
                     String finalOutput = output;
