@@ -5,6 +5,7 @@ import com.github.retrooper.packetevents.protocol.particle.data.ParticleDustData
 import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lushplugins.followers.Followers;
 
 import java.util.HashMap;
 
@@ -26,7 +27,7 @@ public class FollowerTaskRegistry {
 
     public void register(@NotNull FollowerTask task) {
         followerTasks.put(task.getId(), task);
-        task.registerListeners();
+        Followers.getInstance().registerListener(task);
     }
 
     public void unregister(String id) {
@@ -36,6 +37,6 @@ public class FollowerTaskRegistry {
 
     public void unregister(@NotNull FollowerTask task) {
         followerTasks.remove(task.getId());
-        task.unregisterListeners();
+        Followers.getInstance().registerListener(task);
     }
 }

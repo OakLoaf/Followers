@@ -10,6 +10,7 @@ import org.lushplugins.followers.config.FollowerHandler;
 import org.lushplugins.followers.utils.EntityTypeUtils;
 import org.lushplugins.lushlib.gui.button.ItemButton;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
+import org.lushplugins.lushlib.libraries.chatcolor.parsers.ParserTypes;
 import org.lushplugins.lushlib.utils.SimpleItemStack;
 
 import java.util.function.Consumer;
@@ -43,7 +44,7 @@ public class FollowerButton extends ItemButton {
         }
 
         displayItem.setDisplayName(ChatColorHandler.translate(Followers.getInstance().getConfigManager().getGuiFollowerFormat()
-            .replace("%follower%", followerName)));
+            .replace("%follower%", followerName), ParserTypes.color()));
 
         this.itemStack = displayItem;
     }

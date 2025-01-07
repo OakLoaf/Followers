@@ -21,7 +21,7 @@ import org.lushplugins.lushlib.gui.button.DynamicItemButton;
 import org.lushplugins.lushlib.gui.button.ItemButton;
 import org.lushplugins.lushlib.gui.inventory.Gui;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
-import org.lushplugins.lushlib.utils.RegistryUtils;
+import org.lushplugins.lushlib.registry.RegistryUtils;
 
 import java.util.*;
 
@@ -152,7 +152,7 @@ public class BuilderGui extends Gui {
                             ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("invalid-entity-type"));
                             open();
                         } else {
-                            EntityType entityType = RegistryUtils.fromString(Registry.ENTITY_TYPE, output);
+                            EntityType entityType = RegistryUtils.parseString(output, Registry.ENTITY_TYPE);
                             if (entityType != null) {
                                 Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
                                     followerBuilder.setEntityType(entityType);

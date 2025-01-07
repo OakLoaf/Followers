@@ -82,8 +82,10 @@ public final class Followers extends SpigotPlugin {
             if (successful) {
                 followerManager = new FollowerManager();
 
-                new FollowerEntityListener().registerListeners();
-                new PlayerListener().registerListeners();
+                registerListeners(
+                    new FollowerEntityListener(),
+                    new PlayerListener()
+                );
 
                 addHook("Essentials", () -> registerHook(new EssentialsHook()));
                 addHook("floodgate", () -> hasFloodgate = true);

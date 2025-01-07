@@ -1,6 +1,8 @@
 package org.lushplugins.followers.hook;
 
 import dev.geco.gsit.api.event.*;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.entity.Follower;
 import org.lushplugins.followers.entity.poses.FollowerPose;
@@ -10,9 +12,8 @@ import org.bukkit.entity.Pose;
 import org.bukkit.event.EventHandler;
 import org.lushplugins.followers.entity.tasks.TaskId;
 import org.lushplugins.lushlib.hook.Hook;
-import org.lushplugins.lushlib.listener.EventListener;
 
-public class GSitHook extends Hook implements EventListener {
+public class GSitHook extends Hook implements Listener {
 
     public GSitHook() {
         super("GSit");
@@ -20,12 +21,12 @@ public class GSitHook extends Hook implements EventListener {
 
     @Override
     protected void onEnable() {
-        this.registerListeners();
+        Followers.getInstance().registerListener(this);
     }
 
     @Override
     protected void onDisable() {
-        this.unregisterListeners();
+        HandlerList.unregisterAll(this);
     }
 
     @EventHandler
