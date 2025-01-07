@@ -11,7 +11,7 @@ import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.jetbrains.annotations.Nullable;
-import org.lushplugins.lushlib.utils.RegistryUtils;
+import org.lushplugins.lushlib.registry.RegistryUtils;
 import org.lushplugins.lushlib.utils.SkullCreator;
 
 import java.util.UUID;
@@ -64,8 +64,8 @@ public class ExtendedSimpleItemStack extends org.lushplugins.lushlib.utils.Simpl
             dyeColor = Color.fromRGB(red, green, blue);
         }
         if (Bukkit.getVersion().contains("1.20") && configurationSection.contains("trim")) {
-            TrimMaterial trimMaterial = RegistryUtils.fromString(Registry.TRIM_MATERIAL, configurationSection.getString("trim.material"));
-            TrimPattern trimPattern = RegistryUtils.fromString(Registry.TRIM_PATTERN, configurationSection.getString("trim.pattern"));
+            TrimMaterial trimMaterial = RegistryUtils.parseString(configurationSection.getString("trim.material"), Registry.TRIM_MATERIAL);
+            TrimPattern trimPattern = RegistryUtils.parseString(configurationSection.getString("trim.pattern"), Registry.TRIM_PATTERN);
             if (trimMaterial != null && trimPattern != null) {
                 armorTrim = new ArmorTrim(trimMaterial, trimPattern);
             }
