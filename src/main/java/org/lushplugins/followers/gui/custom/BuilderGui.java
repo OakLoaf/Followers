@@ -111,18 +111,17 @@ public class BuilderGui extends Gui {
                     Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> textInterface.getInput(player, (output) -> {
                         if (output.isBlank()) {
                             ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-no-name"));
-                            return;
-                        }
-
-                        String finalOutput = output.replaceAll("\\.", "-");
-                        Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
-                            try {
-                                followerBuilder.setName(finalOutput);
-                            } catch (IllegalStateException ignored) {
-                            }
-
                             open();
-                        });
+                        } else {
+                            String finalOutput = output.replaceAll("\\.", "-");
+                            Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
+                                try {
+                                    followerBuilder.setName(finalOutput);
+                                } catch (IllegalStateException ignored) {
+                                }
+                                open();
+                            });
+                        }
                     }), 1);
                 }
             ),
