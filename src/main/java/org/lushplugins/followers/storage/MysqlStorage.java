@@ -87,7 +87,7 @@ public class MysqlStorage implements Storage {
                     resultSet.getBoolean("randomFollower")
                 );
             } else {
-                FollowerUser newFollowerUser = new FollowerUser(uuid, Bukkit.getPlayer(uuid).getName(), "none", "Unnamed", false, false, false);
+                FollowerUser newFollowerUser = new FollowerUser(uuid, Bukkit.getPlayer(uuid).getName(), "none", Followers.getInstance().getConfigManager().getDefaultNickname(), false, false, false);
                 saveFollowerUser(newFollowerUser);
                 return newFollowerUser;
             }

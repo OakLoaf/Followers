@@ -399,6 +399,7 @@ public class FollowerCmd extends Command {
                 followerUser.setDisplayName(newName);
                 if (follower != null) {
                     follower.setDisplayName(newName);
+                    ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-name-changed").replace("%nickname%", newName));
                 }
             }
 

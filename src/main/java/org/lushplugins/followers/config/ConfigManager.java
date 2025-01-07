@@ -16,6 +16,7 @@ public class ConfigManager {
     private double heightOffset;
     private boolean areHitboxesEnabled;
     private String nicknameFormat;
+    private String defaultNickname;
     private List<String> worldBlacklist;
     private GuiConfig gui;
     private DatabaseConfig database;
@@ -48,6 +49,7 @@ public class ConfigManager {
         defaultScale = config.getDouble("default-scale", 1);
         heightOffset = config.getDouble("height-offset", 0);
         nicknameFormat = config.getString("follower-nickname-format", "%nickname%");
+        defaultNickname = config.getString("follower-default-nickname", "Unnamed");
         worldBlacklist = config.getStringList("world-blacklist");
 
         GuiFormat guiFormat;
@@ -145,6 +147,10 @@ public class ConfigManager {
 
     public String getFollowerNicknameFormat() {
         return nicknameFormat;
+    }
+
+    public String getDefaultNickname() {
+        return defaultNickname;
     }
 
     public List<String> getWorldBlacklist() {
