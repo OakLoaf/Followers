@@ -8,18 +8,12 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 public class TextInterface {
-    private String originName = "";
     private String title = "";
     private String placeholder = "";
 
     private String inputName = "Input";
     private final SignMenuFactory signFactory = new SignMenuFactory();
     private FloodgateFormFactory formFactory = null;
-
-    public TextInterface originName(String originName) {
-        this.originName = originName;
-        return this;
-    }
 
     public TextInterface title(String title) {
         this.title = title;
@@ -49,7 +43,7 @@ public class TextInterface {
         if (Followers.getInstance().hasFloodgate() && FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
             formFactory.form(player, response, title, inputName, placeholder);
         } else {
-            SignMenuFactory.Menu menu = signFactory.newMenu(Arrays.asList(originName, "^^^^^^^^^^^", title, ""));
+            SignMenuFactory.Menu menu = signFactory.newMenu(Arrays.asList("", "^^^^^^^^^^^", title, ""));
             menu.reopenIfFail(true).response((ignored, output) -> {response.accept(output[0]); return true;});
             menu.open(player);
         }
