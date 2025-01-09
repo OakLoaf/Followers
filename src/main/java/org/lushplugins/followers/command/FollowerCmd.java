@@ -204,7 +204,7 @@ public class FollowerCmd extends Command {
 
             if (args.length == 0) {
                 ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("incorrect-usage")
-                    .replaceAll("%command-usage%", "/followers delete <follower_name>"));
+                    .replaceAll("%command-usage%", "/followers edit <follower_name>"));
             } else {
                 String followerName = String.join(" ", args);
                 FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerName);
