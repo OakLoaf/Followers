@@ -30,6 +30,7 @@ import org.lushplugins.followers.entity.tasks.*;
 
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.followers.utils.SkinData;
+import org.lushplugins.followers.utils.TeamUtil;
 import org.lushplugins.lushlib.libraries.chatcolor.ModernChatColorHandler;
 import org.lushplugins.lushlib.libraries.chatcolor.parsers.ParserTypes;
 
@@ -327,40 +328,41 @@ public class Follower {
 
         this.setWorld(world);
 
-        if (Followers.getInstance().callEvent(new FollowerEntitySpawnEvent(this))) {
-            FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerType);
-            if (followerHandler == null) {
-                return false;
-            }
-
-            entity = followerHandler.createEntity();
-
-            if (entity instanceof WrapperPlayer wrapperPlayer) {
-                SkinData skinData = followerHandler.getSkin();
-                if (skinData != null && skinData.getValue().equals("mirror")) {
-                    if (this instanceof OwnedFollower ownedFollower && ownedFollower.getOwner() instanceof Player player) {
-                        User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
-                        wrapperPlayer.setTextureProperties(user.getProfile().getTextureProperties());
-                    }
-                }
-            }
-
-            entity.spawn(location);
-            refresh();
-            setType(followerType);
-
-            addTasks(
-                TaskId.MOVE_NEAR,
-                TaskId.VIEWERS,
-                TaskId.VALIDATE
-            );
-
-            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::reloadInventory, 5);
-            return true;
-        } else {
+        if (!Followers.getInstance().callEvent(new FollowerEntitySpawnEvent(this))) {
             despawn();
             return false;
         }
+
+        FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerType);
+        if (followerHandler == null) {
+            return false;
+        }
+
+        entity = followerHandler.createEntity();
+        TeamUtil.sendAddFollowerTeamPacket(entity.getUuid());
+
+        if (entity instanceof WrapperPlayer wrapperPlayer) {
+            SkinData skinData = followerHandler.getSkin();
+            if (skinData != null && skinData.getValue().equals("mirror")) {
+                if (this instanceof OwnedFollower ownedFollower && ownedFollower.getOwner() instanceof Player player) {
+                    User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
+                    wrapperPlayer.setTextureProperties(user.getProfile().getTextureProperties());
+                }
+            }
+        }
+
+        entity.spawn(location);
+        refresh();
+        setType(followerType);
+
+        addTasks(
+            TaskId.MOVE_NEAR,
+            TaskId.VIEWERS,
+            TaskId.VALIDATE
+        );
+
+        Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::reloadInventory, 5);
+        return true;
     }
 
     public void despawn() {
