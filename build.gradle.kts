@@ -39,7 +39,7 @@ dependencies {
 
     // Libraries
     api("me.tofaa.entitylib:spigot:2.4.11-SNAPSHOT")
-    implementation("org.lushplugins:LushLib:0.10.24")
+    implementation("org.lushplugins:LushLib:0.10.25")
     implementation("org.mineskin:java-client:1.2.4-SNAPSHOT")
 }
 
