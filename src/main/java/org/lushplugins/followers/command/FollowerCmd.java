@@ -295,6 +295,7 @@ public class FollowerCmd extends Command {
 
         public MessageCmd() {
             super("message");
+            addRequiredPermission("follower.admin.messages");
         }
 
         @Override
