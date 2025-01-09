@@ -60,7 +60,7 @@ tasks {
 
     shadowJar {
         relocate("me.tofaa.entitylib", "org.lushplugins.followers.libraries.entitylib")
-//        relocate("org.lushplugins.lushlib", "org.lushplugins.followers.libraries.lushlib")
+        relocate("org.lushplugins.lushlib", "org.lushplugins.followers.libraries.lushlib")
 
         minimize()
 
