@@ -290,9 +290,10 @@ public class Follower {
             nameTagEntity.spawn(new Location(entity.getLocation().getPosition(), 0, 0));
         }
 
+        float scale = (float) getTypeHandler().getScale() + 0.25f;
         float translation;
         if (entity != null && entity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta && armorStandMeta.isMarker()) {
-            translation = 0.6f;
+            translation = 1.2f * (scale - 0.25f);
         } else {
             translation = 0.1f;
         }
@@ -300,7 +301,6 @@ public class Follower {
         TextDisplayMeta textDisplayMeta = (TextDisplayMeta) nameTagEntity.getEntityMeta();
         textDisplayMeta.setTranslation(new Vector3f(0, translation, 0));
 
-        float scale = (float) getTypeHandler().getScale() + 0.25f;
         textDisplayMeta.setScale(new Vector3f(scale, scale, scale));
 
         String nickname = Followers.getInstance().getConfigManager().getFollowerNicknameFormat()
