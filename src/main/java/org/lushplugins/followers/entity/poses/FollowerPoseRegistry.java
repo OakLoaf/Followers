@@ -15,7 +15,6 @@ public class FollowerPoseRegistry {
     public FollowerPoseRegistry() {
         setPoses(ARMADILLO, new ArmadilloPoses());
         setPoses(ARMOR_STAND, new ArmorStandPoses());
-        setPoses(AXOLOTL, new AxolotlPoses());
         setPoses(CAMEL, new CamelPoses());
         setPoses(CAT, new CatPoses());
         setPoses(FOX, new FoxPoses());
