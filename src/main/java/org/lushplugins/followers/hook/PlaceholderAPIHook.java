@@ -42,7 +42,7 @@ public class PlaceholderAPIHook extends Hook {
                     return String.valueOf(followerUser.isFollowerEnabled());
                 }
                 case "name" -> {
-                    return followerUser.getFollowerType();
+                    return followerUser.getFollowerTypeName();
                 }
                 case "pose" -> {
                     Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollower();

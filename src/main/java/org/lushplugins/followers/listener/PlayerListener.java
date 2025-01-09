@@ -27,7 +27,7 @@ public class PlayerListener implements Listener {
 
         Followers.getInstance().getDataManager().loadFollowerUser(playerUUID).thenAccept(followerUser -> {
             followerUser.setUsername(player.getName());
-            String followerName = followerUser.getFollowerType();
+            String followerName = followerUser.getFollowerTypeName();
             if (followerUser.isFollowerEnabled() && player.hasPermission("followers." +  followerName.toLowerCase().replaceAll(" ", "_"))) {
                 Bukkit.getScheduler().runTaskLater(Followers.getInstance(), followerUser::spawnFollower, 1);
             }

@@ -57,11 +57,11 @@ public class Follower {
         this.displayName = displayName;
     }
 
-    public String getType() {
+    public String getTypeName() {
         return followerType;
     }
 
-    public FollowerHandler getTypeHandler() {
+    public FollowerHandler getType() {
         return Followers.getInstance().getFollowerManager().getFollower(followerType);
     }
 
@@ -290,7 +290,7 @@ public class Follower {
             nameTagEntity.spawn(new Location(entity.getLocation().getPosition(), 0, 0));
         }
 
-        float scale = (float) getTypeHandler().getScale() + 0.25f;
+        float scale = (float) getType().getScale() + 0.25f;
         float translation;
         if (entity != null && entity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta && armorStandMeta.isMarker()) {
             translation = 1.2f * (scale - 0.25f);

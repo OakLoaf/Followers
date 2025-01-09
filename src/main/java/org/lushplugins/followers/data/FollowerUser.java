@@ -3,6 +3,7 @@ package org.lushplugins.followers.data;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.Followers;
+import org.lushplugins.followers.config.FollowerHandler;
 import org.lushplugins.followers.entity.OwnedFollower;
 import org.lushplugins.followers.entity.poses.FollowerPose;
 import org.bukkit.Bukkit;
@@ -75,8 +76,12 @@ public class FollowerUser {
         }
     }
 
-    public String getFollowerType() {
+    public String getFollowerTypeName() {
         return this.followerType;
+    }
+
+    public FollowerHandler getFollowerType() {
+        return followerType != null ? Followers.getInstance().getFollowerManager().getFollower(followerType) : null;
     }
 
     public void setFollowerType(String followerType) {

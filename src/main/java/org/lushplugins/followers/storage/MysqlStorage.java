@@ -105,7 +105,7 @@ public class MysqlStorage implements Storage {
             )) {
                 stmt.setString(1, followerUser.getUniqueId().toString());
                 stmt.setString(2, followerUser.getUsername());
-                stmt.setString(3, followerUser.getFollowerType());
+                stmt.setString(3, followerUser.getFollowerTypeName());
                 stmt.setString(4, followerUser.getDisplayName());
                 stmt.setBoolean(5, followerUser.isDisplayNameEnabled());
                 stmt.setBoolean(6, followerUser.isFollowerEnabled());

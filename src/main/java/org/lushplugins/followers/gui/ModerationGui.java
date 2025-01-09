@@ -37,7 +37,7 @@ public class ModerationGui extends PagedGui {
             }
 
             OwnedFollower follower = ownedFollowers.get(startPos);
-            FollowerHandler followerHandler = follower.getTypeHandler();
+            FollowerHandler followerHandler = follower.getType();
             if (followerHandler == null) {
                 continue;
             }

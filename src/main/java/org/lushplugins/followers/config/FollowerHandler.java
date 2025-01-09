@@ -95,6 +95,10 @@ public class FollowerHandler {
         return name;
     }
 
+    public String getPermission() {
+        return "followers." + name.toLowerCase().replaceAll(" ", "_");
+    }
+
     public EntityType getEntityType() {
         return entityType;
     }
