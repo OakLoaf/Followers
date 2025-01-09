@@ -1,4 +1,4 @@
-package org.lushplugins.followers.gui.custom;
+package org.lushplugins.followers.gui;
 
 import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import com.github.retrooper.packetevents.protocol.world.Location;

@@ -1,4 +1,4 @@
-package org.lushplugins.followers.gui.custom;
+package org.lushplugins.followers.gui;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
