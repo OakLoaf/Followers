@@ -47,7 +47,7 @@ public class ConfigManager {
         this.speed = speed;
 
         defaultScale = config.getDouble("default-scale", 1);
-        heightOffset = config.getDouble("height-offset", 0);
+        heightOffset = config.getDouble("height-offset", 0) - 0.2; // Lowered by 0.2 for more reasonable default height
         nicknameFormat = config.getString("follower-nickname-format", "%nickname%");
         defaultNickname = config.getString("follower-default-nickname", "Unnamed");
         worldBlacklist = config.getStringList("world-blacklist");
