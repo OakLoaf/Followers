@@ -142,7 +142,10 @@ public class FollowerHandler {
         if (entityType.equals(EntityTypes.PLAYER)) {
             List<TextureProperty> textureProperties = List.of(new TextureProperty("textures", skin.getValue(), skin.getSignature()));
 
-            WrapperPlayer entity = new WrapperPlayer(new UserProfile(uuid, "", textureProperties), entityId);
+            WrapperPlayer entity = new WrapperPlayer(
+                new UserProfile(uuid, "", textureProperties),
+                entityId
+            );
             entity.setInTablist(false);
 
             PlayerMeta meta = entity.getEntityMeta(PlayerMeta.class);

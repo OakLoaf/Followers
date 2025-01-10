@@ -30,7 +30,7 @@ import org.lushplugins.followers.entity.tasks.*;
 
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.followers.utils.SkinData;
-import org.lushplugins.followers.utils.TeamUtil;
+import org.lushplugins.followers.utils.PacketsHelper;
 import org.lushplugins.lushlib.libraries.chatcolor.ModernChatColorHandler;
 import org.lushplugins.lushlib.libraries.chatcolor.parsers.ParserTypes;
 
@@ -339,7 +339,6 @@ public class Follower {
         }
 
         entity = followerHandler.createEntity();
-        TeamUtil.sendAddFollowerTeamPacket(entity.getUuid());
 
         if (entity instanceof WrapperPlayer wrapperPlayer) {
             SkinData skinData = followerHandler.getSkin();
@@ -354,6 +353,16 @@ public class Follower {
         entity.spawn(location);
         refresh();
         setType(followerType);
+
+        if (!(entity instanceof WrapperPlayer)) {
+            PacketsHelper.sendPacket(
+                PacketsHelper.createTeamsAddEntitiesPacket(
+                    PacketsHelper.FOLLOWERS_TEAM_NAME,
+                    Collections.singletonList(entity.getUuid().toString())
+                ),
+                Bukkit.getOnlinePlayers()
+            );
+        }
 
         addTasks(
             TaskId.MOVE_NEAR,

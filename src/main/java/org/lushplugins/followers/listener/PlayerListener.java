@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
-import org.lushplugins.followers.utils.TeamUtil;
+import org.lushplugins.followers.utils.PacketsHelper;
 
 import java.util.UUID;
 
@@ -23,7 +23,10 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
 
-        TeamUtil.sendCreateFollowerTeamPacket(player);
+        PacketsHelper.sendPacket(
+            PacketsHelper.createFollowersTeamPacket(),
+            player
+        );
 
         Followers.getInstance().getDataManager().loadFollowerUser(playerUUID).thenAccept(followerUser -> {
             followerUser.setUsername(player.getName());
