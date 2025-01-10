@@ -8,6 +8,7 @@ import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.protocol.world.Location;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.util.Vector3f;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerBundle;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import me.tofaa.entitylib.meta.display.TextDisplayMeta;
@@ -234,10 +235,14 @@ public class Follower {
 
         WrapperLivingEntity entity;
         if (!this.entity.getEntityType().equals(followerHandler.getEntityType())) {
+            this.entity.sendPacketToViewers(new WrapperPlayServerBundle());
+            // Despawn current entity
             this.entity.despawn();
             // Handles changing the entity type
             entity = followerHandler.createEntity(this.entity.getEntityId(), this.entity.getUuid());
+            // Spawn new entity
             entity.spawn(this.entity.getLocation());
+            this.entity.sendPacketToViewers(new WrapperPlayServerBundle());
         } else {
             entity = this.entity;
 
