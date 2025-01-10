@@ -483,20 +483,23 @@ public class FollowerCmd extends Command {
             }
 
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-            Follower follower = followerUser.getFollower();
-            if (follower == null || !follower.isSpawned()) {
+
+            String messageKey;
+            if (followerUser.isFollowerEnabled()) {
+                followerUser.setFollowerEnabled(false);
+                messageKey = "follower-despawned";
+            } else {
                 FollowerHandler followerType = followerUser.getFollowerType();
                 if (followerType == null || !player.hasPermission(followerType.getPermission())) {
                     ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-not-selected"));
                     return true;
                 }
 
-                Followers.getInstance().getDataManager().getFollowerUser(player).spawnFollower();
-                ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-spawned"));
-            } else {
-                Followers.getInstance().getDataManager().getFollowerUser(player).setFollowerEnabled(false);
+                followerUser.setFollowerEnabled(true);
+                messageKey = "follower-spawned";
             }
 
+            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage(messageKey));
             return true;
         }
     }
