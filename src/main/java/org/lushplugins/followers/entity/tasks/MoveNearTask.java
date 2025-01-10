@@ -21,7 +21,7 @@ public class MoveNearTask extends MoveToTask {
         Vector3d target = follower.getTarget();
         if (target != null) {
             Vector3d difference = getDifference(
-                Followers.getInstance().getEyeHeightRegistry().calculateEyeLocation(entity).getPosition(),
+                position,
                 follower.getTarget());
             if (new Vector3d(difference.getX(), 0 , difference.getZ()).lengthSquared() < 6.25) {
                 position = position.add(new Vector3d(0, difference.getY() * speed, 0));

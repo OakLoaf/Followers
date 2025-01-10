@@ -51,7 +51,7 @@ public class MoveToTask extends FollowerTask {
         Vector3d target = follower.getTarget();
         if (target != null) {
             Vector3d difference = getDifference(
-                Followers.getInstance().getEyeHeightRegistry().calculateEyeLocation(entity).getPosition(),
+                position,
                 follower.getTarget());
             Vector3d normalizedDifference = difference.normalize();
             double distance = difference.length() - 5;

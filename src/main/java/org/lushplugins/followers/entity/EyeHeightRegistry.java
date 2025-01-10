@@ -1,5 +1,6 @@
 package org.lushplugins.followers.entity;
 
+import com.github.retrooper.packetevents.protocol.attribute.Attributes;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.retrooper.packetevents.protocol.world.Location;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerUpdateAttributes;
@@ -37,7 +38,7 @@ public class EyeHeightRegistry {
 
         double scale = 1;
         for (WrapperPlayServerUpdateAttributes.Property property : entity.getAttributes().getProperties()) {
-            if (property.getAttribute().getName().toString().equals("minecraft:generic.scale")) {
+            if (property.getAttribute() == Attributes.GENERIC_SCALE) {
                 scale = property.getValue();
                 break;
             }
