@@ -32,7 +32,11 @@ public class MenuGui extends PagedGui {
     private final FollowerUser followerUser;
 
     public MenuGui(Player player) {
-        super(54, ChatColorHandler.translate(Followers.getInstance().getConfigManager().getGuiTitle("menu-gui"), player), player);
+        super(
+            Followers.getInstance().getConfigManager().getGuiFormat().getSize(),
+            ChatColorHandler.translate(Followers.getInstance().getConfigManager().getGuiTitle("menu-gui"), player),
+            player
+        );
         followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
 
         GuiFormat guiFormat = Followers.getInstance().getConfigManager().getGuiFormat();
