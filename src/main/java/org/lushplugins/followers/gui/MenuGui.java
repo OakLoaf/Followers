@@ -15,11 +15,11 @@ import org.lushplugins.followers.gui.button.FollowerToggleButton;
 import org.lushplugins.followers.gui.button.NicknameButton;
 import org.lushplugins.followers.gui.button.RandomiseButton;
 import org.lushplugins.lushlib.gui.button.Button;
-import org.lushplugins.lushlib.gui.button.LegacySimpleItemButton;
+import org.lushplugins.lushlib.gui.button.SimpleItemButton;
 import org.lushplugins.lushlib.gui.inventory.GuiFormat;
 import org.lushplugins.lushlib.gui.inventory.PagedGui;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
-import org.lushplugins.lushlib.utils.SimpleItemStack;
+import org.lushplugins.lushlib.utils.DisplayItemStack;
 
 import java.time.Duration;
 import java.util.List;
@@ -41,25 +41,41 @@ public class MenuGui extends PagedGui {
 
         GuiFormat guiFormat = Followers.getInstance().getConfigManager().getGuiFormat();
         TreeMultimap<Character, Integer> slotMap = guiFormat.getSlotMap();
-
-        ItemStack borderItem = Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "border", Material.GRAY_STAINED_GLASS_PANE).asItemStack(player);
-        slotMap.get('#').forEach(slot -> setItem(slot, borderItem));
-
-        Button toggleButton = new FollowerToggleButton(this, player, followerUser);
-        slotMap.get('T').forEach(slot -> addButton(slot, toggleButton));
-
-        if (player.hasPermission("follower.name")) {
-            Button nicknameButton = new NicknameButton(this, player, followerUser);
-            slotMap.get('N').forEach(slot -> addButton(slot, nicknameButton));
-        } else {
-            slotMap.get('N').forEach(slot -> setItem(slot, borderItem));
-        }
-
-        if (player.hasPermission("follower.random")) {
-            Button randomiseButton = new RandomiseButton(this, player, followerUser);
-            slotMap.get('R').forEach(slot -> addButton(slot, randomiseButton));
-        } else {
-            slotMap.get('R').forEach(slot -> setItem(slot, borderItem));
+        for (Character character : slotMap.keySet()) {
+            switch (character) {
+                case 'T' -> {
+                    Button toggleButton = new FollowerToggleButton(this, player, followerUser);
+                    slotMap.get(character).forEach(slot -> addButton(slot, toggleButton));
+                }
+                case 'N' -> {
+                    if (player.hasPermission("follower.name")) {
+                        Button nicknameButton = new NicknameButton(this, player, followerUser);
+                        slotMap.get(character).forEach(slot -> addButton(slot, nicknameButton));
+                    } else {
+                        DisplayItemStack borderItem = guiFormat.getItemReference('#');
+                        if (borderItem != null) {
+                            slotMap.get(character).forEach(slot -> setItem(slot, borderItem.asItemStack()));
+                        }
+                    }
+                }
+                case 'R' -> {
+                    if (player.hasPermission("follower.random")) {
+                        Button randomiseButton = new RandomiseButton(this, player, followerUser);
+                        slotMap.get('R').forEach(slot -> addButton(slot, randomiseButton));
+                    } else {
+                        DisplayItemStack borderItem = guiFormat.getItemReference('#');
+                        if (borderItem != null) {
+                            slotMap.get(character).forEach(slot -> setItem(slot, borderItem.asItemStack()));
+                        }
+                    }
+                }
+                default -> {
+                    DisplayItemStack itemReference = guiFormat.getItemReference(character);
+                    if (itemReference != null) {
+                        slotMap.get(character).forEach(slot -> setItem(slot, itemReference.asItemStack()));
+                    }
+                }
+            }
         }
     }
 
@@ -71,52 +87,68 @@ public class MenuGui extends PagedGui {
             .toList();
 
         GuiFormat guiFormat = Followers.getInstance().getConfigManager().getGuiFormat();
-        TreeMultimap<Character, Integer> slotMap = guiFormat.getSlotMap();
-
-        ItemStack borderItem = Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "border", Material.GRAY_STAINED_GLASS_PANE).asItemStack(player);
         int followersPerPage = guiFormat.getCharCount('F');
 
-        int index = (page - 1) * followersPerPage;
-        for (int slot : slotMap.get('F')) {
-            if (index >= followerList.size() || followerList.isEmpty()) {
-                setItem(slot, new ItemStack(Material.AIR));
-                removeButton(slot);
-            } else {
-                String followerName = followerList.get(index);
-                FollowerButton button = FOLLOWER_BUTTONS_CACHE.getIfPresent(followerName);
-                if (button == null) {
-                    button = new FollowerButton(followerName);
-                    FOLLOWER_BUTTONS_CACHE.put(followerName, button);
+        TreeMultimap<Character, Integer> slotMap = guiFormat.getSlotMap();
+        for (Character character : slotMap.keySet()) {
+            switch (character) {
+                case 'F' -> {
+                    int index = (page - 1) * followersPerPage;
+                    for (int slot : slotMap.get(character)) {
+                        if (index >= followerList.size() || followerList.isEmpty()) {
+                            setItem(slot, new ItemStack(Material.AIR));
+                            removeButton(slot);
+                        } else {
+                            String followerName = followerList.get(index);
+                            FollowerButton button = FOLLOWER_BUTTONS_CACHE.getIfPresent(followerName);
+                            if (button == null) {
+                                button = new FollowerButton(followerName);
+                                FOLLOWER_BUTTONS_CACHE.put(followerName, button);
+                            }
+
+                            addButton(slot, button);
+                        }
+
+                        index++;
+                    }
                 }
-
-                addButton(slot, button);
+                case '>' -> {
+                    if (followerList.size() > page * followersPerPage) {
+                        DisplayItemStack itemReference = guiFormat.getItemReference(character);
+                        if (itemReference != null) {
+                            slotMap.get(character).forEach(slot -> addButton(slot, new SimpleItemButton(itemReference, (event) -> nextPage())));
+                        }
+                    } else {
+                        DisplayItemStack borderItem = guiFormat.getItemReference('#');
+                        if (borderItem != null) {
+                            slotMap.get(character).forEach(slot -> {
+                                setItem(slot, borderItem.asItemStack());
+                                removeButton(slot);
+                            });
+                        }
+                    }
+                }
+                case '<' -> {
+                    if (page > 1) {
+                        DisplayItemStack itemReference = guiFormat.getItemReference(character);
+                        if (itemReference != null) {
+                            slotMap.get(character).forEach(slot -> addButton(slot, new SimpleItemButton(itemReference, (event) -> previousPage())));
+                        }
+                    } else {
+                        DisplayItemStack borderItem = guiFormat.getItemReference('#');
+                        if (borderItem != null) {
+                            slotMap.get(character).forEach(slot -> {
+                                setItem(slot, borderItem.asItemStack());
+                                removeButton(slot);
+                            });
+                        }
+                    }
+                }
             }
-
-            index++;
         }
 
         if (followerList.isEmpty()) {
             setItem(22, Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "no-followers", Material.BARRIER).asItemStack(player));
-        }
-
-        if (page > 1) {
-            SimpleItemStack previousPageButton = Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "previous-page", Material.ARROW);
-            slotMap.get('<').forEach(slot -> addButton(slot, new LegacySimpleItemButton(previousPageButton, (event) -> previousPage())));
-        } else {
-            slotMap.get('<').forEach(slot -> {
-                setItem(slot, borderItem);
-                removeButton(slot);
-            });
-        }
-
-        if (followerList.size() > page * followersPerPage) {
-            SimpleItemStack nextPageButton = Followers.getInstance().getConfigManager().getGuiItem("menu-gui", "next-page", Material.ARROW);
-            slotMap.get('>').forEach(slot -> addButton(slot, new LegacySimpleItemButton(nextPageButton, (event) -> nextPage())));
-        } else {
-            slotMap.get('>').forEach(slot -> {
-                setItem(slot, borderItem);
-                removeButton(slot);
-            });
         }
 
         super.refresh();

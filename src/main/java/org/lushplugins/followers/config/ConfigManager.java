@@ -5,7 +5,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
+import org.lushplugins.followers.utils.YamlConverter;
 import org.lushplugins.lushlib.gui.inventory.GuiFormat;
+import org.lushplugins.lushlib.utils.YamlUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +67,26 @@ public class ConfigManager {
                 "NR#<T>###"
             );
         }
-        // TODO: Move some static items over to DisplayItemStack and use GuiFormat#setItemReference
+
+        for (ConfigurationSection itemSection : YamlUtils.getConfigurationSections(config, "menu-gui.items")) {
+            String name = itemSection.getName();
+
+            char character;
+            switch (name) {
+                case "border" -> character = '#';
+                case "next-page" -> character = '>';
+                case "previous-page" -> character = '<';
+                default -> {
+                    if (name.length() == 1) {
+                        character = name.charAt(0);
+                    } else {
+                        continue;
+                    }
+                }
+            }
+
+            guiFormat.setItemReference(character, YamlConverter.getDisplayItem(itemSection));
+        }
 
         gui = new GuiConfig(
             config.getString("menu-gui.title", "Followers"),
