@@ -13,6 +13,8 @@ public class EntityTypeUtils {
             return Material.ARMOR_STAND;
         } else if (entityType.equals(EntityTypes.GIANT)) {
             return Material.ZOMBIE_SPAWN_EGG;
+        } else if (entityType.equals(EntityTypes.PLAYER)) {
+            return Material.PLAYER_HEAD;
         } else {
             String materialRaw = entityType.getName().toString() + "_spawn_egg";
 
