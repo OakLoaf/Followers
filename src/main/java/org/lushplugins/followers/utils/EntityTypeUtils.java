@@ -16,11 +16,8 @@ public class EntityTypeUtils {
         } else {
             String materialRaw = entityType.getName().toString() + "_spawn_egg";
 
-            try {
-                return RegistryUtils.parseString(materialRaw, Registry.MATERIAL);
-            } catch (IllegalArgumentException e) {
-                return Material.POLAR_BEAR_SPAWN_EGG;
-            }
+            Material material = RegistryUtils.parseString(materialRaw, Registry.MATERIAL);
+            return material != null ? material : Material.POLAR_BEAR_SPAWN_EGG;
         }
     }
 }
