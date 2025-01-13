@@ -1,13 +1,11 @@
 package org.lushplugins.followers.gui.button;
 
-import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.config.FollowerHandler;
-import org.lushplugins.followers.utils.EntityTypeUtils;
 import org.lushplugins.lushlib.gui.button.ItemButton;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 import org.lushplugins.lushlib.libraries.chatcolor.parsers.ParserTypes;
@@ -30,15 +28,7 @@ public class FollowerButton extends ItemButton {
         FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerName);
         SimpleItemStack displayItem;
         if (followerHandler != null) {
-            SimpleItemStack handlerDisplayItem = followerHandler.getDisplayItem();
-            SimpleItemStack headItem = followerHandler.getEquipmentSlot(EquipmentSlot.HELMET);
-            if (handlerDisplayItem != null && handlerDisplayItem.getType() != Material.AIR) {
-                displayItem = handlerDisplayItem.clone();
-            } else if (headItem != null && headItem.getType() != Material.AIR) {
-                displayItem = headItem.clone();
-            } else {
-                displayItem = new SimpleItemStack(EntityTypeUtils.getSpawnEgg(followerHandler.getEntityType()));
-            }
+            displayItem = followerHandler.getDisplayItemOrSimilar();
         } else {
             displayItem = new SimpleItemStack(Material.ARMOR_STAND);
         }

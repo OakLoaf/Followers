@@ -10,15 +10,18 @@ import me.tofaa.entitylib.meta.types.AgeableMeta;
 import me.tofaa.entitylib.meta.types.LivingEntityMeta;
 import me.tofaa.entitylib.meta.types.PlayerMeta;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
+import org.lushplugins.followers.Followers;
+import org.lushplugins.followers.gui.button.BooleanButton;
 import org.lushplugins.followers.utils.ClassUtils;
 import org.lushplugins.lushlib.gui.button.ItemButton;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+// TODO: Consider moving to ConfigurationData
 public class EntityConfiguration {
     private final EntityType entityType;
     private boolean invisible;
@@ -47,7 +50,14 @@ public class EntityConfiguration {
     }
 
     public List<ItemButton> getGuiButtons() {
-        return Collections.emptyList();
+        return List.of(
+            new BooleanButton(
+                invisible,
+                () -> Followers.getInstance().getConfigManager().getGuiItem("builder-gui", "visibility-button.invisible", Material.GLASS).asItemStack(),
+                () -> Followers.getInstance().getConfigManager().getGuiItem("builder-gui", "visibility-button.visible", Material.WHITE_STAINED_GLASS).asItemStack(),
+                (value) -> this.invisible = value
+            )
+        );
     }
 
     public WrapperEntity createEntity() {

@@ -4,6 +4,7 @@ import org.lushplugins.followers.Followers;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.lushplugins.followers.config.FollowerHandler;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
+import org.lushplugins.followers.utils.entity.LivingEntityConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,10 +17,12 @@ public class GeyserSkullExporter {
 
         HashSet<String> textures = new HashSet<>();
         for (FollowerHandler followerHandler : Followers.getInstance().getFollowerManager().getFollowers().values()) {
-            for (ExtendedSimpleItemStack item : followerHandler.getEquipment().values()) {
-                String skullTexture = item.getSkullTexture();
-                if (skullTexture != null) {
-                    textures.add(skullTexture);
+            if (followerHandler.getEntityConfig() instanceof LivingEntityConfiguration entityConfig) {
+                for (ExtendedSimpleItemStack item : entityConfig.getEquipment().values()) {
+                    String skullTexture = item.getSkullTexture();
+                    if (skullTexture != null) {
+                        textures.add(skullTexture);
+                    }
                 }
             }
         }

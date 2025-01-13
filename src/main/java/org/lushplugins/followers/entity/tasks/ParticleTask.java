@@ -3,7 +3,7 @@ package org.lushplugins.followers.entity.tasks;
 import com.github.retrooper.packetevents.protocol.particle.Particle;
 import com.github.retrooper.packetevents.protocol.particle.type.ParticleType;
 import com.github.retrooper.packetevents.util.Vector3f;
-import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
+import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.World;
 import org.lushplugins.followers.entity.Follower;
 import org.lushplugins.followers.utils.ParticleUtils;
@@ -23,7 +23,7 @@ public class ParticleTask extends FollowerTask {
 
     @Override
     public void tick(Follower follower) {
-        WrapperLivingEntity entity = follower.getEntity();
+        WrapperEntity entity = follower.getEntity();
         if (entity == null || !follower.isSpawned()) {
             follower.removeTask(this.getId());
             return;

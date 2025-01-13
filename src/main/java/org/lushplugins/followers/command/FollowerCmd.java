@@ -228,7 +228,7 @@ public class FollowerCmd extends Command {
                     new BuilderGui(
                         player,
                         BuilderGui.Mode.EDIT,
-                        FollowerHandler.builder()
+                        FollowerHandler.builder(followerHandler)
                             .name(followerName)
                             .nameLocked(true)
                     ).open();

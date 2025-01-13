@@ -1,7 +1,6 @@
 package org.lushplugins.followers.entity.poses;
 
 import me.tofaa.entitylib.wrapper.WrapperEntity;
-import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 
 import java.util.HashMap;
 import java.util.function.Consumer;

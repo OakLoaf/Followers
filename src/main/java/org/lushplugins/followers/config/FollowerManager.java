@@ -1,6 +1,5 @@
 package org.lushplugins.followers.config;
 
-import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -10,14 +9,12 @@ import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.entity.EyeHeightRegistry;
 import org.lushplugins.followers.entity.poses.FollowerPoseRegistry;
 import org.lushplugins.followers.entity.tasks.FollowerTaskRegistry;
-import org.lushplugins.followers.utils.Converter;
-import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
-import org.lushplugins.followers.utils.SkinData;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
 
 public class FollowerManager {
     private static final FollowerTaskRegistry TASK_REGISTRY = new FollowerTaskRegistry();
@@ -43,7 +40,7 @@ public class FollowerManager {
         try {
             config.save(followerConfigFile);
         } catch (IOException e) {
-            e.printStackTrace();
+            Followers.getInstance().getLogger().log(Level.WARNING, "Failed to save 'followers.yml':", e);
         }
     }
 
@@ -72,36 +69,20 @@ public class FollowerManager {
         Followers.getInstance().getDataManager().getOnlineFollowerUsers().forEach(FollowerUser::refreshFollower);
     }
 
-    public void createFollower(Player player, FollowerHandler followerHandler) {
-        createFollower(player, followerHandler, false);
+    public void createFollowerType(Player player, FollowerHandler followerHandler) {
+        createFollowerType(player, followerHandler, false);
     }
 
-    public void createFollower(Player player, FollowerHandler followerHandler, boolean replace) {
+    public void createFollowerType(Player player, FollowerHandler followerHandler, boolean replace) {
         String followerName = followerHandler.getName();
-        ConfigurationSection configurationSection = config.getConfigurationSection(followerName);
-        if (!replace && configurationSection != null) {
+        ConfigurationSection configSection = config.getConfigurationSection(followerName);
+        if (!replace && configSection != null) {
             ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-already-exists"));
             return;
         }
 
-        configurationSection = config.createSection(followerName);
-        configurationSection.set("entityType", followerHandler.getEntityType().getName().toString());
-
-        SkinData skin = followerHandler.getSkin();
-        if (skin != null) {
-            configurationSection.set("skin", skin.getValue());
-            configurationSection.set("skin-signature", skin.getSignature());
-        }
-
-        for (Map.Entry<EquipmentSlot, ExtendedSimpleItemStack> entry : followerHandler.getEquipment().entrySet()) {
-            EquipmentSlot slot = entry.getKey();
-            ExtendedSimpleItemStack item = entry.getValue();
-
-            item.save(configurationSection, Converter.getEquipmentSlotName(slot));
-        }
-
-        configurationSection.set("visible", followerHandler.isVisible());
-        configurationSection.set("scale", followerHandler.getScale());
+        configSection = config.createSection(followerName);
+        followerHandler.getEntityConfig().save(configSection);
 
         if (!replace) {
             ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-created")
@@ -116,8 +97,8 @@ public class FollowerManager {
         Followers.getInstance().getFollowerManager().refreshAllFollowers();
     }
 
-    public void editFollower(Player player, FollowerHandler followerHandler) {
-        createFollower(player, followerHandler, true);
+    public void editFollowerType(Player player, FollowerHandler followerHandler) {
+        createFollowerType(player, followerHandler, true);
     }
 
     public void loadFollower(@NotNull ConfigurationSection configurationSection) {

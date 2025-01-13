@@ -3,7 +3,6 @@ package org.lushplugins.followers.entity.tasks;
 import com.github.retrooper.packetevents.protocol.world.Location;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
-import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.lushplugins.followers.entity.Follower;
@@ -22,7 +21,7 @@ public class ViewersTask extends FollowerTask {
     @Override
     public void tick(Follower follower) {
         Location location = follower.getLocation();
-        WrapperLivingEntity entity = follower.getEntity();
+        WrapperEntity entity = follower.getEntity();
         if (entity == null) {
             return;
         }

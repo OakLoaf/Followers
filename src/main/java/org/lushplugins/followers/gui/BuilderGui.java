@@ -1,6 +1,7 @@
 package org.lushplugins.followers.gui;
 
 import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
+import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Registry;
@@ -17,6 +18,7 @@ import org.lushplugins.followers.utils.EntityTypeUtils;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.followers.utils.StringUtils;
 import org.lushplugins.followers.utils.TextInterface;
+import org.lushplugins.followers.utils.entity.LivingEntityConfiguration;
 import org.lushplugins.lushlib.gui.button.DynamicItemButton;
 import org.lushplugins.lushlib.gui.button.ItemButton;
 import org.lushplugins.lushlib.gui.inventory.Gui;
@@ -36,13 +38,13 @@ public class BuilderGui extends Gui {
 //        Map.entry(10, EquipmentSlot.BODY)
     );
 
-    private final FollowerHandler.Builder followerBuilder;
+    private final FollowerHandler.Builder builder;
     private final Mode mode;
 
-    public BuilderGui(Player player, Mode mode, FollowerHandler.Builder followerBuilder) {
+    public BuilderGui(Player player, Mode mode, FollowerHandler.Builder builder) {
         super(54, ChatColorHandler.translate(Followers.getInstance().getConfigManager().getGuiTitle("builder-gui"), player), player);
         this.mode = mode;
-        this.followerBuilder = followerBuilder;
+        this.builder = builder;
 
         EQUIPMENT_SLOT_MAP.keySet().forEach(this::unlockSlot);
 
@@ -55,8 +57,14 @@ public class BuilderGui extends Gui {
             slot,
             new DynamicItemButton(
                 () -> {
-                    ExtendedSimpleItemStack item = followerBuilder.getEquipmentSlot(equipmentSlot);
-                    return item != null ? item.asItemStack(player) : new ItemStack(Material.AIR);
+                    if (builder.entityConfig() instanceof LivingEntityConfiguration entityConfig) {
+                        ExtendedSimpleItemStack item = entityConfig.getEquipment(equipmentSlot);
+                        if (item != null) {
+                            return item.asItemStack(player);
+                        }
+                    }
+
+                    return new ItemStack(Material.AIR);
                 },
                 (event) -> {
                     ItemStack clickedItem = event.getCurrentItem();
@@ -69,15 +77,21 @@ public class BuilderGui extends Gui {
                         case PLACE_ALL -> {
                             if (EQUIPMENT_SLOT_MAP.containsKey(slot)) {
                                 event.setCancelled(true);
-                                followerBuilder.setEquipmentSlot(EQUIPMENT_SLOT_MAP.get(slot), new ExtendedSimpleItemStack(cursorItem));
-                                refresh(slot);
+
+                                if (builder.entityConfig() instanceof LivingEntityConfiguration entityConfig) {
+                                    entityConfig.setEquipment(equipmentSlot, new ExtendedSimpleItemStack(cursorItem));
+                                    refresh(slot);
+                                }
                             }
                         }
                         case PICKUP_ALL, SWAP_WITH_CURSOR -> {
                             if (EQUIPMENT_SLOT_MAP.containsKey(slot)) {
                                 event.setCancelled(true);
-                                followerBuilder.setEquipmentSlot(EQUIPMENT_SLOT_MAP.get(slot), null);
-                                refresh(slot);
+
+                                if (builder.entityConfig() instanceof LivingEntityConfiguration entityConfig) {
+                                    entityConfig.setEquipment(EQUIPMENT_SLOT_MAP.get(slot), null);
+                                    refresh(slot);
+                                }
                             }
                         }
                         case PLACE_SOME, PLACE_ONE, PICKUP_HALF, PICKUP_SOME, PICKUP_ONE -> {
@@ -91,13 +105,29 @@ public class BuilderGui extends Gui {
                 }
             )));
 
-        List<ItemButton> buttons = List.of(
+        reloadButtons();
+
+        addButton(41, Followers.getInstance().getConfigManager().getGuiItem("builder-gui", "complete-button", Material.LIME_WOOL).asItemStack(player), (event) -> complete());
+        addButton(43, Followers.getInstance().getConfigManager().getGuiItem("builder-gui", "cancel-button", Material.RED_WOOL).asItemStack(player), (event) -> close());
+    }
+
+    public void reloadButtons() {
+        List<Integer> buttonSlots = new LinkedList<>(Arrays.asList(14, 15, 16, 23, 24, 25));
+        Player player = this.getPlayer();
+
+        ItemStack borderItem = Followers.getInstance().getConfigManager().getGuiItem("builder-gui", "border", Material.GRAY_STAINED_GLASS_PANE).asItemStack();
+        for (int slot : buttonSlots) {
+            removeButton(slot);
+            setItem(slot, borderItem);
+        }
+
+        List<ItemButton> buttons = new ArrayList<>(List.of(
             new DynamicItemButton(
                 () -> {
-                    ExtendedSimpleItemStack nametagButton = Followers.getInstance().getConfigManager().getGuiItem("builder-gui", followerBuilder.nameLocked() ? "name-button.locked" : "name-button.default", Material.OAK_SIGN);
+                    ExtendedSimpleItemStack nametagButton = Followers.getInstance().getConfigManager().getGuiItem("builder-gui", this.builder.nameLocked() ? "name-button.locked" : "name-button.default", Material.OAK_SIGN);
                     nametagButton.setDisplayName(nametagButton.getDisplayName() != null
-                        ? nametagButton.getDisplayName().replace("%name%", followerBuilder.name() != null ? followerBuilder.name() : ChatColorHandler.translate("&c&oUnnamed"))
-                        : followerBuilder.name());
+                        ? nametagButton.getDisplayName().replace("%name%", this.builder.name() != null ? this.builder.name() : ChatColorHandler.translate("&c&oUnnamed"))
+                        : this.builder.name());
 
                     return nametagButton.asItemStack();
                 },
@@ -113,8 +143,9 @@ public class BuilderGui extends Gui {
                             String finalOutput = output.replaceAll("\\.", "-");
 
                             try {
-                                followerBuilder.name(finalOutput);
-                            } catch (IllegalStateException ignored) {}
+                                this.builder.name(finalOutput);
+                            } catch (IllegalStateException ignored) {
+                            }
                         } else {
                             ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-no-name"));
                         }
@@ -125,7 +156,7 @@ public class BuilderGui extends Gui {
             ),
             new DynamicItemButton(
                 () -> {
-                    com.github.retrooper.packetevents.protocol.entity.type.EntityType entityType = followerBuilder.entityType();
+                    com.github.retrooper.packetevents.protocol.entity.type.EntityType entityType = this.builder.entityType();
                     String entityTypeRaw = entityType.getName().getKey().toLowerCase();
 
                     ItemStack item = new ItemStack(EntityTypeUtils.getSpawnEgg(entityType));
@@ -150,40 +181,29 @@ public class BuilderGui extends Gui {
                             return;
                         }
 
+                        // Replaces spaces with underscores
+                        output = output.replace(" ", "_");
+
                         EntityType entityType = RegistryUtils.parseString(output, Registry.ENTITY_TYPE);
                         if (entityType != null) {
-                            followerBuilder.entityType(entityType);
+                            this.builder.entityType(SpigotConversionUtil.fromBukkitEntityType(entityType));
                         } else {
                             ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("invalid-entity-type"));
                         }
 
+                        reloadButtons();
                         Bukkit.getScheduler().runTask(Followers.getInstance(), this::open);
                     }), 1);
                 }
-            ),
-            new DynamicItemButton(
-                () -> {
-                    if (followerBuilder.isVisible()) {
-                        return Followers.getInstance().getConfigManager().getGuiItem("builder-gui", "visibility-button.visible", Material.WHITE_STAINED_GLASS).asItemStack();
-                    } else {
-                        return Followers.getInstance().getConfigManager().getGuiItem("builder-gui", "visibility-button.invisible", Material.GLASS).asItemStack();
-                    }
-                },
-                (event) -> {
-                    followerBuilder.setVisible(!followerBuilder.isVisible());
-                    refresh(event.getRawSlot());
-                }
-            ));
+            )));
 
-        List<Integer> buttonSlots = new LinkedList<>(Arrays.asList(14, 15, 16, 23, 24, 25));
+        buttons.addAll(builder.entityConfig().getGuiButtons());
+
         buttons.forEach(button -> {
             if (!buttonSlots.isEmpty()) {
                 addButton(buttonSlots.remove(0), button);
             }
         });
-
-        addButton(41, Followers.getInstance().getConfigManager().getGuiItem("builder-gui", "complete-button", Material.LIME_WOOL).asItemStack(player), (event) -> complete());
-        addButton(43, Followers.getInstance().getConfigManager().getGuiItem("builder-gui", "cancel-button", Material.RED_WOOL).asItemStack(player), (event) -> close());
     }
 
     @Override
@@ -208,7 +228,7 @@ public class BuilderGui extends Gui {
 
     public void complete() {
         Player player = this.getPlayer();
-        if (followerBuilder.name() == null) {
+        if (builder.name() == null) {
             ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-no-name"));
             return;
         }
@@ -216,9 +236,9 @@ public class BuilderGui extends Gui {
         player.closeInventory();
 
         if (mode.equals(Mode.CREATE)) {
-            Followers.getInstance().getFollowerManager().createFollower(player, followerBuilder.build());
+            Followers.getInstance().getFollowerManager().createFollowerType(player, builder.build());
         } else if (mode.equals(Mode.EDIT)) {
-            Followers.getInstance().getFollowerManager().editFollower(player, followerBuilder.build());
+            Followers.getInstance().getFollowerManager().editFollowerType(player, builder.build());
         }
     }
 

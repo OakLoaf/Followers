@@ -4,7 +4,7 @@ import com.github.retrooper.packetevents.protocol.world.Location;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.util.Vector3f;
 import me.tofaa.entitylib.meta.other.ArmorStandMeta;
-import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
+import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.entity.Follower;
 
@@ -17,7 +17,7 @@ public class MoveToTask extends FollowerTask {
     @Override
     public void tick(Follower follower) {
         // Cancels the task if the entity is dead
-        WrapperLivingEntity entity = follower.getEntity();
+        WrapperEntity entity = follower.getEntity();
         if (entity == null || !follower.isSpawned()) {
             follower.removeTask(this.getId());
             return;
@@ -43,7 +43,7 @@ public class MoveToTask extends FollowerTask {
     }
 
     public Vector3d calculatePosition(Follower follower) {
-        WrapperLivingEntity entity = follower.getEntity();
+        WrapperEntity entity = follower.getEntity();
         double speed = Followers.getInstance().getConfigManager().getSpeed();
 
         // Calculates new location of entity based off of the distance to the player
@@ -74,7 +74,7 @@ public class MoveToTask extends FollowerTask {
      * @return A rotation vector of pitch, yaw and roll
      */
     public Vector3f calculateRotation(Follower follower) {
-        WrapperLivingEntity entity = follower.getEntity();
+        WrapperEntity entity = follower.getEntity();
 
         Vector3d difference = getDifference(
             Followers.getInstance().getEyeHeightRegistry().calculateEyeLocation(entity).getPosition(),
@@ -93,7 +93,7 @@ public class MoveToTask extends FollowerTask {
         return 1;
     }
 
-    public static double calculateYOffset(WrapperLivingEntity entity) {
+    public static double calculateYOffset(WrapperEntity entity) {
         return (Math.PI / 60) * Math.sin(((double) 1/30) * Math.PI * (Followers.getInstance().getCurrentTick() + entity.getEntityId()));
     }
 

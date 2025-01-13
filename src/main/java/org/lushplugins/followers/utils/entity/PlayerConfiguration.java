@@ -98,7 +98,7 @@ public class PlayerConfiguration extends LivingEntityConfiguration {
     public void applyAttributes(WrapperEntity entity) {
         super.applyAttributes(entity);
 
-        if (entity instanceof WrapperPlayer player) {
+        if (entity instanceof WrapperPlayer player && !skin.getValue().equalsIgnoreCase("mirror")) {
             player.setTextureProperties(List.of(
                 new TextureProperty(
                     "textures",

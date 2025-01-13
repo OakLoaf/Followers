@@ -3,7 +3,7 @@ package org.lushplugins.followers.utils;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTeams;
-import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
+import me.tofaa.entitylib.wrapper.WrapperEntity;
 import me.tofaa.entitylib.wrapper.WrapperPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -29,7 +29,7 @@ public class PacketsHelper {
     public static WrapperPlayServerTeams createFollowersTeamPacket() {
         List<String> entities = Followers.getInstance().getDataManager().getOwnedFollowers().stream()
             .map(follower -> {
-                WrapperLivingEntity entity = follower.getEntity();
+                WrapperEntity entity = follower.getEntity();
                 return entity != null && !(entity instanceof WrapperPlayer) ? entity.getUuid().toString() : null;
             })
             .filter(Objects::nonNull)

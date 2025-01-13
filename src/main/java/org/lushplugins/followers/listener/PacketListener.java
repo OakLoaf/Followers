@@ -3,9 +3,8 @@ package org.lushplugins.followers.listener;
 import com.github.retrooper.packetevents.event.SimplePacketListenerAbstract;
 import com.github.retrooper.packetevents.event.simple.PacketPlayReceiveEvent;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
-import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
+import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.api.events.PlayerInteractAtFollowerEvent;
 import org.lushplugins.followers.entity.Follower;
@@ -25,11 +24,11 @@ public class PacketListener extends SimplePacketListenerAbstract {
                 int entityId = packet.getEntityId();
 
                 for (Follower follower : Followers.getInstance().getDataManager().getOwnedFollowers()) {
-                    WrapperLivingEntity entity = follower.getEntity();
+                    WrapperEntity entity = follower.getEntity();
                     if (entity != null && entity.getEntityId() == entityId) {
                         Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
                             Followers.getInstance().callEvent(new PlayerInteractAtFollowerEvent(
-                                (Player) event.getPlayer(),
+                                event.getPlayer(),
                                 follower,
                                 packet.getHand()
                             ));

@@ -1,6 +1,6 @@
 package org.lushplugins.followers.entity.tasks;
 
-import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
+import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.entity.Follower;
 import org.bukkit.Bukkit;
@@ -15,7 +15,7 @@ public class ValidateTask extends FollowerTask {
 
     @Override
     public void tick(Follower follower) {
-        WrapperLivingEntity entity = follower.getEntity();
+        WrapperEntity entity = follower.getEntity();
         if (entity == null) {
             cancelFor(follower);
             return;

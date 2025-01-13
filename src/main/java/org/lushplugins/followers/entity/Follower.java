@@ -2,7 +2,6 @@ package org.lushplugins.followers.entity;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
-import com.github.retrooper.packetevents.protocol.player.TextureProperty;
 import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.protocol.world.Location;
 import com.github.retrooper.packetevents.util.Vector3d;
@@ -12,7 +11,6 @@ import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import me.tofaa.entitylib.meta.display.TextDisplayMeta;
 import me.tofaa.entitylib.meta.other.ArmorStandMeta;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
-import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import me.tofaa.entitylib.wrapper.WrapperPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -28,12 +26,13 @@ import org.lushplugins.followers.entity.tasks.*;
 
 import org.lushplugins.followers.utils.SkinData;
 import org.lushplugins.followers.utils.PacketsHelper;
+import org.lushplugins.followers.utils.entity.LivingEntityConfiguration;
+import org.lushplugins.followers.utils.entity.PlayerConfiguration;
 import org.lushplugins.lushlib.libraries.chatcolor.ModernChatColorHandler;
 import org.lushplugins.lushlib.libraries.chatcolor.parsers.ParserTypes;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 
 public class Follower {
     private final HashSet<String> tasks = new HashSet<>();
@@ -47,11 +46,6 @@ public class Follower {
 
     public Follower(String followerType) {
         this.followerType = followerType;
-    }
-
-    public Follower(String followerType, String displayName) {
-        this.followerType = followerType;
-        this.displayName = displayName;
     }
 
     public String getTypeName() {
@@ -164,6 +158,17 @@ public class Follower {
             return;
         }
 
+        // We run this before applying attributes as it respawns the entity
+        if (entity instanceof WrapperPlayer wrapperPlayer && followerHandler.getEntityConfig() instanceof PlayerConfiguration playerEntityConfig) {
+            SkinData skinData = playerEntityConfig.getSkin();
+            if (skinData != null && skinData.getValue().equals("mirror")) {
+                if (this instanceof OwnedFollower ownedFollower && ownedFollower.getOwner() instanceof Player player) {
+                    User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
+                    wrapperPlayer.setTextureProperties(user.getProfile().getTextureProperties());
+                }
+            }
+        }
+
         followerHandler.applyAttributes(entity);
     }
 
@@ -202,46 +207,24 @@ public class Follower {
 
         FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerType);
         if (followerHandler == null) {
+            despawn();
             return;
         }
 
-        WrapperLivingEntity entity;
         if (!this.entity.getEntityType().equals(followerHandler.getEntityType())) {
             this.entity.sendPacketToViewers(new WrapperPlayServerBundle());
             // Despawn current entity
             this.entity.despawn();
             // Handles changing the entity type
-            entity = followerHandler.createEntity(this.entity.getEntityId(), this.entity.getUuid());
+            WrapperEntity entity = followerHandler.getEntityConfig().createEntity(this.entity.getEntityId(), this.entity.getUuid());
             // Spawn new entity
             entity.spawn(this.entity.getLocation());
             this.entity.sendPacketToViewers(new WrapperPlayServerBundle());
-        } else {
-            entity = this.entity;
 
-            if (entity instanceof WrapperPlayer wrapperPlayer) {
-                SkinData skinData = followerHandler.getSkin();
-                if (skinData != null) {
-                    List<TextureProperty> textureProperties;
-                    if (skinData.getValue().equals("mirror")) {
-                        if (this instanceof OwnedFollower ownedFollower && ownedFollower.getOwner() instanceof Player player) {
-                            User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
-                            textureProperties = user.getProfile().getTextureProperties();
-                        } else {
-                            textureProperties = Collections.emptyList();
-                        }
-                    } else {
-                        textureProperties = List.of(new TextureProperty("textures", skinData.getValue(), skinData.getSignature()));
-                    }
-
-                    wrapperPlayer.setTextureProperties(textureProperties);
-                }
-            }
+            this.entity = entity;
         }
 
-        followerHandler.applyAttributes(entity);
-        this.entity = entity;
         refreshHandler();
-
         refreshNametag();
     }
 
@@ -267,7 +250,13 @@ public class Follower {
             nameTagEntity.spawn(new Location(entity.getLocation().getPosition(), 0, 0));
         }
 
-        float scale = (float) getType().getScale() + 0.25f;
+        float scale;
+        if (getType().getEntityConfig() instanceof LivingEntityConfiguration entityConfig) {
+            scale = (float) (entityConfig.getScale() + 0.25f);
+        } else {
+            scale = 1f;
+        }
+
         float translation;
         if (entity != null && entity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta && armorStandMeta.isMarker()) {
             translation = 1.2f * (scale - 0.25f);
@@ -277,7 +266,6 @@ public class Follower {
 
         TextDisplayMeta textDisplayMeta = (TextDisplayMeta) nameTagEntity.getEntityMeta();
         textDisplayMeta.setTranslation(new Vector3f(0, translation, 0));
-
         textDisplayMeta.setScale(new Vector3f(scale, scale, scale));
 
         String nickname = Followers.getInstance().getConfigManager().getFollowerNicknameFormat()
@@ -316,17 +304,6 @@ public class Follower {
         }
 
         entity = followerHandler.createEntity();
-
-        if (entity instanceof WrapperPlayer wrapperPlayer) {
-            SkinData skinData = followerHandler.getSkin();
-            if (skinData != null && skinData.getValue().equals("mirror")) {
-                if (this instanceof OwnedFollower ownedFollower && ownedFollower.getOwner() instanceof Player player) {
-                    User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
-                    wrapperPlayer.setTextureProperties(user.getProfile().getTextureProperties());
-                }
-            }
-        }
-
         entity.spawn(location);
         refresh();
         setType(followerType);
@@ -347,7 +324,6 @@ public class Follower {
             TaskId.VALIDATE
         );
 
-        Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::refreshHandler, 5);
         return true;
     }
 

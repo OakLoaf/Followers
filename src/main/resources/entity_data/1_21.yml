@@ -247,3 +247,6 @@ minecraft:armadillo:
 minecraft:bogged:
   height: 1.99
   eye-height: 1.74
+minecraft:player:
+  height: 1.85
+  eye-height: 1.62

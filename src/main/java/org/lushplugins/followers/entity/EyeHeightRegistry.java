@@ -5,6 +5,7 @@ import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.retrooper.packetevents.protocol.world.Location;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerUpdateAttributes;
 import me.tofaa.entitylib.meta.other.ArmorStandMeta;
+import me.tofaa.entitylib.wrapper.WrapperEntity;
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.lushplugins.followers.Followers;
@@ -22,13 +23,16 @@ public class EyeHeightRegistry {
         YamlConfiguration eyeHeightData = YamlConfiguration.loadConfiguration(new InputStreamReader(Followers.getInstance().getResource("entity_data/1_21.yml")));
         for (EntityType entityType : entityTypes) {
             if (!this.hasRegisteredEyeHeight(entityType)) {
-                double eyeHeight = eyeHeightData.getDouble(entityType.getName().toString() + ".eye-height");
-                this.setEyeHeight(entityType, eyeHeight);
+                String path = entityType.getName().toString() + ".eye-height";
+                if (eyeHeightData.isDouble(path)) {
+                    double eyeHeight = eyeHeightData.getDouble(path);
+                    this.setEyeHeight(entityType, eyeHeight);
+                }
             }
         }
     }
 
-    public Location calculateEyeLocation(WrapperLivingEntity entity) {
+    public Location calculateEyeLocation(WrapperEntity entity) {
         double eyeHeight = this.getEyeHeight(entity.getEntityType());
         if (entity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta) {
             if (armorStandMeta.isSmall()) {
@@ -37,10 +41,12 @@ public class EyeHeightRegistry {
         }
 
         double scale = 1;
-        for (WrapperPlayServerUpdateAttributes.Property property : entity.getAttributes().getProperties()) {
-            if (property.getAttribute() == Attributes.GENERIC_SCALE) {
-                scale = property.getValue();
-                break;
+        if (entity instanceof WrapperLivingEntity livingEntity) {
+            for (WrapperPlayServerUpdateAttributes.Property property : livingEntity.getAttributes().getProperties()) {
+                if (property.getAttribute() == Attributes.GENERIC_SCALE) {
+                    scale = property.getValue();
+                    break;
+                }
             }
         }
 

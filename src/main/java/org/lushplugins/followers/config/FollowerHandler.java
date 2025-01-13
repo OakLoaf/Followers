@@ -1,8 +1,10 @@
 package org.lushplugins.followers.config;
 
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
+import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,7 +46,7 @@ public class FollowerHandler {
         return "followers." + name.toLowerCase().replaceAll(" ", "_");
     }
 
-    public EntityConfiguration getEntityConfig() {
+    public @NotNull EntityConfiguration getEntityConfig() {
         return entityConfig;
     }
 
@@ -54,6 +56,21 @@ public class FollowerHandler {
 
     public SimpleItemStack getDisplayItem() {
         return displayItem;
+    }
+
+    public SimpleItemStack getDisplayItemOrSimilar() {
+        if (this.displayItem != null && this.displayItem.getType() != Material.AIR) {
+            return this.displayItem.clone();
+        }
+
+        if (entityConfig instanceof LivingEntityConfiguration livingEntityConfig) {
+            SimpleItemStack headItem = livingEntityConfig.getEquipment(EquipmentSlot.HELMET);
+            if (headItem != null && headItem.getType() != Material.AIR) {
+                return headItem.clone();
+            }
+        }
+
+        return new SimpleItemStack(EntityTypeUtils.getSpawnEgg(entityConfig.getEntityType()));
     }
 
     @Deprecated(forRemoval = true)
@@ -97,7 +114,11 @@ public class FollowerHandler {
     }
 
     public static Builder builder() {
-        return builder();
+        return new Builder();
+    }
+
+    public static Builder builder(FollowerHandler handler) {
+        return new Builder(handler);
     }
 
     public static class Builder {
@@ -107,10 +128,15 @@ public class FollowerHandler {
         private EntityConfiguration entityConfig;
         private SimpleItemStack displayItem;
 
-        private Builder() {}
+        private Builder() {
+            this.name = null;
+            this.entityType = EntityTypes.ARMOR_STAND;
+            this.entityConfig = EntityConfiguration.empty(entityType);
+        }
 
         private Builder(FollowerHandler followerHandler) {
             this.name = followerHandler.getName();
+            this.entityType = followerHandler.getEntityType();
             this.entityConfig = followerHandler.getEntityConfig();
             this.displayItem = followerHandler.getDisplayItem();
         }

@@ -17,7 +17,7 @@ import static java.util.Objects.requireNonNull;
 
 public class DataManager {
     private Storage storage;
-    private final HashMap<UUID, FollowerUser> uuidToFollowerUser = new HashMap<>();
+    private final HashMap<UUID, FollowerUser> followerUsers = new HashMap<>();
 
     // Safe to use bukkit api in callback.
     public void initAsync(Consumer<Boolean> onComplete) {
@@ -38,14 +38,14 @@ public class DataManager {
         CompletableFuture<FollowerUser> future = new CompletableFuture<>();
         future.completeAsync(() -> {
             final FollowerUser user = storage.loadFollowerUser(uuid);
-            uuidToFollowerUser.put(uuid, user);
+            followerUsers.put(uuid, user);
             return user;
         }, Storage.SERVICE);
         return future;
     }
 
     public void unloadFollowerUser(UUID uuid) {
-        uuidToFollowerUser.remove(uuid);
+        followerUsers.remove(uuid);
     }
 
     public void saveFollowerUser(FollowerUser followerUser) {
@@ -54,7 +54,7 @@ public class DataManager {
 
     public @NotNull FollowerUser getFollowerUser(@NotNull Player player) {
         UUID uuid = player.getUniqueId();
-        FollowerUser followerUser = uuidToFollowerUser.get(uuid);
+        FollowerUser followerUser = followerUsers.get(uuid);
         if (followerUser == null) {
             followerUser = new FollowerUser(uuid, player.getName(), "none", Followers.getInstance().getConfigManager().getDefaultNickname(), false, false, false);
         }
@@ -62,7 +62,7 @@ public class DataManager {
     }
 
     public Collection<FollowerUser> getOnlineFollowerUsers() {
-        return uuidToFollowerUser.values();
+        return followerUsers.values();
     }
 
     public List<OwnedFollower> getOwnedFollowers() {
@@ -81,17 +81,19 @@ public class DataManager {
     }
 
     public void reloadFollowerInventories() {
-        uuidToFollowerUser.keySet().forEach(uuid -> {
+        for (Map.Entry<UUID, FollowerUser> entry : followerUsers.entrySet()) {
+            UUID uuid = entry.getKey();
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) {
-                uuidToFollowerUser.remove(uuid);
+                followerUsers.remove(uuid);
                 return;
             }
 
-            Follower follower = getFollowerUser(player).getFollower();
+            FollowerUser followerUser = entry.getValue();
+            Follower follower = followerUser.getFollower();
             if (follower != null) {
                 follower.refreshHandler();
             }
-        });
+        }
     }
 }

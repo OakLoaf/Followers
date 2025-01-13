@@ -35,7 +35,7 @@ public class LivingEntityConfiguration extends EntityConfiguration {
             }
         }
 
-        this.scale = config.contains("scale") ? config.getDouble("scale") : null;
+        this.scale = config.getDouble("scale", Followers.getInstance().getConfigManager().getDefaultScale());
     }
 
     protected LivingEntityConfiguration(EntityType entityType) {
@@ -53,8 +53,12 @@ public class LivingEntityConfiguration extends EntityConfiguration {
         return equipment.containsKey(slot) ? equipment.get(slot).clone() : null;
     }
 
-    public void setEquipment(EquipmentSlot slot, ExtendedSimpleItemStack item) {
-        equipment.put(slot, item);
+    public void setEquipment(EquipmentSlot slot, @Nullable ExtendedSimpleItemStack item) {
+        if (item != null) {
+            equipment.put(slot, item);
+        } else {
+            equipment.remove(slot);
+        }
     }
 
     public Double getScale() {
@@ -115,7 +119,12 @@ public class LivingEntityConfiguration extends EntityConfiguration {
                 }
             }
 
-            livingEntity.getAttributes().setAttribute(Attributes.GENERIC_SCALE, this.getScale());
+            Double scale = this.getScale();
+            if (scale != null) {
+                livingEntity.getAttributes().setAttribute(Attributes.GENERIC_SCALE, scale);
+            } else {
+                livingEntity.getAttributes().removeAttribute(Attributes.GENERIC_SCALE);
+            }
         }
     }
 
