@@ -94,10 +94,10 @@ public class BuilderGui extends Gui {
         List<ItemButton> buttons = List.of(
             new DynamicItemButton(
                 () -> {
-                    ExtendedSimpleItemStack nametagButton = Followers.getInstance().getConfigManager().getGuiItem("builder-gui", followerBuilder.isNameLocked() ? "name-button.locked" : "name-button.default", Material.OAK_SIGN);
+                    ExtendedSimpleItemStack nametagButton = Followers.getInstance().getConfigManager().getGuiItem("builder-gui", followerBuilder.nameLocked() ? "name-button.locked" : "name-button.default", Material.OAK_SIGN);
                     nametagButton.setDisplayName(nametagButton.getDisplayName() != null
-                        ? nametagButton.getDisplayName().replace("%name%", followerBuilder.getName() != null ? followerBuilder.getName() : ChatColorHandler.translate("&c&oUnnamed"))
-                        : followerBuilder.getName());
+                        ? nametagButton.getDisplayName().replace("%name%", followerBuilder.name() != null ? followerBuilder.name() : ChatColorHandler.translate("&c&oUnnamed"))
+                        : followerBuilder.name());
 
                     return nametagButton.asItemStack();
                 },
@@ -113,7 +113,7 @@ public class BuilderGui extends Gui {
                             String finalOutput = output.replaceAll("\\.", "-");
 
                             try {
-                                followerBuilder.setName(finalOutput);
+                                followerBuilder.name(finalOutput);
                             } catch (IllegalStateException ignored) {}
                         } else {
                             ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-no-name"));
@@ -125,7 +125,7 @@ public class BuilderGui extends Gui {
             ),
             new DynamicItemButton(
                 () -> {
-                    com.github.retrooper.packetevents.protocol.entity.type.EntityType entityType = followerBuilder.getEntityType();
+                    com.github.retrooper.packetevents.protocol.entity.type.EntityType entityType = followerBuilder.entityType();
                     String entityTypeRaw = entityType.getName().getKey().toLowerCase();
 
                     ItemStack item = new ItemStack(EntityTypeUtils.getSpawnEgg(entityType));
@@ -152,7 +152,7 @@ public class BuilderGui extends Gui {
 
                         EntityType entityType = RegistryUtils.parseString(output, Registry.ENTITY_TYPE);
                         if (entityType != null) {
-                            followerBuilder.setEntityType(entityType);
+                            followerBuilder.entityType(entityType);
                         } else {
                             ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("invalid-entity-type"));
                         }
@@ -208,7 +208,7 @@ public class BuilderGui extends Gui {
 
     public void complete() {
         Player player = this.getPlayer();
-        if (followerBuilder.getName() == null) {
+        if (followerBuilder.name() == null) {
             ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-no-name"));
             return;
         }

@@ -26,4 +26,8 @@ public class SkinData {
     public void setSignature(String signature) {
         this.signature = signature;
     }
+
+    public static SkinData empty() {
+        return new SkinData(null, null);
+    }
 }

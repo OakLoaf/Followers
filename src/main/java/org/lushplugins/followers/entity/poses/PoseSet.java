@@ -1,20 +1,21 @@
 package org.lushplugins.followers.entity.poses;
 
+import me.tofaa.entitylib.wrapper.WrapperEntity;
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
 
 public class PoseSet {
-    private final HashMap<FollowerPose, Consumer<WrapperLivingEntity>> poses = new HashMap<>();
+    private final HashMap<FollowerPose, Consumer<WrapperEntity>> poses = new HashMap<>();
 
-    public void applyPose(FollowerPose pose, WrapperLivingEntity entity) {
+    public void applyPose(FollowerPose pose, WrapperEntity entity) {
         if (poses.containsKey(pose)) {
             poses.get(pose).accept(entity);
         }
     }
 
-    public void addPose(FollowerPose pose, Consumer<WrapperLivingEntity> consumer) {
+    public void addPose(FollowerPose pose, Consumer<WrapperEntity> consumer) {
         poses.put(pose, consumer);
     }
 

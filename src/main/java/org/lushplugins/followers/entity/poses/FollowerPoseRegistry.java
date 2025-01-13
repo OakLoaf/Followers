@@ -1,7 +1,7 @@
 package org.lushplugins.followers.entity.poses;
 
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
-import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
+import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.lushplugins.followers.entity.poses.entities.*;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,14 +25,14 @@ public class FollowerPoseRegistry {
         setPoses(WOLF, new WolfPoses());
     }
 
-    public void applyPose(WrapperLivingEntity entity, FollowerPose pose) {
+    public void applyPose(WrapperEntity entity, FollowerPose pose) {
         PoseSet poses = entityPoses.get(entity.getEntityType());
         if (poses != null) {
             poses.applyPose(pose, entity);
         }
     }
 
-    public void addPose(EntityType entityType, FollowerPose pose, Consumer<WrapperLivingEntity> consumer) {
+    public void addPose(EntityType entityType, FollowerPose pose, Consumer<WrapperEntity> consumer) {
         if (entityPoses.containsKey(entityType)) {
             entityPoses.get(entityType).addPose(pose, consumer);
         } else {

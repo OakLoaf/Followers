@@ -2,19 +2,16 @@ package org.lushplugins.followers.entity;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
-import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import com.github.retrooper.packetevents.protocol.player.TextureProperty;
 import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.protocol.world.Location;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.util.Vector3f;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerBundle;
-import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import me.tofaa.entitylib.meta.display.TextDisplayMeta;
 import me.tofaa.entitylib.meta.other.ArmorStandMeta;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
-import me.tofaa.entitylib.wrapper.WrapperEntityEquipment;
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import me.tofaa.entitylib.wrapper.WrapperPlayer;
 import org.bukkit.Bukkit;
@@ -29,7 +26,6 @@ import org.lushplugins.followers.config.FollowerHandler;
 import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.entity.tasks.*;
 
-import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.followers.utils.SkinData;
 import org.lushplugins.followers.utils.PacketsHelper;
 import org.lushplugins.lushlib.libraries.chatcolor.ModernChatColorHandler;
@@ -42,7 +38,7 @@ import java.util.List;
 public class Follower {
     private final HashSet<String> tasks = new HashSet<>();
     private String followerType;
-    private WrapperLivingEntity entity;
+    private WrapperEntity entity;
     private WrapperEntity nameTagEntity;
     private World world;
     private Vector3d target;
@@ -77,7 +73,7 @@ public class Follower {
         }
     }
 
-    public @Nullable WrapperLivingEntity getEntity() {
+    public @Nullable WrapperEntity getEntity() {
         return entity;
     }
 
@@ -161,38 +157,14 @@ public class Follower {
         }
     }
 
-    public void reloadInventory() {
+    public void refreshHandler() {
         FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(this.followerType);
         if (followerHandler == null) {
             despawn();
             return;
         }
 
-        WrapperEntityEquipment equipment = entity.getEquipment();
-        if (equipment != null) {
-            equipment.clearAll();
-
-            for (EquipmentSlot equipmentSlot : followerHandler.getEquipment().keySet()) {
-                // TODO: Remove on EntityLib implementation
-                if (equipmentSlot.name().equals("BODY")) {
-                    Followers.getInstance().getLogger().warning("Equipment slot 'body' is not currently supported");
-                    continue;
-                }
-
-                try {
-                    ExtendedSimpleItemStack simpleItemStack = followerHandler.getEquipmentSlot(equipmentSlot);
-                    if (simpleItemStack != null) {
-                        equipment.setItem(
-                            equipmentSlot,
-                            SpigotConversionUtil.fromBukkitItemStack(simpleItemStack.asItemStack()));
-                    }
-                } catch (IllegalArgumentException ignored) {}
-            }
-        }
-
-        if (entity != null) {
-            entity.getEntityMeta().setInvisible(!followerHandler.isVisible());
-        }
+        followerHandler.applyAttributes(entity);
     }
 
     public boolean hasTask(String id) {
@@ -268,7 +240,7 @@ public class Follower {
 
         followerHandler.applyAttributes(entity);
         this.entity = entity;
-        reloadInventory();
+        refreshHandler();
 
         refreshNametag();
     }
@@ -375,7 +347,7 @@ public class Follower {
             TaskId.VALIDATE
         );
 
-        Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::reloadInventory, 5);
+        Bukkit.getScheduler().runTaskLater(Followers.getInstance(), this::refreshHandler, 5);
         return true;
     }
 

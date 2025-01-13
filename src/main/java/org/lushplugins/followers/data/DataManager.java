@@ -90,7 +90,7 @@ public class DataManager {
 
             Follower follower = getFollowerUser(player).getFollower();
             if (follower != null) {
-                follower.reloadInventory();
+                follower.refreshHandler();
             }
         });
     }

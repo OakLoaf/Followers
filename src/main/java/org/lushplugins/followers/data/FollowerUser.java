@@ -212,7 +212,7 @@ public class FollowerUser {
 
     public void refreshFollower() {
         if (follower != null) {
-            follower.reloadInventory();
+            follower.refreshHandler();
         }
     }
 

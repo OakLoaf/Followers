@@ -1,5 +1,6 @@
 package org.lushplugins.followers.command;
 
+import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import org.bukkit.Location;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
@@ -19,12 +20,14 @@ import org.bukkit.entity.*;
 import org.jetbrains.annotations.NotNull;
 import org.lushplugins.followers.utils.Converter;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
+import org.lushplugins.followers.utils.entity.LivingEntityConfiguration;
 import org.lushplugins.lushlib.command.Command;
 import org.lushplugins.lushlib.command.SubCommand;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 
 import java.util.*;
 
+// TODO: Split sub-commands into separate class files
 public class FollowerCmd extends Command {
 
     public FollowerCmd() {
@@ -73,33 +76,44 @@ public class FollowerCmd extends Command {
                 return true;
             }
 
-            FollowerHandler.Builder followerBuilder = new FollowerHandler.Builder();
+            FollowerHandler.Builder builder = FollowerHandler.builder();
+
             Location eyeLocation = player.getEyeLocation();
-            RayTraceResult rayTrace = player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 5, entity -> entity instanceof LivingEntity && !entity.equals(player));
+            RayTraceResult rayTrace = player.getWorld().rayTraceEntities(
+                eyeLocation, eyeLocation.getDirection(),
+                5,
+                entity -> entity instanceof LivingEntity && !entity.equals(player)
+            );
+
             if (rayTrace != null) {
+                // Due to our ray trace predicate this is always a LivingEntity
                 LivingEntity entity = (LivingEntity) rayTrace.getHitEntity();
                 if (entity != null) {
-                    followerBuilder.setEntityType(entity.getType());
+                    builder.entityType(
+                        SpigotConversionUtil.fromBukkitEntityType(entity.getType())
+                    );
 
                     String name = entity.getCustomName();
                     if (name != null) {
-                        try {
-                            followerBuilder.setName(name);
-                        } catch (IllegalStateException ignored) {}
+                        builder.name(name);
                     }
 
-                    EntityEquipment entityEquipment = entity.getEquipment();
-                    if (entityEquipment != null) {
-                        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-                            try {
-                                followerBuilder.setEquipmentSlot(Converter.convertEquipmentSlot(equipmentSlot), new ExtendedSimpleItemStack(entityEquipment.getItem(equipmentSlot)));
-                            } catch (IllegalArgumentException ignored) {}
+                    // Whilst the bukkit entity is always a LivingEntity it won't always be in EntityLib
+                    if (builder.entityConfig() instanceof LivingEntityConfiguration livingEntityConfig) {
+                        EntityEquipment entityEquipment = entity.getEquipment();
+                        if (entityEquipment != null) {
+                            for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
+                                livingEntityConfig.setEquipment(
+                                    Converter.convertEquipmentSlot(equipmentSlot),
+                                    new ExtendedSimpleItemStack(entityEquipment.getItem(equipmentSlot))
+                                );
+                            }
                         }
                     }
                 }
             }
 
-            BuilderGui builderGui = new BuilderGui(player, BuilderGui.Mode.CREATE, followerBuilder);
+            BuilderGui builderGui = new BuilderGui(player, BuilderGui.Mode.CREATE, builder);
             builderGui.open();
             return true;
         }
@@ -211,13 +225,13 @@ public class FollowerCmd extends Command {
                 if (followerHandler == null) {
                     ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerName));
                 } else {
-                    FollowerHandler.Builder followerBuilder = new FollowerHandler.Builder(followerHandler);
-                    try {
-                        followerBuilder.setName(followerName);
-                    } catch (IllegalStateException ignored) {}
-
-                    BuilderGui builderGui = new BuilderGui(player, BuilderGui.Mode.EDIT, followerBuilder.setNameLocked(true));
-                    builderGui.open();
+                    new BuilderGui(
+                        player,
+                        BuilderGui.Mode.EDIT,
+                        FollowerHandler.builder()
+                            .name(followerName)
+                            .nameLocked(true)
+                    ).open();
                 }
             }
 

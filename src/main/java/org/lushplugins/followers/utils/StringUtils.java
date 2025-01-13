@@ -1,5 +1,7 @@
 package org.lushplugins.followers.utils;
 
+import java.util.UUID;
+
 public class StringUtils {
 
     public static String makeFriendly(String string) {
@@ -16,5 +18,13 @@ public class StringUtils {
         }
 
         return output.toString();
+    }
+
+    public static UUID asUUID(String string) {
+        try {
+            return UUID.fromString(string);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 }
