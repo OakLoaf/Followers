@@ -34,7 +34,6 @@ public class MoveNearTask extends MoveToTask {
                     distance = 1;
                 }
 
-                Followers.getInstance().getLogger().info(String.format("Current Normalized Difference: %s, %s, %s", normalizedDifference.getX(), normalizedDifference.getY(), normalizedDifference.getZ()));
                 position = position.add(new Vector3d(
                     normalizedDifference.getX() * (speed * distance),
                     newY,
