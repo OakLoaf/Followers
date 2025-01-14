@@ -59,6 +59,12 @@ public class MoveToTask extends FollowerTask {
                 distance = 1;
             }
 
+            position = position.add(new Vector3d(
+                normalizedDifference.getX() * (speed * distance),
+                difference.getY() * speed,
+                normalizedDifference.getZ() * (speed * distance)
+            ));
+
             position = position.add(normalizedDifference.multiply(speed * distance));
         }
 

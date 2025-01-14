@@ -23,8 +23,10 @@ public class MoveNearTask extends MoveToTask {
             Vector3d difference = getDifference(
                 position,
                 follower.getTarget());
+
+            double newY = difference.getY() * speed;
             if (new Vector3d(difference.getX(), 0 , difference.getZ()).lengthSquared() < 6.25) {
-                position = position.add(new Vector3d(0, difference.getY() * speed, 0));
+                position = position.add(new Vector3d(0, newY, 0));
             } else {
                 Vector3d normalizedDifference = difference.normalize();
                 double distance = difference.length() - 5;
@@ -32,7 +34,12 @@ public class MoveNearTask extends MoveToTask {
                     distance = 1;
                 }
 
-                position = position.add(normalizedDifference.multiply(speed * distance));
+                Followers.getInstance().getLogger().info(String.format("Current Normalized Difference: %s, %s, %s", normalizedDifference.getX(), normalizedDifference.getY(), normalizedDifference.getZ()));
+                position = position.add(new Vector3d(
+                    normalizedDifference.getX() * (speed * distance),
+                    newY,
+                    normalizedDifference.getZ() * (speed * distance)
+                ));
             }
         }
 
