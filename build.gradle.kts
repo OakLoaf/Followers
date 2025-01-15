@@ -26,7 +26,7 @@ repositories {
 
 dependencies {
     // Dependencies
-    compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("com.mysql:mysql-connector-j:8.3.0") // Uses Spigot copy
     compileOnlyApi("com.github.retrooper:packetevents-spigot:2.6.0")
 

@@ -22,6 +22,7 @@ import org.bukkit.*;
 import org.lushplugins.followers.command.DyeCmd;
 import org.lushplugins.followers.command.FollowerCmd;
 import org.lushplugins.followers.command.GetHexArmorCmd;
+import org.lushplugins.followers.listener.AnvilMenuListener;
 import org.lushplugins.followers.listener.PacketListener;
 import org.lushplugins.followers.storage.Storage;
 import org.lushplugins.followers.listener.PlayerListener;
@@ -84,6 +85,7 @@ public final class Followers extends SpigotPlugin {
 
                 registerListeners(
                     new FollowerEntityListener(),
+                    new AnvilMenuListener(),
                     new PlayerListener()
                 );
 

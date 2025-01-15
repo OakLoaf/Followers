@@ -1,4 +1,4 @@
-package org.lushplugins.followers.utils;
+package org.lushplugins.followers.utils.menu;
 
 import org.bukkit.entity.Player;
 import org.geysermc.cumulus.CustomForm;

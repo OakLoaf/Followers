@@ -9,7 +9,7 @@ import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.data.FollowerUser;
 import org.lushplugins.followers.entity.Follower;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
-import org.lushplugins.followers.utils.TextInterface;
+import org.lushplugins.followers.utils.menu.TextInterface;
 import org.lushplugins.lushlib.gui.button.DynamicItemButton;
 import org.lushplugins.lushlib.gui.inventory.Gui;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
@@ -26,7 +26,6 @@ public class NicknameButton extends DynamicItemButton {
                 return item.asItemStack(player);
             },
             (event) -> {
-                Follower follower = followerUser.getFollower();
                 if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                     player.playSound(player.getEyeLocation(), Sound.BLOCK_LEVER_CLICK, 0.6f, 1.0f);
                     followerUser.setDisplayNameEnabled(!followerUser.isDisplayNameEnabled());
@@ -36,26 +35,27 @@ public class NicknameButton extends DynamicItemButton {
 
                 gui.close();
 
-                TextInterface textInterface = new TextInterface();
-                textInterface.title("Enter Name:");
-                textInterface.placeholder("Enter follower name");
-
-                Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> textInterface.getInput(player, (output) -> {
-                    if (output.isBlank()) {
-                        output = Followers.getInstance().getConfigManager().getDefaultNickname();
-                    }
-
-                    String finalOutput = output;
-                    Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
-                        followerUser.setDisplayName(finalOutput);
-
-                        if (follower != null) {
-                            follower.setDisplayName(finalOutput);
+                TextInterface.builder()
+                    .inputType(TextInterface.InputType.ANVIL)
+                    .prompt("Enter Name: ")
+                    .initialInput("-")
+                    .onCompletion((output) -> {
+                        if (output.isBlank()) {
+                            output = Followers.getInstance().getConfigManager().getDefaultNickname();
                         }
-                        ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-name-changed")
-                            .replace("%nickname%", finalOutput));
-                    });
-                }), 1);
+
+                        if (output.charAt(0) == '-') {
+                            output = output.substring(1);
+                        }
+
+                        String finalOutput = output;
+                        Bukkit.getScheduler().runTask(Followers.getInstance(), () -> {
+                            followerUser.setDisplayName(finalOutput);
+                            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-name-changed")
+                                .replace("%nickname%", finalOutput));
+                        });
+                    })
+                    .open(player);
             });
     }
 }

@@ -14,10 +14,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.config.FollowerHandler;
+import org.lushplugins.followers.gui.button.StringButton;
 import org.lushplugins.followers.utils.EntityTypeUtils;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.followers.utils.StringUtils;
-import org.lushplugins.followers.utils.TextInterface;
 import org.lushplugins.followers.utils.entity.LivingEntityConfiguration;
 import org.lushplugins.lushlib.gui.button.DynamicItemButton;
 import org.lushplugins.lushlib.gui.button.ItemButton;
@@ -122,7 +122,8 @@ public class BuilderGui extends Gui {
         }
 
         List<ItemButton> buttons = new ArrayList<>(List.of(
-            new DynamicItemButton(
+            new StringButton(
+                "-",
                 () -> {
                     ExtendedSimpleItemStack nametagButton = Followers.getInstance().getConfigManager().getGuiItem("builder-gui", this.builder.nameLocked() ? "name-button.locked" : "name-button.default", Material.OAK_SIGN);
                     nametagButton.setDisplayName(nametagButton.getDisplayName() != null
@@ -131,30 +132,29 @@ public class BuilderGui extends Gui {
 
                     return nametagButton.asItemStack();
                 },
-                (event) -> {
-                    close();
-
-                    TextInterface textInterface = new TextInterface();
-                    textInterface.title("Enter Name:");
-                    textInterface.placeholder("Enter follower name");
-
-                    Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> textInterface.getInput(player, (output) -> {
-                        if (!output.isBlank()) {
-                            String finalOutput = output.replaceAll("\\.", "-");
-
-                            try {
-                                this.builder.name(finalOutput);
-                            } catch (IllegalStateException ignored) {
-                            }
-                        } else {
-                            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-no-name"));
+                "Enter Follower Name:",
+                (input) -> true,
+                (output) -> {
+                    if (!output.isBlank()) {
+                        if (output.charAt(0) == '-') {
+                            output = output.substring(1);
                         }
+                        String finalOutput = output.replaceAll("\\.", "-");
 
-                        Bukkit.getScheduler().runTask(Followers.getInstance(), this::open);
-                    }), 1);
+                        try {
+                            this.builder.name(finalOutput);
+                        } catch (IllegalStateException ignored) {
+                        }
+                    } else {
+                        ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-no-name"));
+                    }
+
+                    Bukkit.getScheduler().runTask(Followers.getInstance(), this::open);
                 }
             ),
-            new DynamicItemButton(
+            new StringButton(
+                builder.entityType().getName().toString()
+                    .replace("minecraft:", ""),
                 () -> {
                     com.github.retrooper.packetevents.protocol.entity.type.EntityType entityType = this.builder.entityType();
                     String entityTypeRaw = entityType.getName().getKey().toLowerCase();
@@ -168,34 +168,29 @@ public class BuilderGui extends Gui {
 
                     return item;
                 },
-                (event) -> {
-                    close();
+                "Enter Entity Type:",
+                (input) -> {
+                    EntityType entityType = RegistryUtils.parseString(input.replace(" ", "_"), Registry.ENTITY_TYPE);
+                    return entityType != null;
+                },
+                (output) -> {
+                    if (output.isBlank()) {
+                        ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("invalid-entity-type"));
+                        return;
+                    }
 
-                    TextInterface textInterface = new TextInterface();
-                    textInterface.title("Enter Entity Type:");
-                    textInterface.placeholder("Entity Type");
+                    EntityType entityType = RegistryUtils.parseString(output.replace(" ", "_"), Registry.ENTITY_TYPE);
+                    if (entityType != null) {
+                        this.builder.entityType(SpigotConversionUtil.fromBukkitEntityType(entityType));
+                    } else {
+                        ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("invalid-entity-type"));
+                    }
 
-                    Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> textInterface.getInput(player, (output) -> {
-                        if (output.isBlank()) {
-                            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("invalid-entity-type"));
-                            return;
-                        }
-
-                        // Replaces spaces with underscores
-                        output = output.replace(" ", "_");
-
-                        EntityType entityType = RegistryUtils.parseString(output, Registry.ENTITY_TYPE);
-                        if (entityType != null) {
-                            this.builder.entityType(SpigotConversionUtil.fromBukkitEntityType(entityType));
-                        } else {
-                            ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("invalid-entity-type"));
-                        }
-
-                        reloadButtons();
-                        Bukkit.getScheduler().runTask(Followers.getInstance(), this::open);
-                    }), 1);
+                    reloadButtons();
+                    Bukkit.getScheduler().runTask(Followers.getInstance(), this::open);
                 }
-            )));
+            )
+        ));
 
         buttons.addAll(builder.entityConfig().getGuiButtons());
 
