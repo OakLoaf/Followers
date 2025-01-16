@@ -1,17 +1,15 @@
 package org.lushplugins.followers.gui;
 
+import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
+import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
-import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Registry;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.config.FollowerHandler;
 import org.lushplugins.followers.gui.button.StringButton;
@@ -23,7 +21,6 @@ import org.lushplugins.lushlib.gui.button.DynamicItemButton;
 import org.lushplugins.lushlib.gui.button.ItemButton;
 import org.lushplugins.lushlib.gui.inventory.Gui;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
-import org.lushplugins.lushlib.registry.RegistryUtils;
 import org.lushplugins.lushlib.utils.DisplayItemStack;
 
 import java.util.*;
@@ -167,7 +164,11 @@ public class BuilderGui extends Gui {
                 },
                 "Enter Entity Type:",
                 (input) -> {
-                    EntityType entityType = RegistryUtils.parseString(input.replace(" ", "_"), Registry.ENTITY_TYPE);
+                    if (!input.contains(":")) {
+                        input = "minecraft:" + input;
+                    }
+
+                    EntityType entityType = EntityTypes.getByName(input.replace(" ", "_"));
                     return entityType != null;
                 },
                 (output, clicker) -> {
@@ -176,9 +177,13 @@ public class BuilderGui extends Gui {
                         return;
                     }
 
-                    EntityType entityType = RegistryUtils.parseString(output.replace(" ", "_"), Registry.ENTITY_TYPE);
+                    if (!output.contains(":")) {
+                        output = "minecraft:" + output;
+                    }
+
+                    EntityType entityType = EntityTypes.getByName(output.replace(" ", "_"));
                     if (entityType != null) {
-                        this.builder.entityType(SpigotConversionUtil.fromBukkitEntityType(entityType));
+                        this.builder.entityType(entityType);
                     } else {
                         ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("invalid-entity-type"));
                     }
