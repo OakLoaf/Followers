@@ -38,7 +38,7 @@ public class NicknameButton extends DynamicItemButton {
                     .inputType(TextInterface.InputType.ANVIL)
                     .prompt("Enter Name: ")
                     .initialInput("-")
-                    .onCompletion((output) -> {
+                    .onCompletion((output, clicker) -> {
                         if (output.isBlank()) {
                             output = Followers.getInstance().getConfigManager().getDefaultNickname();
                         }

@@ -10,12 +10,18 @@ import me.tofaa.entitylib.meta.types.LivingEntityMeta;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import me.tofaa.entitylib.wrapper.WrapperEntityEquipment;
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.Followers;
+import org.lushplugins.followers.gui.button.StringButton;
 import org.lushplugins.followers.utils.Converter;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.lushlib.gui.button.ItemButton;
+import org.lushplugins.lushlib.gui.inventory.Gui;
+import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
+import org.lushplugins.lushlib.utils.DisplayItemStack;
 
 import java.util.*;
 
@@ -70,10 +76,45 @@ public class LivingEntityConfiguration extends EntityConfiguration {
     }
 
     @Override
-    public List<ItemButton> getGuiButtons() {
-        List<ItemButton> buttons = new ArrayList<>(super.getGuiButtons());
+    public List<ItemButton> getGuiButtons(Gui gui) {
+        List<ItemButton> buttons = new ArrayList<>(super.getGuiButtons(gui));
 
-        // TODO: Add buttons
+        String scaleString = scale != null ? scale.toString() : String.valueOf(Followers.getInstance().getConfigManager().getDefaultScale());
+        buttons.add(
+            new StringButton(
+                scaleString,
+                () -> DisplayItemStack.builder(Material.CHAIN)
+                    .setDisplayName("&#ffde8aScale: &f" + scaleString)
+                    .build()
+                    .asItemStack(),
+                "Enter Scale:",
+                (input) -> {
+                    try {
+                        Double.valueOf(input);
+                        return true;
+                    } catch (NumberFormatException e) {
+                        return false;
+                    }
+                },
+                (output, player) -> {
+                    if (output.isBlank()) {
+                        ChatColorHandler.sendMessage(player, "&cThat size is invalid"); // TODO: Configurable message
+                        return;
+                    }
+
+                    double scale;
+                    try {
+                        scale = Double.parseDouble(output);
+                    } catch (NumberFormatException e) {
+                        ChatColorHandler.sendMessage(player, "&cThat size is invalid"); // TODO: Configurable message
+                        return;
+                    }
+
+                    this.scale = scale;
+                    Bukkit.getScheduler().runTask(Followers.getInstance(), gui::open);
+                }
+            )
+        );
 
         return buttons;
     }
@@ -120,11 +161,7 @@ public class LivingEntityConfiguration extends EntityConfiguration {
             }
 
             Double scale = this.getScale();
-            if (scale != null) {
-                livingEntity.getAttributes().setAttribute(Attributes.GENERIC_SCALE, scale);
-            } else {
-                livingEntity.getAttributes().removeAttribute(Attributes.GENERIC_SCALE);
-            }
+            livingEntity.getAttributes().setAttribute(Attributes.GENERIC_SCALE, scale != null ? scale : Followers.getInstance().getConfigManager().getDefaultScale());
         }
     }
 

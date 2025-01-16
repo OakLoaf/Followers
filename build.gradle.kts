@@ -5,9 +5,8 @@ plugins {
     id("xyz.jpenilla.run-paper") version("2.3.1")
 }
 
-
 group = "org.lushplugins"
-version = "2.1.0-beta3"
+version = "2.1.0-beta4"
 
 repositories {
     mavenCentral()

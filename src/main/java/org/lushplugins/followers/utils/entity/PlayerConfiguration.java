@@ -7,18 +7,26 @@ import me.tofaa.entitylib.meta.EntityMeta;
 import me.tofaa.entitylib.meta.types.PlayerMeta;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import me.tofaa.entitylib.wrapper.WrapperPlayer;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
+import org.lushplugins.followers.Followers;
+import org.lushplugins.followers.gui.button.StringButton;
 import org.lushplugins.followers.utils.SkinData;
 import org.lushplugins.followers.utils.SkinUtils;
 import org.lushplugins.followers.utils.StringUtils;
 import org.lushplugins.lushlib.gui.button.ItemButton;
+import org.lushplugins.lushlib.gui.inventory.Gui;
+import org.lushplugins.lushlib.utils.DisplayItemStack;
+import org.lushplugins.lushlib.utils.SkullCreator;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class PlayerConfiguration extends LivingEntityConfiguration {
-    private final SkinData skin;
+    private SkinData skin;
 
     protected PlayerConfiguration(EntityType entityType, ConfigurationSection config) {
         super(entityType, config);
@@ -59,10 +67,31 @@ public class PlayerConfiguration extends LivingEntityConfiguration {
     }
 
     @Override
-    public List<ItemButton> getGuiButtons() {
-        List<ItemButton> buttons = new ArrayList<>(super.getGuiButtons());
+    public List<ItemButton> getGuiButtons(Gui gui) {
+        List<ItemButton> buttons = new ArrayList<>(super.getGuiButtons(gui));
 
-        // TODO: Add buttons
+        buttons.add(
+            new StringButton(
+                "-",
+                () -> DisplayItemStack.builder(Material.PLAYER_HEAD)
+                    .setDisplayName("&#ffde8aSkin: &f" + (skin.getValue() != null ? skin.getValue() : ""))
+                    .setSkullTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmI1ZDVkNmM4YzhhMjk5NzBiNzEyMzUyMTBkNzAyM2JhMWMyZGZlZTRjZDVhNzlhNzliMTY4ZTAyZmQ5YTI4ZSJ9fX0=")
+                    .build()
+                    .asItemStack(),
+                "Enter Player Name:",
+                (input) -> true,
+                (output, player) -> {
+                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(output);
+                    String skinValue = SkullCreator.getTexture(offlinePlayer);
+
+                    SkinUtils.generateSkin(skinValue).thenAccept(skin -> {
+                        this.skin = new SkinData(skinValue, skin.data.texture.signature);
+                    });
+
+                    Bukkit.getScheduler().runTask(Followers.getInstance(), gui::open);
+                }
+            )
+        );
 
         return buttons;
     }

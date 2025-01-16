@@ -6,7 +6,7 @@ import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.utils.SignMenuFactory;
 
 import java.util.Arrays;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class TextInterface {
@@ -21,8 +21,8 @@ public class TextInterface {
         private String prompt = "Enter an input:";
         private String initialInput = "";
         private Function<String, Boolean> textPredicate = (input) -> true;
-        private Consumer<String> onCompletion = (input) -> {};
-        private Consumer<String> onCancel = (input) -> {};
+        private BiConsumer<String, Player> onCompletion = (output, player) -> {};
+        private BiConsumer<String, Player> onCancel = (output, player) -> {};
         private InputType inputType = InputType.ANVIL;
 
         private Builder() {}
@@ -46,12 +46,12 @@ public class TextInterface {
             return this;
         }
 
-        public Builder onCompletion(Consumer<String> onCompletion) {
+        public Builder onCompletion(BiConsumer<String, Player>  onCompletion) {
             this.onCompletion = onCompletion;
             return this;
         }
 
-        public Builder onCancel(Consumer<String> onCancel) {
+        public Builder onCancel(BiConsumer<String, Player> onCancel) {
             this.onCancel = onCancel;
             return this;
         }
@@ -86,9 +86,9 @@ public class TextInterface {
                     .reopenIfFail(true)
                     .response((ignored, output) -> {
                         if (textPredicate.apply(output[0])) {
-                            onCompletion.accept(output[0]);
+                            onCompletion.accept(output[0], player);
                         } else {
-                            onCancel.accept(output[0]);
+                            onCancel.accept(output[0], player);
                         }
 
                         return true;

@@ -9,20 +9,22 @@ import org.lushplugins.lushlib.utils.DisplayItemStack;
 
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class AnvilMenu {
     private static final HashMap<UUID, AnvilMenu> menus = new HashMap<>();
 
     private final Inventory inventory;
+    private final Player player;
     private final Function<String, Boolean> textPredicate;
-    private final Consumer<String> onCompletion;
-    private final Consumer<String> onCancel;
+    private final BiConsumer<String, Player> onCompletion;
+    private final BiConsumer<String, Player> onCancel;
     private String input;
 
-    private AnvilMenu(Player player, String prompt, String initialInput, Function<String, Boolean> textPredicate, Consumer<String> onCompletion, Consumer<String> onCancel) {
+    private AnvilMenu(Player player, String prompt, String initialInput, Function<String, Boolean> textPredicate, BiConsumer<String, Player> onCompletion, BiConsumer<String, Player> onCancel) {
         this.inventory = Bukkit.createInventory(null, InventoryType.ANVIL, prompt);
+        this.player = player;
         this.textPredicate = textPredicate;
         this.onCompletion = onCompletion;
         this.onCancel = onCancel;
@@ -64,11 +66,11 @@ public class AnvilMenu {
     }
 
     public void complete() {
-        onCompletion.accept(input);
+        onCompletion.accept(input, player);
     }
 
     public void cancel() {
-        onCancel.accept(input);
+        onCancel.accept(input, player);
     }
 
     public static AnvilMenu getMenu(UUID uuid) {
@@ -87,8 +89,8 @@ public class AnvilMenu {
         private String prompt = "Enter an input:";
         private String initialInput = "";
         private Function<String, Boolean> textPredicate = (input) -> true;
-        private Consumer<String> onCompletion = (input) -> {};
-        private Consumer<String> onCancel = (input) -> {};
+        private BiConsumer<String, Player> onCompletion = (input, player) -> {};
+        private BiConsumer<String, Player> onCancel = (input, player) -> {};
 
         private Builder() {}
 
@@ -107,12 +109,12 @@ public class AnvilMenu {
             return this;
         }
 
-        public Builder onCompletion(Consumer<String> onCompletion) {
+        public Builder onCompletion(BiConsumer<String, Player> onCompletion) {
             this.onCompletion = onCompletion;
             return this;
         }
 
-        public Builder onCancel(Consumer<String> onCancel) {
+        public Builder onCancel(BiConsumer<String, Player> onCancel) {
             this.onCancel = onCancel;
             return this;
         }

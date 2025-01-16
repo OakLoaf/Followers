@@ -24,6 +24,7 @@ import org.lushplugins.lushlib.gui.button.ItemButton;
 import org.lushplugins.lushlib.gui.inventory.Gui;
 import org.lushplugins.lushlib.libraries.chatcolor.ChatColorHandler;
 import org.lushplugins.lushlib.registry.RegistryUtils;
+import org.lushplugins.lushlib.utils.DisplayItemStack;
 
 import java.util.*;
 
@@ -134,7 +135,7 @@ public class BuilderGui extends Gui {
                 },
                 "Enter Follower Name:",
                 (input) -> true,
-                (output) -> {
+                (output, clicker) -> {
                     if (!output.isBlank()) {
                         if (output.charAt(0) == '-') {
                             output = output.substring(1);
@@ -159,21 +160,17 @@ public class BuilderGui extends Gui {
                     com.github.retrooper.packetevents.protocol.entity.type.EntityType entityType = this.builder.entityType();
                     String entityTypeRaw = entityType.getName().getKey().toLowerCase();
 
-                    ItemStack item = new ItemStack(EntityTypeUtils.getSpawnEgg(entityType));
-                    ItemMeta itemMeta = item.getItemMeta();
-                    if (itemMeta != null) {
-                        itemMeta.setDisplayName(ChatColorHandler.translate("&#ffde8aEntity Type: &f" + StringUtils.makeFriendly(entityTypeRaw.replace("_", " "))));
-                        item.setItemMeta(itemMeta);
-                    }
-
-                    return item;
+                    return DisplayItemStack.builder(EntityTypeUtils.getSpawnEgg(entityType))
+                        .setDisplayName("&#ffde8aEntity Type: &f" + StringUtils.makeFriendly(entityTypeRaw.replace("_", " ")))
+                        .build()
+                        .asItemStack();
                 },
                 "Enter Entity Type:",
                 (input) -> {
                     EntityType entityType = RegistryUtils.parseString(input.replace(" ", "_"), Registry.ENTITY_TYPE);
                     return entityType != null;
                 },
-                (output) -> {
+                (output, clicker) -> {
                     if (output.isBlank()) {
                         ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("invalid-entity-type"));
                         return;
@@ -192,7 +189,7 @@ public class BuilderGui extends Gui {
             )
         ));
 
-        buttons.addAll(builder.entityConfig().getGuiButtons());
+        buttons.addAll(builder.entityConfig().getGuiButtons(this));
 
         buttons.forEach(button -> {
             if (!buttonSlots.isEmpty()) {

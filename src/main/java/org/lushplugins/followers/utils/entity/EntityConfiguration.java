@@ -17,6 +17,7 @@ import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.gui.button.BooleanButton;
 import org.lushplugins.followers.utils.ClassUtils;
 import org.lushplugins.lushlib.gui.button.ItemButton;
+import org.lushplugins.lushlib.gui.inventory.Gui;
 
 import java.util.List;
 import java.util.UUID;
@@ -49,7 +50,7 @@ public class EntityConfiguration {
         this.invisible = invisible;
     }
 
-    public List<ItemButton> getGuiButtons() {
+    public List<ItemButton> getGuiButtons(Gui gui) {
         return List.of(
             new BooleanButton(
                 invisible,

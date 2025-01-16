@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.lushplugins.followers.gui.button.BooleanButton;
 import org.lushplugins.lushlib.gui.button.ItemButton;
+import org.lushplugins.lushlib.gui.inventory.Gui;
 import org.lushplugins.lushlib.utils.DisplayItemStack;
 
 import java.util.ArrayList;
@@ -40,8 +41,8 @@ public class AgeableConfiguration extends LivingEntityConfiguration {
     }
 
     @Override
-    public List<ItemButton> getGuiButtons() {
-        List<ItemButton> buttons = new ArrayList<>(super.getGuiButtons());
+    public List<ItemButton> getGuiButtons(Gui gui) {
+        List<ItemButton> buttons = new ArrayList<>(super.getGuiButtons(gui));
 
         buttons.add(
             new BooleanButton(

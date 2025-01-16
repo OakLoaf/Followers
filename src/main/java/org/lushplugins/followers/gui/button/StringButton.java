@@ -7,15 +7,15 @@ import org.lushplugins.followers.utils.menu.TextInterface;
 import org.lushplugins.lushlib.gui.button.ItemButton;
 
 import java.util.concurrent.Callable;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class StringButton extends ItemButton {
     private final Callable<ItemStack> item;
-    private final Consumer<String> onCompletion;
+    private final BiConsumer<String, Player> onCompletion;
     private String value;
 
-    public StringButton(String value, Callable<ItemStack> item, String prompt, Function<String, Boolean> textPredicate, Consumer<String> onCompletion) {
+    public StringButton(String value, Callable<ItemStack> item, String prompt, Function<String, Boolean> textPredicate, BiConsumer<String, Player> onCompletion) {
         super((event) -> {});
         this.value = value;
         this.item = item;
@@ -33,15 +33,15 @@ public class StringButton extends ItemButton {
                 .prompt(prompt)
                 .initialInput(this.value)
                 .textPredicate(textPredicate)
-                .onCompletion((input) -> {
-                    this.value = input;
-                    this.onCompletion.accept(input);
+                .onCompletion((output, ignored) -> {
+                    this.value = output;
+                    this.onCompletion.accept(output, player);
 
                     if (inventory != null) {
                         player.openInventory(inventory);
                     }
                 })
-                .onCancel((ignored) -> {
+                .onCancel((output, ignored) -> {
                     if (inventory != null) {
                         player.openInventory(inventory);
                     }
