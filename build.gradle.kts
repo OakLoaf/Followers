@@ -37,7 +37,7 @@ dependencies {
     compileOnly(files("libs/SimpleSit.jar"))
 
     // Libraries
-    api("me.tofaa.entitylib:spigot:2.4.11-SNAPSHOT")
+    api("me.tofaa.entitylib:spigot:+39cce79-SNAPSHOT")
     implementation("org.lushplugins:LushLib:0.10.34")
     implementation("org.mineskin:java-client:1.2.4-SNAPSHOT")
 }
@@ -85,8 +85,8 @@ tasks {
 
         downloadPlugins {
             modrinth("packetevents", "2.7.0")
-            modrinth("viaversion", "5.0.3")
-            modrinth("viabackwards", "5.0.3")
+            modrinth("viaversion", "5.2.2-SNAPSHOT+662")
+            modrinth("viabackwards", "5.2.2-SNAPSHOT+380")
             hangar("PlaceholderAPI", "2.11.6")
         }
     }
