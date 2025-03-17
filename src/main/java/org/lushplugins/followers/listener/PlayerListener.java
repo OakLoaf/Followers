@@ -1,6 +1,7 @@
 package org.lushplugins.followers.listener;
 
 import org.bukkit.event.Listener;
+import org.lushplugins.followers.config.ConfigManager;
 import org.lushplugins.followers.data.DataManager;
 import org.lushplugins.followers.entity.Follower;
 import org.lushplugins.followers.entity.OwnedFollower;
@@ -88,7 +89,10 @@ public class PlayerListener implements Listener {
     public void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
         FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-        if (Followers.getInstance().getConfigManager().getWorldBlacklist().contains(player.getWorld().getName())) {
+
+        String worldName = player.getWorld().getName();
+        ConfigManager configManager = Followers.getInstance().getConfigManager();
+        if (!configManager.isWhitelistedWorld(worldName) || configManager.isBlacklistedWorld(worldName)) {
             followerUser.setHidden(true);
         } else if (followerUser.isHidden()) {
             followerUser.setHidden(false);

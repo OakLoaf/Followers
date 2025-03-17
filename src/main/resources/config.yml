@@ -22,6 +22,8 @@ height-offset: 0
 follower-nickname-format: "%nickname%"
 # follower-default-name: The default nickname of followers
 follower-default-nickname: "Unnamed"
+# world-whitelist: A list of worlds that followers can appear in (* allows followers to appear in all worlds)
+world-whitelist: *
 # world-blacklist: A list of worlds that followers cannot appear in
 world-blacklist:
   - blacklisted_world
