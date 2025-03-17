@@ -2,7 +2,12 @@ package org.lushplugins.followers.entity;
 
 import com.github.retrooper.packetevents.util.Vector3d;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
+import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.lushplugins.followers.Followers;
+import org.lushplugins.followers.config.ConfigManager;
+import org.lushplugins.followers.data.FollowerUser;
 
 public class OwnedFollower extends Follower {
     private final LivingEntity owner;
@@ -16,6 +21,23 @@ public class OwnedFollower extends Follower {
 
     public LivingEntity getOwner() {
         return owner;
+    }
+
+    @Override
+    public void setWorld(World world) {
+        super.setWorld(world);
+
+        if (owner instanceof Player player) {
+            FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
+            String worldName = player.getWorld().getName();
+
+            ConfigManager configManager = Followers.getInstance().getConfigManager();
+            if (!configManager.isWhitelistedWorld(worldName) || configManager.isBlacklistedWorld(worldName)) {
+                followerUser.setHidden(true);
+            } else if (followerUser.isHidden()) {
+                followerUser.setHidden(false);
+            }
+        }
     }
 
     @Override
