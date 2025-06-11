@@ -79,9 +79,11 @@ public final class Followers extends SpigotPlugin {
 
         configManager = new ConfigManager();
         dataManager = new DataManager();
+        followerManager = new FollowerManager();
+
         dataManager.initAsync((successful) -> {
             if (successful) {
-                followerManager = new FollowerManager();
+                followerManager.reloadFollowers();
 
                 registerListeners(
                     new FollowerEntityListener(),

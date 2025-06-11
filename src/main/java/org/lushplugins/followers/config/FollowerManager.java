@@ -24,10 +24,6 @@ public class FollowerManager {
     private YamlConfiguration config;
     private final Map<String, FollowerHandler> followerList = new TreeMap<>();
 
-    public FollowerManager() {
-        reloadFollowers();
-    }
-
     public FollowerTaskRegistry getTaskRegistry() {
         return TASK_REGISTRY;
     }
