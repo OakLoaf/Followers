@@ -28,7 +28,7 @@ dependencies {
     // Dependencies
     compileOnly("org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("com.mysql:mysql-connector-j:8.3.0") // Uses Spigot copy
-    compileOnlyApi("com.github.retrooper:packetevents-spigot:2.6.0")
+    compileOnlyApi("com.github.retrooper:packetevents-spigot:2.8.0")
 
     // Soft Dependencies
     compileOnly("org.geysermc.floodgate:api:2.0-SNAPSHOT")
@@ -38,8 +38,8 @@ dependencies {
     compileOnly(files("libs/SimpleSit.jar"))
 
     // Libraries
-    api("me.tofaa.entitylib:spigot:+39cce79-SNAPSHOT")
-    implementation("org.lushplugins:LushLib:0.10.34")
+    api("me.tofaa.entitylib:spigot:+49943c9-SNAPSHOT")
+    implementation("org.lushplugins:LushLib:0.10.77")
     implementation("org.mineskin:java-client:1.2.4-SNAPSHOT")
 }
 
@@ -77,10 +77,10 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.21")
+        minecraftVersion("1.21.7")
 
         downloadPlugins {
-            modrinth("packetevents", "2.7.0")
+//            modrinth("packetevents", "2.8.0")
             modrinth("viaversion", "5.2.2-SNAPSHOT+662")
             modrinth("viabackwards", "5.2.2-SNAPSHOT+380")
             hangar("PlaceholderAPI", "2.11.6")
