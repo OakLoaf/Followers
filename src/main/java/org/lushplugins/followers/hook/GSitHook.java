@@ -44,7 +44,7 @@ public class GSitHook extends Hook implements Listener {
     }
 
     @EventHandler
-    public void onPlayerGetUpFromSeat(EntityGetUpSitEvent event) {
+    public void onPlayerGetUpFromSeat(EntityStopSitEvent event) {
         if (event.getEntity() instanceof Player player) {
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
             followerUser.setPose(FollowerPose.DEFAULT);
@@ -65,7 +65,7 @@ public class GSitHook extends Hook implements Listener {
             return;
         }
 
-        Pose pose = event.getPoseSeat().getPose();
+        Pose pose = event.getPose().getPose();
         if (pose == Pose.SPIN_ATTACK) {
             follower.setPose(FollowerPose.SPINNING);
             follower.addTask(TaskId.PARTICLE_CLOUD);
@@ -73,7 +73,7 @@ public class GSitHook extends Hook implements Listener {
     }
 
     @EventHandler
-    public void onPlayerEndPose(PlayerGetUpPoseEvent event) {
+    public void onPlayerEndPose(PlayerStopPoseEvent event) {
         Player player = event.getPlayer();
         Follower follower = Followers.getInstance().getDataManager().getFollowerUser(player).getFollower();
         if (follower == null || !follower.isSpawned()) {
