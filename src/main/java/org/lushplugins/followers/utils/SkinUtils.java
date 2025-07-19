@@ -3,7 +3,7 @@ package org.lushplugins.followers.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mysql.cj.util.LRUCache;
-import org.lushplugins.lushlib.utils.LushLogger;
+import org.lushplugins.lushlib.LushLogger;
 import org.mineskin.MineskinClient;
 import org.mineskin.data.Skin;
 
