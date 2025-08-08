@@ -32,7 +32,7 @@ public class ModerationGui extends PagedGui {
         int slotIndex = startPos;
 
         List<OwnedFollower> ownedFollowers = Followers.getInstance().getDataManager().getOwnedFollowers()
-            .subList(startPos, startPos + 36);
+            .subList(startPos, Math.min(startPos + 36, Followers.getInstance().getDataManager().getOwnedFollowers().size()));
 
         for (OwnedFollower follower : ownedFollowers) {
             FollowerHandler followerHandler = follower.getType();
