@@ -36,6 +36,7 @@ public class ViewersTask extends FollowerTask {
             UUID uuid = player.getUniqueId();
             if (!player.getWorld().equals(follower.getWorld()) && viewers.contains(uuid)) {
                 entity.removeViewer(uuid);
+                continue;
             }
 
             Location playerLocation = SpigotConversionUtil.fromBukkitLocation(player.getLocation());
