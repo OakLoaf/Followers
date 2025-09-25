@@ -47,7 +47,7 @@ public class PlayerConfiguration extends LivingEntityConfiguration {
                     this.skin = new SkinData(skinValue, skinSignature);
 
                     if (skinSignature == null) {
-                        SkinUtils.generateSkin(skinValue).thenAccept(skin -> this.skin.setSignature(skin.data.texture.signature));
+                        SkinUtils.generateSkin(skinValue).thenAccept(skin -> this.skin.setSignature(skin.texture().data().signature()));
                     }
                 }
             }
@@ -85,7 +85,7 @@ public class PlayerConfiguration extends LivingEntityConfiguration {
                     String skinValue = SkullCreator.getTexture(offlinePlayer);
 
                     SkinUtils.generateSkin(skinValue).thenAccept(skin -> {
-                        this.skin = new SkinData(skinValue, skin.data.texture.signature);
+                        this.skin = new SkinData(skinValue, skin.texture().data().signature());
                     });
 
                     Bukkit.getScheduler().runTask(Followers.getInstance(), gui::open);
