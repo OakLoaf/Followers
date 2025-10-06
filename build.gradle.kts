@@ -33,7 +33,7 @@ dependencies {
     // Soft Dependencies
     compileOnly("org.geysermc.floodgate:api:2.0-SNAPSHOT")
     compileOnly("net.ess3:EssentialsX:2.18.1")
-    compileOnly("com.github.Gecolay.GSit:core:2.4.3")
+    compileOnly("com.github.Gecolay.GSit:core:2.4.4")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly(files("libs/SimpleSit.jar"))
 
