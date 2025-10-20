@@ -28,7 +28,7 @@ dependencies {
     // Dependencies
     compileOnly("org.spigotmc:spigot-api:1.21.8-R0.1-SNAPSHOT")
     compileOnly("com.mysql:mysql-connector-j:8.3.0") // Uses Spigot copy
-    compileOnlyApi("com.github.retrooper:packetevents-spigot:2.8.0")
+    compileOnlyApi("com.github.retrooper:packetevents-spigot:2.10.0")
 
     // Soft Dependencies
     compileOnly("org.geysermc.floodgate:api:2.0-SNAPSHOT")
