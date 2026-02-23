@@ -20,7 +20,7 @@ repositories {
     maven("https://repo.inventivetalent.org/repository/public/") // MineSkin
     maven("https://repo.codemc.io/repository/maven-releases/") // PacketEvents
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI
-    maven("https://maven.evokegames.gg/snapshots") // EntityLib
+    maven("https://maven.pvphub.me/tofaa") // EntityLib
     maven("https://jitpack.io") // GSit
 }
 
@@ -38,7 +38,7 @@ dependencies {
     compileOnly(files("libs/SimpleSit.jar"))
 
     // Libraries
-    api("me.tofaa.entitylib:spigot:+fe61616-SNAPSHOT")
+    api("io.github.tofaa2:spigot:3.1.0-SNAPSHOT")
     implementation("org.lushplugins:LushLib:0.10.82")
     implementation("org.mineskin:java-client:3.1.0-SNAPSHOT")
     implementation("org.mineskin:java-client-jsoup:3.1.0-SNAPSHOT")
@@ -57,6 +57,7 @@ java {
 tasks {
     withType<JavaCompile> {
         options.encoding = "UTF-8"
+        options.compilerArgs.add("-parameters")
     }
 
     shadowJar {
@@ -69,7 +70,9 @@ tasks {
     }
 
     processResources{
-        expand(project.properties)
+        filesMatching("plugin.yml") {
+            expand(project.properties)
+        }
 
         inputs.property("version", rootProject.version)
         filesMatching("plugin.yml") {
@@ -78,10 +81,10 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.21.7")
+        minecraftVersion("1.21.11")
 
         downloadPlugins {
-//            modrinth("packetevents", "2.8.0")
+            modrinth("packetevents", "2.11.2+spigot")
             modrinth("viaversion", "5.2.2-SNAPSHOT+662")
             modrinth("viabackwards", "5.2.2-SNAPSHOT+380")
             hangar("PlaceholderAPI", "2.11.6")
@@ -91,11 +94,8 @@ tasks {
 
 tasks.withType(xyz.jpenilla.runtask.task.AbstractRun::class) {
     javaLauncher = javaToolchains.launcherFor {
-        vendor = JvmVendorSpec.JETBRAINS
         languageVersion = JavaLanguageVersion.of(21)
     }
-
-    jvmArgs("-XX:+AllowEnhancedClassRedefinition")
 }
 
 publishing {

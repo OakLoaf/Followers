@@ -25,7 +25,7 @@ public class VisibilityTask extends FollowerTask {
         }
 
         FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-        boolean hidden = player.isInvisible() || PlayerUtils.isVanished(player);
+        boolean hidden = player.isInvisible() || PlayerUtils.isVanished(player) || !Followers.getInstance().getConfigManager().inEnabledWorld(player);
         if (followerUser.isHidden() != hidden) {
             followerUser.setHidden(hidden);
         }

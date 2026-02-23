@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.utils.ExtendedSimpleItemStack;
 import org.lushplugins.followers.utils.YamlConverter;
@@ -193,6 +194,11 @@ public class ConfigManager {
 
     public String getDefaultNickname() {
         return defaultNickname;
+    }
+
+    public boolean inEnabledWorld(Player player) {
+        String worldName = player.getWorld().getName();
+        return isWhitelistedWorld(worldName) && !isBlacklistedWorld(worldName);
     }
 
     public boolean isWhitelistedWorld(String worldName) {

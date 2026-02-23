@@ -29,10 +29,7 @@ public class OwnedFollower extends Follower {
 
         if (owner instanceof Player player) {
             FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
-            String worldName = player.getWorld().getName();
-
-            ConfigManager configManager = Followers.getInstance().getConfigManager();
-            if (!configManager.isWhitelistedWorld(worldName) || configManager.isBlacklistedWorld(worldName)) {
+            if (!Followers.getInstance().getConfigManager().inEnabledWorld(player)) {
                 followerUser.setHidden(true);
             } else if (followerUser.isHidden()) {
                 followerUser.setHidden(false);

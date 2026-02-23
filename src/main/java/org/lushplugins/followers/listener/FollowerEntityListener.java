@@ -1,6 +1,7 @@
 package org.lushplugins.followers.listener;
 
 import org.bukkit.event.Listener;
+import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.api.events.FollowerEntitySpawnEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,7 +20,7 @@ public class FollowerEntityListener implements Listener {
             return;
         }
 
-        if (player.isInvisible() || PlayerUtils.isVanished(player)) {
+        if (player.isInvisible() || PlayerUtils.isVanished(player) || !Followers.getInstance().getConfigManager().inEnabledWorld(player)) {
             event.setCancelled(true);
         }
     }
