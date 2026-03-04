@@ -198,7 +198,7 @@ public class FollowerUser {
                 follower.despawn();
             }
         } else if (enabled) {
-            if (follower == null || !follower.isSpawned()) {
+            if (follower == null || (!follower.isSpawned() && !follower.isSpawning())) {
                 spawnFollower();
             }
         }
@@ -237,7 +237,7 @@ public class FollowerUser {
             follower.setDisplayName(isDisplayNameEnabled() ? displayName : null);
         }
 
-        if (follower.spawn(player.getWorld(), SpigotConversionUtil.fromBukkitLocation(player.getLocation().add(1.5, 0, 1.5)))) {
+        if (!follower.isSpawned() && !follower.isSpawning() && follower.spawn(player.getWorld(), SpigotConversionUtil.fromBukkitLocation(player.getLocation().add(1.5, 0, 1.5)))) {
             Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> follower.addTask(TaskId.VISIBILITY), 5);
         }
     }

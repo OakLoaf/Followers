@@ -41,6 +41,7 @@ public class Follower {
     private WrapperEntity nameTagEntity;
     private World world;
     private Vector3d target;
+    private boolean spawning;
     private String displayName;
     private FollowerPose pose;
 
@@ -112,6 +113,10 @@ public class Follower {
     public void setTarget(World world, Vector3d target) {
         this.setWorld(world);
         this.target = target;
+    }
+
+    public boolean isSpawning() {
+        return spawning;
     }
 
     public boolean isSpawned() {
@@ -291,6 +296,7 @@ public class Follower {
             throw new IllegalStateException("Follower is already spawned.");
         }
 
+        this.spawning = true;
         this.setWorld(world);
 
         if (!Followers.getInstance().callEvent(new FollowerEntitySpawnEvent(this))) {
@@ -324,6 +330,7 @@ public class Follower {
             TaskId.VALIDATE
         );
 
+        this.spawning = false;
         return true;
     }
 
