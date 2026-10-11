@@ -3,19 +3,14 @@ package org.lushplugins.followers.utils.entity;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import me.tofaa.entitylib.EntityLib;
-import me.tofaa.entitylib.meta.EntityMeta;
-import me.tofaa.entitylib.meta.mobs.monster.zombie.ZombieMeta;
-import me.tofaa.entitylib.meta.other.ArmorStandMeta;
-import me.tofaa.entitylib.meta.types.AgeableMeta;
-import me.tofaa.entitylib.meta.types.LivingEntityMeta;
-import me.tofaa.entitylib.meta.types.PlayerMeta;
+import me.tofaa.entitylib.meta.MetaFields;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.gui.button.BooleanButton;
-import org.lushplugins.followers.utils.ClassUtils;
+import org.lushplugins.followers.utils.EntityTypeUtils;
 import org.lushplugins.lushlib.gui.button.ItemButton;
 import org.lushplugins.lushlib.gui.inventory.Gui;
 
@@ -62,22 +57,15 @@ public class EntityConfiguration {
     }
 
     public WrapperEntity createEntity() {
-        UUID uuid = EntityLib.getPlatform().getEntityUuidProvider().provide(entityType);
-        int entityId = EntityLib.getPlatform().getEntityIdProvider().provide(uuid, entityType);
-
-        return createEntity(entityId, uuid);
+        return createEntity(EntityLib.get().getPlatform().nextEntityId(), UUID.randomUUID());
     }
 
     public WrapperEntity createEntity(int entityId, UUID uuid) {
-        return createEntity(entityId, uuid, EntityMeta.createMeta(entityId, entityType));
-    }
-
-    public WrapperEntity createEntity(int entityId, UUID uuid, EntityMeta meta) {
-        return new WrapperEntity(entityId, uuid, entityType, meta);
+        return new WrapperEntity(entityId, uuid, entityType);
     }
 
     public void applyAttributes(WrapperEntity entity) {
-        entity.getEntityMeta().setInvisible(invisible);
+        entity.setFlag(MetaFields.LivingEntity.INVISIBLE, invisible);
     }
 
     public void save(ConfigurationSection config) {
@@ -96,12 +84,11 @@ public class EntityConfiguration {
             throw new IllegalArgumentException("Invalid entity type defined for pet '" + config.getCurrentPath() + "'");
         }
 
-        Class<?> metaClass = EntityMeta.getMetaClass(entityType);
-        if (ClassUtils.areAnyAssignable(metaClass, PlayerMeta.class)) {
+        if (EntityTypeUtils.areAnyAssignable(entityType, EntityTypes.PLAYER)) {
             return new PlayerConfiguration(entityType, config);
-        } else if (ClassUtils.areAnyAssignable(metaClass, AgeableMeta.class, ArmorStandMeta.class, ZombieMeta.class)) {
+        } else if (EntityTypeUtils.areAnyAssignable(entityType, EntityTypes.ABSTRACT_AGEABLE, EntityTypes.ARMOR_STAND, EntityTypes.ZOMBIE)) {
             return new AgeableConfiguration(entityType, config);
-        } else if (ClassUtils.areAnyAssignable(metaClass, LivingEntityMeta.class)) {
+        } else if (EntityTypeUtils.areAnyAssignable(entityType, EntityTypes.LIVINGENTITY)) {
             return new LivingEntityConfiguration(entityType, config);
         } else {
             return new EntityConfiguration(entityType, config);
@@ -109,12 +96,11 @@ public class EntityConfiguration {
     }
 
     public static EntityConfiguration empty(EntityType entityType) {
-        Class<?> metaClass = EntityMeta.getMetaClass(entityType);
-        if (ClassUtils.areAnyAssignable(metaClass, PlayerMeta.class)) {
+        if (EntityTypeUtils.areAnyAssignable(entityType, EntityTypes.PLAYER)) {
             return new PlayerConfiguration(entityType);
-        } else if (ClassUtils.areAnyAssignable(metaClass, AgeableMeta.class, ArmorStandMeta.class, ZombieMeta.class)) {
+        } else if (EntityTypeUtils.areAnyAssignable(entityType, EntityTypes.ABSTRACT_AGEABLE, EntityTypes.ARMOR_STAND, EntityTypes.ZOMBIE)) {
             return new AgeableConfiguration(entityType);
-        } else if (ClassUtils.areAnyAssignable(metaClass, LivingEntityMeta.class)) {
+        } else if (EntityTypeUtils.areAnyAssignable(entityType, EntityTypes.LIVINGENTITY)) {
             return new LivingEntityConfiguration(entityType);
         } else {
             return new EntityConfiguration(entityType);

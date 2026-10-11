@@ -1,7 +1,7 @@
 package org.lushplugins.followers.entity.poses.entities;
 
 import com.github.retrooper.packetevents.protocol.entity.armadillo.ArmadilloState;
-import me.tofaa.entitylib.meta.mobs.passive.ArmadilloMeta;
+import me.tofaa.entitylib.meta.MetaFields;
 import org.bukkit.Bukkit;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.entity.poses.FollowerPose;
@@ -11,37 +11,33 @@ public class ArmadilloPoses extends PoseSet {
 
     public ArmadilloPoses() {
         addPose(FollowerPose.DEFAULT, (entity) -> {
-            ArmadilloMeta entityMeta = (ArmadilloMeta) entity.getEntityMeta();
-
-            switch (entityMeta.getState()) {
+            switch (entity.getMetadata().get(MetaFields.Armadillo.ARMADILLO_STATE)) {
                 case SCARED -> {
-                    entityMeta.setState(ArmadilloState.UNROLLING);
+                    entity.setMetadata(MetaFields.Armadillo.ARMADILLO_STATE, ArmadilloState.UNROLLING);
 
                     Bukkit.getScheduler().runTaskLaterAsynchronously(Followers.getInstance(), () -> {
-                        entityMeta.setState(ArmadilloState.IDLE);
+                        entity.setMetadata(MetaFields.Armadillo.ARMADILLO_STATE, ArmadilloState.IDLE);
                     }, 30);
                 }
                 case IDLE -> {}
                 default -> Bukkit.getScheduler().runTaskLaterAsynchronously(Followers.getInstance(), () -> {
-                    entityMeta.setState(ArmadilloState.IDLE);
+                    entity.setMetadata(MetaFields.Armadillo.ARMADILLO_STATE, ArmadilloState.IDLE);
                 }, 30);
             }
         });
 
         addPose(FollowerPose.SITTING, (entity) -> {
-            ArmadilloMeta entityMeta = (ArmadilloMeta) entity.getEntityMeta();
-
-            switch (entityMeta.getState()) {
+            switch (entity.getMetadata().get(MetaFields.Armadillo.ARMADILLO_STATE)) {
                 case IDLE -> {
-                    entityMeta.setState(ArmadilloState.ROLLING);
+                    entity.setMetadata(MetaFields.Armadillo.ARMADILLO_STATE, ArmadilloState.ROLLING);
 
                     Bukkit.getScheduler().runTaskLaterAsynchronously(Followers.getInstance(), () -> {
-                        entityMeta.setState(ArmadilloState.SCARED);
+                        entity.setMetadata(MetaFields.Armadillo.ARMADILLO_STATE, ArmadilloState.SCARED);
                     }, 30);
                 }
                 case SCARED -> {}
                 default -> Bukkit.getScheduler().runTaskLaterAsynchronously(Followers.getInstance(), () -> {
-                    entityMeta.setState(ArmadilloState.SCARED);
+                    entity.setMetadata(MetaFields.Armadillo.ARMADILLO_STATE, ArmadilloState.SCARED);
                 }, 30);
             }
         });

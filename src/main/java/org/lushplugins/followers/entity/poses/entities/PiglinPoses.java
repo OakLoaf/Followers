@@ -1,6 +1,6 @@
 package org.lushplugins.followers.entity.poses.entities;
 
-import me.tofaa.entitylib.meta.mobs.monster.piglin.PiglinMeta;
+import me.tofaa.entitylib.meta.MetaFields;
 import org.lushplugins.followers.entity.poses.FollowerPose;
 import org.lushplugins.followers.entity.poses.PoseSet;
 
@@ -8,11 +8,11 @@ public class PiglinPoses extends PoseSet {
 
     public PiglinPoses() {
         addPose(FollowerPose.DEFAULT, (entity) -> {
-            entity.getEntityMeta(PiglinMeta.class).setDancing(false);
+            entity.setMetadata(MetaFields.Piglin.IS_DANCING, false);
         });
 
         addPose(FollowerPose.SITTING, (entity) -> {
-            entity.getEntityMeta(PiglinMeta.class).setDancing(true);
+            entity.setMetadata(MetaFields.Piglin.IS_DANCING, false);
         });
     }
 }

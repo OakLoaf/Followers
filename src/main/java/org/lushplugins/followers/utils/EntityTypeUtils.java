@@ -8,6 +8,16 @@ import org.lushplugins.lushlib.registry.RegistryUtils;
 
 public class EntityTypeUtils {
 
+    public static boolean areAnyAssignable(EntityType type, EntityType... types) {
+        for (EntityType t : types) {
+            if (t.isInstanceOf(type)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static Material getSpawnEgg(EntityType entityType) {
         if (entityType.equals(EntityTypes.ARMOR_STAND)) {
             return Material.ARMOR_STAND;

@@ -2,10 +2,7 @@ package org.lushplugins.followers.utils.entity;
 
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
-import me.tofaa.entitylib.meta.EntityMeta;
-import me.tofaa.entitylib.meta.mobs.monster.zombie.ZombieMeta;
-import me.tofaa.entitylib.meta.other.ArmorStandMeta;
-import me.tofaa.entitylib.meta.types.AgeableMeta;
+import me.tofaa.entitylib.meta.MetaFields;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -65,13 +62,13 @@ public class AgeableConfiguration extends LivingEntityConfiguration {
     public void applyAttributes(WrapperEntity entity) {
         super.applyAttributes(entity);
 
-        EntityMeta meta = entity.getEntityMeta();
-        if (meta instanceof ZombieMeta zombieMeta) {
-            zombieMeta.setBaby(baby);
-        } else if (meta instanceof ArmorStandMeta armorStandMeta) {
-            armorStandMeta.setSmall(baby);
-        } else if (meta instanceof AgeableMeta ageableMeta) {
-            ageableMeta.setBaby(baby);
+        EntityType type = entity.getEntityType();
+        if (type.isInstanceOf(EntityTypes.ZOMBIE)) {
+            entity.setMetadata(MetaFields.Zombie.BABY, baby);
+        } else if (type.isInstanceOf(EntityTypes.ARMOR_STAND)) {
+            entity.setFlag(MetaFields.ArmorStand.SMALL, baby);
+        } else if (type.isInstanceOf(EntityTypes.ABSTRACT_AGEABLE)) {
+            entity.setMetadata(MetaFields.AgeableMob.BABY, baby);
         }
     }
 

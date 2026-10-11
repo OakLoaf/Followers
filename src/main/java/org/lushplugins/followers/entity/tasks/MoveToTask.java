@@ -1,9 +1,10 @@
 package org.lushplugins.followers.entity.tasks;
 
+import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.world.Location;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.util.Vector3f;
-import me.tofaa.entitylib.meta.other.ArmorStandMeta;
+import me.tofaa.entitylib.meta.MetaFields;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.lushplugins.followers.Followers;
 import org.lushplugins.followers.entity.Follower;
@@ -37,8 +38,8 @@ public class MoveToTask extends FollowerTask {
         entity.rotateHead(rotation.getY(), rotation.getX());
         follower.teleport(new Location(newPosition, rotation.getY(), rotation.getX()));
 
-        if (entity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta) {
-            armorStandMeta.setHeadRotation(new Vector3f(rotation.getX(), 0, 0));
+        if (entity.getEntityType().isInstanceOf(EntityTypes.ARMOR_STAND)) {
+            entity.setMetadata(MetaFields.ArmorStand.HEAD_POSE, new Vector3f(rotation.getX(), 0, 0));
         }
     }
 

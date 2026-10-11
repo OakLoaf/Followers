@@ -1,6 +1,6 @@
 package org.lushplugins.followers.entity.poses.entities;
 
-import me.tofaa.entitylib.meta.mobs.horse.CamelMeta;
+import me.tofaa.entitylib.meta.MetaFields;
 import org.lushplugins.followers.entity.poses.FollowerPose;
 import org.lushplugins.followers.entity.poses.PoseSet;
 
@@ -8,11 +8,11 @@ public class CamelPoses extends PoseSet {
 
     public CamelPoses() {
         addPose(FollowerPose.DEFAULT, (entity) -> {
-            entity.getEntityMeta(CamelMeta.class).setLastPoseChangeTick(0);
+            entity.setMetadata(MetaFields.Camel.LAST_POSE_CHANGE_TICK, 0L);
         });
 
         addPose(FollowerPose.SITTING, (entity) -> {
-            entity.getEntityMeta(CamelMeta.class).setLastPoseChangeTick(-30);
+            entity.setMetadata(MetaFields.Camel.LAST_POSE_CHANGE_TICK, -30L);
         });
     }
 }

@@ -1,7 +1,6 @@
 package org.lushplugins.followers.entity.poses.entities;
 
 import com.github.retrooper.packetevents.util.Vector3f;
-import me.tofaa.entitylib.meta.other.ArmorStandMeta;
 import org.lushplugins.followers.entity.poses.FollowerPose;
 import org.lushplugins.followers.entity.poses.PoseSet;
 import org.lushplugins.followers.entity.poses.entities.armorstand.ArmorStandPoseData;
@@ -24,16 +23,8 @@ public class ArmorStandPoses extends PoseSet {
         .setRightLegPose(new Vector3f(0.017453292519943295f, 0, 0.017453292519943295f));
 
     public ArmorStandPoses() {
-        addPose(FollowerPose.DEFAULT, (entity) -> {
-            DEFAULT.pose((ArmorStandMeta) entity.getEntityMeta());
-        });
-
-        addPose(FollowerPose.SITTING, (entity) -> {
-            SITTING.pose((ArmorStandMeta) entity.getEntityMeta());
-        });
-
-        addPose(FollowerPose.SPINNING, (entity) -> {
-            SPINNING.pose((ArmorStandMeta) entity.getEntityMeta());
-        });
+        addPose(FollowerPose.DEFAULT, DEFAULT::pose);
+        addPose(FollowerPose.SITTING, SITTING::pose);
+        addPose(FollowerPose.SPINNING, SPINNING::pose);
     }
 }

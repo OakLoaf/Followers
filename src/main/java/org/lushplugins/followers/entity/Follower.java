@@ -7,9 +7,7 @@ import com.github.retrooper.packetevents.protocol.world.Location;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.util.Vector3f;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerBundle;
-import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
-import me.tofaa.entitylib.meta.display.TextDisplayMeta;
-import me.tofaa.entitylib.meta.other.ArmorStandMeta;
+import me.tofaa.entitylib.meta.MetaFields;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import me.tofaa.entitylib.wrapper.WrapperPlayer;
 import org.bukkit.Bukkit;
@@ -263,20 +261,18 @@ public class Follower {
         }
 
         float translation;
-        if (entity != null && entity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta && armorStandMeta.isMarker()) {
+        if (entity != null && entity.getMetadata().getFlag(MetaFields.ArmorStand.MARKER)) {
             translation = 1.2f * (scale - 0.25f);
         } else {
             translation = 0.1f;
         }
 
-        TextDisplayMeta textDisplayMeta = (TextDisplayMeta) nameTagEntity.getEntityMeta();
-        textDisplayMeta.setTranslation(new Vector3f(0, translation, 0));
-        textDisplayMeta.setScale(new Vector3f(scale, scale, scale));
+        nameTagEntity.setMetadata(MetaFields.TextDisplay.TRANSLATION, new Vector3f(0, translation, 0));
+        nameTagEntity.setMetadata(MetaFields.TextDisplay.SCALE, new Vector3f(scale, scale, scale));
 
         String nickname = Followers.getInstance().getConfigManager().getFollowerNicknameFormat()
             .replaceAll("%nickname%", displayName);
-
-        textDisplayMeta.setText(ModernChatColorHandler.translate(nickname, ParserTypes.color()));
+        nameTagEntity.setMetadata(MetaFields.TextDisplay.TEXT, ModernChatColorHandler.translate(nickname, ParserTypes.color()));
 
         if (!entity.hasPassenger(nameTagEntity)) {
             entity.addPassenger(nameTagEntity.getEntityId());
@@ -378,10 +374,9 @@ public class Follower {
             entity.getViewers().forEach(textDisplay::addViewer);
             entity.addPassenger(textDisplay);
 
-            TextDisplayMeta textDisplayMeta = (TextDisplayMeta) textDisplay.getEntityMeta();
-            textDisplayMeta.setBillboardConstraints(AbstractDisplayMeta.BillboardConstraints.VERTICAL);
-            textDisplayMeta.setBackgroundColor(0);
-            textDisplayMeta.setShadow(true);
+            entity.setMetadata(MetaFields.TextDisplay.BILLBOARD_RENDER_CONSTRAINTS, (byte) 1);
+            entity.setMetadata(MetaFields.TextDisplay.BACKGROUND_COLOR, 0);
+            entity.setFlag(MetaFields.TextDisplay.SHADOW, true);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

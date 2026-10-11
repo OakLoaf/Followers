@@ -3,8 +3,7 @@ package org.lushplugins.followers.utils.entity;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.retrooper.packetevents.protocol.player.TextureProperty;
 import com.github.retrooper.packetevents.protocol.player.UserProfile;
-import me.tofaa.entitylib.meta.EntityMeta;
-import me.tofaa.entitylib.meta.types.PlayerMeta;
+import me.tofaa.entitylib.meta.MetaFields;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import me.tofaa.entitylib.wrapper.WrapperPlayer;
 import org.bukkit.Bukkit;
@@ -97,7 +96,7 @@ public class PlayerConfiguration extends LivingEntityConfiguration {
     }
 
     @Override
-    public WrapperEntity createEntity(int entityId, UUID uuid, EntityMeta meta) {
+    public WrapperEntity createEntity(int entityId, UUID uuid) {
         List<TextureProperty> textureProperties = List.of(
             new TextureProperty(
                 "textures",
@@ -112,13 +111,12 @@ public class PlayerConfiguration extends LivingEntityConfiguration {
         );
         entity.setInTablist(false);
 
-        PlayerMeta playerMeta = entity.getEntityMeta(PlayerMeta.class);
-        playerMeta.setJacketEnabled(true);
-        playerMeta.setLeftSleeveEnabled(true);
-        playerMeta.setRightSleeveEnabled(true);
-        playerMeta.setLeftLegEnabled(true);
-        playerMeta.setRightLegEnabled(true);
-        playerMeta.setHatEnabled(true);
+        entity.setFlag(MetaFields.Player.JACKET, true);
+        entity.setFlag(MetaFields.Player.LEFT_SLEEVE, true);
+        entity.setFlag(MetaFields.Player.RIGHT_SLEEVE, true);
+        entity.setFlag(MetaFields.Player.LEFT_PANTS_LEG, true);
+        entity.setFlag(MetaFields.Player.RIGHT_PANTS_LEG, true);
+        entity.setFlag(MetaFields.Player.HAT, true);
 
         return entity;
     }

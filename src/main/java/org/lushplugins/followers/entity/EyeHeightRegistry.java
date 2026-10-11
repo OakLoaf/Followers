@@ -2,9 +2,10 @@ package org.lushplugins.followers.entity;
 
 import com.github.retrooper.packetevents.protocol.attribute.Attributes;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
+import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.world.Location;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerUpdateAttributes;
-import me.tofaa.entitylib.meta.other.ArmorStandMeta;
+import me.tofaa.entitylib.meta.MetaFields;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -20,10 +21,10 @@ public class EyeHeightRegistry {
 
     public void loadEyeHeights(Collection<EntityType> entityTypes) {
         //noinspection DataFlowIssue
-        YamlConfiguration eyeHeightData = YamlConfiguration.loadConfiguration(new InputStreamReader(Followers.getInstance().getResource("entity_data/1_21.yml")));
+        YamlConfiguration eyeHeightData = YamlConfiguration.loadConfiguration(new InputStreamReader(Followers.getInstance().getResource("entity_data/eye_heights.yml")));
         for (EntityType entityType : entityTypes) {
             if (!this.hasRegisteredEyeHeight(entityType)) {
-                String path = entityType.getName().toString() + ".eye-height";
+                String path = entityType.getName() + ".eye-height";
                 if (eyeHeightData.isDouble(path)) {
                     double eyeHeight = eyeHeightData.getDouble(path);
                     this.setEyeHeight(entityType, eyeHeight);
@@ -34,8 +35,8 @@ public class EyeHeightRegistry {
 
     public Location calculateEyeLocation(WrapperEntity entity) {
         double eyeHeight = this.getEyeHeight(entity.getEntityType());
-        if (entity.getEntityMeta() instanceof ArmorStandMeta armorStandMeta) {
-            if (armorStandMeta.isSmall()) {
+        if (entity.getEntityType().isInstanceOf(EntityTypes.ARMOR_STAND)) {
+            if (entity.getMetadata().getFlag(MetaFields.ArmorStand.SMALL)) {
                 eyeHeight = 0.8875;
             }
         }
@@ -43,7 +44,7 @@ public class EyeHeightRegistry {
         double scale = 1;
         if (entity instanceof WrapperLivingEntity livingEntity) {
             for (WrapperPlayServerUpdateAttributes.Property property : livingEntity.getAttributes().getProperties()) {
-                if (property.getAttribute() == Attributes.GENERIC_SCALE) {
+                if (property.getAttribute() == Attributes.SCALE) {
                     scale = property.getValue();
                     break;
                 }

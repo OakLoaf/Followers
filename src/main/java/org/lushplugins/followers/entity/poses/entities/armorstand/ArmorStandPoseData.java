@@ -1,7 +1,8 @@
 package org.lushplugins.followers.entity.poses.entities.armorstand;
 
 import com.github.retrooper.packetevents.util.Vector3f;
-import me.tofaa.entitylib.meta.other.ArmorStandMeta;
+import me.tofaa.entitylib.meta.MetaFields;
+import me.tofaa.entitylib.wrapper.WrapperEntity;
 
 public class ArmorStandPoseData {
     private Vector3f headPose;
@@ -41,29 +42,29 @@ public class ArmorStandPoseData {
         return this;
     }
 
-    public void pose(ArmorStandMeta armorStandMeta) {
+    public void pose(WrapperEntity entity) {
         if (headPose != null) {
-            armorStandMeta.setHeadRotation(headPose);
+            entity.setMetadata(MetaFields.ArmorStand.HEAD_POSE, headPose);
         }
 
         if (bodyPose != null) {
-            armorStandMeta.setBodyRotation(bodyPose);
+            entity.setMetadata(MetaFields.ArmorStand.BODY_POSE, bodyPose);
         }
 
         if (leftArmPose != null) {
-            armorStandMeta.setLeftArmRotation(leftArmPose);
+            entity.setMetadata(MetaFields.ArmorStand.LEFT_ARM_POSE, leftArmPose);
         }
 
         if (rightArmPose != null) {
-            armorStandMeta.setRightArmRotation(rightArmPose);
+            entity.setMetadata(MetaFields.ArmorStand.RIGHT_ARM_POSE, rightArmPose);
         }
 
         if (leftLegPose != null) {
-            armorStandMeta.setLeftLegRotation(leftLegPose);
+            entity.setMetadata(MetaFields.ArmorStand.LEFT_LEG_POSE, leftLegPose);
         }
 
         if (rightLegPose != null) {
-            armorStandMeta.setRightLegRotation(rightLegPose);
+            entity.setMetadata(MetaFields.ArmorStand.RIGHT_LEG_POSE, rightLegPose);
         }
     }
 }

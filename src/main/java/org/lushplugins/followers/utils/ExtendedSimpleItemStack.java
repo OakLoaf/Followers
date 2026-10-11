@@ -1,5 +1,7 @@
 package org.lushplugins.followers.utils;
 
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -119,8 +121,8 @@ public class ExtendedSimpleItemStack extends org.lushplugins.lushlib.utils.Simpl
             configurationSection.set("color", String.format("%02x%02x%02x", dyeColor.getRed(), dyeColor.getGreen(), dyeColor.getBlue()));
         }
         if (armorTrim != null) {
-            configurationSection.set("trim.material", armorTrim.getMaterial().getKey().toString());
-            configurationSection.set("trim.pattern", armorTrim.getPattern().getKey().toString());
+            configurationSection.set("trim.material", RegistryAccess.registryAccess().getRegistry(RegistryKey.TRIM_MATERIAL).getKeyOrThrow(armorTrim.getMaterial()).toString());
+            configurationSection.set("trim.pattern", RegistryAccess.registryAccess().getRegistry(RegistryKey.TRIM_PATTERN).getKeyOrThrow(armorTrim.getPattern()).toString());
         }
     }
 

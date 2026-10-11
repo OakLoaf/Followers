@@ -67,9 +67,10 @@ public final class Followers extends SpigotPlugin {
         LushLib.getInstance().enable(this);
         SimpleItemStack.setDefaultMaterial(Material.EGG);
 
-        EntityLib.init(
-            new SpigotEntityLibPlatform(this),
-            new APIConfig(PacketEvents.getAPI()));
+        EntityLib.init(new APIConfig(
+            PacketEvents.getAPI(),
+            new SpigotEntityLibPlatform(this))
+        );
     }
 
     @Override

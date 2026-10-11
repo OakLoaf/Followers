@@ -1,7 +1,7 @@
 package org.lushplugins.followers.entity.poses.entities;
 
 import com.github.retrooper.packetevents.protocol.entity.sniffer.SnifferState;
-import me.tofaa.entitylib.meta.mobs.SnifferMeta;
+import me.tofaa.entitylib.meta.MetaFields;
 import org.lushplugins.followers.entity.poses.FollowerPose;
 import org.lushplugins.followers.entity.poses.PoseSet;
 
@@ -9,11 +9,11 @@ public class SnifferPoses extends PoseSet {
 
     public SnifferPoses() {
         addPose(FollowerPose.DEFAULT, (entity) -> {
-            entity.getEntityMeta(SnifferMeta.class).setState(SnifferState.IDLING);
+            entity.setMetadata(MetaFields.Sniffer.STATE, SnifferState.IDLING);
         });
 
         addPose(FollowerPose.SITTING, (entity) -> {
-            entity.getEntityMeta(SnifferMeta.class).setState(SnifferState.FEELING_HAPPY);
+            entity.setMetadata(MetaFields.Sniffer.STATE, SnifferState.FEELING_HAPPY);
         });
     }
 }

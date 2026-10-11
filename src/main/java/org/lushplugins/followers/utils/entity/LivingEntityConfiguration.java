@@ -2,11 +2,10 @@ package org.lushplugins.followers.utils.entity;
 
 import com.github.retrooper.packetevents.protocol.attribute.Attributes;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
+import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
-import me.tofaa.entitylib.meta.EntityMeta;
-import me.tofaa.entitylib.meta.other.ArmorStandMeta;
-import me.tofaa.entitylib.meta.types.LivingEntityMeta;
+import me.tofaa.entitylib.meta.MetaFields;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import me.tofaa.entitylib.wrapper.WrapperEntityEquipment;
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
@@ -83,7 +82,7 @@ public class LivingEntityConfiguration extends EntityConfiguration {
         buttons.add(
             new StringButton(
                 scaleString,
-                () -> DisplayItemStack.builder(Material.CHAIN)
+                () -> DisplayItemStack.builder(Material.IRON_CHAIN)
                     .setDisplayName("&#ffde8aScale: &f" + scaleString)
                     .build()
                     .asItemStack(),
@@ -120,20 +119,21 @@ public class LivingEntityConfiguration extends EntityConfiguration {
     }
 
     @Override
-    public WrapperEntity createEntity(int entityId, UUID uuid, EntityMeta meta) {
-        WrapperLivingEntity entity = new WrapperLivingEntity(entityId, uuid, this.getEntityType(), meta);
+    public WrapperEntity createEntity(int entityId, UUID uuid) {
+        EntityType type = this.getEntityType();
+        WrapperLivingEntity entity = new WrapperLivingEntity(entityId, uuid, type);
 
         // This can be done on creation as it is hardcoded
-        if (entity.getEntityMeta() instanceof LivingEntityMeta livingEntityMeta) {
-            livingEntityMeta.setSilent(true);
+        if (type.isInstanceOf(EntityTypes.LIVINGENTITY)) {
+            entity.setMetadata(MetaFields.LivingEntity.SILENT, true);
 
-            if (livingEntityMeta instanceof ArmorStandMeta armorStandMeta) {
-                armorStandMeta.setHasNoBasePlate(true);
-                armorStandMeta.setHasArms(true);
-                armorStandMeta.setSmall(true);
+            if (type.isInstanceOf(EntityTypes.ARMOR_STAND)) {
+                entity.setFlag(MetaFields.ArmorStand.NO_BASEPLATE, true);
+                entity.setFlag(MetaFields.ArmorStand.SHOW_ARMS, true);
+                entity.setFlag(MetaFields.ArmorStand.SMALL, true);
 
                 if (!Followers.getInstance().getConfigManager().areHitboxesEnabled()) {
-                    armorStandMeta.setMarker(true);
+                    entity.setFlag(MetaFields.ArmorStand.MARKER, true);
                 }
             }
         }
@@ -161,7 +161,7 @@ public class LivingEntityConfiguration extends EntityConfiguration {
             }
 
             Double scale = this.getScale();
-            livingEntity.getAttributes().setAttribute(Attributes.GENERIC_SCALE, scale != null ? scale : Followers.getInstance().getConfigManager().getDefaultScale());
+            livingEntity.getAttributes().setAttribute(Attributes.SCALE, scale != null ? scale : Followers.getInstance().getConfigManager().getDefaultScale());
         }
     }
 

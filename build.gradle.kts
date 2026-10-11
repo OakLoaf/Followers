@@ -1,18 +1,18 @@
 plugins {
     `java-library`
     `maven-publish`
-    id("io.github.goooler.shadow") version("8.1.7")
-    id("xyz.jpenilla.run-paper") version("2.3.1")
+    id("com.gradleup.shadow") version("9.3.1")
+    id("xyz.jpenilla.run-paper") version("3.1.0")
 }
 
 group = "org.lushplugins"
 version = "2.1.0-beta16"
 
 repositories {
-    mavenCentral()
     mavenLocal()
+    mavenCentral()
     maven("https://oss.sonatype.org/content/groups/public/")
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") // Spigot
+    maven("https://repo.papermc.io/repository/maven-public/") // Paper
     maven("https://ci.ender.zone/plugin/repository/everything/") // Essentials
     maven("https://repo.papermc.io/repository/maven-public/") // PaperLib (for Essentials)
     maven("https://repo.opencollab.dev/main/") // Floodgate
@@ -26,8 +26,8 @@ repositories {
 
 dependencies {
     // Dependencies
-    compileOnly("org.spigotmc:spigot-api:1.21.8-R0.1-SNAPSHOT")
-    compileOnly("com.mysql:mysql-connector-j:8.3.0") // Uses Spigot copy
+    compileOnly("io.papermc.paper:paper-api:26.2.build.+")
+    compileOnly("com.mysql:mysql-connector-j:8.3.0") // Provided by Paper
     compileOnlyApi("com.github.retrooper:packetevents-spigot:2.8.0")
 
     // Soft Dependencies
@@ -38,14 +38,14 @@ dependencies {
     compileOnly(files("libs/SimpleSit.jar"))
 
     // Libraries
-    api("io.github.tofaa2:spigot:3.1.0-SNAPSHOT")
+    api("io.github.tofaa2:spigot:4.0.0-alpha.1")
     implementation("org.lushplugins:LushLib:0.10.82")
     implementation("org.mineskin:java-client:3.1.0-SNAPSHOT")
     implementation("org.mineskin:java-client-jsoup:3.1.0-SNAPSHOT")
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(25))
 
     registerFeature("optional") {
         usingSourceSet(sourceSets["main"])
@@ -89,12 +89,6 @@ tasks {
             modrinth("viabackwards", "5.2.2-SNAPSHOT+380")
             hangar("PlaceholderAPI", "2.11.6")
         }
-    }
-}
-
-tasks.withType(xyz.jpenilla.runtask.task.AbstractRun::class) {
-    javaLauncher = javaToolchains.launcherFor {
-        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
