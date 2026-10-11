@@ -1,0 +1,61 @@
+name: Create Release on Version Update
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create_release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'oracle-openjdk'
+          java-version: '21'
+
+      - name: Extract version from build.gradle.kts
+        id: get_version
+        run: |
+          FULL_VERSION=$(grep -oP 'version = "\K[0-9]+\.[0-9]+\.[0-9]+(?:-[^"]*)?' build.gradle.kts)
+          echo "FULL_VERSION=$FULL_VERSION" >> $GITHUB_ENV
+          
+          VERSION=$(grep -oP 'version = "\K[0-9]+\.[0-9]+\.[0-9]+' build.gradle.kts)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Check version is a full release
+        id: check_version
+        run: |
+          if [[ "${{ env.FULL_VERSION }}" == *"-"* ]]; then
+            echo "IS_FULL_RELEASE=false" >> $GITHUB_ENV
+          else
+            echo "IS_FULL_RELEASE=true" >> $GITHUB_ENV
+          fi
+
+      - name: Build with Gradle
+        if: env.IS_FULL_RELEASE == 'true'
+        run: |
+          chmod +x ./gradlew
+          ./gradlew shadowJar
+
+      - name: Post GitHub Release
+        if: env.IS_FULL_RELEASE == 'true'
+        uses: svenstaro/upload-release-action@v2
+        continue-on-error: true
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/libs/*.jar
+          file_glob: true
+          asset_name: ${{ github.event.repository.name }}-${{ env.FULL_VERSION }}
+          tag: v${{ env.FULL_VERSION }}
+          overwrite: false

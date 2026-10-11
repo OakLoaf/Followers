@@ -1,3 +1,6 @@
+import java.io.BufferedReader
+import java.io.InputStreamReader
+
 plugins {
     `java-library`
     `maven-publish`
@@ -61,8 +64,8 @@ tasks {
     }
 
     shadowJar {
-        relocate("me.tofaa.entitylib", "org.lushplugins.followers.libraries.entitylib")
-        relocate("org.lushplugins.lushlib", "org.lushplugins.followers.libraries.lushlib")
+        enableAutoRelocation = true
+        relocationPrefix = "org.lushplugins.followers.libraries"
 
         minimize()
 
@@ -70,24 +73,25 @@ tasks {
     }
 
     processResources{
-        filesMatching("plugin.yml") {
-            expand(project.properties)
-        }
-
         inputs.property("version", rootProject.version)
+        inputs.property("commit", getCurrentCommitHash())
+
         filesMatching("plugin.yml") {
-            expand("version" to rootProject.version)
+            expand(
+                "version" to rootProject.version,
+                "commit" to getCurrentCommitHash()
+            )
         }
     }
 
     runServer {
-        minecraftVersion("1.21.11")
+        minecraftVersion("26.2")
 
         downloadPlugins {
-            modrinth("packetevents", "2.11.2+spigot")
-            modrinth("viaversion", "5.2.2-SNAPSHOT+662")
-            modrinth("viabackwards", "5.2.2-SNAPSHOT+380")
-            hangar("PlaceholderAPI", "2.11.6")
+            modrinth("packetevents", "2.14.0+spigot")
+            modrinth("viaversion", "5.12.1")
+            modrinth("viabackwards", "5.12.1")
+            hangar("PlaceholderAPI", "2.12.3")
         }
     }
 }
@@ -122,5 +126,18 @@ publishing {
             version = rootProject.version.toString()
             from(project.components["java"])
         }
+    }
+}
+
+fun getCurrentCommitHash(): String {
+    val process = ProcessBuilder("git", "rev-parse", "--short", "HEAD").start()
+    val reader = BufferedReader(InputStreamReader(process.inputStream))
+    val commitHash = reader.readLine()
+    reader.close()
+    process.waitFor()
+    if (process.exitValue() == 0) {
+        return commitHash ?: ""
+    } else {
+        throw IllegalStateException("Failed to retrieve the commit hash.")
     }
 }
