@@ -15,9 +15,8 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven("https://oss.sonatype.org/content/groups/public/")
-    maven("https://repo.papermc.io/repository/maven-public/") // Paper
+    maven("https://repo.papermc.io/repository/maven-public/") // Paper, PaperLib (for Essentials)
     maven("https://ci.ender.zone/plugin/repository/everything/") // Essentials
-    maven("https://repo.papermc.io/repository/maven-public/") // PaperLib (for Essentials)
     maven("https://repo.opencollab.dev/main/") // Floodgate
     maven("https://repo.lushplugins.org/snapshots/") // LushLib
     maven("https://repo.inventivetalent.org/repository/public/") // MineSkin
