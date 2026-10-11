@@ -28,7 +28,7 @@ dependencies {
     // Dependencies
     compileOnly("io.papermc.paper:paper-api:26.2.build.+")
     compileOnly("com.mysql:mysql-connector-j:8.3.0") // Provided by Paper
-    compileOnlyApi("com.github.retrooper:packetevents-spigot:2.8.0")
+    compileOnlyApi("com.github.retrooper:packetevents-spigot:2.14.0")
 
     // Soft Dependencies
     compileOnly("org.geysermc.floodgate:api:2.0-SNAPSHOT")
