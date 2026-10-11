@@ -21,7 +21,7 @@ public class EyeHeightRegistry {
 
     public void loadEyeHeights(Collection<EntityType> entityTypes) {
         //noinspection DataFlowIssue
-        YamlConfiguration eyeHeightData = YamlConfiguration.loadConfiguration(new InputStreamReader(Followers.getInstance().getResource("entity_data/eye_heights.yml")));
+        YamlConfiguration eyeHeightData = YamlConfiguration.loadConfiguration(new InputStreamReader(Followers.getInstance().getResource("entity_data/1_21.yml")));
         for (EntityType entityType : entityTypes) {
             if (!this.hasRegisteredEyeHeight(entityType)) {
                 String path = entityType.getName() + ".eye-height";
