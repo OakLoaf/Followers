@@ -3,6 +3,7 @@ package org.lushplugins.followers.entity.tasks;
 import com.github.retrooper.packetevents.protocol.particle.Particle;
 import com.github.retrooper.packetevents.protocol.particle.data.ParticleDustData;
 import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes;
+import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lushplugins.followers.Followers;
@@ -32,11 +33,13 @@ public class FollowerTaskRegistry {
 
     public void unregister(String id) {
         FollowerTask task = followerTasks.get(id);
-        unregister(task);
+        if (task != null) {
+            unregister(task);
+        }
     }
 
     public void unregister(@NotNull FollowerTask task) {
         followerTasks.remove(task.getId());
-        Followers.getInstance().registerListener(task);
+        HandlerList.unregisterAll(task);
     }
 }

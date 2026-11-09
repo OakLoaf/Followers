@@ -29,6 +29,10 @@ public class PlayerListener implements Listener {
         );
 
         Followers.getInstance().getDataManager().loadFollowerUser(playerUUID).thenAccept(followerUser -> {
+            if (followerUser == null) {
+                return;
+            }
+
             followerUser.setUsername(player.getName());
             String followerName = followerUser.getFollowerTypeName();
             if (followerUser.isFollowerEnabled() && player.hasPermission("followers." +  followerName.toLowerCase().replaceAll(" ", "_"))) {
