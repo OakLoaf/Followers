@@ -50,7 +50,7 @@ public class FollowerManager {
             ConfigurationSection followerSection = config.getConfigurationSection(followerName);
             if (followerSection == null) {
                 Followers.getInstance().getLogger().severe("Tried to load follower \"" + followerName + "\" but data for this follower could not be found");
-                return;
+                continue;
             }
 
             loadFollower(followerSection);
@@ -77,8 +77,13 @@ public class FollowerManager {
             return;
         }
 
+        ConfigurationSection oldDisplayItem = configSection != null ? configSection.getConfigurationSection("displayItem") : null;
+
         configSection = config.createSection(followerName);
         followerHandler.getEntityConfig().save(configSection);
+        if (oldDisplayItem != null) {
+            copySection(oldDisplayItem, configSection.createSection("displayItem"));
+        }
 
         if (!replace) {
             ChatColorHandler.sendMessage(player, Followers.getInstance().getConfigManager().getLangMessage("follower-created")
@@ -95,6 +100,16 @@ public class FollowerManager {
 
     public void editFollowerType(Player player, FollowerHandler followerHandler) {
         createFollowerType(player, followerHandler, true);
+    }
+
+    private static void copySection(ConfigurationSection from, ConfigurationSection to) {
+        for (String key : from.getKeys(false)) {
+            if (from.isConfigurationSection(key)) {
+                copySection(from.getConfigurationSection(key), to.createSection(key));
+            } else {
+                to.set(key, from.get(key));
+            }
+        }
     }
 
     public void loadFollower(@NotNull ConfigurationSection configurationSection) {

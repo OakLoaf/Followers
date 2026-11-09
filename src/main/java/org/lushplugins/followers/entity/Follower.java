@@ -8,6 +8,7 @@ import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.util.Vector3f;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerBundle;
 import me.tofaa.entitylib.meta.MetaFields;
+import me.tofaa.entitylib.meta.enums.BillboardConstraints;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import me.tofaa.entitylib.wrapper.WrapperPlayer;
 import org.bukkit.Bukkit;
@@ -293,41 +294,44 @@ public class Follower {
         }
 
         this.spawning = true;
-        this.setWorld(world);
+        try {
+            this.setWorld(world);
 
-        if (!Followers.getInstance().callEvent(new FollowerEntitySpawnEvent(this))) {
-            despawn();
-            return false;
-        }
+            if (!Followers.getInstance().callEvent(new FollowerEntitySpawnEvent(this))) {
+                despawn();
+                return false;
+            }
 
-        FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerType);
-        if (followerHandler == null) {
-            return false;
-        }
+            FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerType);
+            if (followerHandler == null) {
+                return false;
+            }
 
-        entity = followerHandler.createEntity();
-        entity.spawn(location);
-        refresh();
-        setType(followerType);
+            entity = followerHandler.createEntity();
+            entity.spawn(location);
+            refresh();
+            setType(followerType);
 
-        if (!(entity instanceof WrapperPlayer)) {
-            PacketsHelper.sendPacket(
-                PacketsHelper.createTeamsAddEntitiesPacket(
-                    PacketsHelper.FOLLOWERS_TEAM_NAME,
-                    Collections.singletonList(entity.getUuid().toString())
-                ),
-                Bukkit.getOnlinePlayers()
+            if (!(entity instanceof WrapperPlayer)) {
+                PacketsHelper.sendPacket(
+                    PacketsHelper.createTeamsAddEntitiesPacket(
+                        PacketsHelper.FOLLOWERS_TEAM_NAME,
+                        Collections.singletonList(entity.getUuid().toString())
+                    ),
+                    Bukkit.getOnlinePlayers()
+                );
+            }
+
+            addTasks(
+                TaskId.MOVE_NEAR,
+                TaskId.VIEWERS,
+                TaskId.VALIDATE
             );
+
+            return true;
+        } finally {
+            this.spawning = false;
         }
-
-        addTasks(
-            TaskId.MOVE_NEAR,
-            TaskId.VIEWERS,
-            TaskId.VALIDATE
-        );
-
-        this.spawning = false;
-        return true;
     }
 
     public void despawn() {
@@ -374,7 +378,7 @@ public class Follower {
             entity.getViewers().forEach(textDisplay::addViewer);
             entity.addPassenger(textDisplay);
 
-            entity.setMetadata(MetaFields.TextDisplay.BILLBOARD_RENDER_CONSTRAINTS, (byte) 1);
+            entity.setMetadata(MetaFields.TextDisplay.BILLBOARD_RENDER_CONSTRAINTS, BillboardConstraints.VERTICAL);
             entity.setMetadata(MetaFields.TextDisplay.BACKGROUND_COLOR, 0);
             entity.setFlag(MetaFields.TextDisplay.SHADOW, true);
         } catch (Exception e) {

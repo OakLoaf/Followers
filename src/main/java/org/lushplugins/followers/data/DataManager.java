@@ -38,6 +38,11 @@ public class DataManager {
         CompletableFuture<FollowerUser> future = new CompletableFuture<>();
         future.completeAsync(() -> {
             final FollowerUser user = storage.loadFollowerUser(uuid);
+            if (user == null) {
+                Followers.getInstance().getLogger().warning("Failed to load follower data for " + uuid + ", their follower will not spawn this session.");
+                return null;
+            }
+
             followerUsers.put(uuid, user);
             return user;
         }, Storage.SERVICE);
@@ -81,12 +86,14 @@ public class DataManager {
     }
 
     public void reloadFollowerInventories() {
-        for (Map.Entry<UUID, FollowerUser> entry : followerUsers.entrySet()) {
+        Iterator<Map.Entry<UUID, FollowerUser>> iterator = followerUsers.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<UUID, FollowerUser> entry = iterator.next();
             UUID uuid = entry.getKey();
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) {
-                followerUsers.remove(uuid);
-                return;
+                iterator.remove();
+                continue;
             }
 
             FollowerUser followerUser = entry.getValue();

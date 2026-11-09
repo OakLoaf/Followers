@@ -454,6 +454,8 @@ public class FollowerCmd extends Command {
                 FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerName);
                 if (followerHandler == null) {
                     ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("follower-doesnt-exist").replaceAll("%follower%", followerName));
+                } else if (!player.hasPermission(followerHandler.getPermission())) {
+                    ChatColorHandler.sendMessage(sender, Followers.getInstance().getConfigManager().getLangMessage("no-permissions"));
                 } else {
                     FollowerUser followerUser = Followers.getInstance().getDataManager().getFollowerUser(player);
                     if (followerUser.isRandomType()) {

@@ -63,14 +63,14 @@ public class ConfigManager {
         } else {
             String worldRaw = config.getString("world-whitelist", "*");
             if (worldRaw.equals("*")) {
-                worldWhitelist = Bukkit.getWorlds().stream().map(World::getName).toList();
-            }
-
-            World world = Bukkit.getWorld(worldRaw);
-            if (world != null) {
-                worldWhitelist = Collections.singletonList(world.getName());
+                worldWhitelist = Collections.singletonList("*");
             } else {
-                worldWhitelist = Collections.emptyList();
+                World world = Bukkit.getWorld(worldRaw);
+                if (world != null) {
+                    worldWhitelist = Collections.singletonList(world.getName());
+                } else {
+                    worldWhitelist = Collections.emptyList();
+                }
             }
         }
 
@@ -202,7 +202,7 @@ public class ConfigManager {
     }
 
     public boolean isWhitelistedWorld(String worldName) {
-        return worldWhitelist.contains(worldName);
+        return worldWhitelist.contains("*") || worldWhitelist.contains(worldName);
     }
 
     public List<String> getWorldWhitelist() {

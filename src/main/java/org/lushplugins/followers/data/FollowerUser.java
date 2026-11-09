@@ -123,8 +123,12 @@ public class FollowerUser {
         return this.randomType;
     }
 
-    public String getRandomType() {
+    public @Nullable String getRandomType() {
         List<String> followerTypes = getOwnedFollowerNames();
+        if (followerTypes.isEmpty()) {
+            return null;
+        }
+
         return followerTypes.get(random.nextInt(followerTypes.size()));
     }
 
@@ -134,8 +138,13 @@ public class FollowerUser {
     }
 
     public void randomiseFollowerType() {
-        if (follower != null) {
-            follower.setType(getRandomType());
+        if (follower == null) {
+            return;
+        }
+
+        String randomType = getRandomType();
+        if (randomType != null) {
+            follower.setType(randomType);
         }
     }
 
@@ -231,14 +240,35 @@ public class FollowerUser {
             return;
         }
 
+        if (follower != null) {
+            if (!hasFollowerPermission(player, follower.getTypeName())) {
+                return;
+            }
+        } else if (randomType ? getOwnedFollowerNames().isEmpty() : !hasFollowerPermission(player, followerType)) {
+            return;
+        }
+
         if (follower == null) {
             follower = new OwnedFollower(player, randomType ? getRandomType() : followerType);
             follower.setWorld(player.getWorld());
             follower.setDisplayName(isDisplayNameEnabled() ? displayName : null);
         }
 
-        if (!follower.isSpawned() && !follower.isSpawning() && follower.spawn(player.getWorld(), SpigotConversionUtil.fromBukkitLocation(player.getLocation().add(1.5, 0, 1.5)))) {
-            Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> follower.addTask(TaskId.VISIBILITY), 5);
+        if (!follower.isSpawned() && !follower.isSpawning()) {
+            if (follower.spawn(player.getWorld(), SpigotConversionUtil.fromBukkitLocation(player.getLocation().add(1.5, 0, 1.5)))) {
+                Bukkit.getScheduler().runTaskLater(Followers.getInstance(), () -> follower.addTask(TaskId.VISIBILITY), 5);
+            } else {
+                follower.addTask(TaskId.VISIBILITY);
+            }
         }
+    }
+
+    private static boolean hasFollowerPermission(Player player, String followerTypeName) {
+        if (followerTypeName == null) {
+            return false;
+        }
+
+        FollowerHandler followerHandler = Followers.getInstance().getFollowerManager().getFollower(followerTypeName);
+        return followerHandler != null && player.hasPermission(followerHandler.getPermission());
     }
 }
